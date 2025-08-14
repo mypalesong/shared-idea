@@ -52,8 +52,8 @@
             background: linear-gradient(135deg, var(--bg-primary) 0%, #0c1017 50%, var(--bg-secondary) 100%);
             color: var(--text-primary);
             line-height: 1.5;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .app-container {
@@ -61,7 +61,7 @@
             max-width: 1400px;
             margin: 0 auto;
             padding: 16px;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -222,7 +222,7 @@
             grid-template-columns: 200px 1fr;
             gap: 16px;
             flex: 1;
-            overflow: hidden;
+            min-height: 0;
         }
 
         .sidebar {
@@ -305,7 +305,7 @@
             border: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            min-height: 0;
             backdrop-filter: blur(10px);
         }
 
@@ -370,6 +370,7 @@
             padding: 20px;
             justify-content: flex-start;
             box-shadow: inset 0 0 30px rgba(59, 130, 246, 0.2);
+            overflow-y: auto;
         }
 
         .card-badge {
@@ -409,44 +410,24 @@
             font-family: 'Noto Sans KR', sans-serif;
         }
 
-        .english-variations {
+        .english-content {
             display: flex;
             flex-direction: column;
-            gap: 12px;
             width: 100%;
-            height: 100%;
-            justify-content: center;
-        }
-
-        .english-variation {
-            background: rgba(30, 41, 55, 0.6);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            border-radius: var(--radius);
-            padding: 12px 16px;
-            position: relative;
-            backdrop-filter: blur(5px);
-            transition: all 0.3s ease;
             flex: 1;
+            gap: 16px;
+        }
+
+        .variation-tabs {
             display: flex;
-            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
         }
 
-        .english-variation:hover {
-            background: rgba(30, 41, 55, 0.8);
-            border-color: rgba(59, 130, 246, 0.4);
-            transform: translateX(4px);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .variation-header {
-            display: flex;
-            align-items: center;
-            width: 100%;
-        }
-
-        .variation-number {
-            width: 32px;
-            height: 32px;
+        .variation-tab {
+            width: 36px;
+            height: 36px;
             background: transparent;
             border: 2px solid rgba(96, 165, 250, 0.3);
             backdrop-filter: blur(5px);
@@ -456,13 +437,14 @@
             align-items: center;
             justify-content: center;
             font-weight: 600;
-            font-size: 0.85rem;
-            margin-right: 14px;
-            flex-shrink: 0;
+            font-size: 0.9rem;
+            cursor: pointer;
             transition: all 0.3s ease;
+            z-index: 10;
+            position: relative;
         }
 
-        .english-variation:hover .variation-number {
+        .variation-tab:hover {
             background: rgba(96, 165, 250, 0.1);
             border-color: rgba(96, 165, 250, 0.6);
             color: rgba(96, 165, 250, 1);
@@ -470,12 +452,35 @@
             box-shadow: 0 0 20px rgba(96, 165, 250, 0.2);
         }
 
+        .variation-tab.active {
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.2) 0%, rgba(59, 130, 246, 0.3) 100%);
+            border-color: rgba(96, 165, 250, 0.8);
+            color: rgba(96, 165, 250, 1);
+            box-shadow: 0 0 25px rgba(96, 165, 250, 0.4);
+        }
+
+        .english-variation {
+            background: rgba(30, 41, 55, 0.6);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: var(--radius);
+            padding: 20px;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex: 1;
+        }
+
         .variation-text {
-            font-size: calc(var(--font-size) * 0.95);
-            line-height: 1.5;
+            font-size: calc(var(--font-size) * 1.0);
+            line-height: 1.6;
             color: var(--text-primary);
             font-weight: 500;
-            flex: 1;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            hyphens: auto;
         }
 
         .flip-hint {
@@ -672,7 +677,7 @@
             }
 
             .sidebar {
-                max-height: 100px;
+                max-height: 120px;
                 overflow-y: auto;
             }
 
@@ -800,7 +805,7 @@
             }
 
             .sidebar {
-                max-height: 80px;
+                max-height: 100px;
                 padding: 6px;
             }
 
@@ -985,11 +990,11 @@
                     
                     <div class="card-face card-back">
                         <div class="card-badge english-badge">🇺🇸 English Variations</div>
-                        <div class="english-variations" id="englishVariations">
-                            <div class="english-variation">
-                                <div class="variation-header">
-                                    <div class="variation-number">1</div>
-                                </div>
+                        <div class="english-content">
+                            <div class="variation-tabs" id="variationTabs">
+                                <div class="variation-tab active" data-index="0">1</div>
+                            </div>
+                            <div class="english-variation" id="currentVariation">
                                 <div class="variation-text">Select a topic to start learning</div>
                             </div>
                         </div>
@@ -1041,6 +1046,8 @@
                 this.currentExpressionIndex = 0;
                 this.completedExpressions = new Set();
                 this.isFlipped = false;
+                this.currentVariations = [];
+                this.currentVariationIndex = 0;
                 
                 window.modernApp = this;
                 isAppRunning = true;
@@ -1140,6 +1147,7 @@
                 
                 this.currentTopic = topic;
                 this.currentExpressionIndex = 0;
+                this.currentVariationIndex = 0; // 새 토픽 선택 시 첫 번째 탭으로 리셋
                 this.isFlipped = false;
                 
                 this.renderExpressionList();
@@ -1188,6 +1196,7 @@
                 
                 this.currentExpressionIndex = index;
                 this.isFlipped = false;
+                this.currentVariationIndex = 0;
                 
                 this.displayCurrentExpression();
                 this.renderExpressionList();
@@ -1230,32 +1239,64 @@
             displayEnglishVariations(variations) {
                 console.log('Displaying variations:', variations);
                 
-                const container = document.getElementById('englishVariations');
-                container.innerHTML = '';
-
                 if (!variations || variations.length === 0) {
-                    container.innerHTML = '<div class="loading-state">No variations available</div>';
+                    this.setupVariationTabs(1);
+                    document.getElementById('currentVariation').innerHTML = 
+                        '<div class="variation-text">No variations available</div>';
                     return;
                 }
 
-                variations.forEach((variation, index) => {
-                    const variationDiv = document.createElement('div');
-                    variationDiv.className = 'english-variation';
-                    
-                    const numberDiv = document.createElement('div');
-                    numberDiv.className = 'variation-number';
-                    numberDiv.textContent = index + 1;
-                    
-                    const textDiv = document.createElement('div');
-                    textDiv.className = 'variation-text';
-                    textDiv.innerHTML = this.formatText(variation);
-                    
-                    variationDiv.appendChild(numberDiv);
-                    variationDiv.appendChild(textDiv);
-                    container.appendChild(variationDiv);
-                });
+                this.currentVariations = variations;
+                this.currentVariationIndex = 0;
                 
-                console.log(`${variations.length} variations displayed`);
+                this.setupVariationTabs(variations.length);
+                this.showVariation(0);
+                
+                console.log(`${variations.length} variations loaded`);
+            }
+
+            setupVariationTabs(count) {
+                const tabsContainer = document.getElementById('variationTabs');
+                tabsContainer.innerHTML = '';
+
+                for (let i = 0; i < count; i++) {
+                    const tab = document.createElement('div');
+                    tab.className = 'variation-tab';
+                    tab.setAttribute('data-index', i);
+                    tab.textContent = i + 1;
+                    tab.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log(`Tab ${i + 1} clicked`);
+                        this.showVariation(i);
+                    };
+                    
+                    if (i === 0) {
+                        tab.classList.add('active');
+                    }
+                    
+                    tabsContainer.appendChild(tab);
+                }
+            }
+
+            showVariation(index) {
+                if (!this.currentVariations || index >= this.currentVariations.length) {
+                    return;
+                }
+
+                this.currentVariationIndex = index;
+                
+                // Update tab states
+                document.querySelectorAll('.variation-tab').forEach((tab, i) => {
+                    tab.classList.toggle('active', i === index);
+                });
+
+                // Show variation
+                const variation = this.currentVariations[index];
+                const variationContainer = document.getElementById('currentVariation');
+                variationContainer.innerHTML = `<div class="variation-text">${this.formatText(variation)}</div>`;
+                
+                console.log(`Showing variation ${index + 1}: ${variation.substring(0, 50)}...`);
             }
 
             flipCard() {
@@ -1276,6 +1317,7 @@
                 
                 if (this.currentExpressionIndex > 0) {
                     this.currentExpressionIndex--;
+                    this.currentVariationIndex = 0; // 새 표현으로 이동 시 첫 번째 탭으로 리셋
                     this.displayCurrentExpression();
                     this.renderExpressionList();
                     console.log('Moved to:', this.currentExpressionIndex);
@@ -1288,6 +1330,7 @@
                 const total = this.currentTopic?.items?.length || 0;
                 if (this.currentExpressionIndex < total - 1) {
                     this.currentExpressionIndex++;
+                    this.currentVariationIndex = 0; // 새 표현으로 이동 시 첫 번째 탭으로 리셋
                     this.displayCurrentExpression();
                     this.renderExpressionList();
                     console.log('Moved to:', this.currentExpressionIndex);
@@ -1352,7 +1395,12 @@
                     document.getElementById('fontDisplay').textContent = size;
                 };
                 
-                document.getElementById('flipCard').onclick = () => {
+                document.getElementById('flipCard').onclick = (e) => {
+                    // 탭 버튼이나 그 자식 요소를 클릭한 경우 flip하지 않음
+                    if (e.target.closest('.variation-tab') || e.target.closest('.variation-tabs')) {
+                        console.log('Tab area clicked, not flipping');
+                        return;
+                    }
                     console.log('Card clicked');
                     this.flipCard();
                 };
@@ -1380,6 +1428,17 @@
                         case ' ':
                             e.preventDefault();
                             this.flipCard();
+                            break;
+                        case '1':
+                        case '2':
+                        case '3':
+                        case '4':
+                        case '5':
+                            e.preventDefault();
+                            const tabIndex = parseInt(e.key) - 1;
+                            if (this.currentVariations && tabIndex < this.currentVariations.length) {
+                                this.showVariation(tabIndex);
+                            }
                             break;
                     }
                 };
