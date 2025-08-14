@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Cards - Minimal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .app {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 300;
+            color: #2d2d2d;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #666;
+            font-weight: 400;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 40px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .tab:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+
+        .tab.active {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: white;
+        }
+
+        .card-container {
+            perspective: 1000px;
+            height: 400px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        .card-content {
+            text-align: center;
+        }
+
+        .card-content h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-content p {
+            font-size: 1.8rem;
+            font-weight: 400;
+            line-height: 1.4;
+            color: #1a1a1a;
+        }
+
+        .card-front h2 {
+            color: #2563eb;
+        }
+
+        .card-back h2 {
+            color: #dc2626;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .nav-btn {
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .progress-info {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .lesson-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+
+        .lesson-dot {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #e5e5e5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-dot:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+
+        .lesson-dot.active {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: white;
+        }
+
+        .lesson-dot.completed {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+
+        .auto-controls {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .auto-btn {
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .auto-btn:hover {
+            border-color: #f59e0b;
+            color: #f59e0b;
+        }
+
+        .auto-btn.active {
+            background: #f59e0b;
+            border-color: #f59e0b;
+            color: white;
+        }
+
+        .flip-hint {
+            text-align: center;
+            color: #999;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+            
+            .card-content p {
+                font-size: 1.4rem;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="header">
+            <h1>English Learning Cards</h1>
+            <p id="currentTopic">Business English - Essential phrases</p>
+        </div>
+
+        <div class="controls">
+            <div class="tab active" data-file="business-english">Business</div>
+            <div class="tab" data-file="daily-conversation">Daily</div>
+            <div class="tab" data-file="travel-english">Travel</div>
+        </div>
+
+        <div class="lesson-grid" id="lessonGrid"></div>
+
+        <div class="card-container">
+            <div class="card" id="mainCard" onclick="flipCard()">
+                <div class="card-face card-front">
+                    <div class="card-content">
+                        <h2>English</h2>
+                        <p id="englishText">Click on a lesson to start</p>
+                    </div>
+                </div>
+                <div class="card-face card-back">
+                    <div class="card-content">
+                        <h2>한국어</h2>
+                        <p id="koreanText">레슨을 선택해주세요</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flip-hint">카드를 클릭하여 뒤집어보세요</div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="previousLesson()">← Previous</button>
+            <div class="progress-info" id="progressInfo">0 / 0</div>
+            <button class="nav-btn" id="nextBtn" onclick="nextLesson()">Next →</button>
+        </div>
+
+        <div class="auto-controls">
+            <button class="auto-btn" id="autoBtn" onclick="toggleAuto()">Auto Play</button>
+            <button class="auto-btn" id="flipBtn" onclick="toggleAutoFlip()">Auto Flip</button>
+        </div>
+    </div>
+
+    <script>
+        let currentData = null;
+        let currentIndex = 0;
+        let currentFile = 'business-english';
+        let completedLessons = new Set();
+        let autoMode = false;
+        let autoFlipMode = false;
+        let autoInterval = null;
+        let flipInterval = null;
+
+        loadData(currentFile);
+
+        async function loadData(filename) {
+            try {
+                const response = await fetch(`data/${filename}.json`);
+                currentData = await response.json();
+                currentIndex = 0;
+                document.getElementById('currentTopic').textContent = 
+                    `${currentData.title} - ${currentData.description}`;
+                generateGrid();
+                displayLesson();
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function generateGrid() {
+            const grid = document.getElementById('lessonGrid');
+            grid.innerHTML = '';
+            
+            currentData.lessons.forEach((lesson, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'lesson-dot';
+                dot.textContent = index + 1;
+                dot.onclick = () => goToLesson(index);
+                
+                if (index === currentIndex) dot.classList.add('active');
+                if (completedLessons.has(`${currentFile}-${lesson.id}`)) {
+                    dot.classList.add('completed');
+                }
+                
+                grid.appendChild(dot);
+            });
+        }
+
+        function goToLesson(index) {
+            currentIndex = index;
+            displayLesson();
+            generateGrid();
+        }
+
+        function displayLesson() {
+            if (!currentData?.lessons[currentIndex]) return;
+            
+            const lesson = currentData.lessons[currentIndex];
+            document.getElementById('englishText').textContent = lesson.english;
+            document.getElementById('koreanText').textContent = lesson.korean;
+            document.getElementById('progressInfo').textContent = 
+                `${currentIndex + 1} / ${currentData.lessons.length}`;
+            
+            document.getElementById('prevBtn').disabled = currentIndex === 0;
+            document.getElementById('nextBtn').disabled = currentIndex === currentData.lessons.length - 1;
+            
+            // Reset card flip
+            document.getElementById('mainCard').classList.remove('flipped');
+            
+            setTimeout(() => {
+                completedLessons.add(`${currentFile}-${lesson.id}`);
+                generateGrid();
+            }, 3000);
+        }
+
+        function flipCard() {
+            document.getElementById('mainCard').classList.toggle('flipped');
+        }
+
+        function previousLesson() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                displayLesson();
+                generateGrid();
+            }
+        }
+
+        function nextLesson() {
+            if (currentIndex < currentData.lessons.length - 1) {
+                currentIndex++;
+                displayLesson();
+                generateGrid();
+            }
+        }
+
+        function toggleAuto() {
+            autoMode = !autoMode;
+            const btn = document.getElementById('autoBtn');
+            
+            if (autoMode) {
+                btn.textContent = 'Stop Auto';
+                btn.classList.add('active');
+                autoInterval = setInterval(() => {
+                    if (currentIndex < currentData.lessons.length - 1) {
+                        nextLesson();
+                    } else {
+                        toggleAuto();
+                    }
+                }, 4000);
+            } else {
+                btn.textContent = 'Auto Play';
+                btn.classList.remove('active');
+                clearInterval(autoInterval);
+            }
+        }
+
+        function toggleAutoFlip() {
+            autoFlipMode = !autoFlipMode;
+            const btn = document.getElementById('flipBtn');
+            
+            if (autoFlipMode) {
+                btn.textContent = 'Stop Flip';
+                btn.classList.add('active');
+                flipInterval = setInterval(flipCard, 2000);
+            } else {
+                btn.textContent = 'Auto Flip';
+                btn.classList.remove('active');
+                clearInterval(flipInterval);
+            }
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentFile = tab.dataset.file;
+                loadData(currentFile);
+                
+                if (autoMode) toggleAuto();
+                if (autoFlipMode) toggleAutoFlip();
+            });
+        });
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowLeft': previousLesson(); break;
+                case 'ArrowRight': nextLesson(); break;
+                case ' ': e.preventDefault(); flipCard(); break;
+                case 'a': toggleAuto(); break;
+            }
+        });
+
+        // Load saved progress
+        const saved = localStorage.getItem('englishProgress');
+        if (saved) completedLessons = new Set(JSON.parse(saved));
+
+        // Save progress
+        setInterval(() => {
+            localStorage.setItem('englishProgress', JSON.stringify([...completedLessons]));
+        }, 5000);
+    </script>
+</body>
+</html>
