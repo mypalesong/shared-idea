@@ -412,19 +412,23 @@
         .english-variations {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
             width: 100%;
-            overflow-y: auto;
+            height: 100%;
+            justify-content: center;
         }
 
         .english-variation {
             background: rgba(30, 41, 55, 0.6);
             border: 1px solid rgba(59, 130, 246, 0.2);
             border-radius: var(--radius);
-            padding: 16px;
+            padding: 12px 16px;
             position: relative;
             backdrop-filter: blur(5px);
             transition: all 0.3s ease;
+            flex: 1;
+            display: flex;
+            align-items: center;
         }
 
         .english-variation:hover {
@@ -437,7 +441,7 @@
         .variation-header {
             display: flex;
             align-items: center;
-            margin-bottom: 8px;
+            width: 100%;
         }
 
         .variation-number {
@@ -468,9 +472,10 @@
 
         .variation-text {
             font-size: calc(var(--font-size) * 0.95);
-            line-height: 1.6;
+            line-height: 1.5;
             color: var(--text-primary);
             font-weight: 500;
+            flex: 1;
         }
 
         .flip-hint {
@@ -586,49 +591,333 @@
         @media (max-width: 1024px) {
             .app-container {
                 width: 95%;
+                padding: 12px;
             }
             
             .main-content {
                 grid-template-columns: 1fr;
+                gap: 12px;
             }
             
             .sidebar {
                 order: 2;
-                max-height: 150px;
+                max-height: 120px;
+                padding: 8px;
             }
             
             .flip-card-container {
                 order: 1;
+                padding: 12px;
+            }
+
+            .flip-card {
+                min-height: 350px;
             }
         }
 
         @media (max-width: 768px) {
+            .app-container {
+                width: 100%;
+                padding: 8px;
+                gap: 8px;
+            }
+
+            .header {
+                padding: 10px 12px;
+            }
+            
             .brand-title {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
+            }
+
+            .brand-subtitle {
+                font-size: 0.7rem;
             }
             
             .controls-row {
                 grid-template-columns: 1fr;
-                gap: 12px;
+                gap: 8px;
                 text-align: center;
             }
             
             .stats-row {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
+                margin-bottom: 8px;
+            }
+
+            .stat-card {
+                padding: 6px 4px;
+            }
+
+            .stat-value {
+                font-size: 1rem;
+            }
+
+            .stat-label {
+                font-size: 0.6rem;
+            }
+            
+            .topic-chip {
+                padding: 6px 12px;
+                font-size: 0.7rem;
+            }
+
+            .font-control {
+                padding: 6px 10px;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                max-height: 100px;
+                overflow-y: auto;
+            }
+
+            .expression-item {
+                padding: 6px;
+                font-size: 0.6rem;
+                margin-bottom: 4px;
+            }
+
+            .item-number {
+                width: 16px;
+                height: 16px;
+                font-size: 0.55rem;
+                line-height: 14px;
+            }
+
+            .flip-card {
+                min-height: 300px;
+            }
+
+            .card-face {
+                padding: 16px;
+            }
+
+            .card-text {
+                font-size: calc(var(--font-size) * 0.9);
+                line-height: 1.4;
             }
             
             .english-variations {
-                gap: 12px;
+                gap: 8px;
             }
             
             .english-variation {
+                padding: 8px 12px;
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+            }
+
+            .variation-number {
+                width: 28px;
+                height: 28px;
+                font-size: 0.75rem;
+                margin-right: 0;
+                margin-bottom: 8px;
+                align-self: flex-start;
+            }
+
+            .variation-text {
+                font-size: calc(var(--font-size) * 0.85);
+                line-height: 1.4;
+            }
+
+            .navigation-footer {
+                padding: 10px;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .nav-btn {
+                padding: 8px 16px;
+                font-size: 0.75rem;
+                width: 100%;
+                max-width: 120px;
+            }
+
+            .progress-info {
+                order: -1;
+            }
+
+            .progress-text {
+                font-size: 0.75rem;
+                margin-bottom: 6px;
+            }
+
+            .progress-bar {
+                width: 100px;
+                height: 4px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .app-container {
+                padding: 6px;
+                gap: 6px;
+            }
+
+            .header {
+                padding: 8px 10px;
+            }
+
+            .brand-title {
+                font-size: 1.1rem;
+            }
+
+            .brand-subtitle {
+                font-size: 0.65rem;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 4px;
+            }
+
+            .stat-card {
+                padding: 4px 2px;
+            }
+
+            .stat-value {
+                font-size: 0.9rem;
+            }
+
+            .stat-label {
+                font-size: 0.55rem;
+            }
+
+            .topic-chip {
+                padding: 5px 10px;
+                font-size: 0.65rem;
+            }
+
+            .main-content {
+                gap: 8px;
+            }
+
+            .sidebar {
+                max-height: 80px;
+                padding: 6px;
+            }
+
+            .sidebar-header {
+                font-size: 0.7rem;
+                margin-bottom: 6px;
+            }
+
+            .expression-item {
+                padding: 4px;
+                font-size: 0.55rem;
+                margin-bottom: 3px;
+            }
+
+            .item-number {
+                width: 14px;
+                height: 14px;
+                font-size: 0.5rem;
+                line-height: 12px;
+            }
+
+            .flip-card-container {
+                padding: 8px;
+            }
+
+            .flip-card {
+                min-height: 250px;
+            }
+
+            .card-face {
                 padding: 12px;
+            }
+
+            .card-badge {
+                padding: 4px 8px;
+                font-size: 0.6rem;
+                margin-bottom: 12px;
+            }
+
+            .card-text {
+                font-size: calc(var(--font-size) * 0.8);
+                line-height: 1.3;
+            }
+
+            .english-variations {
+                gap: 6px;
+            }
+
+            .english-variation {
+                padding: 6px 8px;
             }
 
             .variation-number {
                 width: 24px;
                 height: 24px;
                 font-size: 0.7rem;
+                margin-bottom: 6px;
+            }
+
+            .variation-text {
+                font-size: calc(var(--font-size) * 0.75);
+                line-height: 1.3;
+            }
+
+            .navigation-footer {
+                padding: 8px;
+                gap: 6px;
+            }
+
+            .nav-btn {
+                padding: 6px 12px;
+                font-size: 0.7rem;
+                max-width: 100px;
+            }
+
+            .progress-text {
+                font-size: 0.7rem;
+                margin-bottom: 4px;
+            }
+
+            .progress-bar {
+                width: 80px;
+                height: 3px;
+            }
+
+            .flip-hint {
+                font-size: 0.6rem;
+                margin: 8px 0 6px 0;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .brand-title {
+                font-size: 1rem;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .topic-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .topic-chip {
+                width: 100%;
+                max-width: 200px;
+                text-align: center;
+            }
+
+            .flip-card {
+                min-height: 220px;
+            }
+
+            .variation-text {
+                font-size: calc(var(--font-size) * 0.7);
             }
         }
     </style>
@@ -953,9 +1242,6 @@
                     const variationDiv = document.createElement('div');
                     variationDiv.className = 'english-variation';
                     
-                    const headerDiv = document.createElement('div');
-                    headerDiv.className = 'variation-header';
-                    
                     const numberDiv = document.createElement('div');
                     numberDiv.className = 'variation-number';
                     numberDiv.textContent = index + 1;
@@ -964,8 +1250,7 @@
                     textDiv.className = 'variation-text';
                     textDiv.innerHTML = this.formatText(variation);
                     
-                    headerDiv.appendChild(numberDiv);
-                    variationDiv.appendChild(headerDiv);
+                    variationDiv.appendChild(numberDiv);
                     variationDiv.appendChild(textDiv);
                     container.appendChild(variationDiv);
                 });
