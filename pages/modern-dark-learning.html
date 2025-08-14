@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Dark English Learning</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #1e40af;
+            --accent: #60a5fa;
+            --success: #10b981;
+            --warning: #f59e0b;
+            
+            --bg-primary: #0f1419;
+            --bg-secondary: #1a2332;
+            --bg-tertiary: #252d3d;
+            --bg-card: #1e2937;
+            --bg-overlay: rgba(30, 41, 55, 0.9);
+            
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --text-accent: #60a5fa;
+            
+            --border: #374151;
+            --border-light: #4b5563;
+            --border-accent: #3b82f6;
+            
+            --shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 12px 0 rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 25px 0 rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.3);
+            
+            --radius: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            
+            --font-size: 1rem;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #0c1017 50%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            line-height: 1.5;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            width: 80%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 16px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .header {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 14px 16px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .brand-section {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .brand-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2px;
+            text-shadow: var(--shadow-glow);
+        }
+
+        .brand-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 8px 6px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--border-accent);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent);
+            display: block;
+            text-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .controls-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .topic-selector {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .topic-chip {
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.75rem;
+            font-weight: 600;
+            backdrop-filter: blur(5px);
+        }
+
+        .topic-chip:hover {
+            border-color: var(--primary);
+            color: var(--text-accent);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .topic-chip.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-color: var(--primary);
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .font-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-tertiary);
+            padding: 8px 12px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .font-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+        }
+
+        .font-slider {
+            width: 70px;
+            height: 4px;
+            background: var(--bg-primary);
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .font-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+
+        .font-display {
+            font-weight: 600;
+            color: var(--accent);
+            font-size: 0.75rem;
+            min-width: 40px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 16px;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 12px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+        }
+
+        .sidebar-header {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .expression-item {
+            padding: 8px;
+            background: var(--bg-tertiary);
+            border: 2px solid transparent;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.65rem;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+
+        .expression-item:hover {
+            border-color: var(--primary);
+            background: var(--bg-overlay);
+            transform: translateX(4px);
+        }
+
+        .expression-item.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            font-weight: 600;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .expression-item.completed {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .expression-item.completed::after {
+            content: '✓';
+            float: right;
+            font-weight: 700;
+        }
+
+        .item-number {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background: rgba(96, 165, 250, 0.2);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 16px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            margin-right: 6px;
+            color: var(--accent);
+        }
+
+        .flip-card-container {
+            perspective: 1000px;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .content-header {
+            text-align: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .content-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .content-subtitle {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.75rem;
+        }
+
+        .flip-card {
+            flex: 1;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            min-height: 400px;
+        }
+
+        .flip-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            text-align: center;
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+            border: 2px solid var(--border-accent);
+            box-shadow: inset 0 0 20px rgba(59, 130, 246, 0.1);
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            border: 2px solid var(--primary);
+            transform: rotateY(180deg);
+            padding: 20px;
+            justify-content: flex-start;
+            box-shadow: inset 0 0 30px rgba(59, 130, 246, 0.2);
+        }
+
+        .card-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .korean-badge {
+            background: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+            color: white;
+            box-shadow: 0 0 15px rgba(217, 70, 239, 0.4);
+        }
+
+        .english-badge {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .card-text {
+            font-size: calc(var(--font-size) * 1.1);
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.6;
+            word-break: keep-all;
+        }
+
+        .korean-text {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .english-variations {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+            overflow-y: auto;
+        }
+
+        .english-variation {
+            background: rgba(30, 41, 55, 0.6);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: var(--radius);
+            padding: 16px;
+            position: relative;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .english-variation:hover {
+            background: rgba(30, 41, 55, 0.8);
+            border-color: rgba(59, 130, 246, 0.4);
+            transform: translateX(4px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .variation-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .variation-number {
+            width: 32px;
+            height: 32px;
+            background: transparent;
+            border: 2px solid rgba(96, 165, 250, 0.3);
+            backdrop-filter: blur(5px);
+            color: rgba(96, 165, 250, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-right: 14px;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .english-variation:hover .variation-number {
+            background: rgba(96, 165, 250, 0.1);
+            border-color: rgba(96, 165, 250, 0.6);
+            color: rgba(96, 165, 250, 1);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.2);
+        }
+
+        .variation-text {
+            font-size: calc(var(--font-size) * 0.95);
+            line-height: 1.6;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .flip-hint {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            margin: 12px 0 8px 0;
+            font-style: italic;
+        }
+
+        .navigation-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-top: 12px;
+            flex-shrink: 0;
+            backdrop-filter: blur(5px);
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-tertiary) 100%);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .nav-btn:hover:not(.disabled) {
+            border-color: var(--primary);
+            color: var(--text-accent);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-btn.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .progress-info {
+            text-align: center;
+        }
+
+        .progress-text {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+        }
+
+        .progress-bar {
+            width: 120px;
+            height: 6px;
+            background: var(--bg-primary);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 0 auto;
+            border: 1px solid var(--border);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--success) 100%);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+
+        .sentence-break {
+            display: block;
+            margin: 6px 0;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            font-size: 0.85rem;
+            transform: translateX(350px);
+            transition: transform 0.4s ease;
+            z-index: 1000;
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(10px);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .loading-state {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            padding: 16px;
+            font-style: italic;
+        }
+
+        @media (max-width: 1024px) {
+            .app-container {
+                width: 95%;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                order: 2;
+                max-height: 150px;
+            }
+            
+            .flip-card-container {
+                order: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .brand-title {
+                font-size: 1.5rem;
+            }
+            
+            .controls-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                text-align: center;
+            }
+            
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .english-variations {
+                gap: 12px;
+            }
+            
+            .english-variation {
+                padding: 12px;
+            }
+
+            .variation-number {
+                width: 24px;
+                height: 24px;
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <div class="brand-section">
+                <h1 class="brand-title">Modern Dark English Learning</h1>
+                <p class="brand-subtitle">Advanced dark theme with auto-loading JSON files</p>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-card">
+                    <span class="stat-value" id="totalTopics">0</span>
+                    <span class="stat-label">Topics</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="totalExpressions">0</span>
+                    <span class="stat-label">Expressions</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="completedCount">0</span>
+                    <span class="stat-label">Completed</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="progressPercent">0%</span>
+                    <span class="stat-label">Progress</span>
+                </div>
+            </div>
+
+            <div class="controls-row">
+                <div class="topic-selector" id="topicSelector">
+                    <div class="loading-state">Loading topics...</div>
+                </div>
+
+                <div class="font-control">
+                    <label class="font-label">Size</label>
+                    <input type="range" class="font-slider" id="fontSlider" 
+                           min="0.8" max="1.6" step="0.1" value="1.0">
+                    <span class="font-display" id="fontDisplay">1.0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="sidebar-header">Expressions</div>
+                <div id="expressionList">
+                    <div class="loading-state">Select topic</div>
+                </div>
+            </div>
+
+            <div class="flip-card-container">
+                <div class="content-header">
+                    <div class="content-title" id="contentTitle">Welcome</div>
+                    <div class="content-subtitle" id="contentSubtitle">Click card to flip between Korean and English variations</div>
+                </div>
+
+                <div class="flip-card" id="flipCard">
+                    <div class="card-face card-front">
+                        <div class="card-badge korean-badge">🇰🇷 Korean</div>
+                        <div class="card-text korean-text" id="koreanText">주제를 선택해서 학습을 시작하세요</div>
+                    </div>
+                    
+                    <div class="card-face card-back">
+                        <div class="card-badge english-badge">🇺🇸 English Variations</div>
+                        <div class="english-variations" id="englishVariations">
+                            <div class="english-variation">
+                                <div class="variation-header">
+                                    <div class="variation-number">1</div>
+                                </div>
+                                <div class="variation-text">Select a topic to start learning</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-hint">Click the card to flip between Korean and English variations</div>
+
+                <div class="navigation-footer">
+                    <div class="nav-btn" id="prevBtn">← Previous</div>
+                    
+                    <div class="progress-info">
+                        <div class="progress-text" id="progressText">0 / 0</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="nav-btn" id="nextBtn">Next →</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        let isAppRunning = false;
+
+        window.onbeforeunload = function() { return null; };
+        document.addEventListener('submit', e => { e.preventDefault(); e.stopPropagation(); return false; });
+        document.addEventListener('keydown', e => { 
+            if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') { 
+                e.preventDefault(); 
+            } 
+        });
+
+        class ModernDarkLearning {
+            constructor() {
+                console.log('=== ModernDarkLearning Constructor ===');
+                
+                if (isAppRunning || window.modernApp) {
+                    console.log('App already running');
+                    return window.modernApp;
+                }
+                
+                this.topics = [];
+                this.currentTopic = null;
+                this.currentExpressionIndex = 0;
+                this.completedExpressions = new Set();
+                this.isFlipped = false;
+                
+                window.modernApp = this;
+                isAppRunning = true;
+                
+                this.init();
+            }
+
+            async init() {
+                try {
+                    console.log('Initializing modern dark app...');
+                    
+                    await this.loadAllTopics();
+                    this.setupEvents();
+                    this.loadProgress();
+                    this.updateStats();
+                    
+                    console.log('Modern dark app initialization complete');
+                } catch (error) {
+                    console.error('Init failed:', error);
+                }
+            }
+
+            async loadAllTopics() {
+                console.log('Loading all JSON topics from data folder...');
+                
+                const jsonFiles = ['sw-dev.json', 'workplace.json'];
+                
+                try {
+                    const loadPromises = jsonFiles.map(async (filename) => {
+                        try {
+                            const response = await fetch(`data/${filename}`);
+                            if (!response.ok) throw new Error(`Failed to fetch ${filename}`);
+                            
+                            const data = await response.json();
+                            console.log(`Loaded ${filename}:`, data);
+                            
+                            return {
+                                filename: filename.replace('.json', ''),
+                                topic: data.topic || filename.replace('.json', '').replace('-', ' '),
+                                description: data.description || 'Learning expressions',
+                                items: data.items || []
+                            };
+                        } catch (error) {
+                            console.warn(`Failed to load ${filename}:`, error);
+                            return null;
+                        }
+                    });
+                    
+                    const results = await Promise.all(loadPromises);
+                    this.topics = results.filter(topic => topic !== null);
+                    
+                    console.log(`Successfully loaded ${this.topics.length} topics:`, this.topics.map(t => t.topic));
+                    
+                    if (this.topics.length === 0) {
+                        document.getElementById('topicSelector').innerHTML = 
+                            '<div style="color: var(--warning);">⚠️ No JSON files found</div>';
+                        return;
+                    }
+                    
+                    this.renderTopicSelector();
+                    this.selectTopic(this.topics[0]);
+                    
+                } catch (error) {
+                    console.error('Load error:', error);
+                    document.getElementById('topicSelector').innerHTML = 
+                        '<div style="color: var(--warning);">❌ Data load failed</div>';
+                }
+            }
+
+            renderTopicSelector() {
+                const selector = document.getElementById('topicSelector');
+                selector.innerHTML = '';
+
+                this.topics.forEach((topic, index) => {
+                    const chip = document.createElement('div');
+                    chip.className = 'topic-chip';
+                    chip.textContent = topic.topic;
+                    chip.onclick = () => this.selectTopic(topic);
+                    
+                    if (index === 0) {
+                        chip.classList.add('active');
+                    }
+                    
+                    selector.appendChild(chip);
+                });
+            }
+
+            selectTopic(topic) {
+                console.log('Topic selected:', topic.topic);
+                
+                document.querySelectorAll('.topic-chip').forEach(chip => {
+                    chip.classList.remove('active');
+                    if (chip.textContent === topic.topic) {
+                        chip.classList.add('active');
+                    }
+                });
+                
+                this.currentTopic = topic;
+                this.currentExpressionIndex = 0;
+                this.isFlipped = false;
+                
+                this.renderExpressionList();
+                this.displayCurrentExpression();
+                this.updateStats();
+                
+                this.showNotification(`📚 ${topic.topic} (${topic.items.length} expressions)`);
+            }
+
+            renderExpressionList() {
+                const list = document.getElementById('expressionList');
+                list.innerHTML = '';
+
+                if (!this.currentTopic?.items || this.currentTopic.items.length === 0) {
+                    list.innerHTML = '<div class="loading-state">No expressions</div>';
+                    return;
+                }
+
+                this.currentTopic.items.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'expression-item';
+                    div.onclick = () => this.selectExpression(index);
+                    
+                    const key = `${this.currentTopic.filename}-${item.id}`;
+                    const isCompleted = this.completedExpressions.has(key);
+                    
+                    if (index === this.currentExpressionIndex) {
+                        div.classList.add('active');
+                    }
+                    
+                    if (isCompleted) {
+                        div.classList.add('completed');
+                    }
+                    
+                    div.innerHTML = `
+                        <span class="item-number">${index + 1}</span>
+                        ${this.truncateText(item.korean, 25)}
+                    `;
+                    
+                    list.appendChild(div);
+                });
+            }
+
+            selectExpression(index) {
+                console.log('Expression selected:', index);
+                
+                this.currentExpressionIndex = index;
+                this.isFlipped = false;
+                
+                this.displayCurrentExpression();
+                this.renderExpressionList();
+            }
+
+            displayCurrentExpression() {
+                if (!this.currentTopic?.items || !this.currentTopic.items[this.currentExpressionIndex]) {
+                    console.log('No item to display');
+                    return;
+                }
+
+                const item = this.currentTopic.items[this.currentExpressionIndex];
+                console.log('Displaying item:', item);
+                
+                document.getElementById('contentTitle').textContent = this.currentTopic.topic;
+                document.getElementById('contentSubtitle').textContent = this.currentTopic.description;
+                
+                const koreanText = this.formatText(item.korean);
+                document.getElementById('koreanText').innerHTML = koreanText;
+                
+                this.displayEnglishVariations(item.english_variations || []);
+                
+                document.getElementById('flipCard').classList.remove('flipped');
+                this.isFlipped = false;
+                
+                this.updateNavigation();
+                this.updateProgress();
+                
+                setTimeout(() => {
+                    const key = `${this.currentTopic.filename}-${item.id}`;
+                    if (!this.completedExpressions.has(key)) {
+                        this.completedExpressions.add(key);
+                        this.saveProgress();
+                        this.renderExpressionList();
+                        this.updateStats();
+                    }
+                }, 2000);
+            }
+
+            displayEnglishVariations(variations) {
+                console.log('Displaying variations:', variations);
+                
+                const container = document.getElementById('englishVariations');
+                container.innerHTML = '';
+
+                if (!variations || variations.length === 0) {
+                    container.innerHTML = '<div class="loading-state">No variations available</div>';
+                    return;
+                }
+
+                variations.forEach((variation, index) => {
+                    const variationDiv = document.createElement('div');
+                    variationDiv.className = 'english-variation';
+                    
+                    const headerDiv = document.createElement('div');
+                    headerDiv.className = 'variation-header';
+                    
+                    const numberDiv = document.createElement('div');
+                    numberDiv.className = 'variation-number';
+                    numberDiv.textContent = index + 1;
+                    
+                    const textDiv = document.createElement('div');
+                    textDiv.className = 'variation-text';
+                    textDiv.innerHTML = this.formatText(variation);
+                    
+                    headerDiv.appendChild(numberDiv);
+                    variationDiv.appendChild(headerDiv);
+                    variationDiv.appendChild(textDiv);
+                    container.appendChild(variationDiv);
+                });
+                
+                console.log(`${variations.length} variations displayed`);
+            }
+
+            flipCard() {
+                console.log('Flipping card');
+                
+                const card = document.getElementById('flipCard');
+                this.isFlipped = !this.isFlipped;
+                
+                if (this.isFlipped) {
+                    card.classList.add('flipped');
+                } else {
+                    card.classList.remove('flipped');
+                }
+            }
+
+            previousExpression() {
+                console.log('=== PREVIOUS ===');
+                
+                if (this.currentExpressionIndex > 0) {
+                    this.currentExpressionIndex--;
+                    this.displayCurrentExpression();
+                    this.renderExpressionList();
+                    console.log('Moved to:', this.currentExpressionIndex);
+                }
+            }
+
+            nextExpression() {
+                console.log('=== NEXT ===');
+                
+                const total = this.currentTopic?.items?.length || 0;
+                if (this.currentExpressionIndex < total - 1) {
+                    this.currentExpressionIndex++;
+                    this.displayCurrentExpression();
+                    this.renderExpressionList();
+                    console.log('Moved to:', this.currentExpressionIndex);
+                }
+            }
+
+            updateNavigation() {
+                const total = this.currentTopic?.items?.length || 0;
+                const prevBtn = document.getElementById('prevBtn');
+                const nextBtn = document.getElementById('nextBtn');
+                
+                prevBtn.classList.toggle('disabled', this.currentExpressionIndex === 0);
+                nextBtn.classList.toggle('disabled', this.currentExpressionIndex === total - 1);
+            }
+
+            updateProgress() {
+                if (!this.currentTopic) return;
+                
+                const total = this.currentTopic.items.length;
+                const current = this.currentExpressionIndex + 1;
+                
+                document.getElementById('progressText').textContent = `${current} / ${total}`;
+                
+                const completed = this.currentTopic.items.filter(item => 
+                    this.completedExpressions.has(`${this.currentTopic.filename}-${item.id}`)
+                ).length;
+                
+                const percentage = total > 0 ? (completed / total) * 100 : 0;
+                document.getElementById('progressFill').style.width = percentage + '%';
+            }
+
+            updateStats() {
+                const totalTopics = this.topics.length;
+                const totalExpressions = this.topics.reduce((sum, topic) => sum + (topic.items?.length || 0), 0);
+                const completedCount = this.completedExpressions.size;
+                const progressPercent = totalExpressions > 0 ? Math.round((completedCount / totalExpressions) * 100) : 0;
+                
+                document.getElementById('totalTopics').textContent = totalTopics;
+                document.getElementById('totalExpressions').textContent = totalExpressions;
+                document.getElementById('completedCount').textContent = completedCount;
+                document.getElementById('progressPercent').textContent = progressPercent + '%';
+            }
+
+            formatText(text) {
+                const cleaned = text.replace(/\.+/g, '.').replace(/\s+/g, ' ').trim();
+                return cleaned.split('.').filter(s => s.trim()).map(s => {
+                    const trimmed = s.trim();
+                    return trimmed + (trimmed.endsWith('.') ? '' : '.');
+                }).join('.<span class="sentence-break"></span>');
+            }
+
+            truncateText(text, length) {
+                return text.length > length ? text.substring(0, length) + '...' : text;
+            }
+
+            setupEvents() {
+                console.log('Setting up events...');
+                
+                document.getElementById('fontSlider').onchange = (e) => {
+                    const size = e.target.value;
+                    document.documentElement.style.setProperty('--font-size', size + 'rem');
+                    document.getElementById('fontDisplay').textContent = size;
+                };
+                
+                document.getElementById('flipCard').onclick = () => {
+                    console.log('Card clicked');
+                    this.flipCard();
+                };
+                
+                document.getElementById('prevBtn').onclick = () => {
+                    console.log('PREV clicked');
+                    this.previousExpression();
+                };
+                
+                document.getElementById('nextBtn').onclick = () => {
+                    console.log('NEXT clicked');
+                    this.nextExpression();
+                };
+                
+                document.onkeydown = (e) => {
+                    switch(e.key) {
+                        case 'ArrowLeft':
+                            e.preventDefault();
+                            this.previousExpression();
+                            break;
+                        case 'ArrowRight':
+                            e.preventDefault();
+                            this.nextExpression();
+                            break;
+                        case ' ':
+                            e.preventDefault();
+                            this.flipCard();
+                            break;
+                    }
+                };
+                
+                console.log('Events setup complete');
+            }
+
+            showNotification(message) {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.classList.add('show');
+                setTimeout(() => notification.classList.remove('show'), 2000);
+            }
+
+            saveProgress() {
+                try {
+                    localStorage.setItem('modernDarkProgress', JSON.stringify([...this.completedExpressions]));
+                } catch (error) {
+                    console.error('Save failed:', error);
+                }
+            }
+
+            loadProgress() {
+                try {
+                    const saved = localStorage.getItem('modernDarkProgress');
+                    if (saved) {
+                        this.completedExpressions = new Set(JSON.parse(saved));
+                    }
+                } catch (error) {
+                    console.error('Load failed:', error);
+                }
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                console.log('=== Starting Modern Dark App ===');
+                new ModernDarkLearning();
+            });
+        } else {
+            console.log('=== Starting Modern Dark App (Ready) ===');
+            new ModernDarkLearning();
+        }
+
+        setInterval(() => {
+            if (window.modernApp) {
+                window.modernApp.saveProgress();
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
