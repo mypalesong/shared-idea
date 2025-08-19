@@ -489,43 +489,51 @@
             }
 
             async loadTopics() {
-                const baseFiles = ['sw-dev.json', 'workplace.json', 'smalltalk.json'];
-                const dynamicFiles = [];
+                console.log('🔄 MONOCHROME: Loading topics from known files...');
                 
-                for (let i = 1; i <= 100; i++) {
-                    dynamicFiles.push(`topic${i}.json`, `lesson${i}.json`, `data${i}.json`);
-                }
-                
-                const allFiles = [...baseFiles, ...dynamicFiles];
+                // 실제 폴더에 있는 파일들 하드코딩
+                const knownFiles = [
+                    'katalk-001.json',
+                    'katalk-002.json', 
+                    'katalk-003.json',
+                    'katalk-004.json',
+                    'sw-dev.json',
+                    'workplace.json'
+                ];
                 
                 try {
-                    const promises = allFiles.map(async (file) => {
+                    const promises = knownFiles.map(async (file) => {
                         try {
                             const response = await fetch(`data/${file}`);
                             if (!response.ok) return null;
                             
                             const data = await response.json();
+                            console.log(`✅ Loaded: ${file} (${data.items?.length || 0} items)`);
+                            
                             return {
                                 id: file.replace('.json', ''),
-                                name: data.topic || file.replace('.json', ''),
+                                name: data.topic || file.replace('.json', '').replace(/[-_]/g, ' ').toUpperCase(),
+                                filename: file,
                                 items: data.items || []
                             };
-                        } catch {
+                        } catch (error) {
+                            console.log(`❌ Failed to load: ${file}`);
                             return null;
                         }
                     });
                     
                     const results = await Promise.all(promises);
-                    this.topics = results.filter(t => t !== null);
+                    this.topics = results.filter(t => t !== null && t.items.length > 0);
+                    
+                    console.log(`📚 MONOCHROME: Successfully loaded ${this.topics.length} topics`);
                     
                     this.renderTopics();
                     if (this.topics.length > 0) {
                         this.selectTopic(this.topics[0]);
                     }
                     
-                    setTimeout(() => this.loadTopics(), 30000);
                 } catch (error) {
-                    console.error('Failed to load topics:', error);
+                    console.error('❌ MONOCHROME: Failed to load topics:', error);
                 }
             }
 
@@ -533,15 +541,26 @@
                 const container = document.getElementById('topics');
                 container.innerHTML = '';
                 
+                if (this.topics.length === 0) {
+                    const btn = document.createElement('button');
+                    btn.className = 'topic-btn';
+                    btn.textContent = 'NO FILES FOUND';
+                    btn.disabled = true;
+                    container.appendChild(btn);
+                    return;
+                }
+                
                 this.topics.forEach((topic, idx) => {
                     const btn = document.createElement('button');
                     btn.className = 'topic-btn';
-                    btn.textContent = topic.name.toUpperCase();
+                    btn.textContent = topic.name;
+                    btn.title = `${topic.filename} - ${topic.items.length} items`;
                     btn.onclick = () => this.selectTopic(topic);
                     if (idx === 0) btn.classList.add('active');
                     container.appendChild(btn);
                 });
                 
+                console.log(`🎯 MONOCHROME: Rendered ${this.topics.length} topic buttons`);
                 this.updateStats();
             }
 
