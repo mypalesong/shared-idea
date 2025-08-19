@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이크로서비스 아키텍처: 확장 가능한 시스템 설계</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            background-size: 50px 50px;
+        }
+        
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .meta {
+            font-size: 13px;
+            color: rgba(255,255,255,0.8);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content {
+            padding: 30px 20px;
+        }
+        
+        .abstract {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 5px solid #ff6b6b;
+        }
+        
+        .abstract h2 {
+            color: #e74c3c;
+            font-size: 18px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        
+        .abstract p {
+            font-size: 15px;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+        
+        h1 {
+            font-size: 22px;
+            color: #2c3e50;
+            margin: 30px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #ff6b6b;
+            font-weight: 600;
+        }
+        
+        h2 {
+            font-size: 19px;
+            color: #3742fa;
+            margin: 25px 0 12px 0;
+            font-weight: 600;
+        }
+        
+        h3 {
+            font-size: 17px;
+            color: #5f27cd;
+            margin: 20px 0 10px 0;
+            font-weight: 500;
+        }
+        
+        p {
+            margin-bottom: 16px;
+            text-align: justify;
+            font-size: 15px;
+            color: #444;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #a8e6cf, #dcedc1);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: 600;
+            color: #2d3436;
+        }
+        
+        .service-card {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            border-radius: 12px;
+            padding: 18px;
+            margin: 15px 0;
+            box-shadow: 0 8px 25px rgba(116, 185, 255, 0.3);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .service-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .service-desc {
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        
+        .architecture-diagram {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .pros {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .cons {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .pros h4, .cons h4 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .pros ul, .cons ul {
+            padding-left: 18px;
+            font-size: 13px;
+        }
+        
+        .pros li, .cons li {
+            margin-bottom: 5px;
+        }
+        
+        .tech-stack {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 25px 0;
+        }
+        
+        .tech-stack h3 {
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        
+        .tech-item {
+            background: rgba(255,255,255,0.2);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .conclusion {
+            background: linear-gradient(135deg, #2d3436, #636e72);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        
+        .conclusion h2 {
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .footer {
+            background: #2d3436;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .title {
+                font-size: 20px;
+            }
+            
+            .pros-cons {
+                grid-template-columns: 1fr;
+            }
+            
+            .tech-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            h1 {
+                font-size: 19px;
+            }
+            
+            h2 {
+                font-size: 17px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">마이크로서비스 아키텍처</h1>
+            <div class="subtitle">확장 가능한 분산 시스템 설계 방법론</div>
+            <div class="meta">Journal of Modern Software Architecture • Vol.12, No.3 • 2024</div>
+        </div>
+        
+        <div class="content">
+            <div class="abstract">
+                <h2>🎯 Abstract</h2>
+                <p>
+                    <span class="highlight">마이크로서비스 아키텍처</span>는 대규모 애플리케이션을 독립적으로 배포 가능한 
+                    작은 서비스들로 분해하는 설계 패턴이다. 본 연구에서는 Netflix, Amazon, Google 등 글로벌 기업들의 
+                    마이크로서비스 도입 사례를 분석하고, 실제 구현 시 고려해야 할 핵심 요소들을 제시한다.
+                </p>
+            </div>
+            
+            <h1>🏗️ 1. 마이크로서비스란 무엇인가?</h1>
+            <p>
+                <span class="highlight">마이크로서비스</span>는 단일 애플리케이션을 여러 개의 작고 독립적인 서비스로 
+                구성하는 아키텍처 스타일이다. 각 서비스는 특정 비즈니스 기능을 담당하며, 
+                완전히 자율적으로 개발, 배포, 확장될 수 있다.
+            </p>
+            
+            <div class="architecture-diagram">
+                <h4>🏛️ 전통적 모놀리식 vs 마이크로서비스</h4>
+                <div style="margin: 15px 0;">
+                    <div>📦 Monolithic: [UI|Business Logic|Data Access] ➡️ Database</div>
+                    <br>
+                    <div>🔗 Microservices:</div>
+                    <div>📱 UI Service ➡️ 💾 DB</div>
+                    <div>🛒 Order Service ➡️ 💾 DB</div>
+                    <div>👤 User Service ➡️ 💾 DB</div>
+                    <div>📦 Product Service ➡️ 💾 DB</div>
+                </div>
+            </div>
+            
+            <h1>🎨 2. 핵심 서비스 구성요소</h1>
+            
+            <div class="service-card">
+                <div class="service-title">🔐 API Gateway</div>
+                <div class="service-desc">모든 클라이언트 요청의 진입점 역할을 하며, 라우팅, 인증, 로드 밸런싱을 담당</div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-title">🎯 Service Discovery</div>
+                <div class="service-desc">동적으로 변화하는 서비스들의 위치를 찾고 등록하는 메커니즘</div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-title">🔄 Circuit Breaker</div>
+                <div class="service-desc">장애 전파를 방지하고 시스템 안정성을 보장하는 패턴</div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-title">📊 Distributed Tracing</div>
+                <div class="service-desc">여러 서비스에 걸친 요청 흐름을 추적하고 모니터링</div>
+            </div>
+            
+            <h1>⚖️ 3. 장단점 분석</h1>
+            <div class="pros-cons">
+                <div class="pros">
+                    <h4>✅ 장점</h4>
+                    <ul>
+                        <li>독립적인 개발 및 배포</li>
+                        <li>기술 스택 자유도</li>
+                        <li>확장성과 성능</li>
+                        <li>장애 격리</li>
+                        <li>팀 자율성 향상</li>
+                    </ul>
+                </div>
+                <div class="cons">
+                    <h4>❌ 단점</h4>
+                    <ul>
+                        <li>분산 시스템 복잡성</li>
+                        <li>네트워크 레이턴시</li>
+                        <li>데이터 일관성 문제</li>
+                        <li>운영 오버헤드</li>
+                        <li>테스트 복잡성 증가</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h1>🛠️ 4. 구현 전략</h1>
+            <h2>4.1 도메인 주도 설계 (DDD)</h2>
+            <p>
+                <span class="highlight">Bounded Context</span>를 기반으로 서비스 경계를 정의하고, 
+                각 서비스가 담당할 비즈니스 도메인을 명확히 구분한다.
+            </p>
+            
+            <h2>4.2 데이터 관리 전략</h2>
+            <p>
+                각 마이크로서비스는 자체 데이터베이스를 가져야 하며, <span class="highlight">SAGA 패턴</span>을 
+                통해 분산 트랜잭션을 관리한다.
+            </p>
+            
+            <h2>4.3 통신 패턴</h2>
+            <p>
+                동기 통신(REST API, gRPC)과 비동기 통신(Message Queue, Event Streaming)을 
+                적절히 조합하여 서비스 간 통신을 설계한다.
+            </p>
+            
+            <div class="tech-stack">
+                <h3>🔧 주요 기술 스택</h3>
+                <div class="tech-grid">
+                    <div class="tech-item">Spring Boot</div>
+                    <div class="tech-item">Docker</div>
+                    <div class="tech-item">Kubernetes</div>
+                    <div class="tech-item">Istio</div>
+                    <div class="tech-item">RabbitMQ</div>
+                    <div class="tech-item">Apache Kafka</div>
+                    <div class="tech-item">Consul</div>
+                    <div class="tech-item">Prometheus</div>
+                </div>
+            </div>
+            
+            <h1>📈 5. 성공 사례와 교훈</h1>
+            <h2>5.1 Netflix</h2>
+            <p>
+                2000개 이상의 마이크로서비스로 구성된 Netflix는 <span class="highlight">Chaos Engineering</span>을 
+                통해 시스템 복원력을 지속적으로 검증하고 있다.
+            </p>
+            
+            <h2>5.2 Amazon</h2>
+            <p>
+                "Two-Pizza Team" 원칙에 따라 작은 팀이 독립적인 서비스를 소유하고 운영하는 
+                조직 구조를 통해 마이크로서비스의 이점을 극대화했다.
+            </p>
+            
+            <h1>🎯 6. 모니터링과 관찰성</h1>
+            <p>
+                분산 시스템의 복잡성을 관리하기 위해서는 포괄적인 모니터링 전략이 필수적이다. 
+                <span class="highlight">Three Pillars of Observability</span> - Metrics, Logs, Traces를 
+                모두 구현해야 한다.
+            </p>
+            
+            <div class="conclusion">
+                <h2>🎊 결론 및 향후 전망</h2>
+                <p>
+                    마이크로서비스 아키텍처는 현대적인 클라우드 네이티브 애플리케이션 개발의 
+                    핵심 패러다임이 되었다. 하지만 단순히 기술적 이점만을 위해 도입해서는 안 되며, 
+                    조직의 성숙도, 팀 구조, 비즈니스 요구사항을 종합적으로 고려하여 
+                    점진적으로 전환하는 것이 성공의 열쇠다. 
+                    서버리스 컴퓨팅과 함께 발전하며 더욱 세밀한 서비스 분해가 가능해질 것으로 전망된다.
+                </p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            © 2024 Modern Software Architecture Research Lab | Microservices Study Group
+        </div>
+    </div>
+</body>
+</html>
