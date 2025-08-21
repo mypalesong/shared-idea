@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한남동 시네마 바 모임</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cinzel', 'Noto Serif KR', serif;
+            background: #0a0a0a;
+            color: #e8e8e8;
+            overflow-x: hidden;
+        }
+
+        .cinema-hero {
+            position: relative;
+            height: 100vh;
+            background: linear-gradient(to bottom,
+                rgba(0,0,0,0.95) 0%,
+                rgba(0,0,0,0.3) 20%,
+                rgba(0,0,0,0.1) 50%,
+                rgba(0,0,0,0.4) 80%,
+                rgba(0,0,0,0.9) 100%
+            ), url('https://images.unsplash.com/photo-1489599133524-e80b501c7aa8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .film-grain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.15;
+            background: url('data:image/svg+xml,<svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><defs><filter id="grain"><feTurbulence baseFrequency="0.9"/><feBlend mode="multiply"/></filter></defs><rect width="100%" height="100%" filter="url(%23grain)"/></svg>');
+            animation: filmGrain 0.2s steps(8) infinite;
+        }
+
+        @keyframes filmGrain {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-5%, -10%); }
+            30% { transform: translate(3%, -15%); }
+            50% { transform: translate(12%, 9%); }
+            70% { transform: translate(9%, 4%); }
+            90% { transform: translate(-1%, 7%); }
+        }
+
+        .letterbox {
+            position: absolute;
+            width: 100%;
+            height: 15%;
+            background: #000;
+            z-index: 2;
+        }
+
+        .letterbox-top { top: 0; }
+        .letterbox-bottom { bottom: 0; }
+
+        .hero-content {
+            text-align: center;
+            z-index: 3;
+            position: relative;
+            max-width: 900px;
+            padding: 0 20px;
+        }
+
+        .movie-title {
+            font-size: 4.8rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            letter-spacing: 6px;
+            animation: titleFade 3s ease-in-out infinite alternate;
+            text-transform: uppercase;
+        }
+
+        @keyframes titleFade {
+            from { 
+                opacity: 0.9; 
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.8); 
+            }
+            to { 
+                opacity: 1; 
+                text-shadow: 4px 4px 8px rgba(0,0,0,1), 0 0 20px rgba(255,255,255,0.3); 
+            }
+        }
+
+        .movie-subtitle {
+            font-size: 1.6rem;
+            font-weight: 300;
+            font-style: italic;
+            margin-bottom: 50px;
+            color: rgba(255,255,255,0.9);
+            letter-spacing: 2px;
+        }
+
+        .movie-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .detail-frame {
+            background: rgba(0,0,0,0.8);
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 20px;
+            transition: all 0.4s ease;
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+
+        .detail-frame:hover {
+            border-color: rgba(255,255,255,0.6);
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+            transform: translateY(-5px);
+        }
+
+        .frame-label {
+            color: #ccc;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .frame-value {
+            font-size: 1.2rem;
+            font-weight: 300;
+            line-height: 1.3;
+        }
+
+        .floating-reels {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .film-reel {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            animation: floatReel 20s infinite linear;
+        }
+
+        .film-reel::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        @keyframes floatReel {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .main-content {
+            padding: 100px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.95), rgba(10,10,10,0.98));
+        }
+
+        .content-header {
+            text-align: center;
+            margin-bottom: 70px;
+        }
+
+        .content-title {
+            font-size: 3rem;
+            font-weight: 300;
+            color: #fff;
+            margin-bottom: 20px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .content-description {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.7);
+            font-style: italic;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .cast-reviews {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+        }
+
+        .review-scene {
+            background: linear-gradient(145deg, rgba(20,20,20,0.9), rgba(10,10,10,0.95));
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 35px;
+            position: relative;
+            transition: all 0.5s ease;
+            overflow: hidden;
+        }
+
+        .review-scene::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .review-scene:hover::before {
+            left: 100%;
+        }
+
+        .review-scene:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255,255,255,0.4);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.8);
+        }
+
+        .character-name {
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .character-role {
+            color: #bbb;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .dialogue {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #ddd;
+            text-align: justify;
+        }
+
+        .credits-scroll {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.6);
+            font-size: 1rem;
+            animation: creditsMove 3s ease-in-out infinite;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        @keyframes creditsMove {
+            0%, 100% { 
+                opacity: 0.6; 
+                transform: translateX(-50%) translateY(0); 
+            }
+            50% { 
+                opacity: 1; 
+                transform: translateX(-50%) translateY(-8px); 
+            }
+        }
+
+        @media (max-width: 768px) {
+            .movie-title {
+                font-size: 3rem;
+                letter-spacing: 3px;
+            }
+            
+            .movie-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .cast-reviews {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-reels">
+        <div class="film-reel" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="film-reel" style="left: 30%; animation-delay: 5s;"></div>
+        <div class="film-reel" style="left: 50%; animation-delay: 10s;"></div>
+        <div class="film-reel" style="left: 70%; animation-delay: 15s;"></div>
+        <div class="film-reel" style="left: 90%; animation-delay: 8s;"></div>
+    </div>
+
+    <section class="cinema-hero">
+        <div class="letterbox letterbox-top"></div>
+        <div class="letterbox letterbox-bottom"></div>
+        <div class="film-grain"></div>
+        
+        <div class="hero-content">
+            <h1 class="movie-title">NOIR GATHERING</h1>
+            <p class="movie-subtitle">한남동 시네마 바에서 펼쳐진 40대들의 드라마틱한 만남</p>
+            
+            <div class="movie-details">
+                <div class="detail-frame">
+                    <div class="frame-label">Screening Date</div>
+                    <div class="frame-value">2025년 2월 8일 토요일<br>오후 7시 상영</div>
+                </div>
+                <div class="detail-frame">
+                    <div class="frame-label">Cinema Location</div>
+                    <div class="frame-value">한남동 시네마 바<br>VIP 상영관</div>
+                </div>
+                <div class="detail-frame">
+                    <div class="frame-label">Ticket Price</div>
+                    <div class="frame-value">1인당 14만원<br>(칵테일 & 디너 포함)</div>
+                </div>
+                <div class="detail-frame">
+                    <div class="frame-label">Cast</div>
+                    <div class="frame-value">총 6명<br>인생 주연배우들</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="credits-scroll">
+            ⬇ 배우들의 인터뷰 ⬇
+        </div>
+    </section>
+
+    <section class="main-content">
+        <div class="content-header">
+            <h2 class="content-title">Cast Interviews</h2>
+            <p class="content-description">영화 같은 하루를 보낸 주연배우들의 생생한 후기</p>
+        </div>
+        
+        <div class="cast-reviews">
+            <div class="review-scene">
+                <div class="character-name">김감독</div>
+                <div class="character-role">영화제작사 대표</div>
+                <p class="dialogue">
+                    "시네마 바의 분위기가 정말 영화 같았어요! 특히 빈티지한 인테리어와 은은한 조명이... 
+                    마치 필름 누아르의 한 장면 속에 있는 것 같더라고요. 음식을 먹으면서도 계속 카메라 앵글을 생각하고 있었네요 ㅋㅋ 
+                    이런 공간에서 실제로 영화를 찍어보고 싶어졌어요. 로케이션 헌팅 리스트에 추가! 🎬"
+                </p>
+            </div>
+            
+            <div class="review-scene">
+                <div class="character-name">박프로듀서</div>
+                <div class="character-role">엔터테인먼트 프로듀서</div>
+                <p class="dialogue">
+                    "다들 너무 폼이 나더라고요! 마치 영화 속 캐릭터들이 모인 것 같았어요. 
+                    특히 칵테일을 마시는 모습들이... '이거 드라마 찍는 거 아니야?' 싶을 정도였거든요. 
+                    분위기에 취해서 괜히 심각한 표정으로 위스키를 홀짝홀짝... 연기하고 있는 제 모습을 발견했네요 😅"
+                </p>
+            </div>
+            
+            <div class="review-scene">
+                <div class="character-name">최배우</div>
+                <div class="character-role">연극배우</div>
+                <p class="dialogue">
+                    "무대에서는 매일 연기하지만, 이런 공간에서는 진짜 제 모습을 보여드릴 수 있어서 좋았어요. 
+                    그런데 분위기가 너무 드라마틱해서 자꾸 연기 모드가 켜지더라고요 ㅋㅋ 
+                    '여기서 독백 한 번 해볼까?' 하는 생각이... 역시 배우의 본능은 어디서든 발동하네요! 🎭"
+                </p>
+            </div>
+            
+            <div class="review-scene">
+                <div class="character-name">정시나리오</div>
+                <div class="character-role">시나리오 작가</div>
+                <p class="dialogue">
+                    "대화 중에도 계속 '이 상황을 시나리오로 쓰면 어떨까' 하는 생각이 들더라고요. 
+                    특히 우리끼리 나누는 인생 이야기들이 정말 드라마틱했어요! 
+                    '40대 남녀의 로맨틱 코미디' 소재로 쓸 수 있을 것 같은데... 여러분 초상권 사용료는 얼마에요? 😄"
+                </p>
+            </div>
+            
+            <div class="review-scene">
+                <div class="character-name">이음향감독</div>
+                <div class="character-role">사운드 디자이너</div>
+                <p class="dialogue">
+                    "시네마 바의 음향 시스템이 정말 완벽했어요! 배경음악부터 대화 소리까지 모든 게 영화 같더라고요. 
+                    음식 씹는 소리, 와인 따르는 소리, 웃음소리까지... 모든 게 ASMR 같았어요. 
+                    혹시 이 모임을 다큐멘터리로 만들면 사운드 작업은 제가 해드릴게요! 🎵"
+                </p>
+            </div>
+            
+            <div class="review-scene">
+                <div class="character-name">한촬영감독</div>
+                <div class="character-role">다큐멘터리 감독</div>
+                <p class="dialogue">
+                    "직업병으로 계속 프레임을 생각하고 있었어요 ㅋㅋ 이 각도에서 찍으면 어떨까, 저 조명으로 하면 어떨까... 
+                    다들 자연스러운 표정들이 너무 좋아서 몰래 핸드폰으로라도 찍고 싶었어요. 
+                    다음에는 정말로 카메라를 가져와서 '리얼 다큐멘터리'를 만들어보는 건 어떨까요? 📹"
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Cinematic parallax scrolling
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.cinema-hero');
+            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+        });
+
+        // Film noir intersection observer
+        const noirObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        document.querySelectorAll('.review-scene').forEach(scene => {
+            scene.style.opacity = '0';
+            scene.style.transform = 'translateY(50px)';
+            scene.style.transition = 'all 1s ease';
+            noirObserver.observe(scene);
+        });
+
+        // Cinematic background movement
+        setInterval(() => {
+            const hero = document.querySelector('.cinema-hero');
+            const currentPos = parseInt(hero.style.backgroundPositionX) || 0;
+            hero.style.backgroundPositionX = (currentPos + 0.1) + 'px';
+        }, 200);
+
+        // Film grain animation variation
+        setInterval(() => {
+            const grain = document.querySelector('.film-grain');
+            grain.style.opacity = Math.random() * 0.3 + 0.1;
+        }, 100);
+    </script>
+</body>
+</html>

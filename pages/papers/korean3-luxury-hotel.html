@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>신라호텔 스카이 라운지 모임</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', 'Noto Serif KR', serif;
+            background: #0d1117;
+            color: #f0f0f0;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .luxury-hero {
+            position: relative;
+            height: 100vh;
+            background: linear-gradient(45deg, 
+                rgba(13, 17, 23, 0.8) 0%,
+                rgba(33, 37, 43, 0.6) 50%,
+                rgba(13, 17, 23, 0.9) 100%
+            ), url('https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2049&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .crystal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 70%, rgba(218,165,32,0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255,215,0,0.08) 0%, transparent 50%);
+            animation: shimmerOverlay 8s ease-in-out infinite;
+        }
+
+        @keyframes shimmerOverlay {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 3;
+            position: relative;
+            max-width: 1000px;
+            padding: 0 20px;
+        }
+
+        .hotel-title {
+            font-size: 5rem;
+            font-weight: 300;
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, 
+                #daa520 0%,
+                #ffd700 25%,
+                #ffffff 50%,
+                #ffd700 75%,
+                #daa520 100%
+            );
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 6px;
+            animation: luxuryGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes luxuryGlow {
+            0%, 100% { 
+                filter: brightness(1) drop-shadow(0 0 20px rgba(218,165,32,0.5)); 
+            }
+            50% { 
+                filter: brightness(1.3) drop-shadow(0 0 40px rgba(255,215,0,0.8)); 
+            }
+        }
+
+        .hotel-subtitle {
+            font-size: 2rem;
+            font-weight: 300;
+            font-style: italic;
+            margin-bottom: 60px;
+            color: rgba(255,255,255,0.9);
+            letter-spacing: 2px;
+        }
+
+        .details-luxury {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .detail-suite {
+            background: linear-gradient(145deg, 
+                rgba(40,40,40,0.9), 
+                rgba(20,20,20,0.8)
+            );
+            border: 2px solid rgba(218,165,32,0.4);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(20px);
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .detail-suite::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, 
+                transparent, 
+                rgba(218,165,32,0.3), 
+                transparent, 
+                rgba(255,215,0,0.3), 
+                transparent
+            );
+            border-radius: 15px;
+            z-index: -1;
+            animation: borderGlow 6s linear infinite;
+        }
+
+        @keyframes borderGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .detail-suite:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: rgba(218,165,32,0.8);
+            box-shadow: 0 25px 50px rgba(218,165,32,0.3);
+        }
+
+        .suite-label {
+            color: #daa520;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .suite-value {
+            font-size: 1.5rem;
+            font-weight: 300;
+            line-height: 1.5;
+        }
+
+        .floating-crystals {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .crystal {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(45deg, #daa520, #ffd700);
+            border-radius: 50%;
+            animation: floatCrystal 20s infinite linear;
+            opacity: 0.6;
+        }
+
+        @keyframes floatCrystal {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+                transform: translateY(90vh) rotate(36deg) scale(1);
+            }
+            90% {
+                opacity: 0.6;
+                transform: translateY(10vh) rotate(324deg) scale(1);
+            }
+            100% {
+                transform: translateY(-10vh) rotate(360deg) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .main-content {
+            padding: 120px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .content-header {
+            text-align: center;
+            margin-bottom: 100px;
+        }
+
+        .content-title {
+            font-size: 4rem;
+            font-weight: 100;
+            color: #daa520;
+            margin-bottom: 30px;
+            letter-spacing: 4px;
+        }
+
+        .content-description {
+            font-size: 1.4rem;
+            color: rgba(255,255,255,0.8);
+            font-style: italic;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .reviews-mansion {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 60px;
+        }
+
+        .review-suite {
+            background: linear-gradient(145deg, 
+                rgba(25,25,25,0.95),
+                rgba(15,15,15,0.9)
+            );
+            border: 3px solid rgba(218,165,32,0.4);
+            border-radius: 20px;
+            padding: 50px;
+            position: relative;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .review-suite::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(218,165,32,0.1), 
+                transparent
+            );
+            transition: left 0.8s ease;
+        }
+
+        .review-suite:hover::before {
+            left: 100%;
+        }
+
+        .review-suite:hover {
+            transform: translateY(-15px);
+            border-color: rgba(218,165,32,0.8);
+            box-shadow: 0 30px 60px rgba(218,165,32,0.2);
+        }
+
+        .guest-name {
+            color: #daa520;
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .guest-title {
+            color: #aaa;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .guest-review {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #e0e0e0;
+            text-align: justify;
+        }
+
+        .scroll-invitation {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(218,165,32,0.8);
+            font-size: 1.1rem;
+            animation: invitationPulse 3s ease-in-out infinite;
+            text-align: center;
+        }
+
+        @keyframes invitationPulse {
+            0%, 100% { 
+                opacity: 0.6; 
+                transform: translateX(-50%) translateY(0); 
+            }
+            50% { 
+                opacity: 1; 
+                transform: translateX(-50%) translateY(-10px); 
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hotel-title {
+                font-size: 3rem;
+                letter-spacing: 3px;
+            }
+            
+            .details-luxury {
+                grid-template-columns: 1fr;
+            }
+            
+            .reviews-mansion {
+                grid-template-columns: 1fr;
+            }
+            
+            .content-title {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-crystals">
+        <div class="crystal" style="left: 5%; animation-delay: 0s;"></div>
+        <div class="crystal" style="left: 15%; animation-delay: 3s;"></div>
+        <div class="crystal" style="left: 25%; animation-delay: 6s;"></div>
+        <div class="crystal" style="left: 35%; animation-delay: 9s;"></div>
+        <div class="crystal" style="left: 45%; animation-delay: 12s;"></div>
+        <div class="crystal" style="left: 55%; animation-delay: 15s;"></div>
+        <div class="crystal" style="left: 65%; animation-delay: 18s;"></div>
+        <div class="crystal" style="left: 75%; animation-delay: 2s;"></div>
+        <div class="crystal" style="left: 85%; animation-delay: 5s;"></div>
+        <div class="crystal" style="left: 95%; animation-delay: 8s;"></div>
+    </div>
+
+    <section class="luxury-hero">
+        <div class="crystal-overlay"></div>
+        
+        <div class="hero-content">
+            <h1 class="hotel-title">SHILLA LOUNGE</h1>
+            <p class="hotel-subtitle">최상층에서 만나는 40대 엘리트들의 품격 있는 만남</p>
+            
+            <div class="details-luxury">
+                <div class="detail-suite">
+                    <div class="suite-label">Réservation</div>
+                    <div class="suite-value">2025년 1월 28일 일요일<br>오후 5시 집결</div>
+                </div>
+                <div class="detail-suite">
+                    <div class="suite-label">Location</div>
+                    <div class="suite-value">신라호텔<br>23층 스카이라운지</div>
+                </div>
+                <div class="detail-suite">
+                    <div class="suite-label">Investment</div>
+                    <div class="suite-value">1인당 18만원<br>(프리미엄 세트 메뉴)</div>
+                </div>
+                <div class="detail-suite">
+                    <div class="suite-label">Members</div>
+                    <div class="suite-value">총 6명<br>품격 있는 신사숙녀들</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scroll-invitation">
+            ⬇ 귀빈 후기 확인하기 ⬇
+        </div>
+    </section>
+
+    <section class="main-content">
+        <div class="content-header">
+            <h2 class="content-title">GUEST TESTIMONIALS</h2>
+            <p class="content-description">최상의 서비스와 함께한 잊을 수 없는 순간들</p>
+        </div>
+        
+        <div class="reviews-mansion">
+            <div class="review-suite">
+                <div class="guest-name">김회장</div>
+                <div class="guest-title">글로벌 무역회사 대표</div>
+                <p class="guest-review">
+                    23층에서 내려다보는 한강 뷰가 정말 장관이었습니다. 비즈니스 클래스 항공기에서 보는 야경보다도 멋있더군요. 
+                    특히 컨시어지 서비스가 일품이었어요. 우리가 도착하기도 전에 미리 테이블 세팅까지... 
+                    역시 5성급 호텔의 클래스는 다르네요! 다음엔 페닌슐라도 가봐야겠어요 🏨
+                </p>
+            </div>
+            
+            <div class="review-suite">
+                <div class="guest-name">박여사</div>
+                <div class="guest-title">럭셔리 브랜드 바이어</div>
+                <p class="guest-review">
+                    호텔 로비부터 스카이라운지까지 가는 동안 마치 패션쇼를 보는 기분이었어요. 
+                    다들 어떻게 이렇게 품격 있게 차려입고 오셨는지... 저도 에르메스 가방을 새로 들고 갔는데 딱 어울리더라고요! 
+                    인테리어도 럭셔리 브랜드 매장 같아서 계속 눈이 즐거웠습니다 ✨
+                </p>
+            </div>
+            
+            <div class="review-suite">
+                <div class="guest-name">최부장</div>
+                <div class="guest-title">투자은행 부문장</div>
+                <p class="guest-review">
+                    평소에 클라이언트들과 미팅할 때 자주 오는 곳인데, 이렇게 편안한 마음으로 와본 건 처음이네요. 
+                    업무 스트레스 없이 순수하게 음식과 대화만 즐기니까 정말 힐링이 되었습니다. 
+                    와인 셀렉션도 훌륭했고... 내년 보너스로 여기 멤버십을 끊어볼까 생각 중입니다 🍷
+                </p>
+            </div>
+            
+            <div class="review-suite">
+                <div class="guest-name">정대표</div>
+                <div class="guest-title">건설업 대표이사</div>
+                <p class="guest-review">
+                    건설업 하다 보니 호텔 구조에도 관심이 가더라고요. 이 건물의 철골 구조와 내진 설계가 정말 인상적이었습니다. 
+                    음식 먹으면서도 계속 천장과 기둥을 보고 있었네요 ㅋㅋ 
+                    우리 회사에서 짓는 호텔도 이 정도 퀄리티로 해야겠다는 생각이 들었어요! 🏗️
+                </p>
+            </div>
+            
+            <div class="review-suite">
+                <div class="guest-name">이사모</div>
+                <div class="guest-title">문화재단 이사</div>
+                <p class="guest-review">
+                    호텔에 전시된 미술품들이 정말 수준급이더라고요! 특히 로비의 그 조각상은 우리 재단에서도 탐낼 만한 작품이었어요. 
+                    식사하면서 예술 이야기를 나누니까 더욱 품격 있는 시간이 된 것 같습니다. 
+                    다음에는 미술관 투어도 함께 하면 어떨까요? 🎨
+                </p>
+            </div>
+            
+            <div class="review-suite">
+                <div class="guest-name">한원장</div>
+                <div class="guest-title">성형외과 원장</div>
+                <p class="guest-review">
+                    직업병인지 모르겠지만, 호텔 직원들의 미모가 정말 인상적이었어요 ㅋㅋ 
+                    서비스도 완벽하고 외모도 완벽하고... 우리 병원 직원 채용할 때 참고해야겠네요! 
+                    그런데 음식도 정말 예뻤어요. 먹기 아까울 정도로 플레이팅이 예술 작품 같았습니다 💫
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Luxury parallax scrolling
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.luxury-hero');
+            hero.style.transform = `translateY(${scrolled * 0.4}px)`;
+            
+            // Crystal overlay animation based on scroll
+            const overlay = document.querySelector('.crystal-overlay');
+            overlay.style.transform = `translateY(${scrolled * 0.2}px) scale(${1 + scrolled * 0.0001})`;
+        });
+
+        // Intersection Observer for luxury animations
+        const luxuryObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0) scale(1)';
+                }
+            });
+        }, {
+            threshold: 0.15,
+            rootMargin: '0px 0px -80px 0px'
+        });
+
+        // Animate review suites with staggered timing
+        document.querySelectorAll('.review-suite').forEach((suite, index) => {
+            suite.style.opacity = '0';
+            suite.style.transform = 'translateY(80px) scale(0.9)';
+            suite.style.transition = `all 1.2s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.2}s`;
+            luxuryObserver.observe(suite);
+        });
+
+        // Premium background movement effect
+        let bgPosition = 0;
+        setInterval(() => {
+            bgPosition += 0.3;
+            const hero = document.querySelector('.luxury-hero');
+            hero.style.backgroundPositionX = bgPosition + 'px';
+        }, 100);
+
+        // Mouse interaction for premium feel
+        document.addEventListener('mousemove', (e) => {
+            const crystals = document.querySelectorAll('.crystal');
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+            
+            crystals.forEach((crystal, index) => {
+                const rect = crystal.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                const deltaX = (mouseX - centerX) * 0.05;
+                const deltaY = (mouseY - centerY) * 0.05;
+                
+                crystal.style.transform += ` translate(${deltaX}px, ${deltaY}px)`;
+            });
+        });
+
+        // Luxury border animation
+        document.querySelectorAll('.detail-suite, .review-suite').forEach(element => {
+            element.addEventListener('mouseenter', () => {
+                element.style.animationPlayState = 'paused';
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                element.style.animationPlayState = 'running';
+            });
+        });
+    </script>
+</body>
+</html>

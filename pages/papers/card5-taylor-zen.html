@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taylor's Zen Birthday</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&family=Noto+Serif+JP:wght@300;400;500&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #f5f5dc, #e8e6db, #ddd8c0);
+            color: #4a4a4a;
+            min-height: 100vh;
+        }
+
+        /* Main Container */
+        .zen-container {
+            max-width: 420px;
+            margin: 20px auto;
+            min-height: calc(100vh - 40px);
+            background: rgba(248, 248, 240, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .zen-header {
+            text-align: center;
+            padding: 40px 30px 30px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(248,248,240,0.9));
+        }
+
+        .zen-seal {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            background: radial-gradient(circle, #8FBC8F, #6B8E6B);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .zen-seal::before {
+            content: '和';
+            font-family: 'Noto Serif JP', serif;
+            font-size: 24px;
+            color: white;
+        }
+
+        .zen-title {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 20px;
+            color: #5a5a5a;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        .zen-subtitle {
+            font-size: 12px;
+            color: #8a8a8a;
+            letter-spacing: 1px;
+        }
+
+        /* Garden Section */
+        .zen-garden {
+            padding: 30px;
+        }
+
+        .rock-garden {
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(135deg, #f0f0e8, #e8e6db);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .zen-stone {
+            position: absolute;
+            background: linear-gradient(135deg, #d3d3d3, #a8a8a8);
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .stone-1 {
+            width: 30px;
+            height: 24px;
+            top: 30%;
+            left: 25%;
+        }
+
+        .stone-2 {
+            width: 36px;
+            height: 28px;
+            top: 45%;
+            right: 30%;
+        }
+
+        .stone-3 {
+            width: 24px;
+            height: 20px;
+            bottom: 35%;
+            left: 45%;
+        }
+
+        /* Friend Name */
+        .zen-name {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 36px;
+            text-align: center;
+            color: #6B8E6B;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .zen-name::before {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #8FBC8F, transparent);
+        }
+
+        /* Message */
+        .wisdom-scroll {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(139, 119, 87, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .birthday-wisdom {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #5a5a5a;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .zen-quote {
+            font-family: 'Noto Serif JP', serif;
+            font-style: italic;
+            color: #6B8E6B;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        /* Balance Elements */
+        .balance-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .balance-element {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(139, 185, 139, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .balance-icon {
+            font-size: 20px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .balance-value {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 16px;
+            color: #6B8E6B;
+            margin-bottom: 4px;
+        }
+
+        .balance-label {
+            font-size: 11px;
+            color: #8a8a8a;
+        }
+
+        /* Meditation Circle */
+        .meditation-circle {
+            width: 100px;
+            height: 100px;
+            margin: 30px auto;
+            border: 2px solid rgba(139, 185, 139, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .meditation-center {
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #8FBC8F, #6B8E6B);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 480px) {
+            .zen-name {
+                font-size: 28px;
+            }
+            
+            .balance-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="zen-container">
+        <header class="zen-header">
+            <div class="zen-seal"></div>
+            <h1 class="zen-title">生日の平和</h1>
+            <p class="zen-subtitle">Birthday Peace</p>
+        </header>
+
+        <section class="zen-garden">
+            <div class="rock-garden">
+                <div class="zen-stone stone-1"></div>
+                <div class="zen-stone stone-2"></div>
+                <div class="zen-stone stone-3"></div>
+            </div>
+
+            <h2 class="zen-name">Taylor</h2>
+        </section>
+
+        <div class="wisdom-scroll">
+            <div class="birthday-wisdom">
+                On this day of celebration, may you find joy in the simple moments, peace in the present, and wisdom in another year of growth. 🌸
+            </div>
+            <div class="zen-quote">
+                "The best birthday gift is the presence of loved ones and the peace within one's heart."
+            </div>
+        </div>
+
+        <div class="balance-grid">
+            <div class="balance-element">
+                <span class="balance-icon">🧘</span>
+                <div class="balance-value">Perfect</div>
+                <div class="balance-label">Inner Peace</div>
+            </div>
+            
+            <div class="balance-element">
+                <span class="balance-icon">🌱</span>
+                <div class="balance-value">Infinite</div>
+                <div class="balance-label">Growth</div>
+            </div>
+            
+            <div class="balance-element">
+                <span class="balance-icon">☯</span>
+                <div class="balance-value">Harmonious</div>
+                <div class="balance-label">Balance</div>
+            </div>
+            
+            <div class="balance-element">
+                <span class="balance-icon">🎂</span>
+                <div class="balance-value">Mindful</div>
+                <div class="balance-label">Celebration</div>
+            </div>
+        </div>
+
+        <div class="meditation-circle">
+            <div class="meditation-center">🕉️</div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friday Night Chronicles - Gangnam Edition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .cinematic-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        /* Opening Scene */
+        .opening-scene {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scene-bg {
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background-image: url('https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1600&h=900&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.3) contrast(1.3);
+            animation: cinematicZoom 25s ease-in-out infinite alternate;
+        }
+
+        .film-grain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml,<svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.1"/></svg>');
+            mix-blend-mode: multiply;
+        }
+
+        .letterbox-top,
+        .letterbox-bottom {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: #000000;
+            z-index: 10;
+        }
+
+        .letterbox-top {
+            top: 0;
+            background: linear-gradient(to bottom, #000000, transparent);
+        }
+
+        .letterbox-bottom {
+            bottom: 0;
+            background: linear-gradient(to top, #000000, transparent);
+        }
+
+        .opening-title {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        .title-main {
+            font-size: clamp(40px, 8vw, 72px);
+            font-weight: 100;
+            letter-spacing: 8px;
+            margin-bottom: 20px;
+            animation: fadeInSlide 2s ease-out 1s both;
+            text-shadow: 2px 2px 20px rgba(0,0,0,0.8);
+        }
+
+        .title-sub {
+            font-size: clamp(18px, 4vw, 24px);
+            font-weight: 300;
+            letter-spacing: 4px;
+            opacity: 0.9;
+            animation: fadeInSlide 2s ease-out 1.5s both;
+        }
+
+        .timestamp {
+            position: absolute;
+            bottom: 80px;
+            right: 40px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            opacity: 0.7;
+            animation: fadeInSlide 2s ease-out 2s both;
+        }
+
+        /* Scene Transition */
+        .scene-transition {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: #111111;
+            overflow: hidden;
+        }
+
+        .transition-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1564759298141-b1d2d3e2edbd?w=1600&h=900&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.2) sepia(0.3) hue-rotate(20deg);
+            animation: slowPan 30s linear infinite;
+        }
+
+        .scene-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .content-text {
+            font-size: 20px;
+            line-height: 1.8;
+            font-weight: 300;
+            color: #e0e0e0;
+        }
+
+        .content-title {
+            font-size: 36px;
+            font-weight: 100;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+            color: #ffffff;
+        }
+
+        .image-frame {
+            position: relative;
+            aspect-ratio: 16/10;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 30px 100px rgba(0,0,0,0.8);
+        }
+
+        .frame-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 12s ease-in-out;
+        }
+
+        .image-frame:hover .frame-img {
+            transform: scale(1.2) rotate(2deg);
+        }
+
+        /* Character Profiles */
+        .characters-scene {
+            min-height: 100vh;
+            background: #0a0a0a;
+            position: relative;
+            padding: 100px 0;
+        }
+
+        .characters-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&h=900&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: brightness(0.1) blur(2px);
+        }
+
+        .characters-container {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .characters-title {
+            text-align: center;
+            font-size: 48px;
+            font-weight: 100;
+            letter-spacing: 6px;
+            margin-bottom: 80px;
+            color: #ffffff;
+        }
+
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+        }
+
+        .character-card {
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.6s ease;
+            transform: translateY(30px);
+            opacity: 0;
+        }
+
+        .character-card.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .character-card:hover {
+            background: rgba(0,0,0,0.9);
+            border-color: rgba(255,255,255,0.3);
+            transform: translateY(-20px);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.9);
+        }
+
+        .character-name {
+            font-size: 24px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .character-role {
+            font-size: 16px;
+            color: #999999;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .character-quote {
+            font-size: 14px;
+            font-style: italic;
+            color: #cccccc;
+            line-height: 1.6;
+        }
+
+        /* Final Scene */
+        .final-scene {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .final-bg {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            background-image: url('https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=1600&h=900&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.4) saturate(1.5);
+            animation: finalZoom 20s ease-in-out infinite alternate;
+        }
+
+        .final-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        .final-title {
+            font-size: clamp(32px, 6vw, 56px);
+            font-weight: 100;
+            letter-spacing: 4px;
+            margin-bottom: 30px;
+            animation: fadeInUp 2s ease-out both;
+        }
+
+        .final-text {
+            font-size: clamp(16px, 3vw, 22px);
+            font-weight: 300;
+            line-height: 1.6;
+            color: #e0e0e0;
+            animation: fadeInUp 2s ease-out 0.5s both;
+        }
+
+        .credits {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            color: #666666;
+            letter-spacing: 2px;
+            animation: fadeInUp 2s ease-out 1s both;
+        }
+
+        @keyframes cinematicZoom {
+            0% { transform: scale(1) rotate(-1deg); }
+            100% { transform: scale(1.3) rotate(1deg); }
+        }
+
+        @keyframes slowPan {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(-50px); }
+            100% { transform: translateX(0); }
+        }
+
+        @keyframes finalZoom {
+            0% { transform: scale(1.2) rotate(0deg); }
+            100% { transform: scale(1) rotate(-2deg); }
+        }
+
+        @keyframes fadeInSlide {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .scene-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                padding: 0 20px;
+            }
+            
+            .characters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .letterbox-top,
+            .letterbox-bottom {
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cinematic-container">
+        <!-- Opening Scene -->
+        <section class="opening-scene">
+            <div class="scene-bg"></div>
+            <div class="film-grain"></div>
+            <div class="letterbox-top"></div>
+            <div class="letterbox-bottom"></div>
+            
+            <div class="opening-title">
+                <h1 class="title-main">FRIDAY NIGHT</h1>
+                <p class="title-sub">CHRONICLES</p>
+            </div>
+            
+            <div class="timestamp">
+                DEC 15, 2024 | 19:30 KST
+            </div>
+        </section>
+
+        <!-- Scene Transition -->
+        <section class="scene-transition">
+            <div class="transition-bg"></div>
+            <div class="scene-content">
+                <div>
+                    <h2 class="content-title">THE NARRATIVE</h2>
+                    <p class="content-text">
+                        In the sophisticated landscape of Gangnam, six distinguished professionals 
+                        gather for an evening that transcends the ordinary. This is not merely 
+                        dinner—it is a carefully orchestrated confluence of minds, ambitions, 
+                        and shared experiences that will resonate long after the last course 
+                        is served.
+                    </p>
+                </div>
+                <div class="image-frame">
+                    <img src="https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=800&h=500&fit=crop" 
+                         alt="Elegant dining atmosphere" class="frame-img">
+                </div>
+            </div>
+        </section>
+
+        <!-- Character Profiles -->
+        <section class="characters-scene">
+            <div class="characters-bg"></div>
+            <div class="characters-container">
+                <h2 class="characters-title">THE ENSEMBLE</h2>
+                <div class="characters-grid">
+                    <div class="character-card">
+                        <h3 class="character-name">김민수</h3>
+                        <p class="character-role">Strategic Visionary</p>
+                        <p class="character-quote">"Every conversation is an opportunity to discover something extraordinary."</p>
+                    </div>
+                    <div class="character-card">
+                        <h3 class="character-name">이지영</h3>
+                        <p class="character-role">Creative Architect</p>
+                        <p class="character-quote">"Design is not what it looks like—it's how it makes you feel."</p>
+                    </div>
+                    <div class="character-card">
+                        <h3 class="character-name">박현우</h3>
+                        <p class="character-role">Technology Pioneer</p>
+                        <p class="character-quote">"The future belongs to those who dare to imagine it."</p>
+                    </div>
+                    <div class="character-card">
+                        <h3 class="character-name">정수빈</h3>
+                        <p class="character-role">Knowledge Curator</p>
+                        <p class="character-quote">"Education is the passport to the future."</p>
+                    </div>
+                    <div class="character-card">
+                        <h3 class="character-name">최태훈</h3>
+                        <p class="character-role">Culinary Artist</p>
+                        <p class="character-quote">"Food is the thread that weaves memories together."</p>
+                    </div>
+                    <div class="character-card">
+                        <h3 class="character-name">김예린</h3>
+                        <p class="character-role">Life Sciences Expert</p>
+                        <p class="character-quote">"In healing others, we discover our truest selves."</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final Scene -->
+        <section class="final-scene">
+            <div class="final-bg"></div>
+            <div class="final-content">
+                <h2 class="final-title">THE LEGACY</h2>
+                <p class="final-text">
+                    As the evening draws to a close, what remains is not just the memory of exceptional cuisine, 
+                    but the profound connections forged in the crucible of genuine conversation. 
+                    This is how legends are born—not in boardrooms or conferences, but in moments 
+                    of authentic human connection.
+                </p>
+            </div>
+            <div class="credits">
+                FRIDAY NIGHT CHRONICLES © 2024 | GANGNAM DISTRICT
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Intersection Observer for character cards
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 200);
+                }
+            });
+        }, {
+            threshold: 0.3
+        });
+
+        document.querySelectorAll('.character-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Parallax effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            
+            document.querySelectorAll('.characters-bg').forEach(bg => {
+                const rate = scrolled * -0.3;
+                bg.style.transform = `translateY(${rate}px)`;
+            });
+        });
+
+        // Dynamic image scaling
+        let scaleDirection = 1;
+        setInterval(() => {
+            document.querySelectorAll('.frame-img').forEach(img => {
+                const currentScale = scaleDirection > 0 ? 1.1 : 1.05;
+                img.style.transform = `scale(${currentScale})`;
+            });
+            scaleDirection *= -1;
+        }, 8000);
+
+        // Scene transitions with scroll
+        let ticking = false;
+        
+        function updateScenes() {
+            const scenes = document.querySelectorAll('.opening-scene, .scene-transition, .characters-scene, .final-scene');
+            const scrollTop = window.pageYOffset;
+            
+            scenes.forEach((scene, index) => {
+                const rect = scene.getBoundingClientRect();
+                const inView = rect.top < window.innerHeight && rect.bottom > 0;
+                
+                if (inView) {
+                    const bg = scene.querySelector('[class*="bg"]');
+                    if (bg) {
+                        const offset = scrollTop * 0.5;
+                        bg.style.transform = `translateY(${offset}px)`;
+                    }
+                }
+            });
+            
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateScenes);
+                ticking = true;
+            }
+        });
+    </script>
+</body>
+</html>

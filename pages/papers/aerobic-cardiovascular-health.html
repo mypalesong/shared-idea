@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유산소 운동이 심혈관 건강에 미치는 영향: 운동 생리학적 분석</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background: #fafafa;
+            color: #2a2a2a;
+            line-height: 1.6;
+        }
+        
+        .paper-wrapper {
+            display: flex;
+            max-width: 1500px;
+            margin: 0 auto;
+            background: #ffffff;
+            box-shadow: 0 0 30px rgba(0,0,0,0.15);
+        }
+        
+        .table-of-contents {
+            width: 300px;
+            background: #1a1a1a;
+            color: #ffffff;
+            padding: 50px 35px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .toc-header {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border-bottom: 3px solid #ffffff;
+            padding-bottom: 20px;
+        }
+        
+        .toc-list {
+            list-style: none;
+        }
+        
+        .toc-item {
+            margin-bottom: 12px;
+        }
+        
+        .toc-link {
+            display: block;
+            color: #cccccc;
+            text-decoration: none;
+            padding: 15px 20px;
+            font-size: 15px;
+            font-weight: 500;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .toc-link:hover {
+            color: #ffffff;
+            background: #333333;
+            border-color: #ffffff;
+        }
+        
+        .document-main {
+            flex: 1;
+            padding: 70px 90px;
+            background: #ffffff;
+        }
+        
+        .title-section {
+            margin-bottom: 60px;
+            text-align: center;
+            border-bottom: 5px solid #000000;
+            padding-bottom: 50px;
+        }
+        
+        .main-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #000000;
+            margin-bottom: 25px;
+            line-height: 1.1;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: #666666;
+            margin-bottom: 35px;
+            font-style: italic;
+        }
+        
+        .paper-metadata {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 40px;
+            color: #333333;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .abstract-section {
+            background: #000000;
+            color: #ffffff;
+            padding: 50px;
+            margin: 60px 0;
+            border: 5px solid #333333;
+        }
+        
+        .abstract-heading {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .main-section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #000000;
+            margin: 60px 0 30px 0;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #000000;
+        }
+        
+        .sub-section-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #333333;
+            margin: 40px 0 20px 0;
+        }
+        
+        .content-paragraph {
+            color: #2a2a2a;
+            margin-bottom: 25px;
+            text-align: justify;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+        
+        .emphasis-box {
+            background: #f0f0f0;
+            border: 3px solid #000000;
+            padding: 30px;
+            margin: 35px 0;
+            color: #1a1a1a;
+        }
+        
+        .box-title {
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #000000;
+            font-size: 18px;
+        }
+        
+        .research-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 40px 0;
+            background: #ffffff;
+            border: 3px solid #000000;
+        }
+        
+        .research-table th {
+            background: #000000;
+            color: #ffffff;
+            padding: 20px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        
+        .research-table td {
+            padding: 18px 20px;
+            border-bottom: 2px solid #cccccc;
+            color: #2a2a2a;
+            font-weight: 500;
+        }
+        
+        .research-table tr:nth-child(even) {
+            background: #f8f8f8;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 35px;
+            margin: 50px 0;
+        }
+        
+        .benefit-card {
+            background: #ffffff;
+            border: 3px solid #000000;
+            padding: 35px;
+        }
+        
+        .benefit-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 20px;
+        }
+        
+        .benefit-description {
+            color: #333333;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+        
+        .exercise-protocol {
+            background: #f5f5f5;
+            border: 3px solid #000000;
+            padding: 45px;
+            margin: 45px 0;
+            text-align: center;
+        }
+        
+        .protocol-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 30px;
+        }
+        
+        .protocol-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .protocol-step {
+            background: #ffffff;
+            border: 2px solid #000000;
+            padding: 25px;
+        }
+        
+        .step-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #000000;
+            margin-bottom: 15px;
+        }
+        
+        .step-content {
+            font-size: 15px;
+            color: #333333;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+        
+        .evidence-list {
+            background: #fafafa;
+            border-left: 8px solid #000000;
+            padding: 35px;
+            margin: 40px 0;
+        }
+        
+        .evidence-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 25px;
+        }
+        
+        .evidence-items {
+            list-style: none;
+        }
+        
+        .evidence-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #cccccc;
+            color: #2a2a2a;
+            font-weight: 600;
+        }
+        
+        .evidence-item:last-child {
+            border-bottom: none;
+        }
+        
+        .evidence-item::before {
+            content: "▲";
+            margin-right: 15px;
+            color: #000000;
+            font-weight: bold;
+        }
+        
+        .conclusion-section {
+            background: #1a1a1a;
+            color: #ffffff;
+            padding: 50px;
+            margin: 70px 0;
+            text-align: center;
+            border: 5px solid #000000;
+        }
+        
+        .conclusion-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+        
+        .conclusion-text {
+            font-size: 18px;
+            line-height: 1.8;
+        }
+        
+        .references-section {
+            margin-top: 80px;
+            padding-top: 60px;
+            border-top: 5px solid #000000;
+        }
+        
+        .references-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .reference-list {
+            list-style: none;
+            counter-reset: reference-counter;
+        }
+        
+        .reference-entry {
+            counter-increment: reference-counter;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f8f8;
+            border: 2px solid #cccccc;
+            position: relative;
+            padding-left: 60px;
+        }
+        
+        .reference-entry::before {
+            content: "[" counter(reference-counter) "]";
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 700;
+            color: #000000;
+            font-size: 16px;
+        }
+        
+        .reference-text {
+            color: #333333;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+        
+        .figure-caption {
+            font-size: 14px;
+            color: #666666;
+            text-align: center;
+            margin: 25px 0;
+            font-style: italic;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="paper-wrapper">
+        <nav class="table-of-contents">
+            <h2 class="toc-header">목차</h2>
+            <ul class="toc-list">
+                <li class="toc-item"><a href="#abstract" class="toc-link">초록</a></li>
+                <li class="toc-item"><a href="#introduction" class="toc-link">1. 서론</a></li>
+                <li class="toc-item"><a href="#physiology" class="toc-link">2. 운동 생리학</a></li>
+                <li class="toc-item"><a href="#cardiovascular" class="toc-link">3. 심혈관 적응</a></li>
+                <li class="toc-item"><a href="#benefits" class="toc-link">4. 건강상 이점</a></li>
+                <li class="toc-item"><a href="#protocols" class="toc-link">5. 운동 프로토콜</a></li>
+                <li class="toc-item"><a href="#evidence" class="toc-link">6. 연구 증거</a></li>
+                <li class="toc-item"><a href="#recommendations" class="toc-link">7. 권장사항</a></li>
+                <li class="toc-item"><a href="#populations" class="toc-link">8. 특수 집단</a></li>
+                <li class="toc-item"><a href="#future" class="toc-link">9. 향후 연구</a></li>
+                <li class="toc-item"><a href="#conclusion" class="toc-link">10. 결론</a></li>
+                <li class="toc-item"><a href="#references" class="toc-link">참고문헌</a></li>
+            </ul>
+        </nav>
+        
+        <main class="document-main">
+            <header class="title-section">
+                <h1 class="main-title">유산소 운동이 심혈관 건강에 미치는 영향</h1>
+                <p class="subtitle">운동 생리학적 분석과 임상적 적용</p>
+                
+                <div class="paper-metadata">
+                    <div class="meta-item">
+                        <span>📖</span>
+                        <span>조운동, 김심장, 박혈관</span>
+                    </div>
+                    <div class="meta-item">
+                        <span>🏥</span>
+                        <span>한국스포츠의학연구소</span>
+                    </div>
+                    <div class="meta-item">
+                        <span>📅</span>
+                        <span>2025년 1월</span>
+                    </div>
+                </div>
+            </header>
+            
+            <section class="abstract-section" id="abstract">
+                <h2 class="abstract-heading">초록</h2>
+                <p>유산소 운동은 심혈관계에 광범위하고 긍정적인 영향을 미치는 것으로 잘 알려져 있다. 본 연구는 최근 20년간의 국내외 연구 문헌을 종합 분석하여 유산소 운동이 심혈관 건강에 미치는 구체적인 기전과 효과를 규명하였다. 정기적인 유산소 운동은 심박출량 증가, 혈압 감소, 혈관 내피 기능 개선, 혈중 지질 프로필 개선 등의 다면적 효과를 나타낸다. 특히 주 150분 이상의 중등도 유산소 운동은 심혈관 질환 발생률을 30-35% 감소시키는 것으로 보고되고 있다. 본 논문은 운동 처방의 과학적 근거를 제시하고 다양한 집단에 대한 맞춤형 운동 가이드라인을 제안한다.</p>
+            </section>
+            
+            <section id="introduction">
+                <h2 class="main-section-title">1. 서론</h2>
+                
+                <p class="content-paragraph">심혈관 질환은 전 세계적으로 주요 사망 원인 중 하나이며, 한국에서도 암에 이어 두 번째로 높은 사망률을 보이고 있다. 현대 사회의 좌식 생활 양식과 운동 부족은 심혈관 질환의 위험 요인을 증가시키고 있어, 예방적 차원에서의 생활 습관 개선이 중요한 과제로 대두되고 있다.</p>
+                
+                <p class="content-paragraph">유산소 운동(aerobic exercise)은 심혈관계 건강 증진을 위한 가장 효과적이고 검증된 방법 중 하나이다. 1960년대 Cooper의 연구 이후로 유산소 운동의 심혈관 건강 효과에 대한 과학적 증거가 꾸준히 축적되어 왔으며, 현재는 모든 주요 의학 단체에서 심혈관 질환 예방 및 치료의 핵심 구성 요소로 권장하고 있다.</p>
+                
+                <div class="emphasis-box">
+                    <h4 class="box-title">연구 목적</h4>
+                    <p>본 연구의 목적은 유산소 운동이 심혈관계에 미치는 생리학적 기전을 분석하고, 최적의 운동 처방 방법을 제시하는 것이다.</p>
+                </div>
+            </section>
+            
+            <section id="physiology">
+                <h2 class="main-section-title">2. 유산소 운동의 생리학적 기전</h2>
+                
+                <h3 class="sub-section-title">2.1 심근 적응 반응</h3>
+                <p class="content-paragraph">유산소 운동은 심근에 다양한 구조적, 기능적 적응을 유발한다. 장기간의 유산소 훈련은 심실 벽의 두께 증가(생리적 비대)와 심실 용적의 확장을 가져와 전체적인 심박출량을 증가시킨다. 이러한 적응은 안정 시 심박수 감소와 함께 심장의 효율성을 크게 향상시킨다.</p>
+                
+                <h3 class="sub-section-title">2.2 혈관계 적응</h3>
+                <p class="content-paragraph">유산소 운동은 혈관 내피 세포의 기능을 개선하여 혈관 확장 능력을 향상시킨다. 운동 중 증가된 혈류는 전단 응력(shear stress)을 증가시켜 내피 세포에서 산화질소(NO) 생성을 촉진하고, 이는 혈관 확장과 혈압 감소에 기여한다.</p>
+            </section>
+            
+            <section id="cardiovascular">
+                <h2 class="main-section-title">3. 심혈관계 적응 반응</h2>
+                
+                <table class="research-table">
+                    <thead>
+                        <tr>
+                            <th>적응 반응</th>
+                            <th>급성 효과</th>
+                            <th>만성 효과</th>
+                            <th>기전</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>심박수</td>
+                            <td>증가 (120-160 bpm)</td>
+                            <td>안정시 감소 (5-25 bpm)</td>
+                            <td>자율신경계 조절 개선</td>
+                        </tr>
+                        <tr>
+                            <td>혈압</td>
+                            <td>수축기압 증가</td>
+                            <td>안정시 감소 (5-10 mmHg)</td>
+                            <td>혈관 저항성 감소</td>
+                        </tr>
+                        <tr>
+                            <td>심박출량</td>
+                            <td>4-6배 증가</td>
+                            <td>안정시 효율성 증대</td>
+                            <td>심근 수축력 증가</td>
+                        </tr>
+                        <tr>
+                            <td>혈관 기능</td>
+                            <td>일시적 확장</td>
+                            <td>내피 기능 개선</td>
+                            <td>NO 생성 증가</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <p class="figure-caption">표 1. 유산소 운동에 대한 심혈관계의 급성 및 만성 적응 반응</p>
+            </section>
+            
+            <section id="benefits">
+                <h2 class="main-section-title">4. 심혈관 건강상의 이점</h2>
+                
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <h3 class="benefit-title">관상동맥 질환 예방</h3>
+                        <div class="benefit-description">
+                            <p>정기적인 유산소 운동은 관상동맥 질환의 발생률을 30-50% 감소시킨다. 운동은 관상동맥의 측부순환을 발달시키고 죽상경화 진행을 억제한다.</p>
+                            <p><strong>위험도 감소:</strong> HR = 0.65 (95% CI: 0.52-0.78)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-card">
+                        <h3 class="benefit-title">고혈압 개선</h3>
+                        <div class="benefit-description">
+                            <p>유산소 운동은 고혈압 환자의 수축기 혈압을 평균 5-10 mmHg, 이완기 혈압을 3-5 mmHg 감소시킨다.</p>
+                            <p><strong>효과 크기:</strong> Cohen's d = 0.75 (중대효과)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-card">
+                        <h3 class="benefit-title">지질 프로필 개선</h3>
+                        <div class="benefit-description">
+                            <p>HDL 콜레스테롤 증가(5-15%), LDL 콜레스테롤 감소(5-10%), 중성지방 감소(10-20%)의 효과를 나타낸다.</p>
+                            <p><strong>임상적 의의:</strong> 심혈관 위험도 20-25% 감소</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-card">
+                        <h3 class="benefit-title">심부전 예방</h3>
+                        <div class="benefit-description">
+                            <p>규칙적인 유산소 운동은 심부전 발생률을 35% 감소시키고, 기존 심부전 환자의 예후를 개선한다.</p>
+                            <p><strong>생존율 개선:</strong> 5년 생존율 15% 향상</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="protocols">
+                <h2 class="main-section-title">5. 최적 운동 프로토콜</h2>
+                
+                <div class="exercise-protocol">
+                    <h3 class="protocol-title">FITT 원칙에 따른 운동 처방</h3>
+                    
+                    <div class="protocol-steps">
+                        <div class="protocol-step">
+                            <div class="step-number">F</div>
+                            <div class="step-content">
+                                <strong>빈도 (Frequency)</strong><br>
+                                주 3-5일<br>
+                                최소 주 3일 이상
+                            </div>
+                        </div>
+                        
+                        <div class="protocol-step">
+                            <div class="step-number">I</div>
+                            <div class="step-content">
+                                <strong>강도 (Intensity)</strong><br>
+                                최대심박수의 50-85%<br>
+                                또는 HRR 40-80%
+                            </div>
+                        </div>
+                        
+                        <div class="protocol-step">
+                            <div class="step-number">T</div>
+                            <div class="step-content">
+                                <strong>시간 (Time)</strong><br>
+                                30-60분<br>
+                                주 150분 이상
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                        <div class="protocol-step" style="display: inline-block; width: auto; margin: 0 auto;">
+                            <div class="step-number">T</div>
+                            <div class="step-content">
+                                <strong>종류 (Type)</strong><br>
+                                걷기, 조깅, 수영, 자전거 타기 등<br>
+                                대근육군을 사용하는 리듬적 운동
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="evidence">
+                <h2 class="main-section-title">6. 과학적 증거</h2>
+                
+                <div class="evidence-list">
+                    <h3 class="evidence-title">주요 연구 결과</h3>
+                    <ul class="evidence-items">
+                        <li class="evidence-item">Framingham Heart Study: 유산소 체력이 1단위 증가할 때마다 심혈관 사망률 15% 감소</li>
+                        <li class="evidence-item">ACSM 메타분석: 규칙적인 유산소 운동으로 전체 사망률 20-30% 감소</li>
+                        <li class="evidence-item">Harvard Alumni Study: 주당 2000 kcal 이상 소모시 관상동맥 질환 위험 64% 감소</li>
+                        <li class="evidence-item">Cooper Center Study: 심폐체력과 심혈관 건강의 강한 역상관관계 확인</li>
+                        <li class="evidence-item">HERITAGE Family Study: 운동 반응의 개인차와 유전적 요인 규명</li>
+                    </ul>
+                </div>
+                
+                <h3 class="sub-section-title">6.1 용량-반응 관계</h3>
+                <p class="content-paragraph">유산소 운동과 심혈관 건강 사이에는 명확한 용량-반응 관계가 존재한다. 운동량이 증가할수록 심혈관 위험도는 감소하며, 주당 150분의 중등도 운동에서 최대 효과의 약 60%를 얻을 수 있다. 주당 300분까지는 추가적인 이득이 있으나, 그 이후로는 효과가 평준화된다.</p>
+            </section>
+            
+            <section id="recommendations">
+                <h2 class="main-section-title">7. 임상 권장사항</h2>
+                
+                <h3 class="sub-section-title">7.1 일반인을 위한 권장사항</h3>
+                <p class="content-paragraph">미국 심장학회(AHA)와 미국 스포츠의학회(ACSM)는 성인에게 주당 최소 150분의 중등도 유산소 운동 또는 75분의 고강도 유산소 운동을 권장한다. 이는 10분 이상의 지속적인 운동으로 나누어 실시할 수 있으며, 근력 운동과 병행할 때 더욱 효과적이다.</p>
+                
+                <h3 class="sub-section-title">7.2 심혈관 질환자를 위한 권장사항</h3>
+                <p class="content-paragraph">심혈관 질환자의 경우 의료진의 감독 하에 점진적으로 운동 강도를 증가시켜야 한다. 일반적으로 최대심박수의 40-70%에서 시작하여 개인의 적응도에 따라 조절한다. 심장재활 프로그램을 통한 체계적인 접근이 권장된다.</p>
+            </section>
+            
+            <section id="populations">
+                <h2 class="main-section-title">8. 특수 집단별 고려사항</h2>
+                
+                <h3 class="sub-section-title">8.1 고령자</h3>
+                <p class="content-paragraph">고령자는 관절 보호를 위해 수중 운동이나 저충격 운동을 선호하며, 운동 강도는 보다 보수적으로 접근해야 한다. 균형 감각과 근력 유지를 위한 복합 운동이 효과적이다.</p>
+                
+                <h3 class="sub-section-title">8.2 당뇨병 환자</h3>
+                <p class="content-paragraph">당뇨병 환자는 혈당 조절과 함께 심혈관 합병증 예방을 위해 유산소 운동이 특히 중요하다. 운동 전후 혈당 모니터링과 적절한 수분 섭취가 필수적이다.</p>
+            </section>
+            
+            <section id="future">
+                <h2 class="main-section-title">9. 향후 연구 방향</h2>
+                
+                <p class="content-paragraph">향후 연구에서는 개인 맞춤형 운동 처방을 위한 유전자 분석, 웨어러블 기기를 활용한 실시간 운동 모니터링, 그리고 다양한 운동 형태의 비교 효과에 대한 연구가 필요하다. 또한 장기적인 추적 연구를 통한 운동 효과의 지속성 평가도 중요한 과제이다.</p>
+                
+                <div class="emphasis-box">
+                    <h4 class="box-title">혁신적 접근법</h4>
+                    <p>인공지능과 빅데이터를 활용한 개인화된 운동 처방 시스템 개발과 가상현실을 이용한 운동 동기 부여 방법 등이 새로운 연구 분야로 주목받고 있다.</p>
+                </div>
+            </section>
+            
+            <section id="conclusion">
+                <div class="conclusion-section">
+                    <h2 class="conclusion-title">10. 결론</h2>
+                    <div class="conclusion-text">
+                        <p>유산소 운동은 심혈관 건강 증진을 위한 가장 효과적이고 안전한 방법이다. 과학적 증거에 기반한 체계적인 운동 처방을 통해 심혈관 질환의 예방과 치료에 크게 기여할 수 있으며, 개인의 특성을 고려한 맞춤형 접근이 중요하다. 지속적인 연구를 통해 더욱 효과적인 운동 전략을 개발해 나가야 할 것이다.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="references-section" id="references">
+                <h2 class="references-title">참고문헌</h2>
+                <ol class="reference-list">
+                    <li class="reference-entry">
+                        <div class="reference-text">조운동, 김심장. (2024). 한국인의 유산소 운동과 심혈관 건강 관계 분석. 한국스포츠의학회지, 42(3), 123-145.</div>
+                    </li>
+                    
+                    <li class="reference-entry">
+                        <div class="reference-text">박혈관, 이건강. (2023). 유산소 운동 처방이 고혈압 환자에 미치는 효과. 대한내과학회지, 98(4), 267-281.</div>
+                    </li>
+                    
+                    <li class="reference-entry">
+                        <div class="reference-text">American College of Sports Medicine. (2022). ACSM's Guidelines for Exercise Testing and Prescription. 11th ed. Wolters Kluwer.</div>
+                    </li>
+                    
+                    <li class="reference-entry">
+                        <div class="reference-text">Fletcher, G. F., et al. (2013). Exercise standards for testing and training: a scientific statement from the American Heart Association. Circulation, 128(8), 873-934.</div>
+                    </li>
+                    
+                    <li class="reference-entry">
+                        <div class="reference-text">Warburton, D. E., Nicol, C. W., & Bredin, S. S. (2006). Health benefits of physical activity: the evidence. CMAJ, 174(6), 801-809.</div>
+                    </li>
+                    
+                    <li class="reference-entry">
+                        <div class="reference-text">한국심장재활학회. (2023). 심혈관 질환자를 위한 운동 처방 가이드라인. 서울: 의학서원.</div>
+                    </li>
+                    
+                    <li class="reference-entry">
+                        <div class="reference-text">Lee, I. M., et al. (2012). Effect of physical inactivity on major non-communicable diseases worldwide: an analysis of burden of disease and life expectancy. Lancet, 380(9838), 219-229.</div>
+                    </li>
+                    
+                    <li class="reference-entry">
+                        <div class="reference-text">정운동, 최체력. (2022). 유산소 운동과 혈관 내피 기능 개선 메커니즘. 운동과학연구, 33(2), 89-105.</div>
+                    </li>
+                </ol>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

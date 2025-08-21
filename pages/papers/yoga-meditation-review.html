@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serenity Circle - Mindful Connection</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Source+Sans+Pro:wght@300;400;500&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background: #0f1419;
+            color: #e8e6e3;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .zen-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: rgba(15, 20, 25, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid #2d3748;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+        }
+
+        .zen-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: #7dd3fc;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .lotus-symbol {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(45deg, #7dd3fc, #06b6d4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .session-info {
+            display: flex;
+            gap: 40px;
+            font-size: 12px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Hero Section */
+        .hero-sanctuary {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .breathing-aura {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(125, 211, 252, 0.08) 0%, rgba(6, 182, 212, 0.03) 40%, rgba(0,0,0,0.9) 80%);
+            animation: breathingFlow 8s ease-in-out infinite;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            padding: 0 40px;
+        }
+
+        .meditation-circle {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(125, 211, 252, 0.1) 0%, rgba(6, 182, 212, 0.05) 50%, transparent 100%);
+            border: 2px solid rgba(125, 211, 252, 0.3);
+            border-radius: 50%;
+            margin: 0 auto 40px;
+            overflow: hidden;
+            animation: gentleRotate 30s linear infinite;
+        }
+
+        .inner-mandala {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=400&fit=crop');
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%;
+            filter: brightness(0.6) sepia(0.3) hue-rotate(180deg);
+            animation: counterRotate 20s linear infinite reverse;
+        }
+
+        .mandala-rings {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            border: 1px solid rgba(125, 211, 252, 0.2);
+            border-radius: 50%;
+            animation: pulseRing 6s ease-in-out infinite;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #7dd3fc;
+            text-shadow: 0 0 30px rgba(125, 211, 252, 0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: #cbd5e1;
+            font-weight: 300;
+            letter-spacing: 3px;
+        }
+
+        /* Participants Section */
+        .sanctuary-floor {
+            background: #0a0f14;
+            position: relative;
+            padding: 120px 0;
+        }
+
+        .zen-lighting {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 300px;
+            background: linear-gradient(to bottom, rgba(125, 211, 252, 0.02), transparent);
+        }
+
+        .sanctuary-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-number {
+            font-size: 14px;
+            color: #475569;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 600;
+            color: #7dd3fc;
+        }
+
+        /* Practitioner Cards */
+        .practitioners-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 50px;
+        }
+
+        .practitioner-card {
+            position: relative;
+            background: rgba(15, 20, 25, 0.8);
+            border: 2px solid rgba(125, 211, 252, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.320, 1);
+            cursor: pointer;
+        }
+
+        .practitioner-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 30px 80px rgba(125, 211, 252, 0.15);
+            border-color: rgba(125, 211, 252, 0.3);
+        }
+
+        .practitioner-avatar {
+            width: 100%;
+            height: 280px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-bg {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.5) contrast(1.1) sepia(0.2) hue-rotate(180deg);
+            transition: transform 6s ease-in-out;
+        }
+
+        .practitioner-card:hover .avatar-bg {
+            transform: scale(1.1);
+        }
+
+        .chakra-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(125, 211, 252, 0.2), rgba(6, 182, 212, 0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .practitioner-initial {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 600;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(125, 211, 252, 0.5);
+        }
+
+        .practitioner-info {
+            padding: 30px;
+            background: rgba(15, 20, 25, 0.9);
+        }
+
+        .practitioner-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: #7dd3fc;
+            margin-bottom: 8px;
+        }
+
+        .practitioner-role {
+            font-size: 14px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .practitioner-mantra {
+            font-size: 14px;
+            color: #cbd5e1;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .energy-aura {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, rgba(125, 211, 252, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: energyPulse 4s ease-in-out infinite;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .practitioner-card:hover .energy-aura {
+            opacity: 1;
+        }
+
+        /* Journey Timeline */
+        .journey-timeline {
+            background: #0a0f14;
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .timeline-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images.unsplash.com/photo-1512389098783-66b81f86e732?w=1600&h=1000&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.08) blur(3px) sepia(0.3) hue-rotate(180deg);
+            animation: gentleDrift 40s ease-in-out infinite;
+        }
+
+        .timeline-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 40px;
+        }
+
+        .timeline-frame {
+            background: rgba(15, 20, 25, 0.85);
+            backdrop-filter: blur(25px);
+            border: 2px solid rgba(125, 211, 252, 0.2);
+            border-radius: 24px;
+            padding: 80px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timeline-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(125, 211, 252, 0.5), transparent);
+            animation: flowingEnergy 4s ease-in-out infinite;
+        }
+
+        .timeline-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            font-weight: 600;
+            color: #7dd3fc;
+            margin-bottom: 30px;
+        }
+
+        .timeline-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #cbd5e1;
+            margin-bottom: 50px;
+        }
+
+        .journey-phases {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .phase-item {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(125, 211, 252, 0.05);
+            border: 1px solid rgba(125, 211, 252, 0.2);
+            border-radius: 16px;
+            position: relative;
+        }
+
+        .phase-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: #7dd3fc;
+        }
+
+        .phase-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: #7dd3fc;
+            margin-bottom: 10px;
+        }
+
+        .phase-description {
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+
+        /* Individual practitioner backgrounds */
+        .practitioner-1 .avatar-bg { background-image: url('https://images.unsplash.com/photo-1554727242-741c14fa561c?w=400&h=400&fit=crop'); }
+        .practitioner-2 .avatar-bg { background-image: url('https://images.unsplash.com/photo-1515077678510-ce3bdf418862?w=400&h=400&fit=crop'); }
+        .practitioner-3 .avatar-bg { background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=400&fit=crop'); }
+        .practitioner-4 .avatar-bg { background-image: url('https://images.unsplash.com/photo-1593811167562-9cef47bfc4d7?w=400&h=400&fit=crop'); }
+        .practitioner-5 .avatar-bg { background-image: url('https://images.unsplash.com/photo-1552196563-55cd4e45efb3?w=400&h=400&fit=crop'); }
+        .practitioner-6 .avatar-bg { background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=400&fit=crop'); }
+
+        @keyframes breathingFlow {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        @keyframes gentleRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes counterRotate {
+            0% { transform: translate(-50%, -50%) rotate(360deg); }
+            100% { transform: translate(-50%, -50%) rotate(0deg); }
+        }
+
+        @keyframes pulseRing {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.6; }
+        }
+
+        @keyframes energyPulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.3); }
+        }
+
+        @keyframes gentleDrift {
+            0%, 100% { transform: translate(0, 0) scale(1.05); }
+            50% { transform: translate(-15px, -10px) scale(1.1); }
+        }
+
+        @keyframes flowingEnergy {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @media (max-width: 768px) {
+            .practitioners-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .journey-phases {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .meditation-circle {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .timeline-frame {
+                padding: 60px 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="zen-nav">
+        <div class="zen-title">
+            <div class="lotus-symbol">🪷</div>
+            Serenity Circle
+        </div>
+        <div class="session-info">
+            <span>Feb 10, 2024</span>
+            <span>Mindful Connection</span>
+        </div>
+    </nav>
+
+    <section class="hero-sanctuary">
+        <div class="breathing-aura"></div>
+        <div class="hero-content">
+            <div class="meditation-circle">
+                <div class="inner-mandala"></div>
+                <div class="mandala-rings"></div>
+            </div>
+            <h2 class="hero-title">Inner Balance</h2>
+            <p class="hero-subtitle">요가와 명상으로 만나는 진정한 평화</p>
+        </div>
+    </section>
+
+    <section class="sanctuary-floor">
+        <div class="zen-lighting"></div>
+        <div class="sanctuary-container">
+            <div class="section-header">
+                <div class="section-number">Meditation Circle</div>
+                <h2 class="section-title">Peaceful Practitioners</h2>
+            </div>
+
+            <div class="practitioners-grid">
+                <div class="practitioner-card practitioner-1">
+                    <div class="energy-aura"></div>
+                    <div class="practitioner-avatar">
+                        <div class="avatar-bg"></div>
+                        <div class="chakra-overlay">
+                            <div class="practitioner-initial">김</div>
+                        </div>
+                    </div>
+                    <div class="practitioner-info">
+                        <h3 class="practitioner-name">김서연</h3>
+                        <p class="practitioner-role">Mindful Leader</p>
+                        <p class="practitioner-mantra">"평화는 밖에서 찾는 것이 아니라 내 안에서 키우는 것입니다."</p>
+                    </div>
+                </div>
+
+                <div class="practitioner-card practitioner-2">
+                    <div class="energy-aura"></div>
+                    <div class="practitioner-avatar">
+                        <div class="avatar-bg"></div>
+                        <div class="chakra-overlay">
+                            <div class="practitioner-initial">이</div>
+                        </div>
+                    </div>
+                    <div class="practitioner-info">
+                        <h3 class="practitioner-name">이준호</h3>
+                        <p class="practitioner-role">Breath Guide</p>
+                        <p class="practitioner-mantra">"호흡과 함께 흐르면 모든 것이 자연스럽게 해결됩니다."</p>
+                    </div>
+                </div>
+
+                <div class="practitioner-card practitioner-3">
+                    <div class="energy-aura"></div>
+                    <div class="practitioner-avatar">
+                        <div class="avatar-bg"></div>
+                        <div class="chakra-overlay">
+                            <div class="practitioner-initial">박</div>
+                        </div>
+                    </div>
+                    <div class="practitioner-info">
+                        <h3 class="practitioner-name">박미나</h3>
+                        <p class="practitioner-role">Yoga Instructor</p>
+                        <p class="practitioner-mantra">"몸과 마음의 균형이 진정한 아름다움을 만듭니다."</p>
+                    </div>
+                </div>
+
+                <div class="practitioner-card practitioner-4">
+                    <div class="energy-aura"></div>
+                    <div class="practitioner-avatar">
+                        <div class="avatar-bg"></div>
+                        <div class="chakra-overlay">
+                            <div class="practitioner-initial">최</div>
+                        </div>
+                    </div>
+                    <div class="practitioner-info">
+                        <h3 class="practitioner-name">최영수</h3>
+                        <p class="practitioner-role">Zen Practitioner</p>
+                        <p class="practitioner-mantra">"고요 속에서 진정한 자아와 만날 수 있습니다."</p>
+                    </div>
+                </div>
+
+                <div class="practitioner-card practitioner-5">
+                    <div class="energy-aura"></div>
+                    <div class="practitioner-avatar">
+                        <div class="avatar-bg"></div>
+                        <div class="chakra-overlay">
+                            <div class="practitioner-initial">정</div>
+                        </div>
+                    </div>
+                    <div class="practitioner-info">
+                        <h3 class="practitioner-name">정하은</h3>
+                        <p class="practitioner-role">Healing Touch</p>
+                        <p class="practitioner-mantra">"치유는 내면의 사랑에서 시작됩니다."</p>
+                    </div>
+                </div>
+
+                <div class="practitioner-card practitioner-6">
+                    <div class="energy-aura"></div>
+                    <div class="practitioner-avatar">
+                        <div class="avatar-bg"></div>
+                        <div class="chakra-overlay">
+                            <div class="practitioner-initial">강</div>
+                        </div>
+                    </div>
+                    <div class="practitioner-info">
+                        <h3 class="practitioner-name">강민석</h3>
+                        <p class="practitioner-role">Energy Healer</p>
+                        <p class="practitioner-mantra">"에너지의 흐름을 느끼고 조화로운 삶을 살아갑니다."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="journey-timeline">
+        <div class="timeline-bg"></div>
+        <div class="timeline-content">
+            <div class="timeline-frame">
+                <h2 class="timeline-title">Sacred Journey</h2>
+                <p class="timeline-text">
+                    오늘 우리는 단순히 요가 동작을 배우거나 명상법을 익힌 것이 아닙니다. 
+                    진정한 자아와 만나고, 서로의 에너지와 조화를 이루며, 
+                    일상의 스트레스에서 벗어나 평화로운 순간을 함께 나누었습니다.
+                    이 거룩한 공간에서 우리는 하나가 되었습니다.
+                </p>
+                
+                <div class="journey-phases">
+                    <div class="phase-item">
+                        <div class="phase-icon">🧘‍♀️</div>
+                        <div class="phase-title">Opening</div>
+                        <div class="phase-description">마음을 열고 내면과 연결하기</div>
+                    </div>
+                    <div class="phase-item">
+                        <div class="phase-icon">🕯️</div>
+                        <div class="phase-title">Centering</div>
+                        <div class="phase-description">중심을 찾고 에너지 집중하기</div>
+                    </div>
+                    <div class="phase-item">
+                        <div class="phase-icon">💫</div>
+                        <div class="phase-title">Flow</div>
+                        <div class="phase-description">자연스러운 움직임과 호흡</div>
+                    </div>
+                    <div class="phase-item">
+                        <div class="phase-icon">🌸</div>
+                        <div class="phase-title">Integration</div>
+                        <div class="phase-description">평화로운 에너지 통합하기</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Practitioner card intersection observer
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 200);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        // Initialize cards
+        document.querySelectorAll('.practitioner-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(80px)';
+            card.style.transition = 'all 1.2s cubic-bezier(0.23, 1, 0.320, 1)';
+            cardObserver.observe(card);
+        });
+
+        // Dynamic breathing aura
+        const aura = document.querySelector('.breathing-aura');
+        let breathingPhase = 0;
+
+        setInterval(() => {
+            breathingPhase += 0.8;
+            const intensity = 50 + Math.sin(breathingPhase * Math.PI / 180) * 15;
+            const x = 50 + Math.cos(breathingPhase * 0.5 * Math.PI / 180) * 10;
+            const y = 50 + Math.sin(breathingPhase * 0.7 * Math.PI / 180) * 8;
+            aura.style.background = `radial-gradient(ellipse at ${x}% ${y}%, rgba(125, 211, 252, ${intensity/500}) 0%, rgba(6, 182, 212, ${intensity/1000}) 40%, rgba(0,0,0,0.9) 80%)`;
+        }, 100);
+
+        // Gentle energy effects
+        const createEnergyWave = () => {
+            const energyAuras = document.querySelectorAll('.energy-aura');
+            energyAuras.forEach((aura, index) => {
+                setTimeout(() => {
+                    aura.style.opacity = '1';
+                    setTimeout(() => {
+                        aura.style.opacity = '0';
+                    }, 3000);
+                }, index * 800);
+            });
+        };
+
+        // Trigger energy wave every 20 seconds
+        setInterval(createEnergyWave, 20000);
+
+        // Phase items animation
+        const phaseObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    const phases = entry.target.querySelectorAll('.phase-item');
+                    phases.forEach((phase, i) => {
+                        setTimeout(() => {
+                            phase.style.opacity = '1';
+                            phase.style.transform = 'translateY(0)';
+                        }, i * 300);
+                    });
+                }
+            });
+        }, { threshold: 0.3 });
+
+        document.querySelectorAll('.phase-item').forEach(phase => {
+            phase.style.opacity = '0';
+            phase.style.transform = 'translateY(50px)';
+            phase.style.transition = 'all 0.8s ease';
+        });
+
+        phaseObserver.observe(document.querySelector('.journey-phases'));
+    </script>
+</body>
+</html>

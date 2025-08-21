@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seoul Nights: A Gangnam Story</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Open+Sans:wght@300;400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Documentary Header */
+        .documentary-header {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .header-video-bg {
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background-image: url('https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1800&h=1200&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.3) contrast(1.2) saturate(1.1);
+            animation: documentaryZoom 25s ease-in-out infinite;
+        }
+
+        .header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.8) 100%);
+        }
+
+        .documentary-title {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            padding: 0 40px;
+        }
+
+        .series-badge {
+            font-size: 12px;
+            color: #ff6b35;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease-out 1s both;
+        }
+
+        .main-title {
+            font-family: 'Merriweather', serif;
+            font-size: clamp(42px, 8vw, 84px);
+            font-weight: 300;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            color: #ffffff;
+            text-shadow: 2px 2px 20px rgba(0,0,0,0.8);
+            animation: fadeInUp 1s ease-out 1.3s both;
+        }
+
+        .episode-subtitle {
+            font-size: clamp(18px, 3vw, 24px);
+            font-weight: 300;
+            color: #e0e0e0;
+            margin-bottom: 50px;
+            animation: fadeInUp 1s ease-out 1.6s both;
+        }
+
+        .location-info {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            font-size: 14px;
+            color: #cccccc;
+            animation: fadeInUp 1s ease-out 1.9s both;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Chapter Navigation */
+        .chapter-nav {
+            position: fixed;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .chapter-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .chapter-dot.active {
+            background: #ff6b35;
+            transform: scale(1.3);
+        }
+
+        .chapter-dot::after {
+            content: attr(data-chapter);
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: #ffffff;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .chapter-dot:hover::after {
+            opacity: 1;
+        }
+
+        /* Story Chapters */
+        .story-chapter {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 100px 0;
+        }
+
+        .chapter-background {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: brightness(0.3) contrast(1.1);
+            animation: chapterDrift 40s ease-in-out infinite;
+        }
+
+        .chapter-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0,0,0,0.8), rgba(0,0,0,0.4));
+        }
+
+        .chapter-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .chapter-text {
+            max-width: 500px;
+        }
+
+        .chapter-number {
+            font-size: 14px;
+            color: #ff6b35;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+        }
+
+        .chapter-title {
+            font-family: 'Merriweather', serif;
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 30px;
+            color: #ffffff;
+        }
+
+        .chapter-description {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #e0e0e0;
+            margin-bottom: 40px;
+        }
+
+        .chapter-quote {
+            font-family: 'Merriweather', serif;
+            font-size: 22px;
+            font-style: italic;
+            color: #ff6b35;
+            border-left: 4px solid #ff6b35;
+            padding-left: 30px;
+            line-height: 1.5;
+        }
+
+        .chapter-visual {
+            position: relative;
+            height: 500px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 30px 100px rgba(0, 0, 0, 0.8);
+        }
+
+        .visual-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 15s ease-in-out;
+        }
+
+        .chapter-visual:hover .visual-image {
+            transform: scale(1.15) rotate(2deg);
+        }
+
+        /* Characters Section */
+        .characters-section {
+            background: #0a0a0a;
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .characters-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&h=1000&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: brightness(0.05) blur(1px);
+        }
+
+        .characters-container {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 100px;
+        }
+
+        .section-tagline {
+            font-size: 14px;
+            color: #ff6b35;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .section-main-title {
+            font-family: 'Merriweather', serif;
+            font-size: 54px;
+            font-weight: 300;
+            color: #ffffff;
+            margin-bottom: 30px;
+        }
+
+        .section-desc {
+            font-size: 20px;
+            color: #cccccc;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 60px;
+        }
+
+        .character-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+            position: relative;
+        }
+
+        .character-card:hover {
+            transform: translateY(-30px) scale(1.05);
+            box-shadow: 0 50px 120px rgba(255, 107, 53, 0.2);
+            border-color: rgba(255, 107, 53, 0.3);
+        }
+
+        .character-image {
+            height: 280px;
+            background: linear-gradient(135deg, #333333, #1a1a1a);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .character-bg {
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.6) contrast(1.2);
+            transition: transform 8s ease-in-out;
+        }
+
+        .character-card:hover .character-bg {
+            transform: scale(1.2);
+        }
+
+        .character-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80%;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+        }
+
+        .character-info {
+            padding: 40px 30px;
+            position: relative;
+        }
+
+        .character-name {
+            font-family: 'Merriweather', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
+
+        .character-role {
+            font-size: 14px;
+            color: #ff6b35;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .character-story {
+            font-size: 14px;
+            color: #cccccc;
+            line-height: 1.6;
+        }
+
+        /* Ending Credits */
+        .ending-credits {
+            background: #000000;
+            padding: 150px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .credits-bg {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background-image: url('https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=1600&h=1000&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.1) blur(3px);
+            animation: creditsRotate 60s linear infinite;
+        }
+
+        .credits-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .credits-title {
+            font-family: 'Merriweather', serif;
+            font-size: 48px;
+            font-weight: 300;
+            color: #ffffff;
+            margin-bottom: 40px;
+        }
+
+        .credits-text {
+            font-size: 18px;
+            color: #cccccc;
+            line-height: 1.8;
+            margin-bottom: 60px;
+        }
+
+        .production-info {
+            font-size: 14px;
+            color: #666666;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        @keyframes documentaryZoom {
+            0%, 100% { transform: scale(1.1) rotate(0deg); }
+            25% { transform: scale(1.2) rotate(1deg); }
+            50% { transform: scale(1.1) rotate(0deg); }
+            75% { transform: scale(1.15) rotate(-1deg); }
+        }
+
+        @keyframes chapterDrift {
+            0%, 100% { transform: translateX(0) translateY(0) scale(1.1); }
+            50% { transform: translateX(-30px) translateY(20px) scale(1.15); }
+        }
+
+        @keyframes creditsRotate {
+            0% { transform: rotate(0deg) scale(1.2); }
+            100% { transform: rotate(360deg) scale(1.2); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .chapter-content {
+                grid-template-columns: 1fr;
+                gap: 60px;
+            }
+            
+            .characters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chapter-nav {
+                display: none;
+            }
+            
+            .location-info {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="chapter-nav">
+        <div class="chapter-dot active" data-chapter="Opening"></div>
+        <div class="chapter-dot" data-chapter="The Gathering"></div>
+        <div class="chapter-dot" data-chapter="Characters"></div>
+        <div class="chapter-dot" data-chapter="Credits"></div>
+    </nav>
+
+    <section class="documentary-header">
+        <div class="header-video-bg"></div>
+        <div class="header-overlay"></div>
+        <div class="documentary-title">
+            <div class="series-badge">Seoul Nights Documentary Series</div>
+            <h1 class="main-title">The Gangnam Convergence</h1>
+            <p class="episode-subtitle">Episode 1: When Six Worlds Collide</p>
+            <div class="location-info">
+                <div class="info-item">
+                    <span>📍</span>
+                    <span>Gangnam District, Seoul</span>
+                </div>
+                <div class="info-item">
+                    <span>📅</span>
+                    <span>December 15, 2024</span>
+                </div>
+                <div class="info-item">
+                    <span>⏱️</span>
+                    <span>4 Hour Journey</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="story-chapter">
+        <div class="chapter-background" style="background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&h=1000&fit=crop');"></div>
+        <div class="chapter-overlay"></div>
+        <div class="chapter-content">
+            <div class="chapter-text">
+                <div class="chapter-number">Chapter One</div>
+                <h2 class="chapter-title">The Gathering Storm</h2>
+                <p class="chapter-description">
+                    In the heart of Seoul's most dynamic district, six extraordinary individuals 
+                    prepare to embark on a journey that will challenge preconceptions, forge 
+                    unexpected alliances, and create memories that transcend professional boundaries.
+                </p>
+                <div class="chapter-quote">
+                    "Sometimes the most profound discoveries happen not in laboratories or boardrooms, 
+                    but around a dinner table where masks fall away and humanity emerges."
+                </div>
+            </div>
+            <div class="chapter-visual">
+                <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=800&h=500&fit=crop" 
+                     alt="The setting" class="visual-image">
+            </div>
+        </div>
+    </section>
+
+    <section class="story-chapter">
+        <div class="chapter-background" style="background-image: url('https://images.unsplash.com/photo-1564759298141-b1d2d3e2edbd?w=1600&h=1000&fit=crop');"></div>
+        <div class="chapter-overlay"></div>
+        <div class="chapter-content">
+            <div class="chapter-visual">
+                <img src="https://images.unsplash.com/photo-1544148103-0773bf10d330?w=800&h=500&fit=crop" 
+                     alt="The experience" class="visual-image">
+            </div>
+            <div class="chapter-text">
+                <div class="chapter-number">Chapter Two</div>
+                <h2 class="chapter-title">Beyond the Surface</h2>
+                <p class="chapter-description">
+                    As the evening unfolds, carefully constructed professional personas begin to 
+                    dissolve, revealing the passionate individuals beneath. Stories emerge of 
+                    triumphs and failures, dreams deferred and ambitions realized.
+                </p>
+                <div class="chapter-quote">
+                    "We discovered that success is not just about reaching the summit, 
+                    but about who you choose to climb with and how you lift others along the way."
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="characters-section">
+        <div class="characters-bg"></div>
+        <div class="characters-container">
+            <div class="section-header">
+                <div class="section-tagline">Meet the Cast</div>
+                <h2 class="section-main-title">Six Unique Journeys</h2>
+                <p class="section-desc">
+                    Each brings a unique perspective, forged by years of experience, failure, and triumph 
+                    in their respective fields.
+                </p>
+            </div>
+            <div class="characters-grid">
+                <div class="character-card">
+                    <div class="character-image">
+                        <div class="character-bg" style="background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop');"></div>
+                        <div class="character-overlay"></div>
+                    </div>
+                    <div class="character-info">
+                        <h3 class="character-name">김민수</h3>
+                        <p class="character-role">The Strategist</p>
+                        <p class="character-story">
+                            A visionary who sees patterns where others see chaos, transforming complex 
+                            market dynamics into clear pathways for growth.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="character-card">
+                    <div class="character-image">
+                        <div class="character-bg" style="background-image: url('https://images.unsplash.com/photo-1494790108755-2616b612b495?w=400&h=400&fit=crop');"></div>
+                        <div class="character-overlay"></div>
+                    </div>
+                    <div class="character-info">
+                        <h3 class="character-name">이지영</h3>
+                        <p class="character-role">The Creator</p>
+                        <p class="character-story">
+                            An artist who speaks in visual languages, crafting experiences that 
+                            resonate deeply with human emotion and desire.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="character-card">
+                    <div class="character-image">
+                        <div class="character-bg" style="background-image: url('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop');"></div>
+                        <div class="character-overlay"></div>
+                    </div>
+                    <div class="character-info">
+                        <h3 class="character-name">박현우</h3>
+                        <p class="character-role">The Innovator</p>
+                        <p class="character-story">
+                            A digital architect building bridges between the possible and the practical, 
+                            one line of code at a time.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="character-card">
+                    <div class="character-image">
+                        <div class="character-bg" style="background-image: url('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop');"></div>
+                        <div class="character-overlay"></div>
+                    </div>
+                    <div class="character-info">
+                        <h3 class="character-name">정수빈</h3>
+                        <p class="character-role">The Enlightener</p>
+                        <p class="character-story">
+                            A guardian of knowledge who understands that learning is not about 
+                            filling empty vessels, but igniting flames.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="character-card">
+                    <div class="character-image">
+                        <div class="character-bg" style="background-image: url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop');"></div>
+                        <div class="character-overlay"></div>
+                    </div>
+                    <div class="character-info">
+                        <h3 class="character-name">최태훈</h3>
+                        <p class="character-role">The Alchemist</p>
+                        <p class="character-story">
+                            A master of transformation who turns simple ingredients into extraordinary 
+                            experiences that nourish both body and soul.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="character-card">
+                    <div class="character-image">
+                        <div class="character-bg" style="background-image: url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop');"></div>
+                        <div class="character-overlay"></div>
+                    </div>
+                    <div class="character-info">
+                        <h3 class="character-name">김예린</h3>
+                        <p class="character-role">The Healer</p>
+                        <p class="character-story">
+                            A modern medicine woman who combines cutting-edge science with 
+                            timeless compassion to restore wholeness.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="ending-credits">
+        <div class="credits-bg"></div>
+        <div class="credits-content">
+            <h2 class="credits-title">The Journey Continues</h2>
+            <p class="credits-text">
+                As the evening draws to a close, we realize that some of the most important discoveries 
+                happen not in isolation, but in connection. Six strangers became colleagues, 
+                colleagues became collaborators, and collaborators became lifelong allies 
+                in the grand adventure of purposeful living.
+            </p>
+            <div class="production-info">
+                Seoul Nights Documentary Series © 2024
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Chapter navigation
+        const chapters = document.querySelectorAll('.chapter-dot');
+        const sections = document.querySelectorAll('.documentary-header, .story-chapter, .characters-section, .ending-credits');
+
+        // Intersection observer for chapter navigation
+        const chapterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const index = Array.from(sections).indexOf(entry.target);
+                    chapters.forEach(dot => dot.classList.remove('active'));
+                    if (chapters[index]) {
+                        chapters[index].classList.add('active');
+                    }
+                }
+            });
+        }, { threshold: 0.5 });
+
+        sections.forEach(section => chapterObserver.observe(section));
+
+        // Character cards scroll animation
+        const characterObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 200);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        document.querySelectorAll('.character-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(60px)';
+            card.style.transition = 'all 1s cubic-bezier(0.23, 1, 0.320, 1)';
+            characterObserver.observe(card);
+        });
+
+        // Smooth scrolling for chapter navigation
+        chapters.forEach((chapter, index) => {
+            chapter.addEventListener('click', () => {
+                sections[index].scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>

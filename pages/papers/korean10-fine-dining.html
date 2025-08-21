@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>한남동 미슐랭 레스토랑 모임</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', 'Noto Serif KR', serif;
+            background: #141414;
+            color: #f8f8f8;
+            overflow-x: hidden;
+        }
+
+        .dining-hero {
+            position: relative;
+            height: 100vh;
+            background: linear-gradient(135deg, 
+                rgba(20, 20, 20, 0.95) 0%,
+                rgba(40, 30, 25, 0.8) 30%,
+                rgba(139, 69, 19, 0.3) 60%,
+                rgba(20, 20, 20, 0.9) 100%
+            ), url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .culinary-ambience {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(139, 69, 19, 0.2) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(160, 82, 45, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 50% 50%, rgba(205, 133, 63, 0.1) 0%, transparent 60%);
+            animation: ambienceGlow 10s ease-in-out infinite;
+        }
+
+        @keyframes ambienceGlow {
+            0%, 100% { 
+                opacity: 0.8; 
+                transform: scale(1) rotate(0deg); 
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.05) rotate(2deg); 
+            }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 3;
+            position: relative;
+            max-width: 900px;
+            padding: 0 20px;
+        }
+
+        .restaurant-title {
+            font-size: 5.8rem;
+            font-weight: 300;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, 
+                #cd853f 0%,
+                #daa520 25%,
+                #f8f8f8 50%,
+                #daa520 75%,
+                #8b4513 100%
+            );
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 8px;
+            font-style: italic;
+            animation: gastronomyGlow 6s ease-in-out infinite;
+            text-transform: capitalize;
+        }
+
+        @keyframes gastronomyGlow {
+            0%, 100% { 
+                filter: brightness(1) drop-shadow(0 0 25px rgba(205, 133, 63, 0.4));
+                transform: translateY(0);
+            }
+            33% { 
+                filter: brightness(1.2) drop-shadow(0 0 35px rgba(218, 165, 32, 0.6));
+                transform: translateY(-2px);
+            }
+            66% { 
+                filter: brightness(1.1) drop-shadow(0 0 30px rgba(139, 69, 19, 0.5));
+                transform: translateY(2px);
+            }
+        }
+
+        .cuisine-subtitle {
+            font-size: 1.9rem;
+            font-weight: 300;
+            font-style: italic;
+            margin-bottom: 50px;
+            color: rgba(248, 248, 248, 0.9);
+            letter-spacing: 3px;
+        }
+
+        .menu-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .detail-course {
+            background: linear-gradient(145deg, 
+                rgba(40, 30, 25, 0.9),
+                rgba(25, 20, 18, 0.95)
+            );
+            border: 2px solid rgba(205, 133, 63, 0.4);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(15px);
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .detail-course::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: conic-gradient(from 0deg, 
+                rgba(205, 133, 63, 0.4), 
+                transparent 30%, 
+                rgba(139, 69, 19, 0.3) 60%, 
+                transparent 90%, 
+                rgba(205, 133, 63, 0.4)
+            );
+            border-radius: 15px;
+            z-index: -1;
+            animation: plateRotation 12s linear infinite;
+        }
+
+        @keyframes plateRotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .detail-course:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: rgba(205, 133, 63, 0.8);
+            box-shadow: 0 25px 50px rgba(205, 133, 63, 0.3);
+        }
+
+        .course-label {
+            color: #cd853f;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .course-value {
+            font-size: 1.4rem;
+            font-weight: 300;
+            line-height: 1.4;
+        }
+
+        .floating-cutlery {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .utensil {
+            position: absolute;
+            font-size: 18px;
+            animation: floatUtensil 22s infinite linear;
+            opacity: 0.4;
+            color: #cd853f;
+        }
+
+        @keyframes floatUtensil {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.4;
+            }
+            90% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .main-content {
+            padding: 120px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .content-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .content-title {
+            font-size: 3.8rem;
+            font-weight: 300;
+            color: #cd853f;
+            margin-bottom: 25px;
+            letter-spacing: 5px;
+            font-style: italic;
+            text-transform: capitalize;
+        }
+
+        .content-tagline {
+            font-size: 1.3rem;
+            color: rgba(248, 248, 248, 0.8);
+            font-style: italic;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .culinary-reviews {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 50px;
+        }
+
+        .review-plate {
+            background: linear-gradient(145deg, 
+                rgba(30, 25, 22, 0.95),
+                rgba(20, 18, 16, 0.9)
+            );
+            border: 3px solid rgba(205, 133, 63, 0.4);
+            border-radius: 20px;
+            padding: 45px;
+            position: relative;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .review-plate::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(205, 133, 63, 0.15), 
+                transparent
+            );
+            transition: left 0.8s ease;
+        }
+
+        .review-plate:hover::before {
+            left: 100%;
+        }
+
+        .review-plate:hover {
+            transform: translateY(-15px);
+            border-color: rgba(205, 133, 63, 0.8);
+            box-shadow: 0 30px 60px rgba(205, 133, 63, 0.25);
+        }
+
+        .chef-name {
+            color: #cd853f;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .chef-expertise {
+            color: #daa520;
+            font-size: 1rem;
+            margin-bottom: 25px;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .culinary-review {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #f0f0f0;
+            text-align: justify;
+        }
+
+        .scroll-menu {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(205, 133, 63, 0.8);
+            font-size: 1rem;
+            font-style: italic;
+            animation: menuFloat 3s ease-in-out infinite;
+            text-align: center;
+        }
+
+        @keyframes menuFloat {
+            0%, 100% { 
+                opacity: 0.7; 
+                transform: translateX(-50%) translateY(0); 
+            }
+            50% { 
+                opacity: 1; 
+                transform: translateX(-50%) translateY(-12px); 
+            }
+        }
+
+        @media (max-width: 768px) {
+            .restaurant-title {
+                font-size: 3rem;
+                letter-spacing: 4px;
+            }
+            
+            .menu-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .culinary-reviews {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-cutlery">
+        <div class="utensil" style="left: 5%; animation-delay: 0s;">🍽️</div>
+        <div class="utensil" style="left: 15%; animation-delay: 3s;">🥂</div>
+        <div class="utensil" style="left: 25%; animation-delay: 6s;">🔪</div>
+        <div class="utensil" style="left: 35%; animation-delay: 9s;">🍷</div>
+        <div class="utensil" style="left: 45%; animation-delay: 12s;">🥄</div>
+        <div class="utensil" style="left: 55%; animation-delay: 15s;">🍴</div>
+        <div class="utensil" style="left: 65%; animation-delay: 18s;">🥂</div>
+        <div class="utensil" style="left: 75%; animation-delay: 2s;">🍽️</div>
+        <div class="utensil" style="left: 85%; animation-delay: 5s;">🍷</div>
+        <div class="utensil" style="left: 95%; animation-delay: 8s;">🔪</div>
+    </div>
+
+    <section class="dining-hero">
+        <div class="culinary-ambience"></div>
+        
+        <div class="hero-content">
+            <h1 class="restaurant-title">Gastronomy</h1>
+            <p class="cuisine-subtitle">한남동 미슐랭 스타 셰프들의 컬래버레이션 디너</p>
+            
+            <div class="menu-details">
+                <div class="detail-course">
+                    <div class="course-label">Dining Date</div>
+                    <div class="course-value">2025년 2월 18일 화요일<br>오후 7시 서빙</div>
+                </div>
+                <div class="detail-course">
+                    <div class="course-label">Restaurant</div>
+                    <div class="course-value">한남동 레스토랑 M<br>셰프스 테이블</div>
+                </div>
+                <div class="detail-course">
+                    <div class="course-label">Tasting Menu</div>
+                    <div class="course-value">1인당 35만원<br>(10코스 + 와인 페어링)</div>
+                </div>
+                <div class="detail-course">
+                    <div class="course-label">Gourmets</div>
+                    <div class="course-value">총 6명<br>미식가들</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scroll-menu">
+            ⬇ 셰프들의 후기 ⬇
+        </div>
+    </section>
+
+    <section class="main-content">
+        <div class="content-header">
+            <h2 class="content-title">Chef Reviews</h2>
+            <p class="content-tagline">미식계 전문가들의 정교한 맛 평가</p>
+        </div>
+        
+        <div class="culinary-reviews">
+            <div class="review-plate">
+                <div class="chef-name">김셰프</div>
+                <div class="chef-expertise">프렌치 파인다이닝 전문</div>
+                <p class="culinary-review">
+                    10코스 테이스팅 메뉴가 정말 예술 작품 같았어요! 특히 푸아그라와 트러플의 조합은... 입안에서 폭발하는 맛의 하모니! 
+                    셰프스 테이블에서 직접 보는 플레이팅 과정도 너무 흥미로웠고요. 
+                    "이런 게 진짜 가스트로노미구나" 싶었어요. 내 레스토랑 메뉴도 업그레이드해야겠네요 👨‍🍳
+                </p>
+            </div>
+            
+            <div class="review-plate">
+                <div class="chef-name">박소믈리에</div>
+                <div class="chef-expertise">와인 페어링 전문가</div>
+                <p class="culinary-review">
+                    와인 페어링이 정말 환상적이었어요! 각 코스마다 딱 맞는 와인을 선택해서... 음식과 와인이 서로를 더욱 빛나게 해주더라고요. 
+                    특히 5코스의 부르고뉴와 오리 요리 조합은 잊을 수 없을 것 같아요. 
+                    "이런 페어링은 어떻게 생각해내는 거지?" 정말 감탄했습니다 🍷
+                </p>
+            </div>
+            
+            <div class="review-plate">
+                <div class="chef-name">최푸드크리틱</div>
+                <div class="chef-expertise">미슐랭 가이드 평론가</div>
+                <p class="culinary-review">
+                    직업상 까다로운 편인데도, 오늘은 정말 만족스러운 식사였어요! 모든 코스가 스토리텔링이 있더라고요. 
+                    단순히 맛있는 음식이 아니라, 셰프의 철학과 감성이 고스란히 담긴... 
+                    "이거 별 두 개는 줄 수 있겠는데?" 하는 생각이 절로 들었어요 ⭐⭐
+                </p>
+            </div>
+            
+            <div class="review-plate">
+                <div class="chef-name">정요리연구가</div>
+                <div class="chef-expertise">분자 요리 전문가</div>
+                <p class="culinary-review">
+                    분자 요리 기법들이 정말 인상적이었어요! 특히 액체 질소로 만든 디저트는... 마치 마법을 보는 것 같았죠. 
+                    전통적인 맛을 현대적인 기법으로 재해석한 센스가 놀라웠어요. 
+                    "이런 창의적인 요리들을 우리 연구소에서도 시도해봐야겠네요" 많은 영감을 얻었습니다 🧪
+                </p>
+            </div>
+            
+            <div class="review-plate">
+                <div class="chef-name">이푸드스타일리스트</div>
+                <div class="chef-expertise">요리 촬영 전문가</div>
+                <p class="culinary-review">
+                    플레이팅이 정말 화보 수준이더라고요! 색감, 구성, 높이까지... 모든 게 완벽했어요. 
+                    사진 찍기 위해 온 건 아니지만, 너무 예뻐서 계속 카메라를 들게 되더라고요. 
+                    "이런 비주얼이면 인스타그램에 올리기만 해도 대박이겠는데?" 요리사들의 예술 감각에 감탄했습니다 📸
+                </p>
+            </div>
+            
+            <div class="review-plate">
+                <div class="chef-name">한베이커리</div>
+                <div class="chef-expertise">아티장 베이커</div>
+                <p class="culinary-review">
+                    빵과 디저트 코스가 정말 인상적이었어요! 특히 수제 버터와 함께 나온 바게트는... 우리 베이커리 빵보다 더 맛있었다는 ㅠㅠ 
+                    디저트의 섬세함과 창의성에도 완전 감탄했고요. 
+                    "이런 레시피는 어디서 배우는 거지?" 내일부터 더 열심히 연구해야겠어요 🥐
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Culinary parallax effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.dining-hero');
+            hero.style.transform = `translateY(${scrolled * 0.4}px)`;
+            
+            const ambience = document.querySelector('.culinary-ambience');
+            ambience.style.transform = `translateY(${scrolled * 0.2}px) scale(${1 + scrolled * 0.0001})`;
+        });
+
+        // Culinary intersection observer
+        const culinaryObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0) scale(1)';
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        document.querySelectorAll('.review-plate').forEach((plate, index) => {
+            plate.style.opacity = '0';
+            plate.style.transform = 'translateY(60px) scale(0.95)';
+            plate.style.transition = `all 1.2s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.15}s`;
+            culinaryObserver.observe(plate);
+        });
+
+        // Gourmet background movement
+        let gourmetOffset = 0;
+        setInterval(() => {
+            gourmetOffset += 0.1;
+            const hero = document.querySelector('.dining-hero');
+            hero.style.backgroundPositionX = gourmetOffset + 'px';
+        }, 200);
+
+        // Utensil interaction
+        document.addEventListener('mousemove', (e) => {
+            const utensils = document.querySelectorAll('.utensil');
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            utensils.forEach((utensil, index) => {
+                const speed = (index + 1) * 0.015;
+                const xMove = (mouseX - 0.5) * speed * 40;
+                const yMove = (mouseY - 0.5) * speed * 40;
+                
+                utensil.style.transform += ` translate(${xMove}px, ${yMove}px)`;
+            });
+        });
+    </script>
+</body>
+</html>

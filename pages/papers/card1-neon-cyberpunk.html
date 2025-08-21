@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex's Neon Birthday - Cyberpunk Celebration</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Mono', monospace;
+            background: #0a0a0f;
+            color: #00ff41;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Cyberpunk Grid Background */
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: 
+                linear-gradient(90deg, rgba(0,255,65,0.1) 1px, transparent 1px),
+                linear-gradient(rgba(0,255,65,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridPulse 3s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        .neon-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00ff41;
+            border-radius: 50%;
+            animation: float 8s infinite linear;
+        }
+
+        /* Main Container */
+        .birthday-terminal {
+            position: relative;
+            z-index: 10;
+            max-width: 420px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,20,10,0.95) 100%);
+            border: 2px solid #00ff41;
+            box-shadow: 
+                0 0 20px rgba(0,255,65,0.3),
+                inset 0 0 50px rgba(0,255,65,0.05);
+            animation: terminalGlow 2s ease-in-out infinite alternate;
+        }
+
+        /* Header Terminal */
+        .terminal-header {
+            background: linear-gradient(90deg, #001100, #003300);
+            border-bottom: 2px solid #00ff41;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .terminal-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,255,65,0.3), transparent);
+            animation: scanline 2s ease-in-out infinite;
+        }
+
+        .terminal-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 16px;
+            color: #00ff41;
+            text-shadow: 0 0 10px rgba(0,255,65,0.8);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .system-info {
+            font-size: 12px;
+            color: #00cc33;
+            line-height: 1.4;
+        }
+
+        .blinking-cursor {
+            animation: blink 1.5s infinite;
+        }
+
+        /* Main Content */
+        .birthday-display {
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .glitch-text {
+            font-family: 'Orbitron', monospace;
+            font-size: 32px;
+            font-weight: 900;
+            color: #00ff41;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            text-shadow: 
+                2px 0 0 #ff0080,
+                -2px 0 0 #00ffff;
+            animation: glitch 1.5s infinite;
+            position: relative;
+        }
+
+        .glitch-text::before,
+        .glitch-text::after {
+            content: 'HAPPY BIRTHDAY';
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-text::before {
+            animation: glitch-1 2s infinite;
+            color: #ff0080;
+            z-index: -1;
+        }
+
+        .glitch-text::after {
+            animation: glitch-2 3s infinite;
+            color: #00ffff;
+            z-index: -2;
+        }
+
+        .friend-name {
+            font-family: 'Orbitron', monospace;
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00ff41, #00ffff, #ff0080);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 3s ease-in-out infinite;
+            margin-bottom: 30px;
+            text-shadow: 0 0 30px rgba(0,255,65,0.5);
+        }
+
+        /* Holographic Frame */
+        .holo-frame {
+            border: 3px solid transparent;
+            background: linear-gradient(45deg, #00ff41, #00ffff, #ff0080, #00ff41) border-box;
+            background-clip: border-box;
+            padding: 25px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .holo-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(0,255,65,0.1), transparent);
+            animation: holoSweep 4s infinite;
+        }
+
+        /* Birthday Message */
+        .birthday-message {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #00cc33;
+            text-shadow: 0 0 5px rgba(0,255,65,0.5);
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Cyber Statistics */
+        .cyber-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .stat-box {
+            background: rgba(0,255,65,0.05);
+            border: 1px solid #00ff41;
+            padding: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ff41, transparent);
+            animation: statScan 3s infinite;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: #009922;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            color: #00ff41;
+            text-shadow: 0 0 10px rgba(0,255,65,0.8);
+        }
+
+        /* Command Line Interface */
+        .terminal-commands {
+            background: #000;
+            border: 2px solid #00ff41;
+            margin: 20px;
+            padding: 15px;
+            font-family: 'Space Mono', monospace;
+            position: relative;
+        }
+
+        .cmd-line {
+            color: #00ff41;
+            font-size: 14px;
+            margin-bottom: 8px;
+            animation: typewriter 3s steps(40) infinite;
+        }
+
+        .cmd-prompt {
+            color: #00cc33;
+        }
+
+        /* Celebration Animation */
+        .celebration-burst {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            border: 2px solid #00ff41;
+            border-radius: 50%;
+            opacity: 0;
+            animation: burst 4s infinite;
+        }
+
+        .celebration-burst::before,
+        .celebration-burst::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px solid #ff0080;
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        .celebration-burst::before {
+            width: 150px;
+            height: 150px;
+            animation: burst 4s infinite 0.5s;
+        }
+
+        .celebration-burst::after {
+            width: 100px;
+            height: 100px;
+            animation: burst 4s infinite 1s;
+        }
+
+        /* Animations */
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        @keyframes terminalGlow {
+            0% { box-shadow: 0 0 20px rgba(0,255,65,0.3), inset 0 0 50px rgba(0,255,65,0.05); }
+            100% { box-shadow: 0 0 40px rgba(0,255,65,0.6), inset 0 0 50px rgba(0,255,65,0.1); }
+        }
+
+        @keyframes scanline {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        @keyframes glitch {
+            0%, 90%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+
+        @keyframes glitch-1 {
+            0%, 90%, 100% { transform: translate(0); }
+            20% { transform: translate(2px, -2px); }
+        }
+
+        @keyframes glitch-2 {
+            0%, 90%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes holoSweep {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(300%) rotate(45deg); }
+        }
+
+        @keyframes statScan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes typewriter {
+            0% { width: 0; }
+            50% { width: 100%; }
+            100% { width: 0; }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(-10px);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-100px) translateX(10px);
+                opacity: 0;
+            }
+        }
+
+        @keyframes burst {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0);
+            }
+            20% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(2);
+            }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 480px) {
+            .friend-name {
+                font-size: 36px;
+            }
+            
+            .glitch-text {
+                font-size: 24px;
+            }
+            
+            .birthday-terminal {
+                margin: 0;
+                border-left: none;
+                border-right: none;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cyber-grid"></div>
+    
+    <div class="neon-particles">
+        <!-- Particles will be generated by JavaScript -->
+    </div>
+
+    <div class="birthday-terminal">
+        <header class="terminal-header">
+            <div class="terminal-title">BIRTHDAY_SYSTEM_v2.1</div>
+            <div class="system-info">
+                STATUS: CELEBRATION MODE ACTIVATED<br>
+                TARGET: ALEX.exe<br>
+                PROTOCOL: MAXIMUM_FUN<span class="blinking-cursor">█</span>
+            </div>
+        </header>
+
+        <main class="birthday-display">
+            <div class="celebration-burst"></div>
+            
+            <h1 class="glitch-text">HAPPY BIRTHDAY</h1>
+            <h2 class="friend-name">ALEX</h2>
+
+            <div class="holo-frame">
+                <div class="birthday-message">
+                    Another year of being absolutely legendary! 🚀<br>
+                    Your birthday is like a system upgrade - <br>
+                    you just keep getting more awesome with each version!
+                </div>
+            </div>
+
+            <div class="cyber-stats">
+                <div class="stat-box">
+                    <div class="stat-label">AWESOME LEVEL</div>
+                    <div class="stat-value">∞</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">FRIEND STATUS</div>
+                    <div class="stat-value">ELITE</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">PARTY MODE</div>
+                    <div class="stat-value">MAX</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">CAKE.exe</div>
+                    <div class="stat-value">LOADED</div>
+                </div>
+            </div>
+
+            <div class="terminal-commands">
+                <div class="cmd-line">
+                    <span class="cmd-prompt">birthday@celebration:~$</span> run party_protocol.exe
+                </div>
+                <div class="cmd-line">
+                    <span class="cmd-prompt">></span> INITIALIZING BIRTHDAY CELEBRATION...
+                </div>
+                <div class="cmd-line">
+                    <span class="cmd-prompt">></span> LAUNCHING CONFETTI.dll
+                </div>
+                <div class="cmd-line">
+                    <span class="cmd-prompt">></span> ACTIVATING FRIEND_MODE: [SUCCESS]
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Generate floating particles
+        function createParticles() {
+            const container = document.querySelector('.neon-particles');
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 5) + 's';
+                
+                const colors = ['#00ff41', '#00ffff', '#ff0080'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.boxShadow = `0 0 6px ${particle.style.background}`;
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // Terminal typing effect
+        function typeWriter(element, text, speed = 50) {
+            let i = 0;
+            element.innerHTML = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        // Glitch effect for birthday message
+        function randomGlitch() {
+            const glitchText = document.querySelector('.glitch-text');
+            const originalText = 'HAPPY BIRTHDAY';
+            
+            setInterval(() => {
+                if (Math.random() < 0.1) {
+                    const glitchedText = originalText.split('').map(char => 
+                        Math.random() < 0.3 ? String.fromCharCode(Math.random() * 26 + 65) : char
+                    ).join('');
+                    
+                    glitchText.textContent = glitchedText;
+                    
+                    setTimeout(() => {
+                        glitchText.textContent = originalText;
+                    }, 100);
+                }
+            }, 2000);
+        }
+
+        // Initialize effects
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            randomGlitch();
+            
+            // Cycle through command lines
+            const cmdLines = document.querySelectorAll('.cmd-line');
+            cmdLines.forEach((line, index) => {
+                line.style.opacity = '0';
+                setTimeout(() => {
+                    line.style.opacity = '1';
+                    line.style.animation = 'none';
+                    typeWriter(line, line.textContent, 30);
+                }, index * 1000);
+            });
+        });
+
+        // Celebration burst effect on click
+        document.addEventListener('click', () => {
+            const burst = document.querySelector('.celebration-burst');
+            burst.style.animation = 'none';
+            setTimeout(() => {
+                burst.style.animation = 'burst 2s ease-out';
+            }, 10);
+        });
+    </script>
+</body>
+</html>

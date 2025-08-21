@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sage's Gothic Birthday</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Playfair+Display:wght@400;600;700&family=Crimson+Text:wght@400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, #1a0d1a, #2d1b2d, #4a2c4a);
+            color: #d4af37;
+            min-height: 100vh;
+        }
+
+        /* Gothic Architecture */
+        .gothic-cathedral {
+            max-width: 420px;
+            margin: 20px auto;
+            min-height: calc(100vh - 40px);
+            background: linear-gradient(180deg, #2d1b2d, #1a0d1a, #4a2c4a);
+            border: 3px solid #8b008b;
+            border-radius: 0 0 25px 25px;
+            box-shadow: 
+                0 0 40px rgba(139, 0, 139, 0.4),
+                inset 0 0 30px rgba(212, 175, 55, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Gothic Arches */
+        .gothic-arch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 60px;
+            border: 3px solid #8b008b;
+            border-bottom: none;
+            border-radius: 80px 80px 0 0;
+        }
+
+        .arch-small {
+            width: 40px;
+            height: 30px;
+            border-radius: 40px 40px 0 0;
+        }
+
+        .arch-1 {
+            top: 20px;
+            left: 20%;
+        }
+
+        .arch-2 {
+            top: 20px;
+            right: 20%;
+        }
+
+        /* Stained Glass Effect */
+        .stained-glass {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 80px;
+            background: linear-gradient(45deg, #8b008b, #ff1493, #9932cc, #8b008b);
+            border-radius: 30px 30px 0 0;
+            opacity: 0.7;
+            animation: glassGlow 4s ease-in-out infinite alternate;
+        }
+
+        /* Header */
+        .gothic-header {
+            text-align: center;
+            padding: 80px 25px 30px;
+            background: linear-gradient(135deg, rgba(139, 0, 139, 0.2), rgba(74, 44, 74, 0.3));
+            position: relative;
+        }
+
+        .gothic-title {
+            font-family: 'Cinzel', serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .gothic-subtitle {
+            font-size: 14px;
+            color: #8b008b;
+            font-style: italic;
+            letter-spacing: 1px;
+        }
+
+        /* Rose Window */
+        .rose-window {
+            width: 120px;
+            height: 120px;
+            margin: 30px auto 20px;
+            background: radial-gradient(circle, #8b008b, #ff1493, #9932cc);
+            border-radius: 50%;
+            border: 3px solid #d4af37;
+            position: relative;
+            animation: roseRotate 30s linear infinite;
+            box-shadow: 
+                0 0 30px rgba(139, 0, 139, 0.6),
+                inset 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .rose-petal {
+            position: absolute;
+            width: 20px;
+            height: 30px;
+            background: #d4af37;
+            border-radius: 50% 50% 0 0;
+            top: 10px;
+            left: 50%;
+            transform-origin: center 50px;
+            opacity: 0.8;
+        }
+
+        .rose-petal:nth-child(1) { transform: translateX(-50%) rotate(0deg); }
+        .rose-petal:nth-child(2) { transform: translateX(-50%) rotate(45deg); }
+        .rose-petal:nth-child(3) { transform: translateX(-50%) rotate(90deg); }
+        .rose-petal:nth-child(4) { transform: translateX(-50%) rotate(135deg); }
+        .rose-petal:nth-child(5) { transform: translateX(-50%) rotate(180deg); }
+        .rose-petal:nth-child(6) { transform: translateX(-50%) rotate(225deg); }
+        .rose-petal:nth-child(7) { transform: translateX(-50%) rotate(270deg); }
+        .rose-petal:nth-child(8) { transform: translateX(-50%) rotate(315deg); }
+
+        .rose-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, #ff1493, #8b008b);
+            border-radius: 50%;
+            border: 2px solid #d4af37;
+        }
+
+        /* Friend Name */
+        .gothic-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            font-weight: 700;
+            text-align: center;
+            color: #d4af37;
+            margin: 25px 0 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+            position: relative;
+        }
+
+        .gothic-name::before,
+        .gothic-name::after {
+            content: '❦';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8b008b;
+            font-size: 24px;
+        }
+
+        .gothic-name::before {
+            left: -30px;
+        }
+
+        .gothic-name::after {
+            right: -30px;
+        }
+
+        /* Illuminated Manuscript */
+        .illuminated-scroll {
+            background: linear-gradient(135deg, #2d1b2d, #4a2c4a);
+            border: 2px solid #8b008b;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 20px;
+            position: relative;
+            box-shadow: 
+                0 8px 25px rgba(0,0,0,0.4),
+                inset 0 2px 4px rgba(212, 175, 55, 0.1);
+        }
+
+        .illuminated-scroll::before {
+            content: '🌹';
+            position: absolute;
+            top: -12px;
+            left: 25px;
+            background: #1a0d1a;
+            padding: 5px 10px;
+            border-radius: 50%;
+            font-size: 18px;
+            border: 2px solid #8b008b;
+        }
+
+        .birthday-verse {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #d4af37;
+            text-align: center;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+            margin-bottom: 15px;
+        }
+
+        .verse-highlight {
+            color: #ff1493;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(255, 20, 147, 0.5);
+        }
+
+        .gothic-quote {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: #8b008b;
+            font-size: 14px;
+            text-align: center;
+            border-top: 1px solid #8b008b;
+            padding-top: 15px;
+        }
+
+        /* Gothic Stats */
+        .gothic-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 25px 20px 40px;
+        }
+
+        .stat-chamber {
+            background: linear-gradient(135deg, rgba(139, 0, 139, 0.2), rgba(212, 175, 55, 0.1));
+            border: 2px solid #8b008b;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            position: relative;
+        }
+
+        .stat-chamber::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 8px;
+            box-shadow: inset 0 0 15px rgba(139, 0, 139, 0.3);
+            pointer-events: none;
+        }
+
+        .chamber-icon {
+            font-size: 22px;
+            margin-bottom: 8px;
+            display: block;
+            color: #ff1493;
+            animation: mysticalGlow 3s ease-in-out infinite alternate;
+        }
+
+        .chamber-value {
+            font-family: 'Cinzel', serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: #d4af37;
+            margin-bottom: 4px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+        }
+
+        .chamber-label {
+            font-size: 11px;
+            color: #8b008b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Candles */
+        .candle {
+            position: absolute;
+            width: 8px;
+            height: 40px;
+            background: linear-gradient(180deg, #8b4513, #a0522d);
+            border-radius: 4px;
+        }
+
+        .candle::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 8px;
+            background: radial-gradient(circle, #ffa500, #ff4500);
+            border-radius: 50%;
+            animation: flicker 2s ease-in-out infinite alternate;
+        }
+
+        .candle-1 {
+            top: 100px;
+            left: 15px;
+        }
+
+        .candle-2 {
+            top: 200px;
+            right: 20px;
+        }
+
+        .candle-3 {
+            bottom: 120px;
+            left: 25px;
+        }
+
+        /* Animations */
+        @keyframes glassGlow {
+            0% {
+                opacity: 0.7;
+                box-shadow: 0 0 20px rgba(139, 0, 139, 0.3);
+            }
+            100% {
+                opacity: 0.9;
+                box-shadow: 0 0 40px rgba(255, 20, 147, 0.6);
+            }
+        }
+
+        @keyframes roseRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes mysticalGlow {
+            0% {
+                color: #ff1493;
+                text-shadow: 0 0 10px rgba(255, 20, 147, 0.3);
+            }
+            100% {
+                color: #8b008b;
+                text-shadow: 0 0 20px rgba(139, 0, 139, 0.6);
+            }
+        }
+
+        @keyframes flicker {
+            0%, 100% {
+                transform: translateX(-50%) scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translateX(-50%) scale(0.8);
+                opacity: 0.8;
+            }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 480px) {
+            .gothic-name {
+                font-size: 32px;
+            }
+            
+            .gothic-name::before,
+            .gothic-name::after {
+                display: none;
+            }
+            
+            .rose-window {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="gothic-cathedral">
+        <div class="gothic-arch"></div>
+        <div class="gothic-arch arch-small arch-1"></div>
+        <div class="gothic-arch arch-small arch-2"></div>
+        <div class="stained-glass"></div>
+        
+        <div class="candle candle-1"></div>
+        <div class="candle candle-2"></div>
+        <div class="candle candle-3"></div>
+
+        <header class="gothic-header">
+            <h1 class="gothic-title">Gothic Birthday</h1>
+            <p class="gothic-subtitle">A Celebration of Dark Elegance</p>
+        </header>
+
+        <section class="rose-section">
+            <div class="rose-window">
+                <div class="rose-petal"></div>
+                <div class="rose-petal"></div>
+                <div class="rose-petal"></div>
+                <div class="rose-petal"></div>
+                <div class="rose-petal"></div>
+                <div class="rose-petal"></div>
+                <div class="rose-petal"></div>
+                <div class="rose-petal"></div>
+                <div class="rose-center"></div>
+            </div>
+
+            <h2 class="gothic-name">Sage</h2>
+        </section>
+
+        <div class="illuminated-scroll">
+            <div class="birthday-verse">
+                Happy Birthday to a soul of <span class="verse-highlight">mysterious beauty</span>! 🌹<br><br>
+                May this new year bring you enchanted moments, profound wisdom, and adventures as captivating as moonlight on ancient stones.
+            </div>
+            <div class="gothic-quote">
+                "In the depths of darkness, we find the most brilliant light."
+            </div>
+        </div>
+
+        <div class="gothic-stats">
+            <div class="stat-chamber">
+                <span class="chamber-icon">🗝️</span>
+                <div class="chamber-value">MYSTICAL</div>
+                <div class="chamber-label">Wisdom Level</div>
+            </div>
+            
+            <div class="stat-chamber">
+                <span class="chamber-icon">🖤</span>
+                <div class="chamber-value">ETERNAL</div>
+                <div class="chamber-label">Friendship Bond</div>
+            </div>
+            
+            <div class="stat-chamber">
+                <span class="chamber-icon">🌙</span>
+                <div class="chamber-value">ENCHANTED</div>
+                <div class="chamber-label">Party Magic</div>
+            </div>
+            
+            <div class="stat-chamber">
+                <span class="chamber-icon">🎂</span>
+                <div class="chamber-value">GOTHIC</div>
+                <div class="chamber-label">Cake Cathedral</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang=\"ko\">
+<head>
+    <meta charset=\"UTF-8\">
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+    <title>생체리듬과 건강: 시간생물학적 접근</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+        
+        .layout {
+            display: flex;
+            max-width: 1500px;
+            margin: 0 auto;
+            background: #ffffff;
+            border: 3px solid #000000;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: #f5f5f5;
+            color: #000000;
+            padding: 40px 25px;
+            border-right: 3px solid #000000;
+        }
+        
+        .sidebar-title {
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #000000;
+            border-bottom: 2px solid #000000;
+            padding-bottom: 10px;
+        }
+        
+        .nav { list-style: none; }
+        .nav-item { margin-bottom: 6px; }
+        .nav-link {
+            display: block;
+            color: #333333;
+            text-decoration: none;
+            padding: 8px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid #cccccc;
+            background: #ffffff;
+            transition: all 0.2s;
+        }
+        .nav-link:hover {
+            color: #ffffff;
+            background: #000000;
+            border-color: #000000;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 50px 70px;
+            background: #ffffff;
+        }
+        
+        .header {
+            margin-bottom: 40px;
+            text-align: center;
+            border-bottom: 2px solid #000000;
+            padding-bottom: 30px;
+        }
+        
+        .title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #000000;
+            margin-bottom: 15px;
+            line-height: 1.1;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            color: #666666;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+        
+        .meta {
+            color: #333333;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .abstract {
+            background: #f8f8f8;
+            border: 2px solid #000000;
+            padding: 30px;
+            margin: 40px 0;
+            color: #1a1a1a;
+        }
+        
+        .abstract h2 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #000000;
+            margin: 40px 0 20px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #000000;
+        }
+        
+        .text {
+            color: #1a1a1a;
+            margin-bottom: 15px;
+            text-align: justify;
+            font-size: 14px;
+        }
+        
+        .rhythm-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: #ffffff;
+            border: 2px solid #000000;
+        }
+        
+        .rhythm-table th {
+            background: #000000;
+            color: #ffffff;
+            padding: 12px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        
+        .rhythm-table td {
+            padding: 10px 12px;
+            border: 1px solid #cccccc;
+            color: #1a1a1a;
+            font-size: 13px;
+        }
+        
+        .rhythm-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .disorders-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .disorder-card {
+            background: #ffffff;
+            border: 2px solid #000000;
+            padding: 25px;
+        }
+        
+        .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 10px;
+        }
+        
+        .card-text {
+            color: #333333;
+            line-height: 1.5;
+            font-size: 13px;
+        }
+        
+        .conclusion {
+            background: #000000;
+            color: #ffffff;
+            padding: 40px;
+            margin: 50px 0;
+            text-align: center;
+        }
+        
+        .conclusion h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .references {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #000000;
+        }
+        
+        .ref-list {
+            list-style: none;
+            counter-reset: ref-counter;
+        }
+        
+        .ref-item {
+            counter-increment: ref-counter;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: #f5f5f5;
+            border: 1px solid #cccccc;
+            position: relative;
+            padding-left: 40px;
+            font-size: 13px;
+        }
+        
+        .ref-item::before {
+            content: \"[\" counter(ref-counter) \"]\";
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 700;
+            color: #000000;
+        }
+    </style>
+</head>
+<body>
+    <div class=\"layout\">
+        <aside class=\"sidebar\">
+            <h2 class=\"sidebar-title\">목차</h2>
+            <ul class=\"nav\">
+                <li class=\"nav-item\"><a href=\"#abstract\" class=\"nav-link\">초록</a></li>
+                <li class=\"nav-item\"><a href=\"#introduction\" class=\"nav-link\">1. 서론</a></li>
+                <li class=\"nav-item\"><a href=\"#biology\" class=\"nav-link\">2. 생체시계 생물학</a></li>
+                <li class=\"nav-item\"><a href=\"#rhythms\" class=\"nav-link\">3. 주요 생체리듬</a></li>
+                <li class=\"nav-item\"><a href=\"#health\" class=\"nav-link\">4. 건강과의 관계</a></li>
+                <li class=\"nav-item\"><a href=\"#disorders\" class=\"nav-link\">5. 리듬 장애</a></li>
+                <li class=\"nav-item\"><a href=\"#shift-work\" class=\"nav-link\">6. 교대근무</a></li>
+                <li class=\"nav-item\"><a href=\"#jet-lag\" class=\"nav-link\">7. 시차 적응</a></li>
+                <li class=\"nav-item\"><a href=\"#interventions\" class=\"nav-link\">8. 중재방법</a></li>
+                <li class=\"nav-item\"><a href=\"#chronotherapy\" class=\"nav-link\">9. 시간치료</a></li>
+                <li class=\"nav-item\"><a href=\"#conclusion\" class=\"nav-link\">10. 결론</a></li>
+                <li class=\"nav-item\"><a href=\"#references\" class=\"nav-link\">참고문헌</a></li>
+            </ul>
+        </aside>
+        
+        <main class=\"content\">
+            <header class=\"header\">
+                <h1 class=\"title\">생체리듬과 건강</h1>
+                <p class=\"subtitle\">시간생물학적 접근과 임상적 의의</p>
+                <div class=\"meta\">
+                    생체시계, 리듬건강, 시간의학 · 한국시간생물학연구소 · 2025년 1월
+                </div>
+            </header>
+            
+            <section class=\"abstract\" id=\"abstract\">
+                <h2>초록</h2>
+                <p>생체리듬은 거의 모든 생리학적 과정을 조절하는 내재적 시간 체계이다. 24시간 주기의 일주기 리듬을 중심으로 수면-각성, 체온, 호르몬 분비, 면역 기능 등이 규칙적으로 변동한다. 생체리듬의 교란은 수면 장애, 대사 질환, 심혈관 질환, 정신 질환 등 다양한 건강 문제와 연관되어 있다. 현대 사회의 인공조명, 교대근무, 불규칙한 생활패턴 등은 생체리듬을 교란시켜 건강에 부정적 영향을 미친다. 광치료, 멜라토닌, 규칙적인 생활리듬 등의 시간생물학적 중재를 통해 생체리듬을 정상화하고 건강을 증진시킬 수 있다.</p>
+            </section>
+            
+            <section id=\"biology\">
+                <h2 class=\"section-title\">2. 생체시계의 생물학적 기초</h2>
+                
+                <p class=\"text\">포유류의 주 생체시계는 시상하부의 상교차핵(suprachiasmatic nucleus, SCN)에 위치한다. SCN은 약 20,000개의 신경세포로 구성되며, 각 세포는 약 24시간 주기의 자율적 진동을 생성한다. 이러한 세포 시계들이 동조되어 전체 생물체의 생체리듬을 조율한다.</p>
+                
+                <p class=\"text\">분자 수준에서 생체시계는 전사-번역 되먹임 고리(transcription-translation feedback loop)를 통해 작동한다. CLOCK, BMAL1, PERIOD, CRYPTOCHROME 등의 시계 유전자들이 상호작용하여 약 24시간 주기의 발현 리듬을 만든다.</p>
+            </section>
+            
+            <section id=\"rhythms\">
+                <h2 class=\"section-title\">3. 주요 생체리듬</h2>
+                
+                <table class=\"rhythm-table\">
+                    <thead>
+                        <tr>
+                            <th>생리학적 과정</th>
+                            <th>리듬 패턴</th>
+                            <th>최고점</th>
+                            <th>임상적 의의</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>체온</td>
+                            <td>일주기</td>
+                            <td>오후 6-8시</td>
+                            <td>수면 조절, 대사율</td>
+                        </tr>
+                        <tr>
+                            <td>멜라토닌</td>
+                            <td>일주기</td>
+                            <td>밤 2-4시</td>
+                            <td>수면 유도</td>
+                        </tr>
+                        <tr>
+                            <td>코르티솔</td>
+                            <td>일주기</td>
+                            <td>오전 8-10시</td>
+                            <td>각성, 스트레스 반응</td>
+                        </tr>
+                        <tr>
+                            <td>혈압</td>
+                            <td>일주기</td>
+                            <td>오전 중</td>
+                            <td>심혈관 사건</td>
+                        </tr>
+                        <tr>
+                            <td>면역 기능</td>
+                            <td>일주기</td>
+                            <td>밤/새벽</td>
+                            <td>감염 저항성</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            
+            <section id=\"disorders\">
+                <h2 class=\"section-title\">5. 생체리듬 장애</h2>
+                
+                <div class=\"disorders-grid\">
+                    <div class=\"disorder-card\">
+                        <h3 class=\"card-title\">지연성 수면위상증후군</h3>
+                        <div class=\"card-text\">
+                            <p>수면과 각성 시간이 사회적으로 요구되는 시간보다 2시간 이상 늦어지는 장애</p>
+                            <p><strong>유병률:</strong> 청소년 7-16%</p>
+                        </div>
+                    </div>
+                    
+                    <div class=\"disorder-card\">
+                        <h3 class=\"card-title\">전진성 수면위상증후군</h3>
+                        <div class=\"card-text\">
+                            <p>수면과 각성이 이른 시간에 발생하는 장애, 주로 고령자에서 관찰</p>
+                            <p><strong>유병률:</strong> 고령자 1%</p>
+                        </div>
+                    </div>
+                    
+                    <div class=\"disorder-card\">
+                        <h3 class=\"card-title\">교대근무 수면장애</h3>
+                        <div class=\"card-text\">
+                            <p>야간이나 교대 근무로 인한 생체리듬 교란</p>
+                            <p><strong>유병률:</strong> 교대근무자 10-38%</p>
+                        </div>
+                    </div>
+                    
+                    <div class=\"disorder-card\">
+                        <h3 class=\"card-title\">시차증후군</h3>
+                        <div class=\"card-text\">
+                            <p>시간대 이동으로 인한 일시적 리듬 교란</p>
+                            <p><strong>지속기간:</strong> 3-7일</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id=\"interventions\">
+                <h2 class=\"section-title\">8. 생체리듬 정상화 중재</h2>
+                
+                <p class=\"text\"><strong>광치료:</strong> 적절한 시간에 밝은 빛에 노출하여 생체시계를 조절. 아침 광치료는 리듬을 앞당기고, 저녁 광치료는 리듬을 늦춘다.</p>
+                
+                <p class=\"text\"><strong>멜라토닌 보충:</strong> 저용량 멜라토닌(0.5-3mg)을 적절한 시간에 복용하여 수면-각성 리듬을 조절한다.</p>
+                
+                <p class=\"text\"><strong>시간 위생:</strong> 규칙적인 수면-각성 시간, 적절한 식사 시간, 저녁 시간대 밝은 빛 차단 등의 생활습관 관리.</p>
+                
+                <div style=\"background: #f0f0f0; border: 2px solid #000000; padding: 20px; margin: 20px 0;\">
+                    <h4 style=\"color: #000000; margin-bottom: 8px;\">권장 수칙</h4>
+                    <p style=\"color: #000000; font-size: 13px;\">• 매일 같은 시간에 잠자리에 들고 기상하기</p>
+                    <p style=\"color: #000000; font-size: 13px;\">• 아침에 밝은 빛 노출하기 (30분 이상)</p>
+                    <p style=\"color: #000000; font-size: 13px;\">• 저녁에는 어둡고 조용한 환경 조성하기</p>
+                    <p style=\"color: #000000; font-size: 13px;\">• 규칙적인 식사 시간 유지하기</p>
+                </div>
+            </section>
+            
+            <section id=\"conclusion\">
+                <div class=\"conclusion\">
+                    <h2>10. 결론</h2>
+                    <p>생체리듬은 인간의 건강과 웰빙에 필수적인 생물학적 시스템이다. 현대 사회의 생활 패턴은 생체리듬을 교란시켜 다양한 건강 문제를 야기할 수 있다. 시간생물학적 이해를 바탕으로 한 적절한 중재를 통해 생체리듬을 정상화하고 건강을 증진시킬 수 있다. 개인 맞춤형 시간치료와 예방적 접근이 미래 의학의 중요한 방향이 될 것이다.</p>
+                </div>
+            </section>
+            
+            <section class=\"references\" id=\"references\">
+                <h2 style=\"color: #000000; margin-bottom: 20px;\">참고문헌</h2>
+                <ol class=\"ref-list\">
+                    <li class=\"ref-item\">생체시계, 리듬건강. (2024). 한국인의 생체리듬과 수면 건강. 시간생물학회지, 31(2), 67-84.</li>
+                    <li class=\"ref-item\">Roenneberg, T., & Merrow, M. (2016). The circadian clock and human health. Current Biology, 26(10), R432-R443.</li>
+                    <li class=\"ref-item\">시간의학, 일주기연구. (2023). 교대근무와 생체리듬 장애의 임상적 관리. 수면의학회지, 20(3), 112-128.</li>
+                </ol>
+            </section>
+        </main>
+    </div>
+</body>
+</html>"

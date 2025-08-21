@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riley's Tropical Birthday</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600&family=Kalam:wght@300;400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Kalam', cursive;
+            background: linear-gradient(135deg, #87CEEB, #48CAE4, #0077BE);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Floating Elements */
+        .floating-leaves {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .palm-leaf {
+            position: absolute;
+            font-size: 30px;
+            animation: floatDown 15s infinite linear;
+            opacity: 0.7;
+        }
+
+        /* Main Container */
+        .tropical-paradise {
+            position: relative;
+            z-index: 10;
+            max-width: 420px;
+            margin: 20px auto;
+            min-height: calc(100vh - 40px);
+            background: linear-gradient(
+                180deg, 
+                rgba(255, 223, 0, 0.9) 0%,
+                rgba(255, 165, 0, 0.85) 30%,
+                rgba(255, 99, 132, 0.8) 70%,
+                rgba(54, 162, 235, 0.9) 100%
+            );
+            border-radius: 25px;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.2),
+                inset 0 0 40px rgba(255,255,255,0.1);
+            overflow: hidden;
+        }
+
+        /* Beach Header */
+        .beach-header {
+            text-align: center;
+            padding: 40px 20px 30px;
+            background: linear-gradient(135deg, rgba(255, 223, 0, 0.8), rgba(255, 165, 0, 0.9));
+            position: relative;
+        }
+
+        .sun {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            background: radial-gradient(circle, #FFD700, #FFA500);
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+            animation: sunGlow 3s ease-in-out infinite alternate;
+            position: relative;
+        }
+
+        .sun-ray {
+            position: absolute;
+            width: 3px;
+            height: 15px;
+            background: #FFD700;
+            top: -20px;
+            left: 50%;
+            transform-origin: center 58px;
+            opacity: 0.8;
+        }
+
+        .sun-ray:nth-child(1) { transform: translateX(-50%) rotate(0deg); }
+        .sun-ray:nth-child(2) { transform: translateX(-50%) rotate(45deg); }
+        .sun-ray:nth-child(3) { transform: translateX(-50%) rotate(90deg); }
+        .sun-ray:nth-child(4) { transform: translateX(-50%) rotate(135deg); }
+        .sun-ray:nth-child(5) { transform: translateX(-50%) rotate(180deg); }
+        .sun-ray:nth-child(6) { transform: translateX(-50%) rotate(225deg); }
+        .sun-ray:nth-child(7) { transform: translateX(-50%) rotate(270deg); }
+        .sun-ray:nth-child(8) { transform: translateX(-50%) rotate(315deg); }
+
+        .tropical-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 26px;
+            font-weight: 600;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 8px;
+        }
+
+        .beach-subtitle {
+            font-size: 14px;
+            color: rgba(255,255,255,0.9);
+            font-weight: 300;
+        }
+
+        /* Palm Trees */
+        .palm-tree {
+            position: absolute;
+            font-size: 60px;
+            color: #228B22;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .palm-left {
+            bottom: 100px;
+            left: 20px;
+            transform: rotate(-15deg);
+        }
+
+        .palm-right {
+            bottom: 80px;
+            right: 15px;
+            transform: rotate(20deg);
+        }
+
+        /* Friend Name */
+        .tropical-name {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 44px;
+            font-weight: 600;
+            text-align: center;
+            color: #fff;
+            margin: 30px 0 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            animation: bounceGlow 2s ease-in-out infinite alternate;
+        }
+
+        /* Message */
+        .beach-postcard {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 20px;
+            color: #333;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            position: relative;
+        }
+
+        .beach-postcard::before {
+            content: '🏖️';
+            position: absolute;
+            top: -12px;
+            left: 25px;
+            background: #fff;
+            padding: 5px 8px;
+            border-radius: 50%;
+            font-size: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .birthday-message {
+            font-size: 16px;
+            line-height: 1.7;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .message-highlight {
+            color: #FF6347;
+            font-weight: 500;
+        }
+
+        /* Tropical Stats */
+        .tropical-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 25px 20px 40px;
+        }
+
+        .stat-coconut {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 18px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            display: block;
+            animation: bobFloat 3s ease-in-out infinite;
+        }
+
+        .stat-value {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 18px;
+            font-weight: 500;
+            color: #fff;
+            margin-bottom: 4px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+            font-weight: 300;
+        }
+
+        /* Waves at bottom */
+        .wave-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            overflow: hidden;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(54, 162, 235, 0.8), rgba(0, 119, 190, 0.9));
+            border-radius: 50px 50px 0 0;
+            animation: waveMove 8s ease-in-out infinite;
+        }
+
+        .wave:nth-child(2) {
+            animation-delay: -2s;
+            opacity: 0.7;
+            height: 40px;
+        }
+
+        .wave:nth-child(3) {
+            animation-delay: -4s;
+            opacity: 0.5;
+            height: 20px;
+        }
+
+        /* Animations */
+        @keyframes floatDown {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 0.7; }
+            90% { opacity: 0.7; }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes sunGlow {
+            0% {
+                box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+                transform: scale(1);
+            }
+            100% {
+                box-shadow: 0 0 50px rgba(255, 215, 0, 0.9);
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes bounceGlow {
+            0% {
+                transform: translateY(0px);
+                text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            }
+            100% {
+                transform: translateY(-5px);
+                text-shadow: 3px 8px 12px rgba(0,0,0,0.3);
+            }
+        }
+
+        @keyframes bobFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes waveMove {
+            0%, 100% {
+                transform: translateX(-50%) translateY(0px);
+            }
+            50% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 480px) {
+            .tropical-name {
+                font-size: 36px;
+            }
+            
+            .tropical-title {
+                font-size: 22px;
+            }
+            
+            .palm-tree {
+                font-size: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-leaves">
+        <!-- Floating leaves will be generated by JavaScript -->
+    </div>
+
+    <div class="tropical-paradise">
+        <div class="palm-tree palm-left">🌴</div>
+        <div class="palm-tree palm-right">🌴</div>
+
+        <header class="beach-header">
+            <div class="sun">
+                <div class="sun-ray"></div>
+                <div class="sun-ray"></div>
+                <div class="sun-ray"></div>
+                <div class="sun-ray"></div>
+                <div class="sun-ray"></div>
+                <div class="sun-ray"></div>
+                <div class="sun-ray"></div>
+                <div class="sun-ray"></div>
+            </div>
+            <h1 class="tropical-title">Tropical Birthday</h1>
+            <p class="beach-subtitle">Paradise Celebration</p>
+        </header>
+
+        <h2 class="tropical-name">Riley</h2>
+
+        <div class="beach-postcard">
+            <div class="birthday-message">
+                Happy Birthday to our <span class="message-highlight">sunshine friend</span>! 🌺<br><br>
+                May your special day be filled with warm breezes, bright smiles, and waves of happiness that never end!
+            </div>
+        </div>
+
+        <div class="tropical-stats">
+            <div class="stat-coconut">
+                <span class="stat-icon">🌺</span>
+                <div class="stat-value">TROPICAL</div>
+                <div class="stat-label">Vibe Level</div>
+            </div>
+            
+            <div class="stat-coconut">
+                <span class="stat-icon">🏄‍♀️</span>
+                <div class="stat-value">ENDLESS</div>
+                <div class="stat-label">Fun Waves</div>
+            </div>
+            
+            <div class="stat-coconut">
+                <span class="stat-icon">🥥</span>
+                <div class="stat-value">FRESH</div>
+                <div class="stat-label">Party Coconut</div>
+            </div>
+            
+            <div class="stat-coconut">
+                <span class="stat-icon">🎂</span>
+                <div class="stat-value">PARADISE</div>
+                <div class="stat-label">Cake Island</div>
+            </div>
+        </div>
+
+        <div class="wave-container">
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+        </div>
+    </div>
+
+    <script>
+        // Generate floating tropical elements
+        function createFloatingElements() {
+            const container = document.querySelector('.floating-leaves');
+            const elements = ['🌺', '🌴', '🥥', '🐚', '🦋'];
+            
+            for (let i = 0; i < 8; i++) {
+                const element = document.createElement('div');
+                element.className = 'palm-leaf';
+                element.textContent = elements[Math.floor(Math.random() * elements.length)];
+                
+                element.style.left = Math.random() * 100 + '%';
+                element.style.animationDelay = Math.random() * 15 + 's';
+                element.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                
+                container.appendChild(element);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createFloatingElements();
+            
+            // Add click effects
+            document.addEventListener('click', (e) => {
+                for (let i = 0; i < 5; i++) {
+                    const splash = document.createElement('div');
+                    splash.textContent = '💦';
+                    splash.style.position = 'fixed';
+                    splash.style.left = e.clientX + (Math.random() - 0.5) * 100 + 'px';
+                    splash.style.top = e.clientY + (Math.random() - 0.5) * 100 + 'px';
+                    splash.style.fontSize = '20px';
+                    splash.style.pointerEvents = 'none';
+                    splash.style.zIndex = '1000';
+                    splash.style.animation = 'floatDown 2s ease-out forwards';
+                    
+                    document.body.appendChild(splash);
+                    
+                    setTimeout(() => {
+                        splash.remove();
+                    }, 2000);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

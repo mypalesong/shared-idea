@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casey's Retro Birthday - 80s Synthwave Party</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bungee:wght@400&family=Audiowide:wght@400&family=Russo+One:wght@400&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Russo One', sans-serif;
+            background: linear-gradient(180deg, #0f0f23 0%, #1a0d2e 30%, #2d1b4e 100%);
+            color: #ff00ff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Grid Background */
+        .retro-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 0, 255, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 255, 0.3) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            z-index: 1;
+        }
+
+        /* Mountain Silhouette */
+        .mountain-range {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            z-index: 2;
+        }
+
+        .mountain {
+            position: absolute;
+            bottom: 0;
+            background: linear-gradient(45deg, #1a0d2e, #2d1b4e);
+            clip-path: polygon(0 100%, 50% 30%, 100% 100%);
+        }
+
+        .mountain-1 {
+            left: -10%;
+            width: 40%;
+            height: 150px;
+        }
+
+        .mountain-2 {
+            left: 25%;
+            width: 50%;
+            height: 180px;
+            background: linear-gradient(45deg, #2d1b4e, #4a2c70);
+        }
+
+        .mountain-3 {
+            right: -5%;
+            width: 35%;
+            height: 120px;
+        }
+
+        /* Horizon Glow */
+        .horizon-glow {
+            position: fixed;
+            bottom: 200px;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to top, #ff00ff, #00ffff, transparent);
+            opacity: 0.3;
+            filter: blur(20px);
+            z-index: 1;
+        }
+
+        /* Main Container */
+        .synthwave-container {
+            position: relative;
+            z-index: 10;
+            max-width: 420px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: linear-gradient(
+                180deg, 
+                rgba(15, 15, 35, 0.9) 0%, 
+                rgba(26, 13, 46, 0.85) 50%, 
+                rgba(45, 27, 78, 0.9) 100%
+            );
+            backdrop-filter: blur(5px);
+            border-left: 2px solid #ff00ff;
+            border-right: 2px solid #00ffff;
+            box-shadow: 
+                0 0 30px rgba(255, 0, 255, 0.3),
+                inset 0 0 30px rgba(0, 255, 255, 0.1);
+        }
+
+        /* Header */
+        .retro-header {
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1));
+        }
+
+        .retro-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ff00ff, #00ffff, #ff00ff);
+            animation: neonPulse 2s ease-in-out infinite;
+        }
+
+        .birthday-logo {
+            font-family: 'Bungee', cursive;
+            font-size: 24px;
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+            animation: logoGlow 3s ease-in-out infinite alternate;
+        }
+
+        .retro-tagline {
+            font-family: 'Audiowide', cursive;
+            font-size: 12px;
+            color: #00ffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.8;
+        }
+
+        /* Neon Sun */
+        .neon-sun-section {
+            position: relative;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .neon-sun {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 30px;
+            position: relative;
+            background: radial-gradient(circle, #ff00ff, #ff0080, #8000ff);
+            border-radius: 50%;
+            box-shadow: 
+                0 0 50px #ff00ff,
+                0 0 100px #ff00ff,
+                inset 0 0 30px rgba(0, 0, 0, 0.3);
+            animation: sunPulse 4s ease-in-out infinite;
+        }
+
+        .sun-lines {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+        }
+
+        .sun-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 40px;
+            background: linear-gradient(to bottom, #ff00ff, transparent);
+            transform-origin: center 0;
+            animation: sunRotate 20s linear infinite;
+        }
+
+        .sun-line:nth-child(1) { transform: translate(-50%, -150px) rotate(0deg); }
+        .sun-line:nth-child(2) { transform: translate(-50%, -150px) rotate(30deg); }
+        .sun-line:nth-child(3) { transform: translate(-50%, -150px) rotate(60deg); }
+        .sun-line:nth-child(4) { transform: translate(-50%, -150px) rotate(90deg); }
+        .sun-line:nth-child(5) { transform: translate(-50%, -150px) rotate(120deg); }
+        .sun-line:nth-child(6) { transform: translate(-50%, -150px) rotate(150deg); }
+        .sun-line:nth-child(7) { transform: translate(-50%, -150px) rotate(180deg); }
+        .sun-line:nth-child(8) { transform: translate(-50%, -150px) rotate(210deg); }
+        .sun-line:nth-child(9) { transform: translate(-50%, -150px) rotate(240deg); }
+        .sun-line:nth-child(10) { transform: translate(-50%, -150px) rotate(270deg); }
+        .sun-line:nth-child(11) { transform: translate(-50%, -150px) rotate(300deg); }
+        .sun-line:nth-child(12) { transform: translate(-50%, -150px) rotate(330deg); }
+
+        /* Friend Name */
+        .retro-name {
+            font-family: 'Bungee', cursive;
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            text-transform: uppercase;
+        }
+
+        .retro-name .neon-letter {
+            display: inline-block;
+            color: #ff00ff;
+            text-shadow: 
+                0 0 5px #ff00ff,
+                0 0 10px #ff00ff,
+                0 0 15px #ff00ff,
+                0 0 20px #ff00ff;
+            animation: letterFlicker 2s infinite alternate;
+            transition: all 0.3s ease;
+        }
+
+        .retro-name .neon-letter:nth-child(1) { animation-delay: 0s; color: #ff00ff; }
+        .retro-name .neon-letter:nth-child(2) { animation-delay: 0.2s; color: #00ffff; }
+        .retro-name .neon-letter:nth-child(3) { animation-delay: 0.4s; color: #ff00ff; }
+        .retro-name .neon-letter:nth-child(4) { animation-delay: 0.6s; color: #00ffff; }
+        .retro-name .neon-letter:nth-child(5) { animation-delay: 0.8s; color: #ff00ff; }
+
+        .retro-name .neon-letter:hover {
+            transform: scale(1.2) rotate(10deg);
+            filter: brightness(1.5);
+        }
+
+        /* Message Terminal */
+        .retro-terminal {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            margin: 30px 20px;
+            padding: 25px;
+            font-family: 'Audiowide', cursive;
+            position: relative;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.3),
+                inset 0 0 20px rgba(0, 255, 255, 0.1);
+        }
+
+        .retro-terminal::before {
+            content: 'BIRTHDAY.EXE';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #0f0f23;
+            color: #00ffff;
+            padding: 5px 15px;
+            border: 2px solid #00ffff;
+            border-radius: 20px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .terminal-content {
+            color: #00ffff;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .terminal-highlight {
+            color: #ff00ff;
+            font-weight: bold;
+            text-shadow: 0 0 10px #ff00ff;
+        }
+
+        .cursor {
+            animation: blink 1s infinite;
+        }
+
+        /* Retro Stats */
+        .retro-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 30px 20px;
+        }
+
+        .stat-panel {
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1));
+            border: 2px solid;
+            border-image: linear-gradient(45deg, #ff00ff, #00ffff) 1;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 255, 0.3), transparent);
+            animation: statScan 3s infinite;
+        }
+
+        .stat-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: block;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        .stat-value {
+            font-family: 'Bungee', cursive;
+            font-size: 18px;
+            color: #ff00ff;
+            text-shadow: 0 0 15px #ff00ff;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #00ffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Retro Waves */
+        .wave-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            overflow: hidden;
+            z-index: 3;
+        }
+
+        .retro-wave {
+            position: absolute;
+            bottom: 0;
+            width: 200%;
+            height: 100px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                #ff00ff, 
+                #00ffff, 
+                #ff00ff, 
+                transparent
+            );
+            opacity: 0.3;
+            animation: waveFlow 15s linear infinite;
+        }
+
+        .retro-wave:nth-child(2) {
+            animation-delay: -5s;
+            opacity: 0.2;
+            animation-duration: 18s;
+        }
+
+        /* Animations */
+        @keyframes gridMove {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(50px) translateY(50px); }
+        }
+
+        @keyframes neonPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes logoGlow {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(1.3); }
+        }
+
+        @keyframes sunPulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 50px #ff00ff, 0 0 100px #ff00ff;
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 60px #ff00ff, 0 0 120px #ff00ff;
+            }
+        }
+
+        @keyframes sunRotate {
+            0% { transform: translate(-50%, -150px) rotate(0deg); }
+            100% { transform: translate(-50%, -150px) rotate(360deg); }
+        }
+
+        @keyframes letterFlicker {
+            0%, 100% {
+                text-shadow: 
+                    0 0 5px currentColor,
+                    0 0 10px currentColor,
+                    0 0 15px currentColor,
+                    0 0 20px currentColor;
+            }
+            50% {
+                text-shadow: 
+                    0 0 2px currentColor,
+                    0 0 5px currentColor,
+                    0 0 8px currentColor,
+                    0 0 12px currentColor;
+            }
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        @keyframes statScan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes waveFlow {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Floating Elements */
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .floating-shape {
+            position: absolute;
+            border: 2px solid;
+            border-color: #ff00ff;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        .shape-triangle {
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 25px solid #00ffff;
+            border-color: transparent transparent #00ffff transparent;
+        }
+
+        .shape-diamond {
+            width: 20px;
+            height: 20px;
+            transform: rotate(45deg);
+            border-color: #ff00ff;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(90deg); }
+            50% { transform: translateY(0px) rotate(180deg); }
+            75% { transform: translateY(-10px) rotate(270deg); }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 480px) {
+            .birthday-logo {
+                font-size: 20px;
+            }
+            
+            .retro-name {
+                font-size: 36px;
+            }
+            
+            .neon-sun {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .synthwave-container {
+                border-left: none;
+                border-right: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="retro-grid"></div>
+    <div class="horizon-glow"></div>
+    
+    <div class="mountain-range">
+        <div class="mountain mountain-1"></div>
+        <div class="mountain mountain-2"></div>
+        <div class="mountain mountain-3"></div>
+    </div>
+
+    <div class="floating-shapes">
+        <!-- Floating shapes will be generated by JavaScript -->
+    </div>
+
+    <div class="synthwave-container">
+        <div class="wave-container">
+            <div class="retro-wave"></div>
+            <div class="retro-wave"></div>
+        </div>
+
+        <header class="retro-header">
+            <h1 class="birthday-logo">Birthday Wave</h1>
+            <p class="retro-tagline">Synthwave Celebration Mode</p>
+        </header>
+
+        <section class="neon-sun-section">
+            <div class="neon-sun">
+                <div class="sun-lines">
+                    <div class="sun-line"></div>
+                    <div class="sun-line"></div>
+                    <div class="sun-line"></div>
+                    <div class="sun-line"></div>
+                    <div class="sun-line"></div>
+                    <div class="sun-line"></div>
+                    <div class="sun-line"></div>
+                    <div class="sun-line"></div>
+                    <div class="sun-line"></div>
+                    <div class="sun-line"></div>
+                    <div class="sun-line"></div>
+                    <div class="sun-line"></div>
+                </div>
+            </div>
+
+            <h2 class="retro-name">
+                <span class="neon-letter">C</span>
+                <span class="neon-letter">A</span>
+                <span class="neon-letter">S</span>
+                <span class="neon-letter">E</span>
+                <span class="neon-letter">Y</span>
+            </h2>
+        </section>
+
+        <div class="retro-terminal">
+            <div class="terminal-content">
+                > INITIATING BIRTHDAY SEQUENCE...<br>
+                > <span class="terminal-highlight">HAPPY BIRTHDAY CASEY!</span><br><br>
+                > May your special day be as <span class="terminal-highlight">RADICAL</span> as the 80s!<br>
+                > Loading awesome vibes... <span class="terminal-highlight">100% COMPLETE</span><br>
+                > Have a totally <span class="terminal-highlight">TUBULAR</span> birthday! 🎂<br><br>
+                > Press any key to continue the party<span class="cursor">_</span>
+            </div>
+        </div>
+
+        <div class="retro-stats">
+            <div class="stat-panel">
+                <span class="stat-icon">🎮</span>
+                <div class="stat-value">LEVEL 99</div>
+                <div class="stat-label">Awesome Rating</div>
+            </div>
+            
+            <div class="stat-panel">
+                <span class="stat-icon">🕹️</span>
+                <div class="stat-value">HIGH SCORE</div>
+                <div class="stat-label">Friend Status</div>
+            </div>
+            
+            <div class="stat-panel">
+                <span class="stat-icon">🎵</span>
+                <div class="stat-value">MAXIMUM</div>
+                <div class="stat-label">Party Mode</div>
+            </div>
+            
+            <div class="stat-panel">
+                <span class="stat-icon">🎂</span>
+                <div class="stat-value">READY</div>
+                <div class="stat-label">Cake.exe</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate floating shapes
+        function createFloatingShapes() {
+            const container = document.querySelector('.floating-shapes');
+            const shapes = ['shape-triangle', 'shape-diamond'];
+            
+            for (let i = 0; i < 8; i++) {
+                const shape = document.createElement('div');
+                shape.className = `floating-shape ${shapes[Math.floor(Math.random() * shapes.length)]}`;
+                
+                // Random position
+                shape.style.left = Math.random() * 100 + '%';
+                shape.style.top = Math.random() * 100 + '%';
+                
+                // Random animation delay and duration
+                shape.style.animationDelay = Math.random() * 8 + 's';
+                shape.style.animationDuration = (Math.random() * 6 + 6) + 's';
+                
+                container.appendChild(shape);
+            }
+        }
+
+        // Terminal typing effect
+        let terminalText = [
+            '> INITIATING BIRTHDAY SEQUENCE...',
+            '> HAPPY BIRTHDAY CASEY!',
+            '',
+            '> May your special day be as RADICAL as the 80s!',
+            '> Loading awesome vibes... 100% COMPLETE',
+            '> Have a totally TUBULAR birthday! 🎂',
+            '',
+            '> Press any key to continue the party_'
+        ];
+
+        function typeWriter() {
+            const terminal = document.querySelector('.terminal-content');
+            let lineIndex = 0;
+            let charIndex = 0;
+            terminal.innerHTML = '';
+
+            function typeLine() {
+                if (lineIndex < terminalText.length) {
+                    const currentLine = terminalText[lineIndex];
+                    
+                    if (charIndex < currentLine.length) {
+                        const char = currentLine.charAt(charIndex);
+                        terminal.innerHTML += char === ' ' && charIndex === currentLine.length - 1 ? '' : char;
+                        charIndex++;
+                        setTimeout(typeLine, 50);
+                    } else {
+                        terminal.innerHTML += '<br>';
+                        lineIndex++;
+                        charIndex = 0;
+                        setTimeout(typeLine, 200);
+                    }
+                }
+            }
+            
+            typeLine();
+        }
+
+        // Neon flicker effect
+        function addNeonFlicker() {
+            const neonElements = document.querySelectorAll('.neon-letter, .stat-value');
+            
+            setInterval(() => {
+                neonElements.forEach(element => {
+                    if (Math.random() < 0.1) {
+                        element.style.opacity = '0.5';
+                        setTimeout(() => {
+                            element.style.opacity = '1';
+                        }, 100);
+                    }
+                });
+            }, 2000);
+        }
+
+        // Sun interaction
+        function addSunInteraction() {
+            const sun = document.querySelector('.neon-sun');
+            
+            sun.addEventListener('click', () => {
+                sun.style.animation = 'none';
+                sun.style.transform = 'scale(1.2)';
+                sun.style.filter = 'brightness(1.5)';
+                
+                setTimeout(() => {
+                    sun.style.animation = 'sunPulse 4s ease-in-out infinite';
+                    sun.style.transform = 'scale(1)';
+                    sun.style.filter = 'brightness(1)';
+                }, 500);
+            });
+        }
+
+        // Grid animation control
+        function controlGridAnimation() {
+            const grid = document.querySelector('.retro-grid');
+            let isPaused = false;
+            
+            document.addEventListener('click', () => {
+                if (isPaused) {
+                    grid.style.animationPlayState = 'running';
+                } else {
+                    grid.style.animationPlayState = 'paused';
+                }
+                isPaused = !isPaused;
+            });
+        }
+
+        // Stats animation
+        function animateStats() {
+            const stats = document.querySelectorAll('.stat-panel');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.transform = 'translateY(0) scale(1)';
+                            entry.target.style.opacity = '1';
+                        }, index * 150);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            stats.forEach(stat => {
+                stat.style.transform = 'translateY(50px) scale(0.8)';
+                stat.style.opacity = '0';
+                stat.style.transition = 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                observer.observe(stat);
+            });
+        }
+
+        // Letter hover effects
+        function addLetterEffects() {
+            const letters = document.querySelectorAll('.neon-letter');
+            
+            letters.forEach(letter => {
+                letter.addEventListener('mouseenter', () => {
+                    // Create spark effect
+                    for (let i = 0; i < 5; i++) {
+                        const spark = document.createElement('div');
+                        spark.style.position = 'absolute';
+                        spark.style.width = '4px';
+                        spark.style.height = '4px';
+                        spark.style.background = letter.style.color || '#ff00ff';
+                        spark.style.borderRadius = '50%';
+                        spark.style.pointerEvents = 'none';
+                        spark.style.left = letter.offsetLeft + (Math.random() * 30) + 'px';
+                        spark.style.top = letter.offsetTop + (Math.random() * 30) + 'px';
+                        spark.style.animation = 'sparkle 1s ease-out forwards';
+                        
+                        document.body.appendChild(spark);
+                        
+                        setTimeout(() => {
+                            spark.remove();
+                        }, 1000);
+                    }
+                });
+            });
+        }
+
+        // Add sparkle animation
+        const sparkleKeyframes = `
+            @keyframes sparkle {
+                0% { 
+                    opacity: 1; 
+                    transform: scale(0) rotate(0deg); 
+                }
+                50% { 
+                    opacity: 1; 
+                    transform: scale(1) rotate(180deg); 
+                }
+                100% { 
+                    opacity: 0; 
+                    transform: scale(0) rotate(360deg); 
+                }
+            }
+        `;
+        
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = sparkleKeyframes;
+        document.head.appendChild(styleSheet);
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', () => {
+            createFloatingShapes();
+            setTimeout(typeWriter, 1000);
+            addNeonFlicker();
+            addSunInteraction();
+            controlGridAnimation();
+            animateStats();
+            addLetterEffects();
+            
+            // Add wave click effect
+            const waves = document.querySelectorAll('.retro-wave');
+            waves.forEach(wave => {
+                wave.addEventListener('click', () => {
+                    wave.style.animationDuration = '3s';
+                    setTimeout(() => {
+                        wave.style.animationDuration = '';
+                    }, 3000);
+                });
+            });
+        });
+
+        // Konami Code Easter Egg
+        let konamiCode = [];
+        const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
+        
+        document.addEventListener('keydown', (e) => {
+            konamiCode.push(e.code);
+            if (konamiCode.length > konamiSequence.length) {
+                konamiCode.shift();
+            }
+            
+            if (konamiCode.join(',') === konamiSequence.join(',')) {
+                // Activate super party mode
+                document.body.style.animation = 'rainbow 1s infinite, shake 0.5s infinite';
+                setTimeout(() => {
+                    document.body.style.animation = '';
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>

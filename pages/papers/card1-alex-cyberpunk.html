@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex's Cyberpunk Birthday</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Mono', monospace;
+            background: linear-gradient(135deg, #0a0a0f, #1a1a2e, #16213e);
+            color: #00ff41;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Digital Grid Background */
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: 
+                linear-gradient(90deg, rgba(0,255,65,0.1) 1px, transparent 1px),
+                linear-gradient(rgba(0,255,65,0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: gridPulse 3s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        /* Main Container */
+        .cyberpunk-card {
+            position: relative;
+            z-index: 10;
+            max-width: 420px;
+            margin: 20px auto;
+            min-height: calc(100vh - 40px);
+            background: linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,20,10,0.95));
+            border: 2px solid #00ff41;
+            border-radius: 15px;
+            box-shadow: 
+                0 0 30px rgba(0,255,65,0.3),
+                inset 0 0 50px rgba(0,255,65,0.05);
+            animation: terminalGlow 2s ease-in-out infinite alternate;
+        }
+
+        /* Header */
+        .cyber-header {
+            background: linear-gradient(90deg, #001100, #003300);
+            border-bottom: 2px solid #00ff41;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cyber-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,255,65,0.3), transparent);
+            animation: scanline 3s ease-in-out infinite;
+        }
+
+        .system-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 18px;
+            color: #00ff41;
+            text-shadow: 0 0 10px rgba(0,255,65,0.8);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        /* Glitch Name Effect */
+        .friend-name {
+            font-family: 'Orbitron', monospace;
+            font-size: 48px;
+            font-weight: 900;
+            text-align: center;
+            margin: 30px 0;
+            background: linear-gradient(45deg, #00ff41, #00ffff, #ff0080);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 3s ease-in-out infinite;
+            position: relative;
+        }
+
+        .glitch-text {
+            position: relative;
+            color: #00ff41;
+            font-size: 28px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin: 20px 0;
+            text-shadow: 
+                2px 0 0 #ff0080,
+                -2px 0 0 #00ffff;
+            animation: glitch 1.5s infinite;
+        }
+
+        .glitch-text::before,
+        .glitch-text::after {
+            content: 'HAPPY BIRTHDAY';
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch-text::before {
+            animation: glitch-1 2s infinite;
+            color: #ff0080;
+            z-index: -1;
+        }
+
+        .glitch-text::after {
+            animation: glitch-2 3s infinite;
+            color: #00ffff;
+            z-index: -2;
+        }
+
+        /* Message Section */
+        .cyber-message {
+            padding: 30px;
+            background: rgba(0,0,0,0.8);
+            border: 2px solid #00ff41;
+            margin: 20px;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .birthday-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #00cc33;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            color: #00ffff;
+            font-weight: bold;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        /* Stats Grid */
+        .cyber-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px;
+        }
+
+        .stat-panel {
+            background: rgba(0,255,65,0.05);
+            border: 1px solid #00ff41;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            border-radius: 8px;
+        }
+
+        .stat-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ff41, transparent);
+            animation: statScan 3s infinite;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 20px;
+            font-weight: 700;
+            color: #00ff41;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #009922;
+            text-transform: uppercase;
+        }
+
+        /* Terminal Commands */
+        .terminal {
+            background: #000;
+            border: 2px solid #00ff41;
+            margin: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .cmd-line {
+            color: #00ff41;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .cmd-prompt {
+            color: #00cc33;
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00ff41;
+            border-radius: 50%;
+            animation: float 8s infinite linear;
+        }
+
+        /* Animations */
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        @keyframes terminalGlow {
+            0% { box-shadow: 0 0 30px rgba(0,255,65,0.3), inset 0 0 50px rgba(0,255,65,0.05); }
+            100% { box-shadow: 0 0 50px rgba(0,255,65,0.6), inset 0 0 50px rgba(0,255,65,0.1); }
+        }
+
+        @keyframes scanline {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes glitch {
+            0%, 90%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+
+        @keyframes glitch-1 {
+            0%, 90%, 100% { transform: translate(0); }
+            20% { transform: translate(2px, -2px); }
+        }
+
+        @keyframes glitch-2 {
+            0%, 90%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+        }
+
+        @keyframes statScan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(-10px);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-100px) translateX(10px);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cyber-grid"></div>
+    
+    <div class="cyberpunk-card">
+        <div class="particles"></div>
+        
+        <header class="cyber-header">
+            <div class="system-title">BIRTHDAY SYSTEM v2.1</div>
+            <div class="glitch-text">HAPPY BIRTHDAY</div>
+        </header>
+
+        <h2 class="friend-name">ALEX</h2>
+
+        <div class="cyber-message">
+            <div class="birthday-text">
+                🚀 Another year of being absolutely <span class="highlight">LEGENDARY</span>! 🚀<br><br>
+                Your birthday is like a system upgrade - you just keep getting more <span class="highlight">AWESOME</span> with each version!<br><br>
+                Time to activate <span class="highlight">PARTY MODE</span>! 🎉
+            </div>
+        </div>
+
+        <div class="cyber-stats">
+            <div class="stat-panel">
+                <div class="stat-value">∞</div>
+                <div class="stat-label">Awesome Level</div>
+            </div>
+            <div class="stat-panel">
+                <div class="stat-value">ELITE</div>
+                <div class="stat-label">Friend Status</div>
+            </div>
+            <div class="stat-panel">
+                <div class="stat-value">MAX</div>
+                <div class="stat-label">Party Mode</div>
+            </div>
+            <div class="stat-panel">
+                <div class="stat-value">LOADED</div>
+                <div class="stat-label">Cake.exe</div>
+            </div>
+        </div>
+
+        <div class="terminal">
+            <div class="cmd-line">
+                <span class="cmd-prompt">birthday@celebration:~$</span> run party_protocol.exe
+            </div>
+            <div class="cmd-line">
+                <span class="cmd-prompt">></span> INITIALIZING BIRTHDAY CELEBRATION...
+            </div>
+            <div class="cmd-line">
+                <span class="cmd-prompt">></span> LAUNCHING CONFETTI.dll
+            </div>
+            <div class="cmd-line">
+                <span class="cmd-prompt">></span> ACTIVATING FRIEND_MODE: [SUCCESS]
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate floating particles
+        function createParticles() {
+            const container = document.querySelector('.particles');
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 5) + 's';
+                
+                const colors = ['#00ff41', '#00ffff', '#ff0080'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.boxShadow = `0 0 6px ${particle.style.background}`;
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // Glitch effect
+        function randomGlitch() {
+            const glitchText = document.querySelector('.glitch-text');
+            const originalText = 'HAPPY BIRTHDAY';
+            
+            setInterval(() => {
+                if (Math.random() < 0.1) {
+                    const glitchedText = originalText.split('').map(char => 
+                        Math.random() < 0.3 ? String.fromCharCode(Math.random() * 26 + 65) : char
+                    ).join('');
+                    
+                    glitchText.textContent = glitchedText;
+                    
+                    setTimeout(() => {
+                        glitchText.textContent = originalText;
+                    }, 100);
+                }
+            }, 2000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            randomGlitch();
+        });
+    </script>
+</body>
+</html>

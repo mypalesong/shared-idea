@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>용산 국립박물관 VIP 투어</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Futura', 'Noto Sans KR', sans-serif;
+            background: #0f0f0f;
+            color: #f5f5f5;
+            overflow-x: hidden;
+        }
+
+        .museum-hero {
+            position: relative;
+            height: 100vh;
+            background: linear-gradient(135deg, 
+                rgba(15, 15, 15, 0.95) 0%,
+                rgba(30, 30, 30, 0.8) 30%,
+                rgba(70, 70, 70, 0.3) 60%,
+                rgba(15, 15, 15, 0.9) 100%
+            ), url('https://images.unsplash.com/photo-1565911276740-3c9a9b91e8ce?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .exhibition-light {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 25% 25%, rgba(255,255,255,0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 75% 75%, rgba(200,200,200,0.1) 0%, transparent 50%),
+                        linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%);
+            animation: exhibitionSpotlight 12s ease-in-out infinite;
+        }
+
+        @keyframes exhibitionSpotlight {
+            0%, 100% { 
+                opacity: 0.6; 
+                transform: scale(1) rotate(0deg); 
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.1) rotate(5deg); 
+            }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 3;
+            position: relative;
+            max-width: 900px;
+            padding: 0 20px;
+        }
+
+        .museum-title {
+            font-size: 5.5rem;
+            font-weight: 100;
+            margin-bottom: 20px;
+            color: #ffffff;
+            letter-spacing: 15px;
+            text-transform: uppercase;
+            animation: curatorGlow 5s ease-in-out infinite;
+            font-family: 'Arial', 'Noto Sans KR', sans-serif;
+        }
+
+        @keyframes curatorGlow {
+            0%, 100% { 
+                filter: brightness(1) drop-shadow(0 0 30px rgba(255, 255, 255, 0.3));
+                transform: translateY(0);
+            }
+            50% { 
+                filter: brightness(1.2) drop-shadow(0 0 50px rgba(255, 255, 255, 0.5));
+                transform: translateY(-3px);
+            }
+        }
+
+        .exhibition-subtitle {
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin-bottom: 50px;
+            color: rgba(245, 245, 245, 0.9);
+            letter-spacing: 2px;
+        }
+
+        .curator-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .detail-frame {
+            background: linear-gradient(145deg, 
+                rgba(30, 30, 30, 0.9),
+                rgba(15, 15, 15, 0.95)
+            );
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            padding: 25px;
+            backdrop-filter: blur(15px);
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            overflow: hidden;
+        }
+
+        .detail-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.1), 
+                transparent
+            );
+            transition: left 0.6s ease;
+        }
+
+        .detail-frame:hover::before {
+            left: 100%;
+        }
+
+        .detail-frame:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.15);
+        }
+
+        .frame-label {
+            color: #cccccc;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .frame-value {
+            font-size: 1.3rem;
+            font-weight: 300;
+            line-height: 1.4;
+        }
+
+        .floating-artifacts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .artifact {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: floatArtifact 20s infinite linear;
+            opacity: 0.4;
+        }
+
+        .artifact-square {
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1));
+        }
+
+        .artifact-circle {
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        }
+
+        .artifact-triangle {
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 17px solid rgba(255, 255, 255, 0.2);
+            background: none;
+            border: none;
+        }
+
+        @keyframes floatArtifact {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.4;
+            }
+            90% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .main-content {
+            padding: 120px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .content-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .content-title {
+            font-size: 3.5rem;
+            font-weight: 100;
+            color: #ffffff;
+            margin-bottom: 20px;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+        }
+
+        .content-description {
+            font-size: 1.2rem;
+            color: rgba(245, 245, 245, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .curator-reviews {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+        }
+
+        .review-display {
+            background: linear-gradient(145deg, 
+                rgba(25, 25, 25, 0.95),
+                rgba(15, 15, 15, 0.9)
+            );
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 0;
+            padding: 40px;
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
+            overflow: hidden;
+        }
+
+        .review-display::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, 
+                rgba(255, 255, 255, 0.2), 
+                transparent 30%, 
+                rgba(200, 200, 200, 0.15) 60%, 
+                transparent 90%, 
+                rgba(255, 255, 255, 0.2)
+            );
+            z-index: -1;
+            animation: displayScan 10s linear infinite;
+        }
+
+        @keyframes displayScan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .review-display:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 25px 50px rgba(255, 255, 255, 0.2);
+        }
+
+        .curator-name {
+            color: #ffffff;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .curator-role {
+            color: #cccccc;
+            font-size: 1rem;
+            margin-bottom: 25px;
+        }
+
+        .curator-review {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #e8e8e8;
+            text-align: justify;
+        }
+
+        .scroll-gallery {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: galleryFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes galleryFloat {
+            0%, 100% { 
+                opacity: 0.7; 
+                transform: translateX(-50%) translateY(0); 
+            }
+            50% { 
+                opacity: 1; 
+                transform: translateX(-50%) translateY(-10px); 
+            }
+        }
+
+        @media (max-width: 768px) {
+            .museum-title {
+                font-size: 3rem;
+                letter-spacing: 8px;
+            }
+            
+            .curator-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .curator-reviews {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-artifacts">
+        <div class="artifact artifact-square" style="left: 8%; animation-delay: 0s;"></div>
+        <div class="artifact artifact-circle" style="left: 20%; animation-delay: 4s;"></div>
+        <div class="artifact artifact-triangle" style="left: 35%; animation-delay: 8s;"></div>
+        <div class="artifact artifact-square" style="left: 50%; animation-delay: 12s;"></div>
+        <div class="artifact artifact-circle" style="left: 65%; animation-delay: 16s;"></div>
+        <div class="artifact artifact-triangle" style="left: 80%; animation-delay: 2s;"></div>
+        <div class="artifact artifact-square" style="left: 92%; animation-delay: 6s;"></div>
+    </div>
+
+    <section class="museum-hero">
+        <div class="exhibition-light"></div>
+        
+        <div class="hero-content">
+            <h1 class="museum-title">CURATOR</h1>
+            <p class="exhibition-subtitle">용산 국립박물관 40대 문화계 인사들의 특별 전시회</p>
+            
+            <div class="curator-details">
+                <div class="detail-frame">
+                    <div class="frame-label">Exhibition Date</div>
+                    <div class="frame-value">2025.02.22 SAT<br>14:00 OPENING</div>
+                </div>
+                <div class="detail-frame">
+                    <div class="frame-label">Gallery Location</div>
+                    <div class="frame-value">용산 국립박물관<br>VIP 전시실</div>
+                </div>
+                <div class="detail-frame">
+                    <div class="frame-label">Admission</div>
+                    <div class="frame-value">150,000 KRW<br>PER CURATOR</div>
+                </div>
+                <div class="detail-frame">
+                    <div class="frame-label">Participants</div>
+                    <div class="frame-value">06 MEMBERS<br>CULTURE EXPERTS</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scroll-gallery">
+            ⬇ CURATOR REVIEWS ⬇
+        </div>
+    </section>
+
+    <section class="main-content">
+        <div class="content-header">
+            <h2 class="content-title">Exhibition Reviews</h2>
+            <p class="content-description">문화계 전문가들의 심도 있는 전시 분석</p>
+        </div>
+        
+        <div class="curator-reviews">
+            <div class="review-display">
+                <div class="curator-name">김큐레이터</div>
+                <div class="curator-role">현대미술 전문 큐레이터</div>
+                <p class="curator-review">
+                    VIP 전시실에서 보는 우리 문화재들이 정말 다르게 느껴지더라고요! 평소에 보던 그 유물들인데, 조명과 공간이 바뀌니까 완전히 새로운 작품 같았어요. 
+                    특히 고구려 벽화의 디지털 복원 영상은... 정말 감동적이었습니다. 
+                    "이런 전시 기획을 우리 미술관에서도 해봐야겠어요" 많은 영감을 얻었네요 🏛️
+                </p>
+            </div>
+            
+            <div class="review-display">
+                <div class="curator-name">박고고학자</div>
+                <div class="curator-role">한국사 전문 연구원</div>
+                <p class="curator-review">
+                    학문적으로만 접근하던 유물들을 이렇게 가까이서 볼 수 있어서 너무 좋았어요! 평소 논문에서만 보던 그 청자를 직접 눈으로... 
+                    디테일 하나하나가 살아있더라고요. 특히 도자기의 유약 색깔과 질감이 사진으로는 절대 느낄 수 없는 것이었죠. 
+                    "역사책이 아니라 진짜 역사를 만난 기분이었어요" 📚
+                </p>
+            </div>
+            
+            <div class="review-display">
+                <div class="curator-name">최문화재보존</div>
+                <div class="curator-role">문화재 보존 전문가</div>
+                <p class="curator-review">
+                    직업상 문화재의 보존 상태를 먼저 보게 되는데, 국립박물관의 관리 수준이 정말 대단하더라고요! 
+                    온습도 조절, 조명 각도, 진동 방지까지... 모든 게 완벽했어요. 
+                    "이 정도면 100년은 더 보존할 수 있겠구나" 싶었죠. 우리나라 문화재 관리 기술이 이렇게 발전했다니 자랑스러웠어요! 🔬
+                </p>
+            </div>
+            
+            <div class="review-display">
+                <div class="curator-name">정교육학예사</div>
+                <div class="curator-role">박물관 교육 프로그램 담당</div>
+                <p class="curator-review">
+                    VIP 투어의 해설이 정말 수준 높았어요! 일반 관람객들에게 하는 설명과는 차원이 다르더라고요. 
+                    전문가들을 위한 깊이 있는 해석과 최신 연구 결과까지... 완전 대학원 수업 듣는 기분이었어요. 
+                    "우리 교육 프로그램도 이런 식으로 업그레이드해야겠어요" 정말 많이 배웠습니다 🎓
+                </p>
+            </div>
+            
+            <div class="review-display">
+                <div class="curator-name">이아트딜러</div>
+                <div class="curator-role">고미술 전문 딜러</div>
+                <p class="curator-review">
+                    평소 골동품 시장에서 일하다 보니까, 진품과 가품을 구별하는 눈이 생겼는데... 역시 국보급 문화재는 다르더라고요! 
+                    아우라부터가 압도적이었어요. 특히 조선 백자의 그 은은한 광택은... 정말 말로 표현할 수 없는 아름다움이었죠. 
+                    "이런 걸 보고 나니까 시장에서 파는 건 모두 장난감 같네요" 😅
+                </p>
+            </div>
+            
+            <div class="review-display">
+                <div class="curator-name">한문화콘텐츠</div>
+                <div class="curator-role">K-컬처 콘텐츠 기획자</div>
+                <p class="curator-review">
+                    우리 전통문화를 현대적으로 재해석하는 일을 하는데, 오늘 정말 많은 아이디어를 얻었어요! 
+                    특히 전통 문양과 색감들이... 요즘 MZ세대들이 좋아할 만한 요소들이 정말 많더라고요. 
+                    "이런 걸 NFT나 메타버스로 만들면 어떨까?" 하는 생각이 계속 들었어요. 전통과 현대의 만남! 🎮
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Museum parallax effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.museum-hero');
+            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+            
+            const light = document.querySelector('.exhibition-light');
+            light.style.transform = `translateY(${scrolled * 0.3}px) scale(${1 + scrolled * 0.0002})`;
+        });
+
+        // Museum intersection observer
+        const museumObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0) scale(1)';
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        document.querySelectorAll('.review-display').forEach((display, index) => {
+            display.style.opacity = '0';
+            display.style.transform = 'translateY(50px) scale(0.95)';
+            display.style.transition = `all 1s cubic-bezier(0.23, 1, 0.320, 1) ${index * 0.1}s`;
+            museumObserver.observe(display);
+        });
+
+        // Subtle background movement
+        let artifactOffset = 0;
+        setInterval(() => {
+            artifactOffset += 0.3;
+            const hero = document.querySelector('.museum-hero');
+            hero.style.backgroundPositionY = artifactOffset + 'px';
+        }, 150);
+
+        // Artifact interaction
+        document.addEventListener('mousemove', (e) => {
+            const artifacts = document.querySelectorAll('.artifact');
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            artifacts.forEach((artifact, index) => {
+                const speed = (index + 1) * 0.02;
+                const xMove = (mouseX - 0.5) * speed * 50;
+                const yMove = (mouseY - 0.5) * speed * 50;
+                
+                artifact.style.transform += ` translate(${xMove}px, ${yMove}px)`;
+            });
+        });
+    </script>
+</body>
+</html>

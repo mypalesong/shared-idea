@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morgan's Steampunk Birthday</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=Crimson+Text:wght@400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, #2c1810, #3d2817, #4a2c17);
+            color: #d4af37;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Brass Container */
+        .steampunk-apparatus {
+            max-width: 420px;
+            margin: 20px auto;
+            min-height: calc(100vh - 40px);
+            background: linear-gradient(145deg, #8b4513, #a0522d, #8b4513);
+            border: 4px solid #cd853f;
+            border-radius: 25px;
+            box-shadow: 
+                0 0 30px rgba(205, 133, 63, 0.3),
+                inset 0 0 20px rgba(139, 69, 19, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .steampunk-apparatus::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 2px solid #daa520;
+            border-radius: 15px;
+            opacity: 0.6;
+        }
+
+        /* Brass Pipes */
+        .brass-pipe {
+            position: absolute;
+            background: linear-gradient(90deg, #cd853f, #daa520, #cd853f);
+            border-radius: 50px;
+        }
+
+        .pipe-1 {
+            width: 12px;
+            height: 100px;
+            top: 50px;
+            left: 20px;
+            transform: rotate(15deg);
+        }
+
+        .pipe-2 {
+            width: 80px;
+            height: 8px;
+            top: 150px;
+            right: 30px;
+        }
+
+        .pipe-3 {
+            width: 10px;
+            height: 60px;
+            bottom: 100px;
+            left: 40px;
+            transform: rotate(-20deg);
+        }
+
+        /* Steam Effects */
+        .steam {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
+            border-radius: 50%;
+            animation: steamRise 4s infinite ease-out;
+        }
+
+        .steam-1 {
+            top: 40px;
+            left: 25px;
+            animation-delay: 0s;
+        }
+
+        .steam-2 {
+            top: 140px;
+            right: 15px;
+            animation-delay: 1s;
+        }
+
+        .steam-3 {
+            bottom: 80px;
+            left: 45px;
+            animation-delay: 2s;
+        }
+
+        /* Header */
+        .steampunk-header {
+            text-align: center;
+            padding: 40px 25px 30px;
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.8), rgba(160, 82, 45, 0.6));
+            border-bottom: 3px solid #cd853f;
+            position: relative;
+        }
+
+        .apparatus-title {
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 24px;
+            color: #daa520;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .apparatus-subtitle {
+            font-size: 14px;
+            color: #cd853f;
+            font-style: italic;
+        }
+
+        /* Friend Name */
+        .steampunk-name {
+            font-family: 'Cinzel', serif;
+            font-size: 40px;
+            font-weight: 700;
+            text-align: center;
+            color: #daa520;
+            margin: 30px 0 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .steampunk-name::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #cd853f, transparent);
+        }
+
+        /* Gear Section */
+        .gear-section {
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .main-gear {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            background: radial-gradient(circle, #cd853f, #8b4513);
+            border-radius: 50%;
+            position: relative;
+            animation: gearRotate 20s linear infinite;
+            box-shadow: 
+                0 0 20px rgba(205, 133, 63, 0.3),
+                inset 0 0 15px rgba(139, 69, 19, 0.5);
+        }
+
+        .gear-teeth {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 140px;
+            height: 140px;
+            background: 
+                conic-gradient(from 0deg, #cd853f 0deg 30deg, transparent 30deg 60deg),
+                conic-gradient(from 60deg, #cd853f 0deg 30deg, transparent 30deg 60deg),
+                conic-gradient(from 120deg, #cd853f 0deg 30deg, transparent 30deg 60deg),
+                conic-gradient(from 180deg, #cd853f 0deg 30deg, transparent 30deg 60deg),
+                conic-gradient(from 240deg, #cd853f 0deg 30deg, transparent 30deg 60deg),
+                conic-gradient(from 300deg, #cd853f 0deg 30deg, transparent 30deg 60deg);
+            border-radius: 50%;
+        }
+
+        .gear-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(45deg, #8b4513, #cd853f);
+            border-radius: 50%;
+            border: 2px solid #daa520;
+        }
+
+        .small-gear {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #cd853f, #8b4513);
+            border-radius: 50%;
+            border: 2px solid #daa520;
+            animation: gearRotate 8s linear infinite reverse;
+        }
+
+        .small-gear-1 {
+            top: 20px;
+            right: 30px;
+        }
+
+        .small-gear-2 {
+            bottom: 180px;
+            left: 25px;
+        }
+
+        /* Message Section */
+        .brass-plaque {
+            background: linear-gradient(135deg, #daa520, #cd853f, #b8860b);
+            border: 3px solid #8b4513;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 20px;
+            position: relative;
+            box-shadow: 
+                0 8px 20px rgba(0,0,0,0.3),
+                inset 0 2px 4px rgba(255,255,255,0.2);
+        }
+
+        .brass-plaque::before {
+            content: '⚙️';
+            position: absolute;
+            top: -12px;
+            left: 25px;
+            background: #8b4513;
+            padding: 5px 10px;
+            border-radius: 50%;
+            font-size: 16px;
+        }
+
+        .birthday-inscription {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #2c1810;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.3);
+        }
+
+        .inscription-highlight {
+            font-weight: 600;
+            color: #8b4513;
+        }
+
+        /* Mechanical Stats */
+        .mechanical-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 25px 20px;
+        }
+
+        .stat-gauge {
+            background: linear-gradient(135deg, rgba(205, 133, 63, 0.2), rgba(139, 69, 19, 0.3));
+            border: 2px solid #cd853f;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            position: relative;
+        }
+
+        .gauge-icon {
+            font-size: 22px;
+            margin-bottom: 8px;
+            display: block;
+            color: #daa520;
+        }
+
+        .gauge-value {
+            font-family: 'Cinzel', serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: #daa520;
+            margin-bottom: 4px;
+        }
+
+        .gauge-label {
+            font-size: 11px;
+            color: #8b4513;
+            text-transform: uppercase;
+        }
+
+        /* Animations */
+        @keyframes steamRise {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-80px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes gearRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 480px) {
+            .steampunk-name {
+                font-size: 32px;
+            }
+            
+            .apparatus-title {
+                font-size: 20px;
+            }
+            
+            .main-gear {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="steampunk-apparatus">
+        <div class="brass-pipe pipe-1"></div>
+        <div class="brass-pipe pipe-2"></div>
+        <div class="brass-pipe pipe-3"></div>
+        
+        <div class="steam steam-1"></div>
+        <div class="steam steam-2"></div>
+        <div class="steam steam-3"></div>
+        
+        <div class="small-gear small-gear-1"></div>
+        <div class="small-gear small-gear-2"></div>
+
+        <header class="steampunk-header">
+            <h1 class="apparatus-title">Birthday Apparatus</h1>
+            <p class="apparatus-subtitle">Mechanical Celebration Device</p>
+        </header>
+
+        <section class="gear-section">
+            <div class="main-gear">
+                <div class="gear-teeth"></div>
+                <div class="gear-center"></div>
+            </div>
+
+            <h2 class="steampunk-name">Morgan</h2>
+        </section>
+
+        <div class="brass-plaque">
+            <div class="birthday-inscription">
+                Happy Birthday to an <span class="inscription-highlight">ingenious inventor</span> of joy! ⚙️<br><br>
+                May this new year bring you fascinating discoveries, brilliant creations, and adventures powered by your amazing spirit!
+            </div>
+        </div>
+
+        <div class="mechanical-stats">
+            <div class="stat-gauge">
+                <span class="gauge-icon">⚙️</span>
+                <div class="gauge-value">OPTIMAL</div>
+                <div class="gauge-label">Genius Level</div>
+            </div>
+            
+            <div class="stat-gauge">
+                <span class="gauge-icon">🔧</span>
+                <div class="gauge-value">PREMIUM</div>
+                <div class="gauge-label">Friend Grade</div>
+            </div>
+            
+            <div class="stat-gauge">
+                <span class="gauge-icon">⚡</span>
+                <div class="gauge-value">FULL POWER</div>
+                <div class="gauge-label">Party Engine</div>
+            </div>
+            
+            <div class="stat-gauge">
+                <span class="gauge-icon">🎂</span>
+                <div class="gauge-value">ACTIVATED</div>
+                <div class="gauge-label">Cake Mechanism</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

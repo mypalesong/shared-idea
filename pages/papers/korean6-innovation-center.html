@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>삼성동 이노베이션 센터 모임</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', 'Noto Sans KR', sans-serif;
+            background: #0c0f14;
+            color: #e1e8ed;
+            overflow-x: hidden;
+        }
+
+        .innovation-hero {
+            position: relative;
+            height: 100vh;
+            background: linear-gradient(135deg, 
+                rgba(12, 15, 20, 0.95) 0%,
+                rgba(20, 30, 48, 0.8) 30%,
+                rgba(41, 98, 255, 0.15) 60%,
+                rgba(12, 15, 20, 0.9) 100%
+            ), url('https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tech-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(rgba(41, 98, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(41, 98, 255, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 25% 25%, rgba(41, 98, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(0, 255, 255, 0.05) 0%, transparent 50%);
+            background-size: 40px 40px, 40px 40px, 100% 100%, 100% 100%;
+            animation: techPulse 8s ease-in-out infinite;
+        }
+
+        @keyframes techPulse {
+            0%, 100% { 
+                opacity: 0.7; 
+                transform: scale(1); 
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.02); 
+            }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 3;
+            position: relative;
+            max-width: 1000px;
+            padding: 0 20px;
+        }
+
+        .innovation-title {
+            font-size: 5.2rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, 
+                #2962ff 0%,
+                #00e5ff 25%,
+                #ffffff 50%,
+                #64ffda 75%,
+                #2962ff 100%
+            );
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            animation: innovationGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes innovationGlow {
+            0%, 100% { 
+                filter: brightness(1) drop-shadow(0 0 20px rgba(41, 98, 255, 0.5));
+                transform: translateY(0);
+            }
+            50% { 
+                filter: brightness(1.3) drop-shadow(0 0 40px rgba(100, 255, 218, 0.7));
+                transform: translateY(-3px);
+            }
+        }
+
+        .innovation-subtitle {
+            font-size: 1.7rem;
+            font-weight: 300;
+            margin-bottom: 50px;
+            opacity: 0.9;
+            letter-spacing: 2px;
+            color: #64ffda;
+        }
+
+        .tech-specs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .spec-module {
+            background: linear-gradient(145deg, 
+                rgba(20, 30, 48, 0.9),
+                rgba(12, 15, 20, 0.95)
+            );
+            border: 1px solid rgba(41, 98, 255, 0.3);
+            border-radius: 8px;
+            padding: 25px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            backdrop-filter: blur(20px);
+            overflow: hidden;
+        }
+
+        .spec-module::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(100, 255, 218, 0.1), 
+                transparent
+            );
+            transition: left 0.6s ease;
+        }
+
+        .spec-module:hover::before {
+            left: 100%;
+        }
+
+        .spec-module:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(100, 255, 218, 0.6);
+            box-shadow: 0 20px 40px rgba(41, 98, 255, 0.2);
+        }
+
+        .spec-label {
+            color: #64ffda;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .spec-value {
+            font-size: 1.3rem;
+            font-weight: 300;
+            line-height: 1.4;
+        }
+
+        .floating-data {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .data-node {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: linear-gradient(45deg, #2962ff, #00e5ff);
+            border-radius: 50%;
+            animation: floatData 15s infinite linear;
+            opacity: 0.6;
+        }
+
+        .data-node::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: radial-gradient(circle, rgba(100, 255, 218, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: dataPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes floatData {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) translateX(50px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes dataPulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(2); opacity: 0.8; }
+        }
+
+        .main-content {
+            padding: 120px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .content-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .content-title {
+            font-size: 3.5rem;
+            font-weight: 300;
+            color: #64ffda;
+            margin-bottom: 20px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .content-description {
+            font-size: 1.2rem;
+            color: rgba(225, 232, 237, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .innovation-reviews {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 40px;
+        }
+
+        .review-terminal {
+            background: linear-gradient(145deg, 
+                rgba(15, 20, 30, 0.95),
+                rgba(8, 12, 18, 0.9)
+            );
+            border: 2px solid rgba(41, 98, 255, 0.4);
+            border-radius: 12px;
+            padding: 40px;
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
+            overflow: hidden;
+        }
+
+        .review-terminal::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, 
+                rgba(41, 98, 255, 0.3), 
+                transparent 30%, 
+                rgba(100, 255, 218, 0.3) 60%, 
+                transparent 90%, 
+                rgba(41, 98, 255, 0.3)
+            );
+            border-radius: 12px;
+            z-index: -1;
+            animation: terminalScan 6s linear infinite;
+        }
+
+        @keyframes terminalScan {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .review-terminal:hover {
+            transform: translateY(-12px);
+            border-color: rgba(100, 255, 218, 0.7);
+            box-shadow: 0 25px 50px rgba(41, 98, 255, 0.3);
+        }
+
+        .innovator-name {
+            color: #64ffda;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .innovator-role {
+            color: #2962ff;
+            font-size: 1rem;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .innovator-review {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #e1e8ed;
+        }
+
+        .scroll-indicator-tech {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(100, 255, 218, 0.8);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: techBounce 3s ease-in-out infinite;
+        }
+
+        @keyframes techBounce {
+            0%, 100% { 
+                opacity: 0.7; 
+                transform: translateX(-50%) translateY(0); 
+            }
+            50% { 
+                opacity: 1; 
+                transform: translateX(-50%) translateY(-10px); 
+            }
+        }
+
+        @media (max-width: 768px) {
+            .innovation-title {
+                font-size: 3rem;
+                letter-spacing: 4px;
+            }
+            
+            .tech-specs {
+                grid-template-columns: 1fr;
+            }
+            
+            .innovation-reviews {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-data">
+        <div class="data-node" style="left: 5%; animation-delay: 0s;"></div>
+        <div class="data-node" style="left: 12%; animation-delay: 1s;"></div>
+        <div class="data-node" style="left: 25%; animation-delay: 2s;"></div>
+        <div class="data-node" style="left: 38%; animation-delay: 3s;"></div>
+        <div class="data-node" style="left: 52%; animation-delay: 4s;"></div>
+        <div class="data-node" style="left: 67%; animation-delay: 5s;"></div>
+        <div class="data-node" style="left: 78%; animation-delay: 6s;"></div>
+        <div class="data-node" style="left: 89%; animation-delay: 7s;"></div>
+        <div class="data-node" style="left: 95%; animation-delay: 8s;"></div>
+    </div>
+
+    <section class="innovation-hero">
+        <div class="tech-grid"></div>
+        
+        <div class="hero-content">
+            <h1 class="innovation-title">INNOVATION HUB</h1>
+            <p class="innovation-subtitle">40대 IT 리더들의 미래 기술 토론회</p>
+            
+            <div class="tech-specs">
+                <div class="spec-module">
+                    <div class="spec-label">Event Timeline</div>
+                    <div class="spec-value">2025.02.05 WED<br>19:30 KICKOFF</div>
+                </div>
+                <div class="spec-module">
+                    <div class="spec-label">Location</div>
+                    <div class="spec-value">삼성동 코엑스<br>INNOVATION CENTER</div>
+                </div>
+                <div class="spec-module">
+                    <div class="spec-label">Investment</div>
+                    <div class="spec-value">120,000 KRW<br>PER PARTICIPANT</div>
+                </div>
+                <div class="spec-module">
+                    <div class="spec-label">Network Size</div>
+                    <div class="spec-value">06 LEADERS<br>TECH INNOVATORS</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scroll-indicator-tech">
+            ⬇ FEEDBACK ANALYSIS ⬇
+        </div>
+    </section>
+
+    <section class="main-content">
+        <div class="content-header">
+            <h2 class="content-title">USER FEEDBACK</h2>
+            <p class="content-description">참가자들의 혁신적인 피드백과 통찰</p>
+        </div>
+        
+        <div class="innovation-reviews">
+            <div class="review-terminal">
+                <div class="innovator-name">김CTO</div>
+                <div class="innovator-role">핀테크 스타트업 최고기술책임자</div>
+                <p class="innovator-review">
+                    코엑스 이노베이션 센터의 최첨단 시설이 정말 인상적이었습니다! 특히 홀로그램 프레젠테이션 시스템으로 
+                    블록체인 구조를 3D로 설명할 수 있어서 너무 좋았어요. 우리 회사에도 이런 장비를 도입하고 싶네요. 
+                    다만 가격을 알아보니까... 내년 예산 계획을 다시 짜야겠어요 😅 혁신에는 투자가 필요하죠!
+                </p>
+            </div>
+            
+            <div class="review-terminal">
+                <div class="innovator-name">박개발팀장</div>
+                <div class="innovator-role">대기업 AI 개발 팀장</div>
+                <p class="innovator-review">
+                    AI와 머신러닝에 대한 깊이 있는 토론이 정말 유익했어요! 특히 ChatGPT 이후의 산업 변화에 대해 
+                    다들 비슷한 고민을 하고 계시더라고요. "우리도 이제 대체될 수 있겠구나" 하는 위기감과 
+                    "그래도 우리가 더 잘 만들 수 있다"는 자신감이 공존하는... 복잡한 심정이네요 🤖
+                </p>
+            </div>
+            
+            <div class="review-terminal">
+                <div class="innovator-name">최프로덕트</div>
+                <div class="innovator-role">테크 기업 프로덕트 매니저</div>
+                <p class="innovator-review">
+                    혁신 센터에서 먹는 음식도 혁신적이었어요! 분자 요리법으로 만든 디저트가... 먹는 건지 실험하는 건지 
+                    헷갈릴 정도였거든요 ㅋㅋ 하지만 이런 경험도 프로덕트 개발에 영감을 줄 수 있을 것 같아요. 
+                    사용자 경험의 새로운 패러다임을 제시하는 거니까요! 🧪
+                </p>
+            </div>
+            
+            <div class="review-terminal">
+                <div class="innovator-name">정데이터</div>
+                <div class="innovator-role">빅데이터 분석 전문가</div>
+                <p class="innovator-review">
+                    센터 곳곳에 설치된 IoT 센서들이 정말 흥미로웠어요! 실시간으로 공간 활용도, 온습도, 소음 레벨까지 
+                    모니터링하더라고요. 우리 모임 데이터도 수집되고 있었을 거예요 ㅋㅋ 
+                    나중에 분석 리포트를 받아볼 수 있다면... 정말 재미있을 것 같은데요? 📊
+                </p>
+            </div>
+            
+            <div class="review-terminal">
+                <div class="innovator-name">이보안팀장</div>
+                <div class="innovator-role">사이버 보안 전문가</div>
+                <p class="innovator-review">
+                    직업병으로 센터의 보안 시스템부터 체크했습니다 😅 생체인식 출입통제, 블록체인 기반 접근 로그... 
+                    정말 최첨단 보안이더라고요. 하지만 동시에 "이것도 뚫릴 수 있겠구나" 하는 생각이... 
+                    보안 전문가의 숙명이죠. 완벽한 보안은 없으니까요! 🔐
+                </p>
+            </div>
+            
+            <div class="review-terminal">
+                <div class="innovator-name">한UX디자이너</div>
+                <div class="innovator-role">사용자 경험 디자인 리드</div>
+                <p class="innovator-review">
+                    센터 전체가 하나의 거대한 UX 디자인 케이스 스터디 같았어요! 사용자 동선, 인터페이스 배치, 
+                    감성적 터치포인트까지... 모든 게 계산되어 있더라고요. 특히 음성 인식 AI 어시스턴트가 
+                    자연스럽게 대화를 유도하는 방식이 인상적이었어요. 우리 앱에도 적용해보고 싶네요! ✨
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Innovation center parallax effects
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.innovation-hero');
+            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+            
+            const techGrid = document.querySelector('.tech-grid');
+            techGrid.style.transform = `translateY(${scrolled * 0.3}px) scale(${1 + scrolled * 0.0001})`;
+        });
+
+        // Tech-style intersection observer
+        const techObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0) scale(1)';
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        document.querySelectorAll('.review-terminal').forEach((terminal, index) => {
+            terminal.style.opacity = '0';
+            terminal.style.transform = 'translateY(50px) scale(0.95)';
+            terminal.style.transition = `all 1s cubic-bezier(0.23, 1, 0.320, 1) ${index * 0.1}s`;
+            techObserver.observe(terminal);
+        });
+
+        // Dynamic background with data flow effect
+        let dataFlow = 0;
+        setInterval(() => {
+            dataFlow += 0.5;
+            const hero = document.querySelector('.innovation-hero');
+            hero.style.backgroundPositionX = dataFlow + 'px';
+        }, 100);
+
+        // Interactive data nodes
+        document.addEventListener('mousemove', (e) => {
+            const nodes = document.querySelectorAll('.data-node');
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            nodes.forEach((node, index) => {
+                const speed = (index + 1) * 0.02;
+                const xMove = (mouseX - 0.5) * speed * 80;
+                const yMove = (mouseY - 0.5) * speed * 80;
+                
+                node.style.transform += ` translate(${xMove}px, ${yMove}px)`;
+            });
+        });
+
+        // Terminal typing effect simulation
+        document.querySelectorAll('.review-terminal').forEach(terminal => {
+            terminal.addEventListener('mouseenter', () => {
+                terminal.style.borderColor = 'rgba(100, 255, 218, 0.8)';
+                terminal.style.boxShadow = '0 0 30px rgba(100, 255, 218, 0.3)';
+            });
+            
+            terminal.addEventListener('mouseleave', () => {
+                terminal.style.borderColor = 'rgba(41, 98, 255, 0.4)';
+                terminal.style.boxShadow = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

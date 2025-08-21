@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>강남 모임 후기 - 우아한 카드 스타일</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: #f8f9fa;
+            background-image: 
+                radial-gradient(circle at 25% 25%, #ffeaa7 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, #fab1a0 0%, transparent 50%);
+            min-height: 100vh;
+            color: #2d3436;
+            padding: 20px 0;
+        }
+
+        .container {
+            max-width: 414px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .main-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            padding: 40px 25px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 30% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(255,255,255,0.05) 0%, transparent 50%);
+            animation: breathe 4s ease-in-out infinite;
+        }
+
+        .date-badge {
+            background: rgba(255, 255, 255, 0.25);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .hero-title {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content-section {
+            padding: 30px 25px;
+        }
+
+        .photo-showcase {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            height: 120px;
+        }
+
+        .photo-main {
+            flex: 2;
+            background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .photo-main:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(253, 121, 168, 0.3);
+        }
+
+        .photo-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .photo-small {
+            flex: 1;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .photo-small:hover {
+            transform: scale(1.05);
+        }
+
+        .photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .photo-main:hover .photo-overlay,
+        .photo-small:hover .photo-overlay {
+            opacity: 1;
+        }
+
+        .story-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border-left: 4px solid #6c5ce7;
+            animation: slideIn 0.8s ease-out 0.3s both;
+        }
+
+        .story-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .story-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        .story-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2d3436;
+        }
+
+        .story-content {
+            line-height: 1.7;
+            color: #636e72;
+            font-size: 15px;
+        }
+
+        .members-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            animation: slideIn 0.8s ease-out 0.6s both;
+        }
+
+        .members-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .members-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2d3436;
+            margin-bottom: 5px;
+        }
+
+        .members-count {
+            color: #636e72;
+            font-size: 14px;
+        }
+
+        .members-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .member-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .member-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .member-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            margin-right: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .member-item:hover .member-avatar {
+            transform: rotate(10deg);
+        }
+
+        .member-info {
+            flex: 1;
+        }
+
+        .member-name {
+            font-weight: bold;
+            color: #2d3436;
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .member-role {
+            color: #636e72;
+            font-size: 12px;
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .circle1 {
+            width: 60px;
+            height: 60px;
+            background: #6c5ce7;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .circle2 {
+            width: 40px;
+            height: 40px;
+            background: #fd79a8;
+            top: 70%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .circle3 {
+            width: 80px;
+            height: 80px;
+            background: #fdcb6e;
+            top: 40%;
+            left: 5%;
+            animation-delay: 4s;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes breathe {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-20px) scale(1.1); }
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 0 15px; }
+            .content-section { padding: 25px 20px; }
+            .story-card, .members-card { padding: 20px; }
+            .hero-title { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-circle circle1"></div>
+        <div class="floating-circle circle2"></div>
+        <div class="floating-circle circle3"></div>
+    </div>
+
+    <div class="container">
+        <div class="main-card">
+            <div class="hero-section">
+                <div class="hero-bg"></div>
+                <div class="date-badge">2024년 12월 15일 금요일</div>
+                <h1 class="hero-title">완벽했던 강남의 밤</h1>
+                <p class="hero-subtitle">🏙️ 강남역 트라토리아 델 모멘토</p>
+            </div>
+
+            <div class="content-section">
+                <div class="photo-showcase">
+                    <div class="photo-main">
+                        <div class="photo-overlay">🍷 토스트 하는 순간</div>
+                    </div>
+                    <div class="photo-side">
+                        <div class="photo-small">
+                            <div class="photo-overlay">🍝 맛있는 요리</div>
+                        </div>
+                        <div class="photo-small">
+                            <div class="photo-overlay">😄 즐거운 대화</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="story-card">
+            <div class="story-header">
+                <span class="story-icon">✨</span>
+                <h2 class="story-title">특별한 이야기</h2>
+            </div>
+            <div class="story-content">
+                한 주의 피로를 씻어내는 금요일 저녁, 강남의 숨겨진 보석 같은 이탈리안 레스토랑에서 
+                우리만의 특별한 시간을 보냈다. 촛불이 은은하게 비추는 테이블에서 나눈 진솔한 대화들, 
+                서로의 꿈과 고민을 공유하며 더욱 깊어진 우정. 트러플 크림 파스타의 향긋한 향이 
+                아직도 기억에 생생하다.
+            </div>
+        </div>
+
+        <div class="members-card">
+            <div class="members-header">
+                <h2 class="members-title">소중한 인연들</h2>
+                <p class="members-count">총 6명이 함께했어요</p>
+            </div>
+            <div class="members-list">
+                <div class="member-item">
+                    <div class="member-avatar">🎯</div>
+                    <div class="member-info">
+                        <div class="member-name">김민수</div>
+                        <div class="member-role">마케터</div>
+                    </div>
+                </div>
+                <div class="member-item">
+                    <div class="member-avatar">🎨</div>
+                    <div class="member-info">
+                        <div class="member-name">이지영</div>
+                        <div class="member-role">디자이너</div>
+                    </div>
+                </div>
+                <div class="member-item">
+                    <div class="member-avatar">💻</div>
+                    <div class="member-info">
+                        <div class="member-name">박현우</div>
+                        <div class="member-role">개발자</div>
+                    </div>
+                </div>
+                <div class="member-item">
+                    <div class="member-avatar">📚</div>
+                    <div class="member-info">
+                        <div class="member-name">정수빈</div>
+                        <div class="member-role">교사</div>
+                    </div>
+                </div>
+                <div class="member-item">
+                    <div class="member-avatar">🍳</div>
+                    <div class="member-info">
+                        <div class="member-name">최태훈</div>
+                        <div class="member-role">요리사</div>
+                    </div>
+                </div>
+                <div class="member-item">
+                    <div class="member-avatar">⚕️</div>
+                    <div class="member-info">
+                        <div class="member-name">김예린</div>
+                        <div class="member-role">의사</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 카드들의 staggered 애니메이션
+        const cards = document.querySelectorAll('.story-card, .members-card');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${0.3 + index * 0.3}s`;
+        });
+
+        // 사진들의 자동 확대/축소 효과
+        let photoScale = false;
+        setInterval(() => {
+            const photos = document.querySelectorAll('.photo-main, .photo-small');
+            photos.forEach(photo => {
+                photo.style.transform = photoScale ? 'scale(1.02)' : 'scale(1)';
+            });
+            photoScale = !photoScale;
+        }, 3000);
+    </script>
+</body>
+</html>

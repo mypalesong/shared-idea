@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Culinary Symphony - Master Chefs</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Lato:wght@300;400;500&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: #1a1410;
+            color: #f5f2e8;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .kitchen-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: rgba(26, 20, 16, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid #d4a574;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+        }
+
+        .kitchen-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 26px;
+            font-weight: 600;
+            color: #d4a574;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chef-hat {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(145deg, #d4a574, #b8956a);
+            clip-path: polygon(20% 80%, 80% 80%, 90% 60%, 85% 40%, 75% 20%, 25% 20%, 15% 40%, 10% 60%);
+            position: relative;
+        }
+
+        .class-info {
+            display: flex;
+            gap: 40px;
+            font-size: 12px;
+            color: #8b7355;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Hero Section */
+        .hero-kitchen {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .cooking-steam {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(212, 165, 116, 0.08) 0%, rgba(184, 149, 106, 0.04) 40%, rgba(0,0,0,0.9) 80%);
+            animation: steamRise 10s ease-in-out infinite;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            padding: 0 40px;
+        }
+
+        .cooking-station {
+            position: relative;
+            width: 550px;
+            height: 380px;
+            background: radial-gradient(ellipse, rgba(212, 165, 116, 0.15) 0%, rgba(26, 20, 16, 0.9) 70%);
+            border: 3px solid #d4a574;
+            border-radius: 20px;
+            margin: 0 auto 40px;
+            overflow: hidden;
+            box-shadow: 0 0 60px rgba(212, 165, 116, 0.3);
+        }
+
+        .station-surface {
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=400&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.7) contrast(1.3) sepia(0.4);
+            animation: ingredientPrep 12s ease-in-out infinite;
+        }
+
+        .flame-effect {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 60px;
+            background: radial-gradient(ellipse at bottom, #d4a574 0%, #ff6b35 30%, transparent 70%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: flameFlicker 2s ease-in-out infinite alternate;
+        }
+
+        .utensil-sparkle {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, rgba(212, 165, 116, 0.8) 0%, transparent 50%);
+            border-radius: 50%;
+            animation: sparkleRotate 6s linear infinite;
+        }
+
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 48px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #d4a574;
+            text-shadow: 0 0 30px rgba(212, 165, 116, 0.4);
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: #c4b59a;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        /* Chefs Section */
+        .culinary-floor {
+            background: #141008;
+            position: relative;
+            padding: 120px 0;
+        }
+
+        .kitchen-lighting {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 300px;
+            background: linear-gradient(to bottom, rgba(212, 165, 116, 0.06), transparent);
+        }
+
+        .culinary-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-number {
+            font-size: 14px;
+            color: #6b5a47;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 48px;
+            font-weight: 600;
+            color: #d4a574;
+        }
+
+        /* Chef Cards */
+        .chefs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 45px;
+        }
+
+        .chef-card {
+            position: relative;
+            background: linear-gradient(145deg, #1a1410, #0f0b08);
+            border: 2px solid rgba(212, 165, 116, 0.2);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.320, 1);
+            cursor: pointer;
+        }
+
+        .chef-card:hover {
+            transform: translateY(-25px) rotateX(10deg);
+            box-shadow: 
+                0 50px 120px rgba(0,0,0,0.8),
+                0 0 80px rgba(212, 165, 116, 0.2);
+            border-color: #d4a574;
+        }
+
+        .chef-portrait {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portrait-bg {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.5) contrast(1.2) sepia(0.3);
+            transition: transform 8s ease-in-out;
+        }
+
+        .chef-card:hover .portrait-bg {
+            transform: scale(1.15) rotate(1deg);
+        }
+
+        .culinary-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(212, 165, 116, 0.15), rgba(26, 20, 16, 0.6));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chef-initial {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 52px;
+            font-weight: 600;
+            color: #fff;
+            text-shadow: 
+                2px 2px 0 #d4a574,
+                4px 4px 15px rgba(0,0,0,0.8);
+        }
+
+        .chef-info {
+            padding: 32px;
+            background: linear-gradient(145deg, #1a1410, #0f0b08);
+        }
+
+        .chef-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: #d4a574;
+            margin-bottom: 8px;
+        }
+
+        .chef-specialty {
+            font-size: 14px;
+            color: #8b7355;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .chef-philosophy {
+            font-size: 14px;
+            color: #c4b59a;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .cooking-aura {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90px;
+            height: 90px;
+            background: radial-gradient(circle, rgba(212, 165, 116, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: cookingGlow 5s ease-in-out infinite;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .chef-card:hover .cooking-aura {
+            opacity: 1;
+        }
+
+        /* Recipe Story */
+        .recipe-story {
+            background: #141008;
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .cookbook-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=1600&h=1000&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.08) contrast(1.3) sepia(0.6);
+            animation: recipeFlip 35s ease-in-out infinite;
+        }
+
+        .story-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 40px;
+        }
+
+        .recipe-frame {
+            background: rgba(26, 20, 16, 0.92);
+            backdrop-filter: blur(25px);
+            border: 3px solid #d4a574;
+            border-radius: 20px;
+            padding: 80px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .recipe-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #d4a574, transparent);
+            animation: ingredientFlow 5s ease-in-out infinite;
+        }
+
+        .recipe-frame::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: -100%;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #d4a574, transparent);
+            animation: ingredientFlow 5s ease-in-out infinite reverse;
+        }
+
+        .recipe-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 44px;
+            font-weight: 600;
+            color: #d4a574;
+            margin-bottom: 30px;
+        }
+
+        .recipe-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #c4b59a;
+            margin-bottom: 50px;
+        }
+
+        .cooking-process {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .process-step {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(212, 165, 116, 0.08);
+            border: 1px solid rgba(212, 165, 116, 0.3);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .process-step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: #d4a574;
+            animation: stepHighlight 4s ease-in-out infinite;
+        }
+
+        .step-icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: #d4a574;
+        }
+
+        .step-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #d4a574;
+            margin-bottom: 10px;
+        }
+
+        .step-description {
+            font-size: 12px;
+            color: #8b7355;
+            line-height: 1.4;
+        }
+
+        /* Individual chef backgrounds */
+        .chef-1 .portrait-bg { background-image: url('https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=400&fit=crop'); }
+        .chef-2 .portrait-bg { background-image: url('https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=400&h=400&fit=crop'); }
+        .chef-3 .portrait-bg { background-image: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop'); }
+        .chef-4 .portrait-bg { background-image: url('https://images.unsplash.com/photo-1607631568010-0479aa2ed17b?w=400&h=400&fit=crop'); }
+        .chef-5 .portrait-bg { background-image: url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop'); }
+        .chef-6 .portrait-bg { background-image: url('https://images.unsplash.com/photo-1574484284002-952d92456975?w=400&h=400&fit=crop'); }
+
+        @keyframes steamRise {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1) translateY(-20px); opacity: 1; }
+        }
+
+        @keyframes ingredientPrep {
+            0%, 100% { filter: brightness(0.7) contrast(1.3) sepia(0.4); }
+            50% { filter: brightness(0.8) contrast(1.4) sepia(0.5); }
+        }
+
+        @keyframes flameFlicker {
+            0% { transform: translateX(-50%) scaleY(1); opacity: 0.8; }
+            100% { transform: translateX(-50%) scaleY(1.3); opacity: 1; }
+        }
+
+        @keyframes sparkleRotate {
+            0% { transform: rotate(0deg); opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { transform: rotate(360deg); opacity: 0.6; }
+        }
+
+        @keyframes cookingGlow {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.4); }
+        }
+
+        @keyframes recipeFlip {
+            0%, 100% { transform: translate(0, 0) scale(1.05); }
+            50% { transform: translate(-8px, -5px) scale(1.1); }
+        }
+
+        @keyframes ingredientFlow {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes stepHighlight {
+            0%, 70%, 100% { left: -100%; }
+            80%, 90% { left: 0%; }
+        }
+
+        @media (max-width: 768px) {
+            .chefs-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .cooking-process {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .cooking-station {
+                width: 90%;
+                height: 280px;
+            }
+            
+            .recipe-frame {
+                padding: 60px 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="kitchen-nav">
+        <div class="kitchen-title">
+            <div class="chef-hat"></div>
+            Culinary Symphony
+        </div>
+        <div class="class-info">
+            <span>Apr 22, 2024</span>
+            <span>Fusion Cuisine</span>
+        </div>
+    </nav>
+
+    <section class="hero-kitchen">
+        <div class="cooking-steam"></div>
+        <div class="hero-content">
+            <div class="cooking-station">
+                <div class="station-surface"></div>
+                <div class="flame-effect"></div>
+                <div class="utensil-sparkle"></div>
+            </div>
+            <h2 class="hero-title">Gastronomic Journey</h2>
+            <p class="hero-subtitle">퓨전 요리로 펼치는 미식의 향연</p>
+        </div>
+    </section>
+
+    <section class="culinary-floor">
+        <div class="kitchen-lighting"></div>
+        <div class="culinary-container">
+            <div class="section-header">
+                <div class="section-number">Master Kitchen</div>
+                <h2 class="section-title">Culinary Artists</h2>
+            </div>
+
+            <div class="chefs-grid">
+                <div class="chef-card chef-1">
+                    <div class="cooking-aura"></div>
+                    <div class="chef-portrait">
+                        <div class="portrait-bg"></div>
+                        <div class="culinary-overlay">
+                            <div class="chef-initial">김</div>
+                        </div>
+                    </div>
+                    <div class="chef-info">
+                        <h3 class="chef-name">김태영</h3>
+                        <p class="chef-specialty">Fusion Master</p>
+                        <p class="chef-philosophy">"동서양의 조화로운 만남이 진정한 퓨전의 시작입니다."</p>
+                    </div>
+                </div>
+
+                <div class="chef-card chef-2">
+                    <div class="cooking-aura"></div>
+                    <div class="chef-portrait">
+                        <div class="portrait-bg"></div>
+                        <div class="culinary-overlay">
+                            <div class="chef-initial">박</div>
+                        </div>
+                    </div>
+                    <div class="chef-info">
+                        <h3 class="chef-name">박지은</h3>
+                        <p class="chef-specialty">Pastry Virtuoso</p>
+                        <p class="chef-philosophy">"디저트는 식사의 마무리이자 새로운 감동의 시작입니다."</p>
+                    </div>
+                </div>
+
+                <div class="chef-card chef-3">
+                    <div class="cooking-aura"></div>
+                    <div class="chef-portrait">
+                        <div class="portrait-bg"></div>
+                        <div class="culinary-overlay">
+                            <div class="chef-initial">이</div>
+                        </div>
+                    </div>
+                    <div class="chef-info">
+                        <h3 class="chef-name">이성호</h3>
+                        <p class="chef-specialty">Spice Alchemist</p>
+                        <p class="chef-philosophy">"향신료의 마법으로 평범한 재료가 특별한 요리가 됩니다."</p>
+                    </div>
+                </div>
+
+                <div class="chef-card chef-4">
+                    <div class="cooking-aura"></div>
+                    <div class="chef-portrait">
+                        <div class="portrait-bg"></div>
+                        <div class="culinary-overlay">
+                            <div class="chef-initial">최</div>
+                        </div>
+                    </div>
+                    <div class="chef-info">
+                        <h3 class="chef-name">최아름</h3>
+                        <p class="chef-specialty">Organic Pioneer</p>
+                        <p class="chef-philosophy">"자연의 순수함이 담긴 재료가 최고의 맛을 만들어냅니다."</p>
+                    </div>
+                </div>
+
+                <div class="chef-card chef-5">
+                    <div class="cooking-aura"></div>
+                    <div class="chef-portrait">
+                        <div class="portrait-bg"></div>
+                        <div class="culinary-overlay">
+                            <div class="chef-initial">정</div>
+                        </div>
+                    </div>
+                    <div class="chef-info">
+                        <h3 class="chef-name">정민우</h3>
+                        <p class="chef-specialty">Molecular Artist</p>
+                        <p class="chef-philosophy">"과학과 예술의 만남으로 새로운 식문화를 창조합니다."</p>
+                    </div>
+                </div>
+
+                <div class="chef-card chef-6">
+                    <div class="cooking-aura"></div>
+                    <div class="chef-portrait">
+                        <div class="portrait-bg"></div>
+                        <div class="culinary-overlay">
+                            <div class="chef-initial">한</div>
+                        </div>
+                    </div>
+                    <div class="chef-info">
+                        <h3 class="chef-name">한소희</h3>
+                        <p class="chef-specialty">Plant-Based Chef</p>
+                        <p class="chef-philosophy">"식물성 재료의 무한한 가능성을 탐구하고 있습니다."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="recipe-story">
+        <div class="cookbook-bg"></div>
+        <div class="story-content">
+            <div class="recipe-frame">
+                <h2 class="recipe-title">Master's Recipe</h2>
+                <p class="recipe-text">
+                    오늘 우리는 단순히 요리를 배운 것이 아니라 진정한 미식가로 거듭났습니다.
+                    각자의 창의력과 열정을 하나의 접시에 담아내며,
+                    음식을 통해 문화와 감정을 나누는 법을 깨달았습니다.
+                    요리는 사랑의 언어이자 삶을 풍요롭게 하는 예술임을 다시 한 번 확인했습니다.
+                </p>
+                
+                <div class="cooking-process">
+                    <div class="process-step">
+                        <div class="step-icon">🔥</div>
+                        <div class="step-title">Preparation</div>
+                        <div class="step-description">신선한 재료 선별과 기본 손질</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-icon">🍳</div>
+                        <div class="step-title">Technique</div>
+                        <div class="step-description">전문적인 조리법과 스킬 습득</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-icon">🎨</div>
+                        <div class="step-title">Plating</div>
+                        <div class="step-description">예술적인 플레이팅과 장식</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-icon">✨</div>
+                        <div class="step-title">Tasting</div>
+                        <div class="step-description">완성된 요리의 맛과 향 감상</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Chef card intersection observer
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0) rotateX(0)';
+                    }, index * 300);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        // Initialize cards
+        document.querySelectorAll('.chef-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(120px) rotateX(-15deg)';
+            card.style.transition = 'all 1.4s cubic-bezier(0.23, 1, 0.320, 1)';
+            cardObserver.observe(card);
+        });
+
+        // Dynamic cooking steam
+        const steam = document.querySelector('.cooking-steam');
+        let steamPhase = 0;
+
+        setInterval(() => {
+            steamPhase += 1.2;
+            const intensity = 50 + Math.sin(steamPhase * Math.PI / 180) * 20;
+            const x = 50 + Math.cos(steamPhase * 0.6 * Math.PI / 180) * 12;
+            const y = 50 + Math.sin(steamPhase * 0.8 * Math.PI / 180) * 8;
+            steam.style.background = `radial-gradient(ellipse at ${x}% ${y}%, rgba(212, 165, 116, ${intensity/600}) 0%, rgba(184, 149, 106, ${intensity/1200}) 40%, rgba(0,0,0,0.9) 80%)`;
+        }, 150);
+
+        // Cooking glow effects
+        const createCookingGlow = () => {
+            const auras = document.querySelectorAll('.cooking-aura');
+            auras.forEach((aura, index) => {
+                setTimeout(() => {
+                    aura.style.opacity = '1';
+                    setTimeout(() => {
+                        aura.style.opacity = '0';
+                    }, 3500);
+                }, index * 600);
+            });
+        };
+
+        // Trigger glow every 22 seconds
+        setInterval(createCookingGlow, 22000);
+
+        // Flame effect intensity
+        const flame = document.querySelector('.flame-effect');
+        let flameIntensity = 0;
+
+        setInterval(() => {
+            flameIntensity += 2;
+            const scale = 1 + Math.sin(flameIntensity * Math.PI / 180) * 0.3;
+            const opacity = 0.8 + Math.cos(flameIntensity * 2 * Math.PI / 180) * 0.2;
+            flame.style.transform = `translateX(-50%) scaleY(${scale})`;
+            flame.style.opacity = opacity;
+        }, 100);
+
+        // Process steps animation
+        const processObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const steps = entry.target.querySelectorAll('.process-step');
+                    steps.forEach((step, i) => {
+                        setTimeout(() => {
+                            step.style.opacity = '1';
+                            step.style.transform = 'translateY(0)';
+                        }, i * 250);
+                    });
+                }
+            });
+        }, { threshold: 0.4 });
+
+        document.querySelectorAll('.process-step').forEach(step => {
+            step.style.opacity = '0';
+            step.style.transform = 'translateY(60px)';
+            step.style.transition = 'all 0.9s ease';
+        });
+
+        processObserver.observe(document.querySelector('.cooking-process'));
+    </script>
+</body>
+</html>

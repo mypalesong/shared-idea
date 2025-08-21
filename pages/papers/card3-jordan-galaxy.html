@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jordan's Cosmic Birthday</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Orbitron:wght@400;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 30%, #0f0f23 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        /* Star Field */
+        .star-field {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        .star.small {
+            width: 1px;
+            height: 1px;
+        }
+
+        .star.medium {
+            width: 2px;
+            height: 2px;
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+        }
+
+        .star.large {
+            width: 3px;
+            height: 3px;
+            box-shadow: 0 0 12px rgba(135, 206, 250, 0.9);
+        }
+
+        /* Nebula Effects */
+        .nebula {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.3;
+            animation: nebulaDrift 20s infinite linear;
+        }
+
+        .nebula-1 {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, #ff6b9d, #c44569);
+            top: 10%;
+            left: -100px;
+        }
+
+        .nebula-2 {
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, #4834d4, #686de0);
+            top: 60%;
+            right: -80px;
+            animation-delay: -10s;
+        }
+
+        /* Main Container */
+        .cosmic-container {
+            position: relative;
+            z-index: 10;
+            max-width: 420px;
+            margin: 20px auto;
+            min-height: calc(100vh - 40px);
+            background: linear-gradient(
+                180deg, 
+                rgba(26, 26, 46, 0.9) 0%, 
+                rgba(22, 33, 62, 0.85) 50%, 
+                rgba(15, 15, 35, 0.95) 100%
+            );
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(135, 206, 250, 0.3);
+            border-radius: 20px;
+            box-shadow: 
+                0 0 50px rgba(135, 206, 250, 0.2),
+                inset 0 0 50px rgba(255, 255, 255, 0.05);
+        }
+
+        /* Header */
+        .cosmic-header {
+            text-align: center;
+            padding: 40px 20px 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cosmic-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #87ceeb, #ff6b9d, #87ceeb, transparent);
+            animation: cosmicScan 4s ease-in-out infinite;
+        }
+
+        .birthday-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #87ceeb, #ff6b9d, #4834d4, #00d2d3);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: galaxyShift 5s ease-in-out infinite;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .cosmic-subtitle {
+            font-size: 12px;
+            color: #87ceeb;
+            opacity: 0.8;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Planet Section */
+        .planet-section {
+            position: relative;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .planet-orbit {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            border: 2px dashed rgba(135, 206, 250, 0.3);
+            border-radius: 50%;
+            animation: orbit 20s linear infinite;
+        }
+
+        .birthday-planet {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle at 30% 30%, #ff6b9d, #c44569, #8B4B8A);
+            border-radius: 50%;
+            box-shadow: 
+                0 0 30px rgba(255, 107, 157, 0.6),
+                inset -20px -20px 40px rgba(0, 0, 0, 0.3);
+            animation: planetSpin 10s linear infinite;
+        }
+
+        .satellite {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, #87ceeb, #4834d4);
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(135, 206, 250, 0.8);
+        }
+
+        .satellite-1 {
+            top: 20px;
+            right: 50px;
+            animation: satelliteOrbit1 15s linear infinite;
+        }
+
+        .satellite-2 {
+            bottom: 30px;
+            left: 40px;
+            animation: satelliteOrbit2 18s linear infinite reverse;
+        }
+
+        /* Friend Name */
+        .cosmic-name {
+            font-family: 'Orbitron', monospace;
+            font-size: 38px;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .cosmic-name .letter {
+            display: inline-block;
+            background: linear-gradient(45deg, #87ceeb, #ff6b9d, #4834d4);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: letterGlow 3s ease-in-out infinite;
+        }
+
+        .cosmic-name .letter:nth-child(1) { animation-delay: 0s; }
+        .cosmic-name .letter:nth-child(2) { animation-delay: 0.2s; }
+        .cosmic-name .letter:nth-child(3) { animation-delay: 0.4s; }
+        .cosmic-name .letter:nth-child(4) { animation-delay: 0.6s; }
+        .cosmic-name .letter:nth-child(5) { animation-delay: 0.8s; }
+        .cosmic-name .letter:nth-child(6) { animation-delay: 1s; }
+
+        /* Message Section */
+        .cosmic-message {
+            background: linear-gradient(135deg, rgba(72, 52, 212, 0.1), rgba(255, 107, 157, 0.1));
+            border: 1px solid rgba(135, 206, 250, 0.3);
+            border-radius: 15px;
+            padding: 25px 20px;
+            margin: 25px 20px;
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .cosmic-message::before {
+            content: '✨';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 5px 8px;
+            border-radius: 50%;
+            font-size: 16px;
+        }
+
+        .birthday-wish {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #e0e0e0;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .wish-highlight {
+            background: linear-gradient(45deg, #ff6b9d, #87ceeb);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 500;
+        }
+
+        /* Galaxy Stats */
+        .galaxy-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 25px 20px;
+        }
+
+        .stat-constellation {
+            background: linear-gradient(135deg, rgba(135, 206, 250, 0.1), rgba(72, 52, 212, 0.1));
+            border: 1px solid rgba(135, 206, 250, 0.3);
+            border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-constellation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(135, 206, 250, 0.2), transparent);
+            animation: constellationSweep 4s infinite;
+        }
+
+        .stat-icon {
+            font-size: 20px;
+            margin-bottom: 8px;
+            display: block;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 16px;
+            font-weight: 700;
+            color: #87ceeb;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #b0b0b0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Animations */
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes nebulaDrift {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+
+        @keyframes cosmicScan {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        @keyframes galaxyShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes orbit {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes planetSpin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes satelliteOrbit1 {
+            0% { transform: rotate(0deg) translateX(80px) rotate(0deg); }
+            100% { transform: rotate(360deg) translateX(80px) rotate(-360deg); }
+        }
+
+        @keyframes satelliteOrbit2 {
+            0% { transform: rotate(0deg) translateX(70px) rotate(0deg); }
+            100% { transform: rotate(360deg) translateX(70px) rotate(-360deg); }
+        }
+
+        @keyframes letterGlow {
+            0%, 100% { 
+                background-position: 0% 50%; 
+                filter: brightness(1);
+            }
+            50% { 
+                background-position: 100% 50%; 
+                filter: brightness(1.3);
+            }
+        }
+
+        @keyframes constellationSweep {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 480px) {
+            .birthday-title {
+                font-size: 18px;
+            }
+            
+            .cosmic-name {
+                font-size: 32px;
+            }
+            
+            .planet-orbit {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .birthday-planet {
+                width: 85px;
+                height: 85px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="star-field"></div>
+    
+    <div class="nebula nebula-1"></div>
+    <div class="nebula nebula-2"></div>
+
+    <div class="cosmic-container">
+        <header class="cosmic-header">
+            <h1 class="birthday-title">Cosmic Birthday</h1>
+            <p class="cosmic-subtitle">Celebration Across the Galaxy</p>
+        </header>
+
+        <section class="planet-section">
+            <div class="planet-orbit">
+                <div class="birthday-planet"></div>
+                <div class="satellite satellite-1"></div>
+                <div class="satellite satellite-2"></div>
+            </div>
+
+            <h2 class="cosmic-name">
+                <span class="letter">J</span>
+                <span class="letter">O</span>
+                <span class="letter">R</span>
+                <span class="letter">D</span>
+                <span class="letter">A</span>
+                <span class="letter">N</span>
+            </h2>
+        </section>
+
+        <div class="cosmic-message">
+            <div class="birthday-wish">
+                🌟 <span class="wish-highlight">Happy Birthday, Space Explorer!</span> 🌟<br><br>
+                
+                May your journey around the sun this year be filled with <span class="wish-highlight">stellar adventures</span>, cosmic discoveries, and moments that shine brighter than the brightest stars! ✨
+            </div>
+        </div>
+
+        <div class="galaxy-stats">
+            <div class="stat-constellation">
+                <span class="stat-icon">🌌</span>
+                <div class="stat-value">∞</div>
+                <div class="stat-label">Awesome Level</div>
+            </div>
+            
+            <div class="stat-constellation">
+                <span class="stat-icon">⭐</span>
+                <div class="stat-value">5★</div>
+                <div class="stat-label">Friend Rating</div>
+            </div>
+            
+            <div class="stat-constellation">
+                <span class="stat-icon">🚀</span>
+                <div class="stat-value">MAX</div>
+                <div class="stat-label">Fun Factor</div>
+            </div>
+            
+            <div class="stat-constellation">
+                <span class="stat-icon">🎂</span>
+                <div class="stat-value">READY</div>
+                <div class="stat-label">Cake Status</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate star field
+        function createStars() {
+            const starField = document.querySelector('.star-field');
+            const starCount = 100;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                const sizeClasses = ['small', 'medium', 'large'];
+                const weights = [0.7, 0.25, 0.05];
+                let randomSize = Math.random();
+                let selectedClass;
+                
+                if (randomSize < weights[0]) selectedClass = sizeClasses[0];
+                else if (randomSize < weights[0] + weights[1]) selectedClass = sizeClasses[1];
+                else selectedClass = sizeClasses[2];
+                
+                star.classList.add(selectedClass);
+                
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                
+                starField.appendChild(star);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            
+            // Stats animation
+            const stats = document.querySelectorAll('.stat-constellation');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.transform = 'translateY(0)';
+                            entry.target.style.opacity = '1';
+                        }, index * 150);
+                    }
+                });
+            });
+            
+            stats.forEach(stat => {
+                stat.style.transform = 'translateY(30px)';
+                stat.style.opacity = '0';
+                stat.style.transition = 'all 0.8s ease-out';
+                observer.observe(stat);
+            });
+
+            // Planet click effect
+            const planet = document.querySelector('.birthday-planet');
+            planet.addEventListener('click', () => {
+                planet.style.filter = 'brightness(1.5)';
+                setTimeout(() => {
+                    planet.style.filter = '';
+                }, 500);
+            });
+        });
+    </script>
+</body>
+</html>

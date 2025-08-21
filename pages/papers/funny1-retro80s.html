@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎉 레트로 모임 대성공! 🎉</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(45deg, #ff6b9d, #c44569, #6c5ce7, #0984e3);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease-in-out infinite;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* 80s Header */
+        .retro-header {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .neon-bg {
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background-image: url('https://images.unsplash.com/photo-1551218808-94e220e084d2?w=1600&h=1200&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.4) contrast(1.5) saturate(2) hue-rotate(280deg);
+            animation: retroZoom 15s ease-in-out infinite alternate;
+        }
+
+        .disco-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 107, 157, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(108, 92, 231, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(196, 69, 105, 0.2) 0%, transparent 70%);
+            animation: discoLights 4s ease-in-out infinite alternate;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            padding: 0 20px;
+        }
+
+        .retro-badge {
+            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 0 20px rgba(255, 107, 157, 0.6);
+            animation: neonPulse 2s ease-in-out infinite alternate;
+        }
+
+        .main-title {
+            font-size: clamp(36px, 8vw, 80px);
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-shadow: 
+                0 0 10px #ff6b9d,
+                0 0 20px #ff6b9d,
+                0 0 30px #ff6b9d;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        .subtitle {
+            font-size: clamp(18px, 4vw, 28px);
+            font-weight: 500;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .event-info {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border: 2px solid #ff6b9d;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px auto;
+            max-width: 600px;
+            box-shadow: 0 0 30px rgba(255, 107, 157, 0.3);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 107, 157, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 107, 157, 0.3);
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #ff6b9d;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* 후기 Section */
+        .review-section {
+            background: linear-gradient(135deg, #0984e3, #6c5ce7);
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wave-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&h=1000&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.2) hue-rotate(240deg);
+            animation: waveMove 20s ease-in-out infinite;
+        }
+
+        .section-container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-size: 48px;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 60px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .review-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 80px;
+        }
+
+        .review-card {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            border-radius: 25px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: rotate(-2deg);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 3px solid #ff6b9d;
+        }
+
+        .review-card:nth-child(even) {
+            transform: rotate(2deg);
+        }
+
+        .review-card:hover {
+            transform: rotate(0deg) scale(1.05);
+            box-shadow: 0 30px 80px rgba(255, 107, 157, 0.4);
+        }
+
+        .reviewer-emoji {
+            font-size: 60px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .reviewer-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #c44569;
+            margin-bottom: 15px;
+        }
+
+        .reviewer-role {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .review-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #444;
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+
+        .review-rating {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .funny-quote {
+            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            margin: 60px auto;
+            max-width: 800px;
+            box-shadow: 0 0 40px rgba(255, 107, 157, 0.4);
+        }
+
+        .quote-text {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .quote-author {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* 다음 모임 공지 */
+        .next-meetup {
+            background: linear-gradient(135deg, #c44569, #ff6b9d);
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .party-bg {
+            position: absolute;
+            top: -30%;
+            left: -30%;
+            width: 160%;
+            height: 160%;
+            background-image: url('https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=1600&h=1000&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.3) hue-rotate(300deg);
+            animation: partyRotate 30s linear infinite;
+        }
+
+        .meetup-container {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .next-title {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .next-subtitle {
+            font-size: 20px;
+            margin-bottom: 50px;
+            opacity: 0.9;
+        }
+
+        .event-details {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 25px;
+            padding: 50px;
+            backdrop-filter: blur(20px);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 40px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .detail-box {
+            background: rgba(255, 107, 157, 0.2);
+            border: 2px solid #ff6b9d;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .detail-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .detail-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ff6b9d;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .detail-content {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .join-button {
+            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            color: white;
+            border: none;
+            padding: 20px 60px;
+            font-size: 20px;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.4);
+            transition: all 0.3s ease;
+            animation: buttonPulse 3s ease-in-out infinite;
+        }
+
+        .join-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.6);
+        }
+
+        /* 애니메이션 */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes retroZoom {
+            0% { transform: scale(1) rotate(-1deg); }
+            100% { transform: scale(1.2) rotate(1deg); }
+        }
+
+        @keyframes discoLights {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes neonPulse {
+            0% { box-shadow: 0 0 20px rgba(255, 107, 157, 0.6); }
+            100% { box-shadow: 0 0 40px rgba(255, 107, 157, 1); }
+        }
+
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 10px #ff6b9d, 0 0 20px #ff6b9d, 0 0 30px #ff6b9d; }
+            100% { text-shadow: 0 0 20px #ff6b9d, 0 0 30px #ff6b9d, 0 0 40px #ff6b9d; }
+        }
+
+        @keyframes waveMove {
+            0%, 100% { transform: translateX(0) scale(1.1); }
+            50% { transform: translateX(-20px) scale(1.15); }
+        }
+
+        @keyframes partyRotate {
+            0% { transform: rotate(0deg) scale(1.3); }
+            100% { transform: rotate(360deg) scale(1.3); }
+        }
+
+        @keyframes buttonPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @media (max-width: 768px) {
+            .info-grid, .details-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .review-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .event-details {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="retro-header">
+        <div class="neon-bg"></div>
+        <div class="disco-overlay"></div>
+        <div class="header-content">
+            <div class="retro-badge">🎊 모임 후기 🎊</div>
+            <h1 class="main-title">대박! 레트로 파티 성공!</h1>
+            <p class="subtitle">강남에서 40대가 이렇게 신나게 놀 줄이야...</p>
+            
+            <div class="event-info">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">📅 일시</div>
+                        <div class="info-value">2024년 12월 15일 (금)<br>오후 7시 30분</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">📍 장소</div>
+                        <div class="info-value">강남역 맛집<br>"트라토리아 델 모멘토"</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">💰 회비</div>
+                        <div class="info-value">1인당 8만원<br>(음식 + 와인)</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">👥 참석자</div>
+                        <div class="info-value">총 6명<br>(남3, 여3)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="review-section">
+        <div class="wave-bg"></div>
+        <div class="section-container">
+            <h2 class="section-title">🎉 참가자 후기 모음집 🎉</h2>
+            
+            <div class="review-cards">
+                <div class="review-card">
+                    <span class="reviewer-emoji">👨‍💼</span>
+                    <h3 class="reviewer-name">김민수</h3>
+                    <p class="reviewer-role">전략기획팀장 / 42세</p>
+                    <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                    <p class="review-text">
+                        "회사에서만 만나던 사람들인데 이렇게 재미있을 줄 몰랐어요! 
+                        특히 지영님이 회사 상사 흉내내는 거 보고 배꼽잡고 웃었습니다 ㅋㅋ 
+                        다음에도 꼭 참석할게요!"
+                    </p>
+                </div>
+
+                <div class="review-card">
+                    <span class="reviewer-emoji">👩‍🎨</span>
+                    <h3 class="reviewer-name">이지영</h3>
+                    <p class="reviewer-role">디자인팀 실장 / 39세</p>
+                    <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                    <p class="review-text">
+                        "음식도 맛있고 분위기도 좋고! 그런데 현우님이 파스타 먹다가 
+                        소스 튀긴 거 보고 다들 빵 터졌죠 ㅋㅋㅋ 
+                        사진도 많이 찍어서 인스타 소재로 한 달은 먹고 살겠어요!"
+                    </p>
+                </div>
+
+                <div class="review-card">
+                    <span class="reviewer-emoji">👨‍💻</span>
+                    <h3 class="reviewer-name">박현우</h3>
+                    <p class="reviewer-role">개발팀장 / 41세</p>
+                    <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                    <p class="review-text">
+                        "개발만 하다가 이런 모임 참석해서 정말 좋았어요. 
+                        태훈님이 요리 이야기해주시는데 진짜 재미있더라구요. 
+                        그리고 와인 마시고 다들 말이 많아져서 새벽까지 수다떨었네요 ㅎㅎ"
+                    </p>
+                </div>
+
+                <div class="review-card">
+                    <span class="reviewer-emoji">👩‍🏫</span>
+                    <h3 class="reviewer-name">정수빈</h3>
+                    <p class="reviewer-role">교육컨설턴트 / 40세</p>
+                    <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                    <p class="review-text">
+                        "학부모들한테만 시달리다가 이런 어른들 모임 참석하니까 힐링됐어요! 
+                        특히 예린님이 의료진 썰 풀어주시는데 너무 웃겼어요. 
+                        다들 각자 분야에서 전문가라 대화도 알차고 재미있었습니다."
+                    </p>
+                </div>
+
+                <div class="review-card">
+                    <span class="reviewer-emoji">👨‍🍳</span>
+                    <h3 class="reviewer-name">최태훈</h3>
+                    <p class="reviewer-role">레스토랑 사장 / 43세</p>
+                    <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                    <p class="review-text">
+                        "요리하는 입장에서 이런 곳 가면 직업병으로 음식만 보는데, 
+                        오늘은 정말 순수하게 즐겼어요! 민수님이 와인 고르는 센스도 좋고, 
+                        다들 음식 맛있게 드셔서 기분 좋았습니다 👍"
+                    </p>
+                </div>
+
+                <div class="review-card">
+                    <span class="reviewer-emoji">👩‍⚕️</span>
+                    <h3 class="reviewer-name">김예린</h3>
+                    <p class="reviewer-role">내과 전문의 / 38세</p>
+                    <div class="review-rating">⭐⭐⭐⭐⭐</div>
+                    <p class="review-text">
+                        "병원에서 환자들만 보다가 이런 즐거운 모임 참석하니 스트레스가 확 풀리네요! 
+                        수빈님이 교육 이야기 해주시는데 정말 인사이트가 많았어요. 
+                        그리고... 현우님 소스 사건은 레전드 ㅋㅋㅋㅋ"
+                    </p>
+                </div>
+            </div>
+
+            <div class="funny-quote">
+                <p class="quote-text">
+                    "40대가 이렇게 신나게 놀아도 되나요? 
+                    집에 가서 아이들한테 뭐라고 설명하지...?"
+                </p>
+                <p class="quote-author">- 모임 후 단체 카톡방에서 -</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="next-meetup">
+        <div class="party-bg"></div>
+        <div class="meetup-container">
+            <h2 class="next-title">🍾 다음 모임 예고 🍾</h2>
+            <p class="next-subtitle">이번엔 더 재미있게! 더 맛있게!</p>
+            
+            <div class="event-details">
+                <div class="details-grid">
+                    <div class="detail-box">
+                        <span class="detail-icon">📅</span>
+                        <div class="detail-title">날짜 & 시간</div>
+                        <div class="detail-content">2025년 1월 19일 (일)<br>오후 6시</div>
+                    </div>
+                    
+                    <div class="detail-box">
+                        <span class="detail-icon">📍</span>
+                        <div class="detail-title">장소</div>
+                        <div class="detail-content">청담동 스테이크 하우스<br>"더 프라임"</div>
+                    </div>
+                    
+                    <div class="detail-box">
+                        <span class="detail-icon">💰</span>
+                        <div class="detail-title">회비</div>
+                        <div class="detail-content">1인당 12만원<br>(스테이크 코스 + 와인)</div>
+                    </div>
+                    
+                    <div class="detail-box">
+                        <span class="detail-icon">🎯</span>
+                        <div class="detail-title">특별 이벤트</div>
+                        <div class="detail-content">40대 토크쇼<br>"우리가 살아온 이야기"</div>
+                    </div>
+                </div>
+                
+                <p style="font-size: 18px; margin-bottom: 30px; opacity: 0.9;">
+                    ⚠️ 이번엔 현우님 소스 튀기기 금지! ⚠️<br>
+                    📱 참석 확인은 단체 카톡방에서!
+                </p>
+            </div>
+            
+            <button class="join-button" onclick="alert('카톡방에서 참석 의사를 밝혀주세요! 🎉')">
+                참석하기! 🙋‍♂️🙋‍♀️
+            </button>
+        </div>
+    </section>
+
+    <script>
+        // 리뷰 카드 애니메이션
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = entry.target.style.transform.replace('translateY(50px)', 'translateY(0)');
+                    }, index * 200);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.review-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform += ' translateY(50px)';
+            card.style.transition = 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            cardObserver.observe(card);
+        });
+
+        // 재미있는 효과들
+        setInterval(() => {
+            const emojis = ['🎉', '🎊', '🥂', '🍾', '✨', '💫'];
+            const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            const flyingEmoji = document.createElement('div');
+            flyingEmoji.textContent = randomEmoji;
+            flyingEmoji.style.position = 'fixed';
+            flyingEmoji.style.fontSize = '30px';
+            flyingEmoji.style.left = Math.random() * 100 + 'vw';
+            flyingEmoji.style.top = '100vh';
+            flyingEmoji.style.pointerEvents = 'none';
+            flyingEmoji.style.zIndex = '1000';
+            flyingEmoji.style.animation = 'flyUp 3s ease-out forwards';
+            
+            document.body.appendChild(flyingEmoji);
+            
+            setTimeout(() => {
+                flyingEmoji.remove();
+            }, 3000);
+        }, 2000);
+
+        // CSS 애니메이션 추가
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes flyUp {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(-100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 버튼 클릭 효과
+        document.querySelector('.join-button').addEventListener('click', function() {
+            this.style.animation = 'none';
+            setTimeout(() => {
+                this.style.animation = 'buttonPulse 3s ease-in-out infinite';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

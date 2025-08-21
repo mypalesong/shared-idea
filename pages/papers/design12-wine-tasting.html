@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Château Gangnam - Evening Tasting Notes</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;600;700;900&family=Crimson+Text:wght@400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Text', serif;
+            background: #2c1810;
+            color: #f5f1eb;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Wine Journal Header */
+        .journal-header {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .vintage-bg {
+            position: absolute;
+            top: -15%;
+            left: -15%;
+            width: 130%;
+            height: 130%;
+            background-image: url('https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=1600&h=1200&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.3) sepia(0.6) hue-rotate(10deg) contrast(1.1);
+            animation: vintageSwirl 30s ease-in-out infinite;
+        }
+
+        .parchment-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(44, 24, 16, 0.8) 0%, 
+                rgba(139, 69, 19, 0.3) 50%, 
+                rgba(44, 24, 16, 0.9) 100%);
+        }
+
+        .journal-title {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            padding: 60px;
+            background: rgba(245, 241, 235, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.7);
+            color: #2c1810;
+            border: 3px solid #8b4513;
+        }
+
+        .vintage-label {
+            font-size: 14px;
+            color: #8b4513;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .estate-name {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(36px, 6vw, 64px);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            color: #2c1810;
+        }
+
+        .appellation {
+            font-size: 20px;
+            color: #8b4513;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .tasting-date {
+            font-size: 16px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .ornamental-line {
+            width: 80px;
+            height: 2px;
+            background: #8b4513;
+        }
+
+        /* Tasting Notes Section */
+        .tasting-notes {
+            background: #f5f1eb;
+            color: #2c1810;
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .notes-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M0 0h100v100H0z" fill="%23f5f1eb"/><path d="M0 20h100M0 40h100M0 60h100M0 80h100" stroke="%23e8ddd4" stroke-width="0.5"/></svg>');
+            opacity: 0.7;
+        }
+
+        .notes-container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .notes-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 600;
+            color: #2c1810;
+            margin-bottom: 25px;
+        }
+
+        .section-subtitle {
+            font-size: 20px;
+            color: #8b4513;
+            font-style: italic;
+        }
+
+        .tasting-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            margin-bottom: 100px;
+        }
+
+        .notes-card {
+            background: #ffffff;
+            border: 2px solid #e8ddd4;
+            border-radius: 15px;
+            padding: 50px 40px;
+            box-shadow: 0 15px 50px rgba(139, 69, 19, 0.1);
+            position: relative;
+            transition: all 0.4s ease;
+        }
+
+        .notes-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 80px rgba(139, 69, 19, 0.2);
+        }
+
+        .notes-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #8b4513, #cd853f, #8b4513);
+            border-radius: 15px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .notes-card:hover::before {
+            opacity: 1;
+        }
+
+        .wine-varietal {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: #8b4513;
+            margin-bottom: 20px;
+        }
+
+        .tasting-notes-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #2c1810;
+            margin-bottom: 25px;
+        }
+
+        .wine-rating {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .rating-stars {
+            color: #cd853f;
+            font-size: 20px;
+        }
+
+        .rating-text {
+            font-size: 14px;
+            color: #8b4513;
+            font-weight: 600;
+        }
+
+        /* Sommeliers Section */
+        .sommeliers-section {
+            background: #2c1810;
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .cellar-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&h=1000&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            filter: brightness(0.15) sepia(0.4);
+            animation: cellarDrift 40s ease-in-out infinite;
+        }
+
+        .sommeliers-container {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .sommeliers-header {
+            text-align: center;
+            margin-bottom: 100px;
+        }
+
+        .sommeliers-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 54px;
+            font-weight: 300;
+            color: #f5f1eb;
+            margin-bottom: 30px;
+        }
+
+        .sommeliers-subtitle {
+            font-size: 22px;
+            color: #cd853f;
+            font-style: italic;
+        }
+
+        .sommeliers-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 60px;
+        }
+
+        .sommelier-card {
+            background: rgba(245, 241, 235, 0.95);
+            color: #2c1810;
+            border-radius: 20px;
+            padding: 50px 40px;
+            text-align: center;
+            border: 3px solid #8b4513;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sommelier-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(205, 133, 63, 0.3), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .sommelier-card:hover {
+            transform: translateY(-20px) scale(1.05);
+            box-shadow: 0 40px 100px rgba(139, 69, 19, 0.4);
+        }
+
+        .sommelier-card:hover::after {
+            left: 100%;
+        }
+
+        .sommelier-portrait {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b4513, #cd853f);
+            color: #f5f1eb;
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            border: 4px solid #cd853f;
+            position: relative;
+            z-index: 2;
+        }
+
+        .sommelier-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c1810;
+            position: relative;
+            z-index: 2;
+        }
+
+        .sommelier-expertise {
+            font-size: 14px;
+            color: #8b4513;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .sommelier-note {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #2c1810;
+            font-style: italic;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Evening Pairing */
+        .evening-pairing {
+            background: linear-gradient(135deg, #f5f1eb 0%, #e8ddd4 100%);
+            padding: 120px 0;
+            color: #2c1810;
+            position: relative;
+        }
+
+        .pairing-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 40px;
+            text-align: center;
+        }
+
+        .pairing-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 600;
+            margin-bottom: 40px;
+            color: #2c1810;
+        }
+
+        .pairing-description {
+            font-size: 22px;
+            line-height: 1.8;
+            color: #8b4513;
+            margin-bottom: 60px;
+            font-style: italic;
+        }
+
+        .vintage-signature {
+            background: #2c1810;
+            color: #f5f1eb;
+            padding: 60px;
+            border-radius: 20px;
+            border: 4px solid #8b4513;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .signature-bg {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background-image: url('https://images.unsplash.com/photo-1551218808-94e220e084d2?w=800&h=600&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.1) sepia(0.8);
+            animation: signatureSwirl 50s ease-in-out infinite;
+        }
+
+        .signature-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .signature-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 300;
+            line-height: 1.4;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        .signature-author {
+            font-size: 18px;
+            color: #cd853f;
+            font-weight: 600;
+        }
+
+        @keyframes vintageSwirl {
+            0%, 100% { transform: rotate(0deg) scale(1.1); }
+            25% { transform: rotate(2deg) scale(1.15); }
+            50% { transform: rotate(0deg) scale(1.2); }
+            75% { transform: rotate(-2deg) scale(1.15); }
+        }
+
+        @keyframes cellarDrift {
+            0%, 100% { transform: translateY(0) scale(1.1); }
+            50% { transform: translateY(-20px) scale(1.15); }
+        }
+
+        @keyframes signatureSwirl {
+            0% { transform: rotate(0deg) scale(1.3); }
+            100% { transform: rotate(360deg) scale(1.3); }
+        }
+
+        @media (max-width: 768px) {
+            .tasting-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .sommeliers-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .journal-title {
+                padding: 40px 30px;
+            }
+            
+            .vintage-signature {
+                padding: 40px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="journal-header">
+        <div class="vintage-bg"></div>
+        <div class="parchment-overlay"></div>
+        <div class="journal-title">
+            <div class="vintage-label">Vintage 2024</div>
+            <h1 class="estate-name">Château Gangnam</h1>
+            <p class="appellation">Seoul Premium District</p>
+            <div class="tasting-date">
+                <div class="ornamental-line"></div>
+                <span>December 15th Tasting</span>
+                <div class="ornamental-line"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tasting-notes">
+        <div class="notes-bg"></div>
+        <div class="notes-container">
+            <div class="notes-header">
+                <h2 class="section-title">Tasting Notes</h2>
+                <p class="section-subtitle">An evening of exceptional pairings and refined company</p>
+            </div>
+
+            <div class="tasting-grid">
+                <div class="notes-card">
+                    <h3 class="wine-varietal">The Opening</h3>
+                    <p class="tasting-notes-text">
+                        Brilliant clarity with notes of anticipation and curiosity. The initial bouquet reveals 
+                        complex layers of professional accomplishment, seasoned with hints of personal vulnerability. 
+                        A well-structured beginning that promises depth and longevity.
+                    </p>
+                    <div class="wine-rating">
+                        <div class="rating-stars">★★★★★</div>
+                        <div class="rating-text">Exceptional First Impression</div>
+                    </div>
+                </div>
+
+                <div class="notes-card">
+                    <h3 class="wine-varietal">Mid-Palate Development</h3>
+                    <p class="tasting-notes-text">
+                        The conversation develops beautifully, revealing surprising depth and complexity. 
+                        Undertones of shared experience blend seamlessly with fresh perspectives, 
+                        creating a harmonious balance that lingers pleasantly.
+                    </p>
+                    <div class="wine-rating">
+                        <div class="rating-stars">★★★★★</div>
+                        <div class="rating-text">Outstanding Complexity</div>
+                    </div>
+                </div>
+
+                <div class="notes-card">
+                    <h3 class="wine-varietal">The Finish</h3>
+                    <p class="tasting-notes-text">
+                        Long, elegant finish with lasting impressions of warmth and connection. 
+                        The evening concludes with subtle notes of future collaboration and 
+                        a satisfying sense of time well invested.
+                    </p>
+                    <div class="wine-rating">
+                        <div class="rating-stars">★★★★★</div>
+                        <div class="rating-text">Memorable Conclusion</div>
+                    </div>
+                </div>
+
+                <div class="notes-card">
+                    <h3 class="wine-varietal">Overall Impression</h3>
+                    <p class="tasting-notes-text">
+                        A rare vintage that combines tradition with innovation. The careful curation 
+                        of personalities creates a blend that is both sophisticated and approachable, 
+                        suitable for aging and future appreciation.
+                    </p>
+                    <div class="wine-rating">
+                        <div class="rating-stars">★★★★★</div>
+                        <div class="rating-text">Exceptional Vintage</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="sommeliers-section">
+        <div class="cellar-bg"></div>
+        <div class="sommeliers-container">
+            <div class="sommeliers-header">
+                <h2 class="sommeliers-title">The Tasting Panel</h2>
+                <p class="sommeliers-subtitle">Six distinguished connoisseurs of their respective crafts</p>
+            </div>
+
+            <div class="sommeliers-grid">
+                <div class="sommelier-card">
+                    <div class="sommelier-portrait">김</div>
+                    <h3 class="sommelier-name">김민수</h3>
+                    <p class="sommelier-expertise">Strategy Sommelier</p>
+                    <p class="sommelier-note">
+                        "Like a well-aged Bordeaux, great strategies develop complexity over time, 
+                        revealing new layers with each changing market condition."
+                    </p>
+                </div>
+
+                <div class="sommelier-card">
+                    <div class="sommelier-portrait">이</div>
+                    <h3 class="sommelier-name">이지영</h3>
+                    <p class="sommelier-expertise">Creative Curator</p>
+                    <p class="sommelier-note">
+                        "Creativity, like fine wine, requires the perfect balance of structure and freedom, 
+                        tradition and innovation to achieve true excellence."
+                    </p>
+                </div>
+
+                <div class="sommelier-card">
+                    <div class="sommelier-portrait">박</div>
+                    <h3 class="sommelier-name">박현우</h3>
+                    <p class="sommelier-expertise">Tech Vintner</p>
+                    <p class="sommelier-note">
+                        "Technology ages like a vintage champagne - the best solutions bubble with 
+                        innovation while maintaining their fundamental integrity."
+                    </p>
+                </div>
+
+                <div class="sommelier-card">
+                    <div class="sommelier-portrait">정</div>
+                    <h3 class="sommelier-name">정수빈</h3>
+                    <p class="sommelier-expertise">Knowledge Keeper</p>
+                    <p class="sommelier-note">
+                        "Education is like wine-making - it's about creating the right conditions 
+                        for natural growth and allowing time for wisdom to mature."
+                    </p>
+                </div>
+
+                <div class="sommelier-card">
+                    <div class="sommelier-portrait">최</div>
+                    <h3 class="sommelier-name">최태훈</h3>
+                    <p class="sommelier-expertise">Culinary Alchemist</p>
+                    <p class="sommelier-note">
+                        "Great cuisine and great wine share a secret - they both transform simple 
+                        elements into experiences that touch the soul."
+                    </p>
+                </div>
+
+                <div class="sommelier-card">
+                    <div class="sommelier-portrait">김</div>
+                    <h3 class="sommelier-name">김예린</h3>
+                    <p class="sommelier-expertise">Wellness Vintner</p>
+                    <p class="sommelier-note">
+                        "Healing, like wine, is an art of balance - knowing when to apply pressure, 
+                        when to allow rest, and when to let nature do its work."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="evening-pairing">
+        <div class="pairing-container">
+            <h2 class="pairing-title">The Perfect Pairing</h2>
+            <p class="pairing-description">
+                This evening represents a rare vintage - six exceptional individuals, carefully selected, 
+                allowed to develop their unique flavors while blending into something greater than 
+                the sum of their parts.
+            </p>
+
+            <div class="vintage-signature">
+                <div class="signature-bg"></div>
+                <div class="signature-content">
+                    <p class="signature-quote">
+                        "In wine, as in friendship, the magic happens not in the individual grapes, 
+                        but in the careful art of bringing them together at just the right moment."
+                    </p>
+                    <p class="signature-author">— Master Sommelier's Journal, Gangnam Chapter</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Sommelier card staggered animation
+        const sommelierObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0) scale(1)';
+                    }, index * 200);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        document.querySelectorAll('.sommelier-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(60px) scale(0.9)';
+            card.style.transition = 'all 1s cubic-bezier(0.23, 1, 0.320, 1)';
+            sommelierObserver.observe(card);
+        });
+
+        // Tasting notes cards animation
+        const notesObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 150);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.notes-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(40px)';
+            card.style.transition = 'all 0.8s ease-out';
+            notesObserver.observe(card);
+        });
+
+        // Wine swirl effect
+        setInterval(() => {
+            const cards = document.querySelectorAll('.notes-card');
+            cards.forEach(card => {
+                card.style.transform += ' rotate(0.5deg)';
+                setTimeout(() => {
+                    card.style.transform = card.style.transform.replace(' rotate(0.5deg)', '');
+                }, 1000);
+            });
+        }, 10000);
+    </script>
+</body>
+</html>

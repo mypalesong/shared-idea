@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summit Seekers - Mountain Souls</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Open+Sans:wght@300;400;500&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: #0d1b0f;
+            color: #e8f5ea;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .mountain-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: rgba(13, 27, 15, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid #2d5a37;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+        }
+
+        .mountain-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: #4ade80;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .peak-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(145deg, #4ade80, #22c55e);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            position: relative;
+        }
+
+        .peak-icon::before {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: #ffffff;
+            border-radius: 50%;
+        }
+
+        .trek-info {
+            display: flex;
+            gap: 40px;
+            font-size: 12px;
+            color: #86a889;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Hero Section */
+        .hero-summit {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .mountain-mist {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(74, 222, 128, 0.06) 0%, rgba(34, 197, 94, 0.03) 40%, rgba(0,0,0,0.9) 80%);
+            animation: mistFlow 15s ease-in-out infinite;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            padding: 0 40px;
+        }
+
+        .summit-vista {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            background: linear-gradient(to bottom, #1a3a2e 0%, #0d1b0f 100%);
+            border: 3px solid #4ade80;
+            border-radius: 24px;
+            margin: 0 auto 40px;
+            overflow: hidden;
+            box-shadow: 0 0 80px rgba(74, 222, 128, 0.25);
+        }
+
+        .vista-landscape {
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=700&h=500&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.6) contrast(1.4) hue-rotate(60deg);
+            animation: panoramicView 20s ease-in-out infinite;
+        }
+
+        .mountain-peaks {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: 
+                linear-gradient(150deg, transparent 40%, #4ade80 40.5%, #4ade80 42%, transparent 42.5%),
+                linear-gradient(30deg, transparent 60%, #22c55e 60.5%, #22c55e 62%, transparent 62.5%),
+                linear-gradient(120deg, transparent 50%, #16a34a 50.5%, #16a34a 52%, transparent 52.5%);
+            animation: peakGlow 12s ease-in-out infinite;
+        }
+
+        .summit-flag {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            width: 3px;
+            height: 60px;
+            background: #4ade80;
+            animation: flagWave 4s ease-in-out infinite;
+        }
+
+        .summit-flag::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 15px;
+            background: #4ade80;
+            animation: flagFlutter 2s ease-in-out infinite;
+        }
+
+        .hero-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 48px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #4ade80;
+            text-shadow: 0 0 40px rgba(74, 222, 128, 0.4);
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: #a7d5aa;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        /* Hikers Section */
+        .trail-floor {
+            background: #081408;
+            position: relative;
+            padding: 120px 0;
+        }
+
+        .forest-lighting {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 250px;
+            background: linear-gradient(to bottom, rgba(74, 222, 128, 0.05), transparent);
+        }
+
+        .trail-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-number {
+            font-size: 14px;
+            color: #4a5d4e;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 48px;
+            font-weight: 600;
+            color: #4ade80;
+        }
+
+        /* Hiker Cards */
+        .hikers-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 50px;
+        }
+
+        .hiker-card {
+            position: relative;
+            background: linear-gradient(145deg, #0d1b0f, #081408);
+            border: 2px solid rgba(74, 222, 128, 0.2);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.320, 1);
+            cursor: pointer;
+        }
+
+        .hiker-card:hover {
+            transform: translateY(-30px) perspective(1000px) rotateY(8deg);
+            box-shadow: 
+                0 60px 140px rgba(0,0,0,0.8),
+                0 0 100px rgba(74, 222, 128, 0.2);
+            border-color: #4ade80;
+        }
+
+        .hiker-avatar {
+            width: 100%;
+            height: 320px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-bg {
+            position: absolute;
+            top: -15%;
+            left: -15%;
+            width: 130%;
+            height: 130%;
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.5) contrast(1.3) hue-rotate(30deg);
+            transition: transform 10s ease-in-out;
+        }
+
+        .hiker-card:hover .avatar-bg {
+            transform: scale(1.2) rotate(3deg);
+        }
+
+        .nature-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.15), rgba(13, 27, 15, 0.6));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hiker-initial {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 56px;
+            font-weight: 600;
+            color: #fff;
+            text-shadow: 
+                2px 2px 0 #4ade80,
+                4px 4px 20px rgba(0,0,0,0.8);
+        }
+
+        .hiker-info {
+            padding: 32px;
+            background: linear-gradient(145deg, #0d1b0f, #081408);
+        }
+
+        .hiker-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: #4ade80;
+            margin-bottom: 8px;
+        }
+
+        .hiker-role {
+            font-size: 14px;
+            color: #86a889;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .hiker-motto {
+            font-size: 14px;
+            color: #a7d5aa;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .trail-aura {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(74, 222, 128, 0.25) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: trailGlow 6s ease-in-out infinite;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .hiker-card:hover .trail-aura {
+            opacity: 1;
+        }
+
+        /* Journey Story */
+        .journey-story {
+            background: #081408;
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .wilderness-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600&h=1000&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.08) contrast(1.4) hue-rotate(60deg);
+            animation: wildernessBreeze 40s ease-in-out infinite;
+        }
+
+        .story-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 40px;
+        }
+
+        .journey-frame {
+            background: rgba(13, 27, 15, 0.93);
+            backdrop-filter: blur(30px);
+            border: 3px solid #4ade80;
+            border-radius: 24px;
+            padding: 80px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .journey-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #4ade80, transparent);
+            animation: trailPath 6s ease-in-out infinite;
+        }
+
+        .journey-frame::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: -100%;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #4ade80, transparent);
+            animation: trailPath 6s ease-in-out infinite reverse;
+        }
+
+        .journey-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 44px;
+            font-weight: 600;
+            color: #4ade80;
+            margin-bottom: 30px;
+        }
+
+        .journey-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #a7d5aa;
+            margin-bottom: 50px;
+        }
+
+        .trek-milestones {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .milestone-item {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(74, 222, 128, 0.08);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .milestone-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px;
+            background: #4ade80;
+            animation: milestoneProgress 5s ease-in-out infinite;
+        }
+
+        .milestone-icon {
+            font-size: 38px;
+            margin-bottom: 15px;
+            color: #4ade80;
+        }
+
+        .milestone-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #4ade80;
+            margin-bottom: 10px;
+        }
+
+        .milestone-description {
+            font-size: 12px;
+            color: #86a889;
+            line-height: 1.4;
+        }
+
+        /* Individual hiker backgrounds */
+        .hiker-1 .avatar-bg { background-image: url('https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=400&fit=crop'); }
+        .hiker-2 .avatar-bg { background-image: url('https://images.unsplash.com/photo-1544717297-fa95b6ee9643?w=400&h=400&fit=crop'); }
+        .hiker-3 .avatar-bg { background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop'); }
+        .hiker-4 .avatar-bg { background-image: url('https://images.unsplash.com/photo-1494790108755-2616b612b495?w=400&h=400&fit=crop'); }
+        .hiker-5 .avatar-bg { background-image: url('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop'); }
+        .hiker-6 .avatar-bg { background-image: url('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop'); }
+
+        @keyframes mistFlow {
+            0%, 100% { transform: scale(1) translateX(0); opacity: 0.8; }
+            50% { transform: scale(1.1) translateX(-30px); opacity: 1; }
+        }
+
+        @keyframes panoramicView {
+            0%, 100% { filter: brightness(0.6) contrast(1.4) hue-rotate(60deg); }
+            50% { filter: brightness(0.7) contrast(1.5) hue-rotate(80deg); }
+        }
+
+        @keyframes peakGlow {
+            0%, 100% { opacity: 0.8; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-5px); }
+        }
+
+        @keyframes flagWave {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(2deg); }
+            75% { transform: rotate(-2deg); }
+        }
+
+        @keyframes flagFlutter {
+            0%, 100% { transform: scaleX(1); }
+            50% { transform: scaleX(0.8); }
+        }
+
+        @keyframes trailGlow {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.5); }
+        }
+
+        @keyframes wildernessBreeze {
+            0%, 100% { transform: translate(0, 0) scale(1.05); }
+            50% { transform: translate(-15px, -8px) scale(1.1); }
+        }
+
+        @keyframes trailPath {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes milestoneProgress {
+            0%, 60%, 100% { left: -100%; }
+            70%, 85% { left: 0%; }
+        }
+
+        @media (max-width: 768px) {
+            .hikers-grid {
+                grid-template-columns: 1fr;
+                gap: 35px;
+            }
+            
+            .trek-milestones {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .summit-vista {
+                width: 90%;
+                height: 300px;
+            }
+            
+            .journey-frame {
+                padding: 60px 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="mountain-nav">
+        <div class="mountain-title">
+            <div class="peak-icon"></div>
+            Summit Seekers
+        </div>
+        <div class="trek-info">
+            <span>May 28, 2024</span>
+            <span>Bukhansan Trail</span>
+        </div>
+    </nav>
+
+    <section class="hero-summit">
+        <div class="mountain-mist"></div>
+        <div class="hero-content">
+            <div class="summit-vista">
+                <div class="vista-landscape"></div>
+                <div class="mountain-peaks"></div>
+                <div class="summit-flag"></div>
+            </div>
+            <h2 class="hero-title">Peak Experience</h2>
+            <p class="hero-subtitle">북한산 정상에서 만난 진정한 동료들</p>
+        </div>
+    </section>
+
+    <section class="trail-floor">
+        <div class="forest-lighting"></div>
+        <div class="trail-container">
+            <div class="section-header">
+                <div class="section-number">Trail Companions</div>
+                <h2 class="section-title">Mountain Souls</h2>
+            </div>
+
+            <div class="hikers-grid">
+                <div class="hiker-card hiker-1">
+                    <div class="trail-aura"></div>
+                    <div class="hiker-avatar">
+                        <div class="avatar-bg"></div>
+                        <div class="nature-overlay">
+                            <div class="hiker-initial">김</div>
+                        </div>
+                    </div>
+                    <div class="hiker-info">
+                        <h3 class="hiker-name">김산호</h3>
+                        <p class="hiker-role">Trail Leader</p>
+                        <p class="hiker-motto">"산은 우리에게 겸손함과 끈기를 가르쳐주는 스승입니다."</p>
+                    </div>
+                </div>
+
+                <div class="hiker-card hiker-2">
+                    <div class="trail-aura"></div>
+                    <div class="hiker-avatar">
+                        <div class="avatar-bg"></div>
+                        <div class="nature-overlay">
+                            <div class="hiker-initial">박</div>
+                        </div>
+                    </div>
+                    <div class="hiker-info">
+                        <h3 class="hiker-name">박별이</h3>
+                        <p class="hiker-role">Nature Guide</p>
+                        <p class="hiker-motto">"자연과 함께 걷다 보면 마음도 자연스럽게 치유됩니다."</p>
+                    </div>
+                </div>
+
+                <div class="hiker-card hiker-3">
+                    <div class="trail-aura"></div>
+                    <div class="hiker-avatar">
+                        <div class="avatar-bg"></div>
+                        <div class="nature-overlay">
+                            <div class="hiker-initial">이</div>
+                        </div>
+                    </div>
+                    <div class="hiker-info">
+                        <h3 class="hiker-name">이강산</h3>
+                        <p class="hiker-role">Peak Challenger</p>
+                        <p class="hiker-motto">"한 걸음씩 오르다 보면 언젠가 정상에 서게 됩니다."</p>
+                    </div>
+                </div>
+
+                <div class="hiker-card hiker-4">
+                    <div class="trail-aura"></div>
+                    <div class="hiker-avatar">
+                        <div class="avatar-bg"></div>
+                        <div class="nature-overlay">
+                            <div class="hiker-initial">최</div>
+                        </div>
+                    </div>
+                    <div class="hiker-info">
+                        <h3 class="hiker-name">최푸름</h3>
+                        <p class="hiker-role">Forest Whisperer</p>
+                        <p class="hiker-motto">"숲의 속삭임을 듣고 자연의 리듬을 느낄 수 있습니다."</p>
+                    </div>
+                </div>
+
+                <div class="hiker-card hiker-5">
+                    <div class="trail-aura"></div>
+                    <div class="hiker-avatar">
+                        <div class="avatar-bg"></div>
+                        <div class="nature-overlay">
+                            <div class="hiker-initial">정</div>
+                        </div>
+                    </div>
+                    <div class="hiker-info">
+                        <h3 class="hiker-name">정바위</h3>
+                        <p class="hiker-role">Rock Climber</p>
+                        <p class="hiker-motto">"바위처럼 단단한 의지로 어떤 높이든 도전할 수 있습니다."</p>
+                    </div>
+                </div>
+
+                <div class="hiker-card hiker-6">
+                    <div class="trail-aura"></div>
+                    <div class="hiker-avatar">
+                        <div class="avatar-bg"></div>
+                        <div class="nature-overlay">
+                            <div class="hiker-initial">한</div>
+                        </div>
+                    </div>
+                    <div class="hiker-info">
+                        <h3 class="hiker-name">한솔잎</h3>
+                        <p class="hiker-role">Eco Guardian</p>
+                        <p class="hiker-motto">"자연을 보호하며 걷는 길이 진정한 등반의 길입니다."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="journey-story">
+        <div class="wilderness-bg"></div>
+        <div class="story-content">
+            <div class="journey-frame">
+                <h2 class="journey-title">Summit Chronicles</h2>
+                <p class="journey-text">
+                    오늘 우리는 단순히 산을 오른 것이 아니라 삶의 의미를 되새기는 시간을 가졌습니다.
+                    가파른 경사와 거친 바위길을 함께 걸으며 서로를 격려하고,
+                    정상에 도달했을 때의 그 감동과 성취감을 나누었습니다.
+                    자연 앞에서 겸손해지고, 동료들과의 우정이 더욱 깊어진 소중한 하루였습니다.
+                </p>
+                
+                <div class="trek-milestones">
+                    <div class="milestone-item">
+                        <div class="milestone-icon">🥾</div>
+                        <div class="milestone-title">Base Camp</div>
+                        <div class="milestone-description">등반 준비와 팀워크 다지기</div>
+                    </div>
+                    <div class="milestone-item">
+                        <div class="milestone-icon">🌲</div>
+                        <div class="milestone-title">Forest Trail</div>
+                        <div class="milestone-description">자연과 함께하는 힐링 코스</div>
+                    </div>
+                    <div class="milestone-item">
+                        <div class="milestone-icon">⛰️</div>
+                        <div class="milestone-title">Summit Push</div>
+                        <div class="milestone-description">정상을 향한 마지막 도전</div>
+                    </div>
+                    <div class="milestone-item">
+                        <div class="milestone-icon">🏔️</div>
+                        <div class="milestone-title">Peak Victory</div>
+                        <div class="milestone-description">정상 정복과 감동의 순간</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Hiker card intersection observer
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0) perspective(1000px) rotateY(0)';
+                    }, index * 350);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        // Initialize cards
+        document.querySelectorAll('.hiker-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(150px) perspective(1000px) rotateY(-15deg)';
+            card.style.transition = 'all 1.6s cubic-bezier(0.23, 1, 0.320, 1)';
+            cardObserver.observe(card);
+        });
+
+        // Dynamic mountain mist
+        const mist = document.querySelector('.mountain-mist');
+        let mistPhase = 0;
+
+        setInterval(() => {
+            mistPhase += 0.7;
+            const intensity = 50 + Math.sin(mistPhase * Math.PI / 180) * 25;
+            const x = 50 + Math.cos(mistPhase * 0.5 * Math.PI / 180) * 15;
+            const y = 50 + Math.sin(mistPhase * 0.3 * Math.PI / 180) * 10;
+            mist.style.background = `radial-gradient(ellipse at ${x}% ${y}%, rgba(74, 222, 128, ${intensity/800}) 0%, rgba(34, 197, 94, ${intensity/1600}) 40%, rgba(0,0,0,0.9) 80%)`;
+        }, 200);
+
+        // Trail glow effects
+        const createTrailGlow = () => {
+            const auras = document.querySelectorAll('.trail-aura');
+            auras.forEach((aura, index) => {
+                setTimeout(() => {
+                    aura.style.opacity = '1';
+                    setTimeout(() => {
+                        aura.style.opacity = '0';
+                    }, 4000);
+                }, index * 700);
+            });
+        };
+
+        // Trigger trail glow every 25 seconds
+        setInterval(createTrailGlow, 25000);
+
+        // Peak glow animation
+        const peaks = document.querySelector('.mountain-peaks');
+        let peakIntensity = 0;
+
+        setInterval(() => {
+            peakIntensity += 1.5;
+            const glow = 0.8 + Math.sin(peakIntensity * Math.PI / 180) * 0.2;
+            peaks.style.opacity = glow;
+        }, 150);
+
+        // Flag animation
+        const flag = document.querySelector('.summit-flag');
+        let flagPhase = 0;
+
+        setInterval(() => {
+            flagPhase += 3;
+            const rotation = Math.sin(flagPhase * Math.PI / 180) * 3;
+            flag.style.transform = `rotate(${rotation}deg)`;
+        }, 100);
+
+        // Milestone items animation
+        const milestoneObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const milestones = entry.target.querySelectorAll('.milestone-item');
+                    milestones.forEach((milestone, i) => {
+                        setTimeout(() => {
+                            milestone.style.opacity = '1';
+                            milestone.style.transform = 'translateY(0)';
+                        }, i * 300);
+                    });
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.milestone-item').forEach(milestone => {
+            milestone.style.opacity = '0';
+            milestone.style.transform = 'translateY(70px)';
+            milestone.style.transition = 'all 1s ease';
+        });
+
+        milestoneObserver.observe(document.querySelector('.trek-milestones'));
+    </script>
+</body>
+</html>

@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sam's Vintage Birthday - Memory Lane</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Courier+Prime:wght@400;700&family=Dancing+Script:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier Prime', monospace;
+            background: linear-gradient(45deg, #f4f1e8, #e8dcc0);
+            color: #5d4037;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Vintage Paper Texture */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(101, 67, 33, 0.1) 1px, transparent 1px),
+                radial-gradient(circle at 80% 70%, rgba(101, 67, 33, 0.08) 1px, transparent 1px),
+                radial-gradient(circle at 40% 80%, rgba(139, 99, 75, 0.05) 2px, transparent 2px);
+            background-size: 200px 200px, 150px 150px, 300px 300px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Main Container */
+        .vintage-album {
+            position: relative;
+            z-index: 10;
+            max-width: 420px;
+            margin: 20px auto;
+            min-height: calc(100vh - 40px);
+            background: #faf7f2;
+            border: 3px solid #8d6e63;
+            border-radius: 15px;
+            box-shadow: 
+                0 15px 35px rgba(0,0,0,0.3),
+                inset 0 0 20px rgba(139, 99, 75, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vintage-album::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px dashed #bcaaa4;
+            border-radius: 10px;
+            pointer-events: none;
+        }
+
+        /* Album Cover */
+        .album-cover {
+            background: linear-gradient(135deg, #8d6e63, #6d4c41);
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+            border-bottom: 3px solid #5d4037;
+        }
+
+        .album-cover::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: repeating-linear-gradient(
+                90deg,
+                #3e2723,
+                #3e2723 10px,
+                #5d4037 10px,
+                #5d4037 20px
+            );
+        }
+
+        .vintage-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 28px;
+            color: #fff8e1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+            transform: rotate(-2deg);
+        }
+
+        .album-subtitle {
+            font-family: 'Caveat', cursive;
+            font-size: 16px;
+            color: #d7ccc8;
+            transform: rotate(1deg);
+        }
+
+        /* Polaroid Photos */
+        .photo-collection {
+            padding: 30px 20px;
+            position: relative;
+        }
+
+        .polaroid {
+            background: #fff;
+            border-radius: 3px;
+            box-shadow: 
+                0 4px 8px rgba(0,0,0,0.2),
+                0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            transform-origin: center;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .polaroid:nth-child(odd) {
+            transform: rotate(-3deg);
+            margin-left: -10px;
+        }
+
+        .polaroid:nth-child(even) {
+            transform: rotate(2deg);
+            margin-right: -10px;
+        }
+
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.02);
+            z-index: 10;
+        }
+
+        .photo-frame {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #ffe0b2, #ffcc80);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .photo-content {
+            width: 90%;
+            height: 85%;
+            background: linear-gradient(45deg, #f8bbd9, #e1bee7);
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .birthday-icon {
+            font-size: 48px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .photo-caption {
+            padding: 15px 15px 20px 15px;
+            text-align: center;
+            background: #fff;
+        }
+
+        .caption-text {
+            font-family: 'Caveat', cursive;
+            font-size: 18px;
+            color: #5d4037;
+            line-height: 1.4;
+            transform: rotate(-1deg);
+        }
+
+        .caption-date {
+            font-size: 12px;
+            color: #8d6e63;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        /* Main Birthday Message */
+        .main-message {
+            background: #fff8e1;
+            margin: 20px;
+            padding: 25px;
+            border: 2px solid #d7ccc8;
+            border-radius: 8px;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(139, 99, 75, 0.1);
+        }
+
+        .main-message::before {
+            content: '📝';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: #fff8e1;
+            padding: 0 8px;
+            font-size: 16px;
+        }
+
+        .friend-name {
+            font-family: 'Dancing Script', cursive;
+            font-size: 36px;
+            color: #6d4c41;
+            text-align: center;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .birthday-wish {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #5d4037;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Memory Cards */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px;
+        }
+
+        .memory-card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: rotate(-1deg);
+            transition: transform 0.3s ease;
+        }
+
+        .memory-card:nth-child(even) {
+            transform: rotate(1deg);
+        }
+
+        .memory-card:hover {
+            transform: rotate(0deg) translateY(-3px);
+        }
+
+        .memory-title {
+            font-family: 'Caveat', cursive;
+            font-size: 16px;
+            color: #6d4c41;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .memory-text {
+            font-size: 12px;
+            color: #8d6e63;
+            line-height: 1.4;
+        }
+
+        /* Vintage Stamps */
+        .stamp {
+            position: absolute;
+            width: 50px;
+            height: 40px;
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+            border: 2px dashed #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 20px;
+            font-weight: bold;
+            transform: rotate(15deg);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .stamp-1 {
+            top: 20px;
+            right: 20px;
+        }
+
+        .stamp-2 {
+            bottom: 100px;
+            left: 20px;
+            background: linear-gradient(135deg, #388e3c, #2e7d32);
+            transform: rotate(-12deg);
+        }
+
+        /* Tape Effects */
+        .tape {
+            position: absolute;
+            background: rgba(255, 193, 7, 0.7);
+            height: 30px;
+            border: 1px solid rgba(255, 193, 7, 0.5);
+        }
+
+        .tape-1 {
+            width: 80px;
+            top: 50px;
+            left: -10px;
+            transform: rotate(-15deg);
+        }
+
+        .tape-2 {
+            width: 60px;
+            bottom: 80px;
+            right: -10px;
+            transform: rotate(20deg);
+        }
+
+        /* Handwriting Effect */
+        .handwritten {
+            font-family: 'Caveat', cursive;
+            transform: rotate(-2deg);
+            color: #3f51b5;
+        }
+
+        /* Paper Clips */
+        .paperclip {
+            position: absolute;
+            width: 20px;
+            height: 40px;
+            border: 3px solid #607d8b;
+            border-radius: 50px;
+            background: linear-gradient(45deg, transparent 40%, #90a4ae 50%);
+        }
+
+        .paperclip-1 {
+            top: 10px;
+            left: 50px;
+            transform: rotate(45deg);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes fadeInRotate {
+            0% {
+                opacity: 0;
+                transform: rotate(-10deg) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: rotate(-3deg) scale(1);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 480px) {
+            .vintage-album {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .friend-name {
+                font-size: 28px;
+            }
+            
+            .vintage-title {
+                font-size: 24px;
+            }
+            
+            .memory-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="vintage-album">
+        <div class="stamp stamp-1">♪</div>
+        <div class="stamp stamp-2">★</div>
+        <div class="paperclip paperclip-1"></div>
+        <div class="tape tape-1"></div>
+        <div class="tape tape-2"></div>
+
+        <header class="album-cover">
+            <h1 class="vintage-title">Memory Lane Birthday</h1>
+            <p class="album-subtitle">A collection of moments & wishes</p>
+        </header>
+
+        <div class="photo-collection">
+            <div class="polaroid" style="animation: fadeInRotate 1s ease-out;">
+                <div class="photo-frame">
+                    <div class="photo-content">
+                        <div class="birthday-icon">🎂</div>
+                    </div>
+                </div>
+                <div class="photo-caption">
+                    <div class="caption-text">Another year of awesome memories!</div>
+                    <div class="caption-date">Today, 2025</div>
+                </div>
+            </div>
+
+            <div class="polaroid" style="animation: fadeInRotate 1s ease-out 0.3s both;">
+                <div class="photo-frame">
+                    <div class="photo-content">
+                        <div class="birthday-icon">🎈</div>
+                    </div>
+                </div>
+                <div class="photo-caption">
+                    <div class="caption-text">Time to celebrate!</div>
+                    <div class="caption-date">Birthday vibes</div>
+                </div>
+            </div>
+
+            <div class="polaroid" style="animation: fadeInRotate 1s ease-out 0.6s both;">
+                <div class="photo-frame">
+                    <div class="photo-content">
+                        <div class="birthday-icon">🎉</div>
+                    </div>
+                </div>
+                <div class="photo-caption">
+                    <div class="caption-text">Party mode: ON</div>
+                    <div class="caption-date">Best day ever</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-message">
+            <h2 class="friend-name">Dear Sam,</h2>
+            <div class="birthday-wish">
+                Happy Birthday to someone who makes every moment feel like a vintage classic! 📸<br><br>
+                <span class="handwritten">May this new year bring you beautiful moments worth capturing and memories that last forever!</span>
+            </div>
+        </div>
+
+        <div class="memory-grid">
+            <div class="memory-card">
+                <div class="memory-title">Friendship Level</div>
+                <div class="memory-text">Premium Vintage ⭐</div>
+            </div>
+            
+            <div class="memory-card">
+                <div class="memory-title">Fun Factor</div>
+                <div class="memory-text">Through the roof! 🚀</div>
+            </div>
+            
+            <div class="memory-card">
+                <div class="memory-title">Birthday Mood</div>
+                <div class="memory-text">Perfectly nostalgic 📷</div>
+            </div>
+            
+            <div class="memory-card">
+                <div class="memory-title">Cake Status</div>
+                <div class="memory-text">Ready to be devoured! 🍰</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add vintage animation effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Polaroid hover effects
+            const polaroids = document.querySelectorAll('.polaroid');
+            
+            polaroids.forEach((polaroid, index) => {
+                polaroid.addEventListener('mouseenter', function() {
+                    this.style.zIndex = '100';
+                    this.style.animation = 'shake 0.5s ease-in-out';
+                });
+                
+                polaroid.addEventListener('mouseleave', function() {
+                    this.style.zIndex = '1';
+                    this.style.animation = 'none';
+                });
+                
+                // Add slight delay to each polaroid appearance
+                setTimeout(() => {
+                    polaroid.style.opacity = '1';
+                }, index * 300);
+            });
+
+            // Memory cards animation
+            const memoryCards = document.querySelectorAll('.memory-card');
+            memoryCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px) rotate(-5deg)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease-out';
+                    card.style.opacity = '1';
+                    card.style.transform = index % 2 === 0 ? 'translateY(0) rotate(-1deg)' : 'translateY(0) rotate(1deg)';
+                }, 1000 + index * 200);
+            });
+
+            // Tape animation
+            const tapes = document.querySelectorAll('.tape');
+            tapes.forEach((tape, index) => {
+                tape.style.opacity = '0';
+                setTimeout(() => {
+                    tape.style.transition = 'opacity 0.5s ease-in';
+                    tape.style.opacity = '0.7';
+                }, 2000 + index * 500);
+            });
+
+            // Birthday icon floating animation
+            const birthdayIcons = document.querySelectorAll('.birthday-icon');
+            birthdayIcons.forEach((icon, index) => {
+                icon.style.animationDelay = `${index * 0.5}s`;
+            });
+
+            // Add click effect for polaroids
+            polaroids.forEach(polaroid => {
+                polaroid.addEventListener('click', function() {
+                    this.style.transform = 'rotate(0deg) scale(1.1)';
+                    this.style.zIndex = '1000';
+                    this.style.transition = 'all 0.3s ease-out';
+                    
+                    setTimeout(() => {
+                        this.style.transform = '';
+                        this.style.zIndex = '';
+                        this.style.transition = '';
+                    }, 2000);
+                });
+            });
+
+            // Random paper texture animation
+            function addPaperMovement() {
+                const album = document.querySelector('.vintage-album');
+                setInterval(() => {
+                    album.style.transform = `rotate(${Math.random() * 0.5 - 0.25}deg)`;
+                }, 5000);
+            }
+
+            addPaperMovement();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casey's Synthwave Birthday</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bungee:wght@400&family=Audiowide:wght@400&family=Russo+One:wght@400&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Russo One', sans-serif;
+            background: linear-gradient(180deg, #0f0f23 0%, #1a0d2e 30%, #2d1b4e 100%);
+            color: #ff00ff;
+            min-height: 100vh;
+        }
+
+        /* Grid Background */
+        .retro-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 0, 255, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 255, 0.3) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: gridMove 20s linear infinite;
+            z-index: 1;
+        }
+
+        /* Main Container */
+        .synthwave-container {
+            position: relative;
+            z-index: 10;
+            max-width: 420px;
+            margin: 20px auto;
+            min-height: calc(100vh - 40px);
+            background: linear-gradient(
+                180deg, 
+                rgba(15, 15, 35, 0.9) 0%, 
+                rgba(26, 13, 46, 0.85) 50%, 
+                rgba(45, 27, 78, 0.9) 100%
+            );
+            border-left: 2px solid #ff00ff;
+            border-right: 2px solid #00ffff;
+            border-radius: 15px;
+            box-shadow: 
+                0 0 30px rgba(255, 0, 255, 0.3),
+                inset 0 0 30px rgba(0, 255, 255, 0.1);
+        }
+
+        /* Header */
+        .retro-header {
+            text-align: center;
+            padding: 35px 20px;
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1));
+            border-radius: 15px 15px 0 0;
+        }
+
+        .birthday-logo {
+            font-family: 'Bungee', cursive;
+            font-size: 22px;
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+            text-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+            animation: logoGlow 3s ease-in-out infinite alternate;
+        }
+
+        .retro-tagline {
+            font-family: 'Audiowide', cursive;
+            font-size: 11px;
+            color: #00ffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        /* Neon Sun */
+        .neon-sun-section {
+            position: relative;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .neon-sun {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 25px;
+            background: radial-gradient(circle, #ff00ff, #ff0080, #8000ff);
+            border-radius: 50%;
+            box-shadow: 
+                0 0 40px #ff00ff,
+                0 0 80px #ff00ff;
+            animation: sunPulse 4s ease-in-out infinite;
+        }
+
+        /* Friend Name */
+        .retro-name {
+            font-family: 'Bungee', cursive;
+            font-size: 42px;
+            text-align: center;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .retro-name .neon-letter {
+            display: inline-block;
+            color: #ff00ff;
+            text-shadow: 
+                0 0 5px #ff00ff,
+                0 0 10px #ff00ff,
+                0 0 15px #ff00ff;
+            animation: letterFlicker 2s infinite alternate;
+        }
+
+        .retro-name .neon-letter:nth-child(1) { animation-delay: 0s; color: #ff00ff; }
+        .retro-name .neon-letter:nth-child(2) { animation-delay: 0.2s; color: #00ffff; }
+        .retro-name .neon-letter:nth-child(3) { animation-delay: 0.4s; color: #ff00ff; }
+        .retro-name .neon-letter:nth-child(4) { animation-delay: 0.6s; color: #00ffff; }
+        .retro-name .neon-letter:nth-child(5) { animation-delay: 0.8s; color: #ff00ff; }
+
+        /* Terminal */
+        .retro-terminal {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            margin: 25px 20px;
+            padding: 20px;
+            font-family: 'Audiowide', cursive;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        .terminal-content {
+            color: #00ffff;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .terminal-highlight {
+            color: #ff00ff;
+            font-weight: bold;
+            text-shadow: 0 0 10px #ff00ff;
+        }
+
+        /* Stats */
+        .retro-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 25px 20px;
+        }
+
+        .stat-panel {
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1));
+            border: 2px solid;
+            border-image: linear-gradient(45deg, #ff00ff, #00ffff) 1;
+            padding: 16px;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-value {
+            font-family: 'Bungee', cursive;
+            font-size: 16px;
+            color: #ff00ff;
+            text-shadow: 0 0 15px #ff00ff;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: #00ffff;
+            text-transform: uppercase;
+        }
+
+        /* Animations */
+        @keyframes gridMove {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(40px) translateY(40px); }
+        }
+
+        @keyframes logoGlow {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(1.3); }
+        }
+
+        @keyframes sunPulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 40px #ff00ff, 0 0 80px #ff00ff;
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 50px #ff00ff, 0 0 100px #ff00ff;
+            }
+        }
+
+        @keyframes letterFlicker {
+            0%, 100% {
+                text-shadow: 
+                    0 0 5px currentColor,
+                    0 0 10px currentColor,
+                    0 0 15px currentColor;
+            }
+            50% {
+                text-shadow: 
+                    0 0 2px currentColor,
+                    0 0 5px currentColor,
+                    0 0 8px currentColor;
+            }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 480px) {
+            .birthday-logo {
+                font-size: 18px;
+            }
+            
+            .retro-name {
+                font-size: 32px;
+            }
+            
+            .neon-sun {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="retro-grid"></div>
+
+    <div class="synthwave-container">
+        <header class="retro-header">
+            <h1 class="birthday-logo">Birthday Wave</h1>
+            <p class="retro-tagline">Synthwave Celebration Mode</p>
+        </header>
+
+        <section class="neon-sun-section">
+            <div class="neon-sun"></div>
+
+            <h2 class="retro-name">
+                <span class="neon-letter">C</span>
+                <span class="neon-letter">A</span>
+                <span class="neon-letter">S</span>
+                <span class="neon-letter">E</span>
+                <span class="neon-letter">Y</span>
+            </h2>
+        </section>
+
+        <div class="retro-terminal">
+            <div class="terminal-content">
+                > INITIATING BIRTHDAY SEQUENCE...<br>
+                > <span class="terminal-highlight">HAPPY BIRTHDAY CASEY!</span><br><br>
+                > May your special day be as <span class="terminal-highlight">RADICAL</span> as the 80s!<br>
+                > Loading awesome vibes... <span class="terminal-highlight">100% COMPLETE</span><br>
+                > Have a totally <span class="terminal-highlight">TUBULAR</span> birthday! 🎂
+            </div>
+        </div>
+
+        <div class="retro-stats">
+            <div class="stat-panel">
+                <span class="stat-icon">🎮</span>
+                <div class="stat-value">LEVEL 99</div>
+                <div class="stat-label">Awesome Rating</div>
+            </div>
+            
+            <div class="stat-panel">
+                <span class="stat-icon">🕹️</span>
+                <div class="stat-value">HIGH SCORE</div>
+                <div class="stat-label">Friend Status</div>
+            </div>
+            
+            <div class="stat-panel">
+                <span class="stat-icon">🎵</span>
+                <div class="stat-value">MAXIMUM</div>
+                <div class="stat-label">Party Mode</div>
+            </div>
+            
+            <div class="stat-panel">
+                <span class="stat-icon">🎂</span>
+                <div class="stat-value">READY</div>
+                <div class="stat-label">Cake.exe</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Neon flicker effect
+        function addNeonFlicker() {
+            const neonElements = document.querySelectorAll('.neon-letter, .stat-value');
+            
+            setInterval(() => {
+                neonElements.forEach(element => {
+                    if (Math.random() < 0.1) {
+                        element.style.opacity = '0.5';
+                        setTimeout(() => {
+                            element.style.opacity = '1';
+                        }, 100);
+                    }
+                });
+            }, 2000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            addNeonFlicker();
+        });
+    </script>
+</body>
+</html>

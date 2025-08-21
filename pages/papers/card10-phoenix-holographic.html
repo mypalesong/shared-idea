@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phoenix's Holographic Birthday</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;500;600&family=Rajdhani:wght@300;400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: radial-gradient(ellipse at center, #000428 0%, #004e92 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Holographic Grid */
+        .holo-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(rgba(255, 0, 255, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            animation: holoGrid 10s linear infinite;
+            z-index: 1;
+        }
+
+        /* Main Container */
+        .holographic-device {
+            position: relative;
+            z-index: 10;
+            max-width: 420px;
+            margin: 20px auto;
+            min-height: calc(100vh - 40px);
+            background: linear-gradient(
+                145deg, 
+                rgba(0, 255, 255, 0.1) 0%, 
+                rgba(255, 0, 255, 0.1) 50%, 
+                rgba(0, 255, 255, 0.1) 100%
+            );
+            border: 2px solid transparent;
+            border-radius: 20px;
+            box-shadow: 
+                0 0 50px rgba(0, 255, 255, 0.3),
+                inset 0 0 30px rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .holographic-device::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            animation: holoSweep 4s infinite;
+            pointer-events: none;
+        }
+
+        .holographic-device::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00, #00ffff);
+            border-radius: 22px;
+            z-index: -1;
+            animation: borderShift 3s linear infinite;
+        }
+
+        /* Header */
+        .holo-header {
+            text-align: center;
+            padding: 40px 25px 30px;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.05), rgba(255, 0, 255, 0.05));
+            position: relative;
+        }
+
+        .holo-logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 15px;
+            background: conic-gradient(from 0deg, #00ffff, #ff00ff, #ffff00, #00ffff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: holoSpin 8s linear infinite;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+        }
+
+        .holo-logo::before {
+            content: '';
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #000428, #004e92);
+            border-radius: 50%;
+        }
+
+        .holo-logo::after {
+            content: '⟡';
+            position: absolute;
+            font-size: 36px;
+            color: #00ffff;
+            text-shadow: 0 0 20px #00ffff;
+            animation: pulse 2s ease-in-out infinite alternate;
+        }
+
+        .holo-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00, #00ffff);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: holoText 4s ease-in-out infinite;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .holo-subtitle {
+            font-size: 12px;
+            color: #00ffff;
+            opacity: 0.8;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Friend Name */
+        .holo-name {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 48px;
+            font-weight: 600;
+            text-align: center;
+            margin: 30px 0 20px;
+            position: relative;
+        }
+
+        .holo-name .holo-letter {
+            display: inline-block;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: letterHolo 3s ease-in-out infinite;
+            text-shadow: 
+                0 0 10px rgba(0, 255, 255, 0.5),
+                0 0 20px rgba(255, 0, 255, 0.3),
+                0 0 30px rgba(255, 255, 0, 0.2);
+        }
+
+        .holo-name .holo-letter:nth-child(1) { animation-delay: 0s; }
+        .holo-name .holo-letter:nth-child(2) { animation-delay: 0.2s; }
+        .holo-name .holo-letter:nth-child(3) { animation-delay: 0.4s; }
+        .holo-name .holo-letter:nth-child(4) { animation-delay: 0.6s; }
+        .holo-name .holo-letter:nth-child(5) { animation-delay: 0.8s; }
+        .holo-name .holo-letter:nth-child(6) { animation-delay: 1s; }
+        .holo-name .holo-letter:nth-child(7) { animation-delay: 1.2s; }
+
+        /* Holographic Projection */
+        .holo-projection {
+            margin: 30px 20px;
+            position: relative;
+            height: 200px;
+            background: radial-gradient(ellipse at center, rgba(0, 255, 255, 0.1), transparent);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .projection-rings {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .holo-ring {
+            position: absolute;
+            border: 2px solid;
+            border-radius: 50%;
+            border-color: rgba(0, 255, 255, 0.3);
+            animation: ringExpand 4s infinite ease-out;
+        }
+
+        .ring-1 {
+            width: 50px;
+            height: 50px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .ring-2 {
+            width: 100px;
+            height: 100px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 1s;
+            border-color: rgba(255, 0, 255, 0.3);
+        }
+
+        .ring-3 {
+            width: 150px;
+            height: 150px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 2s;
+            border-color: rgba(255, 255, 0, 0.3);
+        }
+
+        .holo-message {
+            font-size: 48px;
+            z-index: 2;
+            animation: holoFloat 3s ease-in-out infinite;
+        }
+
+        /* Message Panel */
+        .holo-panel {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.05), rgba(255, 0, 255, 0.05));
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 20px;
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .holo-panel::before {
+            content: '◊';
+            position: absolute;
+            top: -12px;
+            left: 25px;
+            background: linear-gradient(45deg, #000428, #004e92);
+            color: #00ffff;
+            padding: 5px 10px;
+            border-radius: 50%;
+            font-size: 16px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .birthday-transmission {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .transmission-highlight {
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 500;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        /* Holographic Stats */
+        .holo-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 25px 20px 40px;
+        }
+
+        .stat-crystal {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.1));
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 18px;
+            text-align: center;
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+
+        .stat-crystal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            border-radius: 15px;
+            animation: crystalGlow 3s infinite;
+        }
+
+        .crystal-icon {
+            font-size: 22px;
+            margin-bottom: 8px;
+            display: block;
+            animation: iconGlow 2s ease-in-out infinite alternate;
+        }
+
+        .crystal-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 16px;
+            font-weight: 600;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+
+        .crystal-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Animations */
+        @keyframes holoGrid {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(30px, 30px); }
+        }
+
+        @keyframes holoSweep {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(400%) rotate(45deg); }
+        }
+
+        @keyframes borderShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        @keyframes holoSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                text-shadow: 0 0 20px #00ffff;
+            }
+            100% {
+                transform: scale(1.1);
+                text-shadow: 0 0 30px #00ffff, 0 0 40px #ff00ff;
+            }
+        }
+
+        @keyframes holoText {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes letterHolo {
+            0%, 100% {
+                background-position: 0% 50%;
+                filter: brightness(1);
+            }
+            50% {
+                background-position: 100% 50%;
+                filter: brightness(1.3);
+            }
+        }
+
+        @keyframes ringExpand {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(2);
+                opacity: 0;
+            }
+        }
+
+        @keyframes holoFloat {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+        }
+
+        @keyframes crystalGlow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes iconGlow {
+            0% {
+                color: #00ffff;
+                text-shadow: 0 0 10px #00ffff;
+            }
+            100% {
+                color: #ff00ff;
+                text-shadow: 0 0 20px #ff00ff;
+            }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 480px) {
+            .holo-name {
+                font-size: 36px;
+            }
+            
+            .holo-title {
+                font-size: 20px;
+            }
+            
+            .holo-logo {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .holo-projection {
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="holo-grid"></div>
+
+    <div class="holographic-device">
+        <header class="holo-header">
+            <div class="holo-logo"></div>
+            <h1 class="holo-title">Holographic Birthday</h1>
+            <p class="holo-subtitle">Future Celebration Protocol</p>
+        </header>
+
+        <h2 class="holo-name">
+            <span class="holo-letter">P</span>
+            <span class="holo-letter">H</span>
+            <span class="holo-letter">O</span>
+            <span class="holo-letter">E</span>
+            <span class="holo-letter">N</span>
+            <span class="holo-letter">I</span>
+            <span class="holo-letter">X</span>
+        </h2>
+
+        <div class="holo-projection">
+            <div class="projection-rings">
+                <div class="holo-ring ring-1"></div>
+                <div class="holo-ring ring-2"></div>
+                <div class="holo-ring ring-3"></div>
+            </div>
+            <div class="holo-message">🎂</div>
+        </div>
+
+        <div class="holo-panel">
+            <div class="birthday-transmission">
+                🌟 <span class="transmission-highlight">Happy Birthday, Digital Phoenix!</span> 🌟<br><br>
+                
+                Transmitting birthday wishes across all dimensions! May your special day be filled with <span class="transmission-highlight">infinite possibilities</span> and adventures beyond the stars! ✨
+            </div>
+        </div>
+
+        <div class="holo-stats">
+            <div class="stat-crystal">
+                <span class="crystal-icon">⚡</span>
+                <div class="crystal-value">QUANTUM</div>
+                <div class="crystal-label">Power Level</div>
+            </div>
+            
+            <div class="stat-crystal">
+                <span class="crystal-icon">🔮</span>
+                <div class="crystal-value">LEGENDARY</div>
+                <div class="crystal-label">Friend Matrix</div>
+            </div>
+            
+            <div class="stat-crystal">
+                <span class="crystal-icon">🚀</span>
+                <div class="crystal-value">WARP SPEED</div>
+                <div class="crystal-label">Party Drive</div>
+            </div>
+            
+            <div class="stat-crystal">
+                <span class="crystal-icon">🎂</span>
+                <div class="crystal-value">HOLOGRAPHIC</div>
+                <div class="crystal-label">Cake Portal</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Holographic particle system
+        function createHoloParticles() {
+            const device = document.querySelector('.holographic-device');
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = '2px';
+                particle.style.height = '2px';
+                particle.style.background = i % 3 === 0 ? '#00ffff' : i % 3 === 1 ? '#ff00ff' : '#ffff00';
+                particle.style.borderRadius = '50%';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.boxShadow = `0 0 6px ${particle.style.background}`;
+                particle.style.animation = `holoFloat ${Math.random() * 4 + 2}s infinite ease-in-out`;
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particle.style.pointerEvents = 'none';
+                particle.style.zIndex = '1';
+                
+                device.appendChild(particle);
+            }
+        }
+
+        // Interactive holographic effects
+        function addHoloInteraction() {
+            const letters = document.querySelectorAll('.holo-letter');
+            
+            letters.forEach(letter => {
+                letter.addEventListener('mouseenter', () => {
+                    letter.style.transform = 'scale(1.2) rotateY(180deg)';
+                    letter.style.filter = 'brightness(1.5)';
+                    letter.style.transition = 'all 0.3s ease';
+                });
+                
+                letter.addEventListener('mouseleave', () => {
+                    letter.style.transform = '';
+                    letter.style.filter = '';
+                });
+            });
+        }
+
+        // Holographic message cycling
+        function cycleHoloMessages() {
+            const messages = ['🎂', '🎉', '⚡', '🚀', '🌟', '🔮'];
+            const messageEl = document.querySelector('.holo-message');
+            let currentIndex = 0;
+            
+            setInterval(() => {
+                messageEl.style.opacity = '0';
+                setTimeout(() => {
+                    currentIndex = (currentIndex + 1) % messages.length;
+                    messageEl.textContent = messages[currentIndex];
+                    messageEl.style.opacity = '1';
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize holographic system
+        document.addEventListener('DOMContentLoaded', () => {
+            createHoloParticles();
+            addHoloInteraction();
+            cycleHoloMessages();
+            
+            // Add click effects
+            document.addEventListener('click', (e) => {
+                for (let i = 0; i < 3; i++) {
+                    const spark = document.createElement('div');
+                    spark.style.position = 'fixed';
+                    spark.style.left = e.clientX + (Math.random() - 0.5) * 60 + 'px';
+                    spark.style.top = e.clientY + (Math.random() - 0.5) * 60 + 'px';
+                    spark.style.width = '4px';
+                    spark.style.height = '4px';
+                    spark.style.background = i % 2 === 0 ? '#00ffff' : '#ff00ff';
+                    spark.style.borderRadius = '50%';
+                    spark.style.pointerEvents = 'none';
+                    spark.style.zIndex = '1000';
+                    spark.style.boxShadow = `0 0 10px ${spark.style.background}`;
+                    spark.style.animation = 'holoFloat 1s ease-out forwards';
+                    
+                    document.body.appendChild(spark);
+                    
+                    setTimeout(() => {
+                        spark.remove();
+                    }, 1000);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

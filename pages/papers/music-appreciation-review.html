@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmony Circle - Musical Souls</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #1a0f2e;
+            color: #f0e6ff;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .music-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: rgba(26, 15, 46, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid #8b5cf6;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+        }
+
+        .music-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 28px;
+            font-weight: 700;
+            color: #a78bfa;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .note-icon {
+            width: 32px;
+            height: 32px;
+            position: relative;
+            animation: musicalFloat 4s ease-in-out infinite;
+        }
+
+        .note-icon::before {
+            content: '♪';
+            font-size: 28px;
+            color: #a78bfa;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .concert-info {
+            display: flex;
+            gap: 40px;
+            font-size: 12px;
+            color: #9c9cc9;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Hero Section */
+        .hero-concerthall {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .sound-waves {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.12) 0%, rgba(167, 139, 250, 0.06) 40%, rgba(0,0,0,0.95) 80%);
+            animation: audioVisualize 6s ease-in-out infinite;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            padding: 0 40px;
+        }
+
+        .concert-stage {
+            position: relative;
+            width: 700px;
+            height: 420px;
+            background: linear-gradient(145deg, #2a1f4e, #1a0f2e);
+            border: 4px solid #8b5cf6;
+            border-radius: 24px;
+            margin: 0 auto 40px;
+            overflow: hidden;
+            box-shadow: 
+                0 0 120px rgba(139, 92, 246, 0.4),
+                inset 0 0 60px rgba(167, 139, 250, 0.1);
+        }
+
+        .stage-performance {
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&h=500&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.6) contrast(1.4) hue-rotate(280deg);
+            animation: performanceGlow 12s ease-in-out infinite;
+        }
+
+        .equalizer {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 4px;
+            align-items: flex-end;
+        }
+
+        .eq-bar {
+            width: 8px;
+            background: linear-gradient(to top, #8b5cf6, #a78bfa);
+            border-radius: 4px 4px 0 0;
+            animation: equalizer 1.5s ease-in-out infinite;
+        }
+
+        .eq-bar:nth-child(1) { height: 20px; animation-delay: 0s; }
+        .eq-bar:nth-child(2) { height: 35px; animation-delay: 0.1s; }
+        .eq-bar:nth-child(3) { height: 50px; animation-delay: 0.2s; }
+        .eq-bar:nth-child(4) { height: 28px; animation-delay: 0.3s; }
+        .eq-bar:nth-child(5) { height: 42px; animation-delay: 0.4s; }
+        .eq-bar:nth-child(6) { height: 36px; animation-delay: 0.5s; }
+        .eq-bar:nth-child(7) { height: 24px; animation-delay: 0.6s; }
+
+        .music-notes {
+            position: absolute;
+            top: 20%;
+            right: 10%;
+            font-size: 24px;
+            color: #a78bfa;
+            animation: notesFlow 8s ease-in-out infinite;
+        }
+
+        .stage-lights {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(to bottom, rgba(139, 92, 246, 0.4), transparent);
+            animation: stageLighting 4s ease-in-out infinite;
+        }
+
+        .hero-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 52px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #a78bfa;
+            text-shadow: 
+                0 0 40px rgba(167, 139, 250, 0.6),
+                2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: #c4b5fd;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        /* Musicians Section */
+        .concert-hall {
+            background: #110823;
+            position: relative;
+            padding: 120px 0;
+        }
+
+        .hall-lighting {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(to bottom, rgba(139, 92, 246, 0.08), transparent);
+        }
+
+        .hall-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-number {
+            font-size: 14px;
+            color: #6b5b95;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 52px;
+            font-weight: 700;
+            color: #a78bfa;
+        }
+
+        /* Musician Cards */
+        .musicians-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 50px;
+        }
+
+        .musician-card {
+            position: relative;
+            background: linear-gradient(145deg, #2a1f4e, #1a0f2e);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.320, 1);
+            cursor: pointer;
+        }
+
+        .musician-card:hover {
+            transform: translateY(-35px) perspective(1000px) rotateY(8deg) rotateX(5deg);
+            box-shadow: 
+                0 70px 160px rgba(0,0,0,0.9),
+                0 0 120px rgba(139, 92, 246, 0.4);
+            border-color: #a78bfa;
+        }
+
+        .musician-portrait {
+            width: 100%;
+            height: 320px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portrait-bg {
+            position: absolute;
+            top: -15%;
+            left: -15%;
+            width: 130%;
+            height: 130%;
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.4) contrast(1.5) hue-rotate(280deg);
+            transition: transform 12s ease-in-out;
+        }
+
+        .musician-card:hover .portrait-bg {
+            transform: scale(1.3) rotate(3deg);
+        }
+
+        .musical-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(26, 15, 46, 0.7));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .musician-initial {
+            font-family: 'Dancing Script', cursive;
+            font-size: 64px;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 
+                2px 2px 0 #8b5cf6,
+                4px 4px 20px rgba(0,0,0,0.9);
+        }
+
+        .musician-info {
+            padding: 32px;
+            background: linear-gradient(145deg, #2a1f4e, #1a0f2e);
+        }
+
+        .musician-name {
+            font-family: 'Dancing Script', cursive;
+            font-size: 28px;
+            font-weight: 700;
+            color: #a78bfa;
+            margin-bottom: 8px;
+        }
+
+        .musician-instrument {
+            font-size: 14px;
+            color: #9c9cc9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .musician-philosophy {
+            font-size: 14px;
+            color: #c4b5fd;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .melody-aura {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: melodyPulse 5s ease-in-out infinite;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .musician-card:hover .melody-aura {
+            opacity: 1;
+        }
+
+        /* Symphony Story */
+        .symphony-story {
+            background: #110823;
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .orchestra-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1600&h=1000&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.05) contrast(1.4) hue-rotate(280deg);
+            animation: orchestralSway 30s ease-in-out infinite;
+        }
+
+        .story-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 40px;
+        }
+
+        .story-frame {
+            background: rgba(26, 15, 46, 0.95);
+            backdrop-filter: blur(30px);
+            border: 3px solid #8b5cf6;
+            border-radius: 24px;
+            padding: 80px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #a78bfa, transparent);
+            animation: musicalFlow 5s ease-in-out infinite;
+        }
+
+        .story-frame::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: -100%;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #a78bfa, transparent);
+            animation: musicalFlow 5s ease-in-out infinite reverse;
+        }
+
+        .story-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 48px;
+            font-weight: 700;
+            color: #a78bfa;
+            margin-bottom: 30px;
+        }
+
+        .story-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #c4b5fd;
+            margin-bottom: 50px;
+        }
+
+        .music-movements {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .movement-item {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(167, 139, 250, 0.4);
+            border-radius: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .movement-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px;
+            background: #a78bfa;
+            animation: movementFlow 6s ease-in-out infinite;
+        }
+
+        .movement-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #a78bfa;
+        }
+
+        .movement-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 22px;
+            font-weight: 700;
+            color: #a78bfa;
+            margin-bottom: 10px;
+        }
+
+        .movement-description {
+            font-size: 12px;
+            color: #9c9cc9;
+            line-height: 1.4;
+        }
+
+        /* Individual musician backgrounds */
+        .musician-1 .portrait-bg { background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop'); }
+        .musician-2 .portrait-bg { background-image: url('https://images.unsplash.com/photo-1494790108755-2616b612b495?w=400&h=400&fit=crop'); }
+        .musician-3 .portrait-bg { background-image: url('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop'); }
+        .musician-4 .portrait-bg { background-image: url('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop'); }
+        .musician-5 .portrait-bg { background-image: url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop'); }
+        .musician-6 .portrait-bg { background-image: url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop'); }
+
+        @keyframes musicalFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes audioVisualize {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.08); opacity: 1; }
+        }
+
+        @keyframes performanceGlow {
+            0%, 100% { filter: brightness(0.6) contrast(1.4) hue-rotate(280deg); }
+            50% { filter: brightness(0.8) contrast(1.5) hue-rotate(300deg); }
+        }
+
+        @keyframes equalizer {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(1.8); }
+        }
+
+        @keyframes notesFlow {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            50% { transform: translateY(-30px) rotate(180deg); opacity: 0.7; }
+            100% { transform: translateY(-60px) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes stageLighting {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+
+        @keyframes melodyPulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.6); }
+        }
+
+        @keyframes orchestralSway {
+            0%, 100% { transform: translate(0, 0) scale(1.05); }
+            50% { transform: translate(-20px, -12px) scale(1.1); }
+        }
+
+        @keyframes musicalFlow {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes movementFlow {
+            0%, 50%, 100% { left: -100%; }
+            60%, 80% { left: 0%; }
+        }
+
+        @media (max-width: 768px) {
+            .musicians-grid {
+                grid-template-columns: 1fr;
+                gap: 35px;
+            }
+            
+            .music-movements {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .concert-stage {
+                width: 90%;
+                height: 320px;
+            }
+            
+            .story-frame {
+                padding: 60px 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="music-nav">
+        <div class="music-title">
+            <div class="note-icon"></div>
+            Harmony Circle
+        </div>
+        <div class="concert-info">
+            <span>Aug 12, 2024</span>
+            <span>Chamber Music</span>
+        </div>
+    </nav>
+
+    <section class="hero-concerthall">
+        <div class="sound-waves"></div>
+        <div class="hero-content">
+            <div class="concert-stage">
+                <div class="stage-performance"></div>
+                <div class="stage-lights"></div>
+                <div class="equalizer">
+                    <div class="eq-bar"></div>
+                    <div class="eq-bar"></div>
+                    <div class="eq-bar"></div>
+                    <div class="eq-bar"></div>
+                    <div class="eq-bar"></div>
+                    <div class="eq-bar"></div>
+                    <div class="eq-bar"></div>
+                </div>
+                <div class="music-notes">♫ ♪ ♬</div>
+            </div>
+            <h2 class="hero-title">Melodic Journey</h2>
+            <p class="hero-subtitle">실내악으로 만나는 클래식의 아름다움</p>
+        </div>
+    </section>
+
+    <section class="concert-hall">
+        <div class="hall-lighting"></div>
+        <div class="hall-container">
+            <div class="section-header">
+                <div class="section-number">Orchestra</div>
+                <h2 class="section-title">Musical Souls</h2>
+            </div>
+
+            <div class="musicians-grid">
+                <div class="musician-card musician-1">
+                    <div class="melody-aura"></div>
+                    <div class="musician-portrait">
+                        <div class="portrait-bg"></div>
+                        <div class="musical-overlay">
+                            <div class="musician-initial">김</div>
+                        </div>
+                    </div>
+                    <div class="musician-info">
+                        <h3 class="musician-name">김선율</h3>
+                        <p class="musician-instrument">Piano Virtuoso</p>
+                        <p class="musician-philosophy">"피아노 건반 위에서 감정이 멜로디로 태어납니다."</p>
+                    </div>
+                </div>
+
+                <div class="musician-card musician-2">
+                    <div class="melody-aura"></div>
+                    <div class="musician-portrait">
+                        <div class="portrait-bg"></div>
+                        <div class="musical-overlay">
+                            <div class="musician-initial">박</div>
+                        </div>
+                    </div>
+                    <div class="musician-info">
+                        <h3 class="musician-name">박하모니</h3>
+                        <p class="musician-instrument">Violin Soloist</p>
+                        <p class="musician-philosophy">"바이올린의 현이 마음의 현을 울려 공명을 만듭니다."</p>
+                    </div>
+                </div>
+
+                <div class="musician-card musician-3">
+                    <div class="melody-aura"></div>
+                    <div class="musician-portrait">
+                        <div class="portrait-bg"></div>
+                        <div class="musical-overlay">
+                            <div class="musician-initial">이</div>
+                        </div>
+                    </div>
+                    <div class="musician-info">
+                        <h3 class="musician-name">이첼로</h3>
+                        <p class="musician-instrument">Cello Master</p>
+                        <p class="musician-philosophy">"첼로의 깊은 음색이 영혼의 깊은 곳을 어루만집니다."</p>
+                    </div>
+                </div>
+
+                <div class="musician-card musician-4">
+                    <div class="melody-aura"></div>
+                    <div class="musician-portrait">
+                        <div class="portrait-bg"></div>
+                        <div class="musical-overlay">
+                            <div class="musician-initial">최</div>
+                        </div>
+                    </div>
+                    <div class="musician-info">
+                        <h3 class="musician-name">최플룻</h3>
+                        <p class="musician-instrument">Flute Artist</p>
+                        <p class="musician-philosophy">"플루트의 청아한 소리가 바람처럼 마음을 정화합니다."</p>
+                    </div>
+                </div>
+
+                <div class="musician-card musician-5">
+                    <div class="melody-aura"></div>
+                    <div class="musician-portrait">
+                        <div class="portrait-bg"></div>
+                        <div class="musical-overlay">
+                            <div class="musician-initial">정</div>
+                        </div>
+                    </div>
+                    <div class="musician-info">
+                        <h3 class="musician-name">정클라</h3>
+                        <p class="musician-instrument">Clarinet Specialist</p>
+                        <p class="musician-philosophy">"클라리넷의 다채로운 표현이 음악에 색채를 더합니다."</p>
+                    </div>
+                </div>
+
+                <div class="musician-card musician-6">
+                    <div class="melody-aura"></div>
+                    <div class="musician-portrait">
+                        <div class="portrait-bg"></div>
+                        <div class="musical-overlay">
+                            <div class="musician-initial">한</div>
+                        </div>
+                    </div>
+                    <div class="musician-info">
+                        <h3 class="musician-name">한오보에</h3>
+                        <p class="musician-instrument">Oboe Craftsman</p>
+                        <p class="musician-philosophy">"오보에의 따뜻한 음색이 마음에 위로를 전달합니다."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="symphony-story">
+        <div class="orchestra-bg"></div>
+        <div class="story-content">
+            <div class="story-frame">
+                <h2 class="story-title">Symphony of Hearts</h2>
+                <p class="story-text">
+                    오늘 우리는 음악이라는 공통 언어로 마음을 나누었습니다.
+                    바흐의 브란덴부르크 협주곡부터 모차르트의 실내악까지,
+                    각자의 악기로 하나의 아름다운 하모니를 만들어냈습니다.
+                    음악은 말로 표현할 수 없는 감정들을 전달하는 가장 순수한 예술임을 
+                    다시 한 번 깨달은 감동적인 시간이었습니다.
+                </p>
+                
+                <div class="music-movements">
+                    <div class="movement-item">
+                        <div class="movement-icon">🎼</div>
+                        <div class="movement-title">Allegro</div>
+                        <div class="movement-description">활기찬 첫 악장의 시작</div>
+                    </div>
+                    <div class="movement-item">
+                        <div class="movement-icon">🎵</div>
+                        <div class="movement-title">Andante</div>
+                        <div class="movement-description">서정적인 느린 선율</div>
+                    </div>
+                    <div class="movement-item">
+                        <div class="movement-icon">🎶</div>
+                        <div class="movement-title">Scherzo</div>
+                        <div class="movement-description">경쾌하고 유머러스한 중간악장</div>
+                    </div>
+                    <div class="movement-item">
+                        <div class="movement-icon">🎹</div>
+                        <div class="movement-title">Finale</div>
+                        <div class="movement-description">대단원의 웅장한 마무리</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Musician card intersection observer
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0) perspective(1000px) rotateY(0) rotateX(0)';
+                    }, index * 300);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        // Initialize cards
+        document.querySelectorAll('.musician-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(150px) perspective(1000px) rotateY(-12deg) rotateX(-8deg)';
+            card.style.transition = 'all 1.8s cubic-bezier(0.23, 1, 0.320, 1)';
+            cardObserver.observe(card);
+        });
+
+        // Dynamic sound waves
+        const soundWaves = document.querySelector('.sound-waves');
+        let wavePhase = 0;
+
+        setInterval(() => {
+            wavePhase += 0.6;
+            const intensity = 50 + Math.sin(wavePhase * Math.PI / 180) * 35;
+            const x = 50 + Math.cos(wavePhase * 0.4 * Math.PI / 180) * 25;
+            const y = 50 + Math.sin(wavePhase * 0.6 * Math.PI / 180) * 15;
+            soundWaves.style.background = `radial-gradient(ellipse at ${x}% ${y}%, rgba(139, 92, 246, ${intensity/400}) 0%, rgba(167, 139, 250, ${intensity/800}) 40%, rgba(0,0,0,0.95) 80%)`;
+        }, 150);
+
+        // Melody aura effects
+        const createMelodyWave = () => {
+            const auras = document.querySelectorAll('.melody-aura');
+            auras.forEach((aura, index) => {
+                setTimeout(() => {
+                    aura.style.opacity = '1';
+                    setTimeout(() => {
+                        aura.style.opacity = '0';
+                    }, 4500);
+                }, index * 600);
+            });
+        };
+
+        // Trigger melody wave every 24 seconds
+        setInterval(createMelodyWave, 24000);
+
+        // Equalizer animation with different patterns
+        const eqBars = document.querySelectorAll('.eq-bar');
+        let eqPhase = 0;
+
+        setInterval(() => {
+            eqPhase += 3;
+            eqBars.forEach((bar, index) => {
+                const scale = 1 + Math.sin((eqPhase + index * 45) * Math.PI / 180) * 0.8;
+                bar.style.transform = `scaleY(${scale})`;
+            });
+        }, 100);
+
+        // Musical notes floating animation
+        const musicNotes = document.querySelector('.music-notes');
+        let notePhase = 0;
+
+        setInterval(() => {
+            notePhase += 2;
+            const y = -30 + Math.sin(notePhase * Math.PI / 180) * 20;
+            const rotation = Math.cos(notePhase * 0.5 * Math.PI / 180) * 15;
+            const opacity = 0.7 + Math.sin(notePhase * 2 * Math.PI / 180) * 0.3;
+            musicNotes.style.transform = `translateY(${y}px) rotate(${rotation}deg)`;
+            musicNotes.style.opacity = opacity;
+        }, 150);
+
+        // Stage lighting effects
+        const stageLights = document.querySelector('.stage-lights');
+        let lightPhase = 0;
+
+        setInterval(() => {
+            lightPhase += 1.5;
+            const opacity = 0.4 + Math.sin(lightPhase * Math.PI / 180) * 0.4;
+            stageLights.style.opacity = opacity;
+        }, 200);
+
+        // Movement items animation
+        const movementObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const movements = entry.target.querySelectorAll('.movement-item');
+                    movements.forEach((movement, i) => {
+                        setTimeout(() => {
+                            movement.style.opacity = '1';
+                            movement.style.transform = 'translateY(0)';
+                        }, i * 350);
+                    });
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.movement-item').forEach(movement => {
+            movement.style.opacity = '0';
+            movement.style.transform = 'translateY(80px)';
+            movement.style.transition = 'all 1.2s ease';
+        });
+
+        movementObserver.observe(document.querySelector('.music-movements'));
+
+        // Note icon animation
+        const noteIcon = document.querySelector('.note-icon');
+        let notePhase2 = 0;
+
+        setInterval(() => {
+            notePhase2 += 2;
+            const float = Math.sin(notePhase2 * Math.PI / 180) * 8;
+            noteIcon.style.transform = `translateY(${float}px)`;
+        }, 100);
+    </script>
+</body>
+</html>

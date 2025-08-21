@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Masters - Strategic Minds</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Exo+2:wght@300;400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: #0f0f23;
+            color: #e6e6fa;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .game-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid #6a5acd;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+        }
+
+        .game-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 24px;
+            font-weight: 700;
+            color: #9370db;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dice-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(145deg, #9370db, #6a5acd);
+            border-radius: 6px;
+            position: relative;
+            animation: diceRoll 4s ease-in-out infinite;
+        }
+
+        .dice-icon::before {
+            content: '⚃';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            font-size: 18px;
+        }
+
+        .session-info {
+            display: flex;
+            gap: 40px;
+            font-size: 12px;
+            color: #9999cc;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Hero Section */
+        .hero-gameroom {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .neon-glow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(147, 112, 219, 0.1) 0%, rgba(106, 90, 205, 0.05) 40%, rgba(0,0,0,0.95) 80%);
+            animation: neonPulse 12s ease-in-out infinite;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            padding: 0 40px;
+        }
+
+        .game-table {
+            position: relative;
+            width: 650px;
+            height: 400px;
+            background: linear-gradient(145deg, #1a1a3e, #0f0f23);
+            border: 4px solid #9370db;
+            border-radius: 20px;
+            margin: 0 auto 40px;
+            overflow: hidden;
+            box-shadow: 
+                0 0 100px rgba(147, 112, 219, 0.4),
+                inset 0 0 40px rgba(106, 90, 205, 0.1);
+        }
+
+        .table-surface {
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=700&h=450&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.6) contrast(1.4) hue-rotate(240deg);
+            animation: gameAnimation 15s ease-in-out infinite;
+        }
+
+        .game-pieces {
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            width: 60%;
+            height: 60%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .game-piece {
+            background: #9370db;
+            border-radius: 50%;
+            animation: pieceGlow 3s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(147, 112, 219, 0.6);
+        }
+
+        .game-piece:nth-child(1) { animation-delay: 0s; }
+        .game-piece:nth-child(2) { animation-delay: 0.5s; }
+        .game-piece:nth-child(3) { animation-delay: 1s; }
+        .game-piece:nth-child(4) { animation-delay: 1.5s; }
+        .game-piece:nth-child(5) { animation-delay: 2s; }
+        .game-piece:nth-child(6) { animation-delay: 2.5s; }
+
+        .strategy-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(45deg, transparent 48%, rgba(147, 112, 219, 0.3) 49%, rgba(147, 112, 219, 0.3) 51%, transparent 52%),
+                linear-gradient(-45deg, transparent 48%, rgba(147, 112, 219, 0.3) 49%, rgba(147, 112, 219, 0.3) 51%, transparent 52%);
+            animation: strategicThinking 8s ease-in-out infinite;
+        }
+
+        .hero-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #9370db;
+            text-shadow: 
+                0 0 40px rgba(147, 112, 219, 0.6),
+                2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: #b8b8d4;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        /* Players Section */
+        .gaming-arena {
+            background: #0a0a1f;
+            position: relative;
+            padding: 120px 0;
+        }
+
+        .arena-lighting {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(to bottom, rgba(147, 112, 219, 0.06), transparent);
+        }
+
+        .gaming-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-number {
+            font-size: 14px;
+            color: #666699;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 48px;
+            font-weight: 700;
+            color: #9370db;
+        }
+
+        /* Player Cards */
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 50px;
+        }
+
+        .player-card {
+            position: relative;
+            background: linear-gradient(145deg, #1a1a3e, #0f0f23);
+            border: 2px solid rgba(147, 112, 219, 0.3);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.320, 1);
+            cursor: pointer;
+        }
+
+        .player-card:hover {
+            transform: translateY(-30px) perspective(1000px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 
+                0 60px 140px rgba(0,0,0,0.9),
+                0 0 100px rgba(147, 112, 219, 0.4);
+            border-color: #9370db;
+        }
+
+        .player-avatar {
+            width: 100%;
+            height: 320px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-bg {
+            position: absolute;
+            top: -15%;
+            left: -15%;
+            width: 130%;
+            height: 130%;
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.4) contrast(1.5) hue-rotate(240deg);
+            transition: transform 10s ease-in-out;
+        }
+
+        .player-card:hover .avatar-bg {
+            transform: scale(1.3) rotate(5deg);
+        }
+
+        .gaming-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(147, 112, 219, 0.2), rgba(15, 15, 35, 0.7));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .player-initial {
+            font-family: 'Orbitron', monospace;
+            font-size: 60px;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 
+                2px 2px 0 #9370db,
+                4px 4px 20px rgba(0,0,0,0.9);
+        }
+
+        .player-info {
+            padding: 32px;
+            background: linear-gradient(145deg, #1a1a3e, #0f0f23);
+        }
+
+        .player-name {
+            font-family: 'Orbitron', monospace;
+            font-size: 24px;
+            font-weight: 700;
+            color: #9370db;
+            margin-bottom: 8px;
+        }
+
+        .player-class {
+            font-size: 14px;
+            color: #9999cc;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .player-strategy {
+            font-size: 14px;
+            color: #b8b8d4;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .power-aura {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(147, 112, 219, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: powerPulse 6s ease-in-out infinite;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .player-card:hover .power-aura {
+            opacity: 1;
+        }
+
+        /* Game Session */
+        .game-session {
+            background: #0a0a1f;
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .arcade-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=1600&h=1000&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.05) contrast(1.3) hue-rotate(240deg);
+            animation: arcadeShift 35s ease-in-out infinite;
+        }
+
+        .session-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 40px;
+        }
+
+        .session-frame {
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(30px);
+            border: 3px solid #9370db;
+            border-radius: 20px;
+            padding: 80px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .session-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #9370db, transparent);
+            animation: dataFlow 5s ease-in-out infinite;
+        }
+
+        .session-frame::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: -100%;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #9370db, transparent);
+            animation: dataFlow 5s ease-in-out infinite reverse;
+        }
+
+        .session-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 44px;
+            font-weight: 700;
+            color: #9370db;
+            margin-bottom: 30px;
+        }
+
+        .session-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #b8b8d4;
+            margin-bottom: 50px;
+        }
+
+        .game-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .metric-item {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(147, 112, 219, 0.1);
+            border: 1px solid rgba(147, 112, 219, 0.4);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px;
+            background: #9370db;
+            animation: scoreUpdate 5s ease-in-out infinite;
+        }
+
+        .metric-icon {
+            font-size: 38px;
+            margin-bottom: 15px;
+            color: #9370db;
+        }
+
+        .metric-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 20px;
+            font-weight: 700;
+            color: #9370db;
+            margin-bottom: 10px;
+        }
+
+        .metric-description {
+            font-size: 12px;
+            color: #9999cc;
+            line-height: 1.4;
+        }
+
+        /* Individual player backgrounds */
+        .player-1 .avatar-bg { background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop'); }
+        .player-2 .avatar-bg { background-image: url('https://images.unsplash.com/photo-1494790108755-2616b612b495?w=400&h=400&fit=crop'); }
+        .player-3 .avatar-bg { background-image: url('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop'); }
+        .player-4 .avatar-bg { background-image: url('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop'); }
+        .player-5 .avatar-bg { background-image: url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop'); }
+        .player-6 .avatar-bg { background-image: url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop'); }
+
+        @keyframes diceRoll {
+            0%, 80%, 100% { transform: rotate(0deg); }
+            10% { transform: rotate(90deg); }
+            20% { transform: rotate(180deg); }
+            30% { transform: rotate(270deg); }
+            40% { transform: rotate(360deg); }
+        }
+
+        @keyframes neonPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        @keyframes gameAnimation {
+            0%, 100% { filter: brightness(0.6) contrast(1.4) hue-rotate(240deg); }
+            50% { filter: brightness(0.7) contrast(1.5) hue-rotate(260deg); }
+        }
+
+        @keyframes pieceGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(147, 112, 219, 0.6); }
+            50% { box-shadow: 0 0 40px rgba(147, 112, 219, 1); }
+        }
+
+        @keyframes strategicThinking {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes powerPulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.6); }
+        }
+
+        @keyframes arcadeShift {
+            0%, 100% { transform: translate(0, 0) scale(1.05); }
+            50% { transform: translate(-25px, -15px) scale(1.1); }
+        }
+
+        @keyframes dataFlow {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes scoreUpdate {
+            0%, 60%, 100% { left: -100%; }
+            70%, 85% { left: 0%; }
+        }
+
+        @media (max-width: 768px) {
+            .players-grid {
+                grid-template-columns: 1fr;
+                gap: 35px;
+            }
+            
+            .game-metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .game-table {
+                width: 90%;
+                height: 320px;
+            }
+            
+            .session-frame {
+                padding: 60px 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="game-nav">
+        <div class="game-title">
+            <div class="dice-icon"></div>
+            Game Masters
+        </div>
+        <div class="session-info">
+            <span>Jul 30, 2024</span>
+            <span>Strategy Night</span>
+        </div>
+    </nav>
+
+    <section class="hero-gameroom">
+        <div class="neon-glow"></div>
+        <div class="hero-content">
+            <div class="game-table">
+                <div class="table-surface"></div>
+                <div class="game-pieces">
+                    <div class="game-piece"></div>
+                    <div class="game-piece"></div>
+                    <div class="game-piece"></div>
+                    <div class="game-piece"></div>
+                    <div class="game-piece"></div>
+                    <div class="game-piece"></div>
+                </div>
+                <div class="strategy-lines"></div>
+            </div>
+            <h2 class="hero-title">Strategic Mind</h2>
+            <p class="hero-subtitle">보드게임으로 펼치는 두뇌 전쟁</p>
+        </div>
+    </section>
+
+    <section class="gaming-arena">
+        <div class="arena-lighting"></div>
+        <div class="gaming-container">
+            <div class="section-header">
+                <div class="section-number">Player Roster</div>
+                <h2 class="section-title">Strategic Minds</h2>
+            </div>
+
+            <div class="players-grid">
+                <div class="player-card player-1">
+                    <div class="power-aura"></div>
+                    <div class="player-avatar">
+                        <div class="avatar-bg"></div>
+                        <div class="gaming-overlay">
+                            <div class="player-initial">김</div>
+                        </div>
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">김게이머</h3>
+                        <p class="player-class">Strategy Master</p>
+                        <p class="player-strategy">"모든 게임에는 승리의 공식이 숨어있습니다."</p>
+                    </div>
+                </div>
+
+                <div class="player-card player-2">
+                    <div class="power-aura"></div>
+                    <div class="player-avatar">
+                        <div class="avatar-bg"></div>
+                        <div class="gaming-overlay">
+                            <div class="player-initial">박</div>
+                        </div>
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">박보드</h3>
+                        <p class="player-class">Tactical Genius</p>
+                        <p class="player-strategy">"전술적 사고로 상대방의 다음 수를 예측합니다."</p>
+                    </div>
+                </div>
+
+                <div class="player-card player-3">
+                    <div class="power-aura"></div>
+                    <div class="player-avatar">
+                        <div class="avatar-bg"></div>
+                        <div class="gaming-overlay">
+                            <div class="player-initial">이</div>
+                        </div>
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">이룰러</h3>
+                        <p class="player-class">Rule Expert</p>
+                        <p class="player-strategy">"규칙을 완벽히 이해해야 진정한 게임이 시작됩니다."</p>
+                    </div>
+                </div>
+
+                <div class="player-card player-4">
+                    <div class="power-aura"></div>
+                    <div class="player-avatar">
+                        <div class="avatar-bg"></div>
+                        <div class="gaming-overlay">
+                            <div class="player-initial">최</div>
+                        </div>
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">최주사위</h3>
+                        <p class="player-class">Luck Manipulator</p>
+                        <p class="player-strategy">"운도 실력의 일부라고 생각합니다."</p>
+                    </div>
+                </div>
+
+                <div class="player-card player-5">
+                    <div class="power-aura"></div>
+                    <div class="player-avatar">
+                        <div class="avatar-bg"></div>
+                        <div class="gaming-overlay">
+                            <div class="player-initial">정</div>
+                        </div>
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">정협동</h3>
+                        <p class="player-class">Team Player</p>
+                        <p class="player-strategy">"협동 게임에서 진정한 재미를 발견할 수 있습니다."</p>
+                    </div>
+                </div>
+
+                <div class="player-card player-6">
+                    <div class="power-aura"></div>
+                    <div class="player-avatar">
+                        <div class="avatar-bg"></div>
+                        <div class="gaming-overlay">
+                            <div class="player-initial">한</div>
+                        </div>
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">한승부</h3>
+                        <p class="player-class">Competitive Spirit</p>
+                        <p class="player-strategy">"승부욕이 게임을 더욱 흥미진진하게 만듭니다."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="game-session">
+        <div class="arcade-bg"></div>
+        <div class="session-content">
+            <div class="session-frame">
+                <h2 class="session-title">Game Chronicles</h2>
+                <p class="session-text">
+                    오늘 우리는 다양한 보드게임을 통해 전략적 사고와 창의적 문제해결 능력을 키웠습니다.
+                    '카탄의 개척자들'부터 '윙스팬'까지, 각기 다른 장르의 게임을 경험하며
+                    서로의 플레이 스타일을 배우고 새로운 전략을 개발했습니다.
+                    게임은 단순한 오락을 넘어 소통과 협력, 그리고 건전한 경쟁의 장이었습니다.
+                </p>
+                
+                <div class="game-metrics">
+                    <div class="metric-item">
+                        <div class="metric-icon">🎲</div>
+                        <div class="metric-title">Games</div>
+                        <div class="metric-description">총 5개 게임 플레이</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-icon">🧠</div>
+                        <div class="metric-title">Strategy</div>
+                        <div class="metric-description">전략적 사고력 향상</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-icon">🤝</div>
+                        <div class="metric-title">Teamwork</div>
+                        <div class="metric-description">협동과 소통 능력</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-icon">🏆</div>
+                        <div class="metric-title">Victory</div>
+                        <div class="metric-description">모두가 승리자인 밤</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Player card intersection observer
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0) perspective(1000px) rotateX(0) rotateY(0)';
+                    }, index * 300);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        // Initialize cards
+        document.querySelectorAll('.player-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(150px) perspective(1000px) rotateX(-20deg) rotateY(-10deg)';
+            card.style.transition = 'all 1.6s cubic-bezier(0.23, 1, 0.320, 1)';
+            cardObserver.observe(card);
+        });
+
+        // Dynamic neon glow
+        const neonGlow = document.querySelector('.neon-glow');
+        let glowPhase = 0;
+
+        setInterval(() => {
+            glowPhase += 0.5;
+            const intensity = 50 + Math.sin(glowPhase * Math.PI / 180) * 30;
+            const x = 50 + Math.cos(glowPhase * 0.3 * Math.PI / 180) * 20;
+            const y = 50 + Math.sin(glowPhase * 0.4 * Math.PI / 180) * 15;
+            neonGlow.style.background = `radial-gradient(ellipse at ${x}% ${y}%, rgba(147, 112, 219, ${intensity/500}) 0%, rgba(106, 90, 205, ${intensity/1000}) 40%, rgba(0,0,0,0.95) 80%)`;
+        }, 200);
+
+        // Power aura effects
+        const createPowerSurge = () => {
+            const auras = document.querySelectorAll('.power-aura');
+            auras.forEach((aura, index) => {
+                setTimeout(() => {
+                    aura.style.opacity = '1';
+                    setTimeout(() => {
+                        aura.style.opacity = '0';
+                    }, 4000);
+                }, index * 800);
+            });
+        };
+
+        // Trigger power surge every 28 seconds
+        setInterval(createPowerSurge, 28000);
+
+        // Game pieces animation
+        const gamePieces = document.querySelectorAll('.game-piece');
+        let piecePhase = 0;
+
+        setInterval(() => {
+            piecePhase += 2;
+            gamePieces.forEach((piece, index) => {
+                const glow = 0.6 + Math.sin((piecePhase + index * 60) * Math.PI / 180) * 0.4;
+                piece.style.boxShadow = `0 0 20px rgba(147, 112, 219, ${glow})`;
+            });
+        }, 150);
+
+        // Dice icon animation
+        const diceIcon = document.querySelector('.dice-icon');
+        const diceSymbols = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+        let diceIndex = 3;
+
+        setInterval(() => {
+            if (Math.random() < 0.1) { // 10% chance to change
+                diceIndex = Math.floor(Math.random() * 6);
+                diceIcon.querySelector('::before') || (diceIcon.style.setProperty('--dice-symbol', `"${diceSymbols[diceIndex]}"`));
+            }
+        }, 500);
+
+        // Metric items animation
+        const metricObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const metrics = entry.target.querySelectorAll('.metric-item');
+                    metrics.forEach((metric, i) => {
+                        setTimeout(() => {
+                            metric.style.opacity = '1';
+                            metric.style.transform = 'translateY(0)';
+                        }, i * 300);
+                    });
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.metric-item').forEach(metric => {
+            metric.style.opacity = '0';
+            metric.style.transform = 'translateY(80px)';
+            metric.style.transition = 'all 1.2s ease';
+        });
+
+        metricObserver.observe(document.querySelector('.game-metrics'));
+
+        // Strategy lines animation
+        const strategyLines = document.querySelector('.strategy-lines');
+        let linePhase = 0;
+
+        setInterval(() => {
+            linePhase += 1;
+            const opacity = 0.3 + Math.sin(linePhase * Math.PI / 180) * 0.4;
+            strategyLines.style.opacity = opacity;
+        }, 200);
+    </script>
+</body>
+</html>

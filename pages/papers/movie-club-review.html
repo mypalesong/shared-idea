@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinematic Circle - Film Enthusiasts</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto+Slab:wght@300;400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto Slab', serif;
+            background: #0a0a0a;
+            color: #f8f8f8;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .cinema-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid #e50914;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+        }
+
+        .cinema-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 28px;
+            font-weight: 400;
+            color: #e50914;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 2px;
+        }
+
+        .film-reel {
+            width: 36px;
+            height: 36px;
+            background: #e50914;
+            border-radius: 50%;
+            position: relative;
+            animation: reelSpin 4s linear infinite;
+        }
+
+        .film-reel::before,
+        .film-reel::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #0a0a0a;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .film-reel::before { transform: translate(-50%, -50%) translate(-8px, 0); }
+        .film-reel::after { transform: translate(-50%, -50%) translate(8px, 0); }
+
+        .screening-info {
+            display: flex;
+            gap: 40px;
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Hero Section */
+        .hero-theater {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .projector-light {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 80px;
+            background: linear-gradient(to bottom, rgba(229, 9, 20, 0.8) 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+            animation: projectorBeam 6s ease-in-out infinite;
+        }
+
+        .theater-ambience {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center top, rgba(229, 9, 20, 0.08) 0%, rgba(0,0,0,0.95) 60%);
+            animation: theaterDim 8s ease-in-out infinite;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            padding: 0 40px;
+        }
+
+        .cinema-screen {
+            position: relative;
+            width: 700px;
+            height: 420px;
+            background: #000;
+            border: 8px solid #444;
+            border-radius: 8px;
+            margin: 0 auto 40px;
+            overflow: hidden;
+            box-shadow: 
+                0 0 100px rgba(229, 9, 20, 0.3),
+                inset 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .screen-content {
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1489599763807-02c52a9bd728?w=800&h=500&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.8) contrast(1.3) saturate(1.2);
+            animation: cinematicGlow 10s ease-in-out infinite;
+        }
+
+        .screen-reflection {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                transparent 20%, 
+                transparent 80%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            animation: screenFlicker 12s ease-in-out infinite;
+        }
+
+        .film-strip {
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            width: 20px;
+            height: 300px;
+            background: repeating-linear-gradient(
+                to bottom,
+                #e50914 0px,
+                #e50914 15px,
+                #000 15px,
+                #000 20px
+            );
+            transform: rotate(15deg);
+            animation: filmRoll 8s linear infinite;
+        }
+
+        .hero-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 52px;
+            font-weight: 400;
+            margin-bottom: 20px;
+            color: #e50914;
+            text-shadow: 
+                0 0 40px rgba(229, 9, 20, 0.6),
+                2px 2px 4px rgba(0, 0, 0, 0.8);
+            letter-spacing: 4px;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: #ccc;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        /* Critics Section */
+        .screening-room {
+            background: #050505;
+            position: relative;
+            padding: 120px 0;
+        }
+
+        .theater-lighting {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(to bottom, rgba(229, 9, 20, 0.03), transparent);
+        }
+
+        .screening-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-number {
+            font-size: 14px;
+            color: #555;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 48px;
+            font-weight: 400;
+            color: #e50914;
+            letter-spacing: 3px;
+        }
+
+        /* Critic Cards */
+        .critics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 45px;
+        }
+
+        .critic-card {
+            position: relative;
+            background: linear-gradient(145deg, #111111, #050505);
+            border: 2px solid rgba(229, 9, 20, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.320, 1);
+            cursor: pointer;
+        }
+
+        .critic-card:hover {
+            transform: translateY(-25px) rotateZ(2deg);
+            box-shadow: 
+                0 50px 120px rgba(0,0,0,0.9),
+                0 0 80px rgba(229, 9, 20, 0.3);
+            border-color: #e50914;
+        }
+
+        .critic-portrait {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portrait-bg {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.4) contrast(1.4) sepia(0.2);
+            transition: transform 8s ease-in-out;
+        }
+
+        .critic-card:hover .portrait-bg {
+            transform: scale(1.2) rotate(2deg);
+        }
+
+        .cinematic-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(229, 9, 20, 0.2), rgba(0, 0, 0, 0.7));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .critic-initial {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 60px;
+            font-weight: 400;
+            color: #fff;
+            text-shadow: 
+                2px 2px 0 #e50914,
+                4px 4px 15px rgba(0,0,0,0.9);
+            letter-spacing: 2px;
+        }
+
+        .critic-info {
+            padding: 32px;
+            background: linear-gradient(145deg, #111111, #050505);
+        }
+
+        .critic-name {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 26px;
+            font-weight: 400;
+            color: #e50914;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .critic-specialty {
+            font-size: 14px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .critic-review {
+            font-size: 14px;
+            color: #ccc;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .spotlight-effect {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(229, 9, 20, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: spotlightPulse 5s ease-in-out infinite;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .critic-card:hover .spotlight-effect {
+            opacity: 1;
+        }
+
+        /* Movie Analysis */
+        .movie-analysis {
+            background: #050505;
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .cinema-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images.unsplash.com/photo-1489599763807-02c52a9bd728?w=1600&h=1000&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.05) contrast(1.2) sepia(0.1);
+            animation: cinematicPan 30s ease-in-out infinite;
+        }
+
+        .analysis-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 40px;
+        }
+
+        .analysis-frame {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(25px);
+            border: 3px solid #e50914;
+            border-radius: 16px;
+            padding: 80px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .analysis-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #e50914, transparent);
+            animation: filmScan 4s ease-in-out infinite;
+        }
+
+        .analysis-frame::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: -100%;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #e50914, transparent);
+            animation: filmScan 4s ease-in-out infinite reverse;
+        }
+
+        .analysis-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 44px;
+            font-weight: 400;
+            color: #e50914;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+        }
+
+        .analysis-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #ccc;
+            margin-bottom: 50px;
+        }
+
+        .movie-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(229, 9, 20, 0.1);
+            border: 1px solid rgba(229, 9, 20, 0.3);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px;
+            background: #e50914;
+            animation: statRoll 4s ease-in-out infinite;
+        }
+
+        .stat-icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: #e50914;
+        }
+
+        .stat-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 20px;
+            font-weight: 400;
+            color: #e50914;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .stat-description {
+            font-size: 12px;
+            color: #999;
+            line-height: 1.4;
+        }
+
+        /* Individual critic backgrounds */
+        .critic-1 .portrait-bg { background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop'); }
+        .critic-2 .portrait-bg { background-image: url('https://images.unsplash.com/photo-1494790108755-2616b612b495?w=400&h=400&fit=crop'); }
+        .critic-3 .portrait-bg { background-image: url('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop'); }
+        .critic-4 .portrait-bg { background-image: url('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop'); }
+        .critic-5 .portrait-bg { background-image: url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop'); }
+        .critic-6 .portrait-bg { background-image: url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop'); }
+
+        @keyframes reelSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes projectorBeam {
+            0%, 100% { opacity: 0.8; transform: translateX(-50%) scaleY(1); }
+            50% { opacity: 1; transform: translateX(-50%) scaleY(1.2); }
+        }
+
+        @keyframes theaterDim {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes cinematicGlow {
+            0%, 100% { filter: brightness(0.8) contrast(1.3) saturate(1.2); }
+            50% { filter: brightness(0.9) contrast(1.4) saturate(1.3); }
+        }
+
+        @keyframes screenFlicker {
+            0%, 90%, 100% { opacity: 1; }
+            95% { opacity: 0.9; }
+        }
+
+        @keyframes filmRoll {
+            0% { transform: rotate(15deg) translateY(0); }
+            100% { transform: rotate(15deg) translateY(-40px); }
+        }
+
+        @keyframes spotlightPulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.4); }
+        }
+
+        @keyframes cinematicPan {
+            0%, 100% { transform: translate(0, 0) scale(1.05); }
+            50% { transform: translate(-20px, -10px) scale(1.1); }
+        }
+
+        @keyframes filmScan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes statRoll {
+            0%, 70%, 100% { left: -100%; }
+            80%, 90% { left: 0%; }
+        }
+
+        @media (max-width: 768px) {
+            .critics-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .movie-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .cinema-screen {
+                width: 90%;
+                height: 300px;
+            }
+            
+            .analysis-frame {
+                padding: 60px 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="cinema-nav">
+        <div class="cinema-title">
+            <div class="film-reel"></div>
+            Cinematic Circle
+        </div>
+        <div class="screening-info">
+            <span>Jun 14, 2024</span>
+            <span>Parasite Discussion</span>
+        </div>
+    </nav>
+
+    <section class="hero-theater">
+        <div class="projector-light"></div>
+        <div class="theater-ambience"></div>
+        <div class="hero-content">
+            <div class="cinema-screen">
+                <div class="screen-content"></div>
+                <div class="screen-reflection"></div>
+                <div class="film-strip"></div>
+            </div>
+            <h2 class="hero-title">Silver Screen</h2>
+            <p class="hero-subtitle">영화 '기생충'을 통해 나눈 깊이 있는 토론</p>
+        </div>
+    </section>
+
+    <section class="screening-room">
+        <div class="theater-lighting"></div>
+        <div class="screening-container">
+            <div class="section-header">
+                <div class="section-number">Film Critics</div>
+                <h2 class="section-title">Cinema Enthusiasts</h2>
+            </div>
+
+            <div class="critics-grid">
+                <div class="critic-card critic-1">
+                    <div class="spotlight-effect"></div>
+                    <div class="critic-portrait">
+                        <div class="portrait-bg"></div>
+                        <div class="cinematic-overlay">
+                            <div class="critic-initial">김</div>
+                        </div>
+                    </div>
+                    <div class="critic-info">
+                        <h3 class="critic-name">김시네마</h3>
+                        <p class="critic-specialty">Film Analyst</p>
+                        <p class="critic-review">"영화는 사회를 비추는 거울이자 미래를 상상하는 창문입니다."</p>
+                    </div>
+                </div>
+
+                <div class="critic-card critic-2">
+                    <div class="spotlight-effect"></div>
+                    <div class="critic-portrait">
+                        <div class="portrait-bg"></div>
+                        <div class="cinematic-overlay">
+                            <div class="critic-initial">박</div>
+                        </div>
+                    </div>
+                    <div class="critic-info">
+                        <h3 class="critic-name">박필름</h3>
+                        <p class="critic-specialty">Director Study</p>
+                        <p class="critic-review">"감독의 시선을 통해 세상을 다르게 바라보는 법을 배웁니다."</p>
+                    </div>
+                </div>
+
+                <div class="critic-card critic-3">
+                    <div class="spotlight-effect"></div>
+                    <div class="critic-portrait">
+                        <div class="portrait-bg"></div>
+                        <div class="cinematic-overlay">
+                            <div class="critic-initial">이</div>
+                        </div>
+                    </div>
+                    <div class="critic-info">
+                        <h3 class="critic-name">이스크린</h3>
+                        <p class="critic-specialty">Genre Expert</p>
+                        <p class="critic-review">"장르의 경계를 넘나드는 작품들이 가장 혁신적입니다."</p>
+                    </div>
+                </div>
+
+                <div class="critic-card critic-4">
+                    <div class="spotlight-effect"></div>
+                    <div class="critic-portrait">
+                        <div class="portrait-bg"></div>
+                        <div class="cinematic-overlay">
+                            <div class="critic-initial">최</div>
+                        </div>
+                    </div>
+                    <div class="critic-info">
+                        <h3 class="critic-name">최무비</h3>
+                        <p class="critic-specialty">Cinematographer</p>
+                        <p class="critic-review">"카메라의 움직임 하나하나에 담긴 의미를 찾는 것이 즐겁습니다."</p>
+                    </div>
+                </div>
+
+                <div class="critic-card critic-5">
+                    <div class="spotlight-effect"></div>
+                    <div class="critic-portrait">
+                        <div class="portrait-bg"></div>
+                        <div class="cinematic-overlay">
+                            <div class="critic-initial">정</div>
+                        </div>
+                    </div>
+                    <div class="critic-info">
+                        <h3 class="critic-name">정사운드</h3>
+                        <p class="critic-specialty">Sound Design</p>
+                        <p class="critic-review">"음악과 효과음이 만들어내는 감정의 층위를 분석합니다."</p>
+                    </div>
+                </div>
+
+                <div class="critic-card critic-6">
+                    <div class="spotlight-effect"></div>
+                    <div class="critic-portrait">
+                        <div class="portrait-bg"></div>
+                        <div class="cinematic-overlay">
+                            <div class="critic-initial">한</div>
+                        </div>
+                    </div>
+                    <div class="critic-info">
+                        <h3 class="critic-name">한스토리</h3>
+                        <p class="critic-specialty">Narrative Expert</p>
+                        <p class="critic-review">"좋은 이야기는 시대를 초월해 사람들의 마음에 남습니다."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="movie-analysis">
+        <div class="cinema-bg"></div>
+        <div class="analysis-content">
+            <div class="analysis-frame">
+                <h2 class="analysis-title">Cinema Discussion</h2>
+                <p class="analysis-text">
+                    오늘 우리는 봉준호 감독의 '기생충'을 통해 사회적 계층과 인간성에 대한 깊이 있는 토론을 나누었습니다.
+                    영화의 시각적 은유, 공간의 상징성, 그리고 사운드 디자인까지 세세한 부분을 분석하며
+                    영화가 전달하고자 하는 메시지를 다각도로 해석했습니다.
+                    영화는 단순한 오락을 넘어 사회를 성찰하는 거울임을 다시 한 번 깨달았습니다.
+                </p>
+                
+                <div class="movie-stats">
+                    <div class="stat-item">
+                        <div class="stat-icon">🎬</div>
+                        <div class="stat-title">Analysis</div>
+                        <div class="stat-description">영화 장면별 심층 분석</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">🎭</div>
+                        <div class="stat-title">Character</div>
+                        <div class="stat-description">등장인물 심리 탐구</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">🎨</div>
+                        <div class="stat-title">Visual</div>
+                        <div class="stat-description">시각적 상징과 은유</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">🎵</div>
+                        <div class="stat-title">Sound</div>
+                        <div class="stat-description">음향과 음악의 역할</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Critic card intersection observer
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0) rotateZ(0)';
+                    }, index * 300);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        // Initialize cards
+        document.querySelectorAll('.critic-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(120px) rotateZ(-3deg)';
+            card.style.transition = 'all 1.4s cubic-bezier(0.23, 1, 0.320, 1)';
+            cardObserver.observe(card);
+        });
+
+        // Dynamic theater ambience
+        const ambience = document.querySelector('.theater-ambience');
+        let ambiencePhase = 0;
+
+        setInterval(() => {
+            ambiencePhase += 0.8;
+            const intensity = 50 + Math.sin(ambiencePhase * Math.PI / 180) * 20;
+            const x = 50 + Math.cos(ambiencePhase * 0.4 * Math.PI / 180) * 15;
+            ambience.style.background = `radial-gradient(ellipse at ${x}% top, rgba(229, 9, 20, ${intensity/600}) 0%, rgba(0,0,0,0.95) 60%)`;
+        }, 200);
+
+        // Spotlight effects
+        const createSpotlightShow = () => {
+            const spotlights = document.querySelectorAll('.spotlight-effect');
+            spotlights.forEach((spotlight, index) => {
+                setTimeout(() => {
+                    spotlight.style.opacity = '1';
+                    setTimeout(() => {
+                        spotlight.style.opacity = '0';
+                    }, 3000);
+                }, index * 500);
+            });
+        };
+
+        // Trigger spotlight show every 20 seconds
+        setInterval(createSpotlightShow, 20000);
+
+        // Projector beam animation
+        const projector = document.querySelector('.projector-light');
+        let projectorPhase = 0;
+
+        setInterval(() => {
+            projectorPhase += 2;
+            const flicker = 0.8 + Math.sin(projectorPhase * Math.PI / 180) * 0.2;
+            projector.style.opacity = flicker;
+        }, 150);
+
+        // Screen content effects
+        const screenContent = document.querySelector('.screen-content');
+        let screenPhase = 0;
+
+        setInterval(() => {
+            screenPhase += 1;
+            const brightness = 0.8 + Math.sin(screenPhase * Math.PI / 180) * 0.1;
+            const contrast = 1.3 + Math.cos(screenPhase * 1.5 * Math.PI / 180) * 0.1;
+            screenContent.style.filter = `brightness(${brightness}) contrast(${contrast}) saturate(1.2)`;
+        }, 300);
+
+        // Movie stats animation
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const stats = entry.target.querySelectorAll('.stat-item');
+                    stats.forEach((stat, i) => {
+                        setTimeout(() => {
+                            stat.style.opacity = '1';
+                            stat.style.transform = 'translateY(0)';
+                        }, i * 250);
+                    });
+                }
+            });
+        }, { threshold: 0.4 });
+
+        document.querySelectorAll('.stat-item').forEach(stat => {
+            stat.style.opacity = '0';
+            stat.style.transform = 'translateY(60px)';
+            stat.style.transition = 'all 1s ease';
+        });
+
+        statsObserver.observe(document.querySelector('.movie-stats'));
+
+        // Film strip animation
+        const filmStrip = document.querySelector('.film-strip');
+        let stripPosition = 0;
+
+        setInterval(() => {
+            stripPosition += 2;
+            if (stripPosition > 300) stripPosition = -100;
+            filmStrip.style.transform = `rotate(15deg) translateY(${stripPosition}px)`;
+        }, 100);
+    </script>
+</body>
+</html>

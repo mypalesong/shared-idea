@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>동대문 DDP 건축 모임</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', 'Noto Sans KR', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .architectural-hero {
+            position: relative;
+            height: 100vh;
+            background: linear-gradient(135deg, 
+                rgba(0,0,0,0.9) 0%,
+                rgba(20,20,20,0.7) 40%,
+                rgba(40,40,40,0.5) 80%,
+                rgba(0,0,0,0.8) 100%
+            ), url('https://images.unsplash.com/photo-1511818966892-d7d671e672a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .geometric-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridShift 20s linear infinite;
+        }
+
+        @keyframes gridShift {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 3;
+            position: relative;
+            max-width: 1000px;
+            padding: 0 20px;
+        }
+
+        .structure-title {
+            font-size: 5.5rem;
+            font-weight: 100;
+            margin-bottom: 20px;
+            letter-spacing: 12px;
+            background: linear-gradient(45deg, 
+                #ffffff 0%,
+                #cccccc 25%,
+                #ffffff 50%,
+                #e0e0e0 75%,
+                #ffffff 100%
+            );
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: architecturalGlow 5s ease-in-out infinite;
+            text-transform: uppercase;
+        }
+
+        @keyframes architecturalGlow {
+            0%, 100% { 
+                filter: drop-shadow(0 0 30px rgba(255,255,255,0.3));
+                transform: perspective(1000px) rotateX(0deg);
+            }
+            50% { 
+                filter: drop-shadow(0 0 50px rgba(255,255,255,0.5));
+                transform: perspective(1000px) rotateX(2deg);
+            }
+        }
+
+        .structure-subtitle {
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin-bottom: 60px;
+            opacity: 0.9;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .blueprint-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .detail-module {
+            background: linear-gradient(135deg, 
+                rgba(30,30,30,0.95),
+                rgba(15,15,15,0.9)
+            );
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 2px;
+            padding: 25px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            backdrop-filter: blur(10px);
+        }
+
+        .detail-module::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                transparent, 
+                rgba(255,255,255,0.1), 
+                transparent
+            );
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .detail-module:hover::before {
+            transform: translateX(100%);
+        }
+
+        .detail-module:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255,255,255,0.4);
+            box-shadow: 0 20px 40px rgba(255,255,255,0.1);
+        }
+
+        .module-label {
+            color: #cccccc;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .module-value {
+            font-size: 1.3rem;
+            font-weight: 300;
+            line-height: 1.4;
+        }
+
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: floatShape 25s infinite linear;
+        }
+
+        .shape-square {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(45deg, #ffffff, transparent);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .shape-circle {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .shape-triangle {
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 17px solid rgba(255,255,255,0.2);
+        }
+
+        @keyframes floatShape {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.1;
+            }
+            90% {
+                opacity: 0.1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .main-content {
+            padding: 120px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-size: 3.5rem;
+            font-weight: 100;
+            color: #ffffff;
+            margin-bottom: 20px;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+        }
+
+        .section-description {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.7);
+            max-width: 600px;
+            margin: 0 auto;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .reviews-structure {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+        }
+
+        .review-unit {
+            background: linear-gradient(135deg, 
+                rgba(20,20,20,0.95),
+                rgba(10,10,10,0.9)
+            );
+            border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 0;
+            padding: 40px;
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
+            overflow: hidden;
+        }
+
+        .review-unit::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, 
+                transparent, 
+                rgba(255,255,255,0.3), 
+                transparent, 
+                rgba(255,255,255,0.3), 
+                transparent
+            );
+            z-index: -1;
+            animation: borderScan 8s linear infinite;
+        }
+
+        @keyframes borderScan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .review-unit:hover {
+            transform: translateY(-15px) scale(1.02);
+            border-color: rgba(255,255,255,0.4);
+            box-shadow: 0 25px 50px rgba(255,255,255,0.15);
+        }
+
+        .architect-name {
+            color: #ffffff;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .architect-role {
+            color: #aaa;
+            font-size: 1rem;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .architect-review {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #e0e0e0;
+        }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.6);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: architecturalPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes architecturalPulse {
+            0%, 100% { 
+                opacity: 0.6; 
+                transform: translateX(-50%) translateY(0); 
+            }
+            50% { 
+                opacity: 1; 
+                transform: translateX(-50%) translateY(-8px); 
+            }
+        }
+
+        @media (max-width: 768px) {
+            .structure-title {
+                font-size: 3rem;
+                letter-spacing: 6px;
+            }
+            
+            .blueprint-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .reviews-structure {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-shapes">
+        <div class="shape shape-square" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="shape shape-circle" style="left: 20%; animation-delay: 3s;"></div>
+        <div class="shape shape-triangle" style="left: 30%; animation-delay: 6s;"></div>
+        <div class="shape shape-square" style="left: 50%; animation-delay: 9s;"></div>
+        <div class="shape shape-circle" style="left: 70%; animation-delay: 12s;"></div>
+        <div class="shape shape-triangle" style="left: 80%; animation-delay: 15s;"></div>
+        <div class="shape shape-square" style="left: 90%; animation-delay: 18s;"></div>
+    </div>
+
+    <section class="architectural-hero">
+        <div class="geometric-grid"></div>
+        
+        <div class="hero-content">
+            <h1 class="structure-title">BLUEPRINT</h1>
+            <p class="structure-subtitle">DDP에서 펼쳐진 건축가들의 모던 미팅</p>
+            
+            <div class="blueprint-details">
+                <div class="detail-module">
+                    <div class="module-label">Project Date</div>
+                    <div class="module-value">2025.01.30 FRI<br>19:00 ASSEMBLY</div>
+                </div>
+                <div class="detail-module">
+                    <div class="module-label">Site Location</div>
+                    <div class="module-value">동대문디자인플라자<br>B2 DESIGN LAB</div>
+                </div>
+                <div class="detail-module">
+                    <div class="module-label">Budget</div>
+                    <div class="module-value">150,000 KRW<br>PER ARCHITECT</div>
+                </div>
+                <div class="detail-module">
+                    <div class="module-label">Team Size</div>
+                    <div class="module-value">06 MEMBERS<br>DESIGN PROFESSIONALS</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scroll-down">
+            ⬇ REVIEW DOCUMENTATION ⬇
+        </div>
+    </section>
+
+    <section class="main-content">
+        <div class="section-header">
+            <h2 class="section-title">PROJECT REVIEWS</h2>
+            <p class="section-description">건축 전문가들의 현장 리포트</p>
+        </div>
+        
+        <div class="reviews-structure">
+            <div class="review-unit">
+                <div class="architect-name">김건축사</div>
+                <div class="architect-role">상업건축 전문가</div>
+                <p class="architect-review">
+                    DDP의 곡선미를 직접 체험하면서 식사하니까 정말 특별했습니다. 자하 하디드의 설계 철학을 온몸으로 느낄 수 있었어요. 
+                    특히 내부 곡선 구조물들을 보면서 '어떻게 이런 걸 시공했을까' 하는 생각이 계속 들더라고요. 
+                    우리 프로젝트에도 이런 곡선을 도입해보고 싶은데... 시공비가 문제네요 😅
+                </p>
+            </div>
+            
+            <div class="review-unit">
+                <div class="architect-name">박설계사</div>
+                <div class="architect-role">주거건축 디자이너</div>
+                <p class="architect-review">
+                    건축물 내부에서 식사하면서 공간감을 분석하는 건 정말 흥미로웠어요! 특히 천장고와 자연채광, 인공조명의 조화가 인상적이었습니다. 
+                    이런 공간에서 살 수 있다면 얼마나 좋을까요? 아파트 설계할 때 이런 컨셉을 적용해보고 싶네요. 
+                    물론 분양가는 천정부지로 올라가겠지만... 🏗️
+                </p>
+            </div>
+            
+            <div class="review-unit">
+                <div class="architect-name">최구조사</div>
+                <div class="architect-role">구조 엔지니어</div>
+                <p class="architect-review">
+                    음식을 먹으면서도 계속 구조를 분석하고 있었습니다 ㅋㅋ DDP의 철골 구조가 정말 복잡하더라고요. 
+                    어떤 구조 해석 프로그램을 썼을지, 시공 중에 어떤 어려움이 있었을지... 이런 생각들로 머릿속이 꽉 찼어요. 
+                    직업병이 심각한 수준이네요. 다음엔 구조 도면도 가져와야겠어요! 📐
+                </p>
+            </div>
+            
+            <div class="review-unit">
+                <div class="architect-name">정인테리어</div>
+                <div class="architect-role">실내건축가</div>
+                <p class="architect-review">
+                    DDP 내부의 인테리어 디테일이 정말 섬세하더라고요. 특히 조명 계획과 마감재 선택이 탁월했습니다. 
+                    우리가 식사한 공간도 미니멀하면서도 임팩트 있게 디자인되어 있어서 계속 관찰하게 되더라고요. 
+                    클라이언트들한테 이런 공간을 레퍼런스로 보여주면 좋겠네요! ✨
+                </p>
+            </div>
+            
+            <div class="review-unit">
+                <div class="architect-name">이도시계획</div>
+                <div class="architect-role">도시설계 전문가</div>
+                <p class="architect-review">
+                    DDP가 동대문 지역에 미친 도시적 임팩트를 체감할 수 있었어요. 단순히 건물 하나가 아니라 전체 도시 맥락을 바꾼 프로젝트죠. 
+                    주변 상권과의 연결, 지하철역과의 접근성... 모든 게 계산된 설계더라고요. 
+                    우리 도시에도 이런 랜드마크가 필요한데 말이죠 🌆
+                </p>
+            </div>
+            
+            <div class="review-unit">
+                <div class="architect-name">한조경사</div>
+                <div class="architect-role">조경 건축가</div>
+                <p class="architect-review">
+                    건물도 멋있지만 주변 조경 설계도 정말 인상적이었어요! 특히 곡선 건물과 대비되는 직선적인 조경 요소들이 조화롭더라고요. 
+                    식사 후에 DDP 주변을 산책하면서 조경 디테일들을 하나하나 관찰했는데... 정말 배울 점이 많았습니다. 
+                    다음 프로젝트에 이런 컨셉을 적용해보고 싶어요! 🌿
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Architectural parallax effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.architectural-hero');
+            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+            
+            const grid = document.querySelector('.geometric-grid');
+            grid.style.transform = `translate(${scrolled * 0.1}px, ${scrolled * 0.1}px)`;
+        });
+
+        // Intersection Observer for review units
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0) scale(1)';
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        document.querySelectorAll('.review-unit').forEach(unit => {
+            unit.style.opacity = '0';
+            unit.style.transform = 'translateY(60px) scale(0.95)';
+            unit.style.transition = 'all 1s cubic-bezier(0.23, 1, 0.320, 1)';
+            observer.observe(unit);
+        });
+
+        // Dynamic background positioning
+        setInterval(() => {
+            const hero = document.querySelector('.architectural-hero');
+            const currentPos = parseInt(hero.style.backgroundPositionY) || 0;
+            hero.style.backgroundPositionY = (currentPos + 0.5) + 'px';
+        }, 100);
+
+        // Mouse interaction effect
+        document.addEventListener('mousemove', (e) => {
+            const shapes = document.querySelectorAll('.shape');
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            shapes.forEach((shape, index) => {
+                const speed = (index + 1) * 0.02;
+                const xMove = (mouseX - 0.5) * speed * 100;
+                const yMove = (mouseY - 0.5) * speed * 100;
+                
+                shape.style.transform += ` translate(${xMove}px, ${yMove}px)`;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>금요일 강남 모임 - 스토리 스타일</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: #000;
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .story-container {
+            max-width: 414px;
+            margin: 0 auto;
+            height: 100vh;
+            position: relative;
+            background: linear-gradient(45deg, 
+                #833ab4 0%, 
+                #fd1d1d 25%, 
+                #fcb045 50%, 
+                #833ab4 75%, 
+                #fd1d1d 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        .story-wrapper {
+            position: relative;
+            height: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .story-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            z-index: 10;
+        }
+
+        .story-progress {
+            flex: 1;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            margin-right: 15px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: white;
+            border-radius: 2px;
+            animation: progressFill 8s linear infinite;
+        }
+
+        .story-user {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #ffa726);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        .user-info h3 {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .user-info p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .story-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .main-photo {
+            width: 280px;
+            height: 350px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            animation: photoFloat 4s ease-in-out infinite;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .photo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .story-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .story-location {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .story-slides {
+            position: absolute;
+            bottom: 80px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .slide-item {
+            width: 60px;
+            height: 80px;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.7;
+        }
+
+        .slide-item.active {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .slide1 {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        }
+
+        .slide2 {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        .slide3 {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+
+        .slide4 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .slide-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+            padding: 5px;
+        }
+
+        .slide-emoji {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .story-footer {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .footer-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .footer-item:hover {
+            transform: scale(1.2);
+        }
+
+        .footer-text {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .members-popup {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px 20px 0 0;
+            padding: 25px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .members-popup.show {
+            transform: translateY(0);
+        }
+
+        .members-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .member-card {
+            text-align: center;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .member-card:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-3px);
+        }
+
+        .member-avatar-large {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: linear-gradient(135deg, #ff6b6b, #ffa726);
+        }
+
+        .member-name {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .sparkle {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            pointer-events: none;
+            animation: sparkleAnimation 2s ease-in-out infinite;
+        }
+
+        .sparkle1 { top: 15%; left: 10%; animation-delay: 0s; }
+        .sparkle2 { top: 25%; right: 15%; animation-delay: 0.7s; }
+        .sparkle3 { top: 60%; left: 8%; animation-delay: 1.4s; }
+        .sparkle4 { bottom: 30%; right: 10%; animation-delay: 2.1s; }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes progressFill {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes photoFloat {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-10px) scale(1.02); }
+        }
+
+        @keyframes sparkleAnimation {
+            0%, 100% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .story-content-1 {
+            display: block;
+        }
+
+        .story-content-2,
+        .story-content-3,
+        .story-content-4 {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .main-photo { width: 240px; height: 300px; }
+            .members-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="story-container">
+        <div class="story-wrapper">
+            <!-- 스파클 효과 -->
+            <div class="sparkle sparkle1">✨</div>
+            <div class="sparkle sparkle2">💫</div>
+            <div class="sparkle sparkle3">⭐</div>
+            <div class="sparkle sparkle4">✨</div>
+
+            <!-- 헤더 -->
+            <div class="story-header">
+                <div class="story-progress">
+                    <div class="progress-bar"></div>
+                </div>
+                <div class="story-user">
+                    <div class="user-avatar">🍝</div>
+                    <div class="user-info">
+                        <h3>강남 모임</h3>
+                        <p>12.15 금요일</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 메인 컨텐츠 -->
+            <div class="story-main">
+                <div class="story-content story-content-1">
+                    <div class="main-photo">
+                        <div class="photo-overlay">🍽️ 완벽한 테이블</div>
+                    </div>
+                    <div class="story-text">금요일 밤의 특별한 순간</div>
+                    <div class="story-location">📍 강남역 트라토리아 델 모멘토</div>
+                </div>
+
+                <div class="story-content story-content-2">
+                    <div class="main-photo slide2">
+                        <div class="photo-overlay">🥂 건배!</div>
+                    </div>
+                    <div class="story-text">따뜻한 인사와 함께</div>
+                    <div class="story-location">새로운 이야기의 시작</div>
+                </div>
+
+                <div class="story-content story-content-3">
+                    <div class="main-photo slide3">
+                        <div class="photo-overlay">😊 웃음 가득</div>
+                    </div>
+                    <div class="story-text">행복한 웃음소리</div>
+                    <div class="story-location">잊지 못할 추억 만들기</div>
+                </div>
+
+                <div class="story-content story-content-4">
+                    <div class="main-photo slide4">
+                        <div class="photo-overlay">👥 우리들</div>
+                    </div>
+                    <div class="story-text">소중한 사람들</div>
+                    <div class="story-location">6명이 함께한 완벽한 밤</div>
+                </div>
+            </div>
+
+            <!-- 슬라이드 네비게이션 -->
+            <div class="story-slides">
+                <div class="slide-item slide1 active" data-slide="1">
+                    <div class="slide-content">
+                        <div class="slide-emoji">🍽️</div>
+                        <div>테이블</div>
+                    </div>
+                </div>
+                <div class="slide-item slide2" data-slide="2">
+                    <div class="slide-content">
+                        <div class="slide-emoji">🥂</div>
+                        <div>건배</div>
+                    </div>
+                </div>
+                <div class="slide-item slide3" data-slide="3">
+                    <div class="slide-content">
+                        <div class="slide-emoji">😊</div>
+                        <div>웃음</div>
+                    </div>
+                </div>
+                <div class="slide-item slide4" data-slide="4">
+                    <div class="slide-content">
+                        <div class="slide-emoji">👥</div>
+                        <div>우리</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 푸터 -->
+            <div class="story-footer">
+                <div class="footer-item" onclick="showMembers()">
+                    <div>👥</div>
+                    <div class="footer-text">멤버</div>
+                </div>
+                <div class="footer-item">
+                    <div>❤️</div>
+                    <div class="footer-text">좋아요</div>
+                </div>
+                <div class="footer-item">
+                    <div>💬</div>
+                    <div class="footer-text">댓글</div>
+                </div>
+                <div class="footer-item">
+                    <div>📤</div>
+                    <div class="footer-text">공유</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 멤버 팝업 -->
+        <div class="members-popup" id="membersPopup">
+            <div class="members-header">
+                <h3>함께한 사람들 (6명)</h3>
+            </div>
+            <div class="members-grid">
+                <div class="member-card">
+                    <div class="member-avatar-large">🧑‍💼</div>
+                    <div class="member-name">민수</div>
+                </div>
+                <div class="member-card">
+                    <div class="member-avatar-large">👩‍🎨</div>
+                    <div class="member-name">지영</div>
+                </div>
+                <div class="member-card">
+                    <div class="member-avatar-large">🧑‍💻</div>
+                    <div class="member-name">현우</div>
+                </div>
+                <div class="member-card">
+                    <div class="member-avatar-large">👩‍🏫</div>
+                    <div class="member-name">수빈</div>
+                </div>
+                <div class="member-card">
+                    <div class="member-avatar-large">🧑‍🍳</div>
+                    <div class="member-name">태훈</div>
+                </div>
+                <div class="member-card">
+                    <div class="member-avatar-large">👩‍⚕️</div>
+                    <div class="member-name">예린</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 4;
+
+        // 슬라이드 클릭 이벤트
+        document.querySelectorAll('.slide-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const slideNumber = item.dataset.slide;
+                showSlide(slideNumber);
+            });
+        });
+
+        function showSlide(slideNumber) {
+            // 이전 슬라이드 숨기기
+            document.querySelectorAll('.story-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            
+            // 현재 슬라이드 보이기
+            document.querySelector(`.story-content-${slideNumber}`).style.display = 'block';
+            
+            // 네비게이션 업데이트
+            document.querySelectorAll('.slide-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-slide="${slideNumber}"]`).classList.add('active');
+            
+            currentSlide = slideNumber;
+        }
+
+        // 자동 슬라이드
+        setInterval(() => {
+            currentSlide = currentSlide >= totalSlides ? 1 : currentSlide + 1;
+            showSlide(currentSlide);
+        }, 4000);
+
+        // 멤버 팝업 토글
+        let membersVisible = false;
+        function showMembers() {
+            const popup = document.getElementById('membersPopup');
+            membersVisible = !membersVisible;
+            popup.classList.toggle('show', membersVisible);
+        }
+
+        // 팝업 외부 클릭시 닫기
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.footer-item') && !e.target.closest('.members-popup') && membersVisible) {
+                showMembers();
+            }
+        });
+
+        // 터치 스와이프 지원
+        let startX = 0;
+        let endX = 0;
+
+        document.addEventListener('touchstart', e => {
+            startX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            endX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (startX - endX > 50) {
+                // 왼쪽 스와이프 (다음 슬라이드)
+                currentSlide = currentSlide >= totalSlides ? 1 : currentSlide + 1;
+                showSlide(currentSlide);
+            } else if (endX - startX > 50) {
+                // 오른쪽 스와이프 (이전 슬라이드)
+                currentSlide = currentSlide <= 1 ? totalSlides : currentSlide - 1;
+                showSlide(currentSlide);
+            }
+        }
+    </script>
+</body>
+</html>

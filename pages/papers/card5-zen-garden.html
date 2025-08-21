@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taylor's Zen Birthday - Peaceful Celebration</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&family=Noto+Serif+JP:wght@300;400;500&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #f5f5dc, #e8e6db, #ddd8c0);
+            color: #4a4a4a;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Subtle Paper Texture */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(139, 119, 87, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 75% 75%, rgba(139, 119, 87, 0.02) 1px, transparent 1px);
+            background-size: 100px 100px, 150px 150px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Floating Elements */
+        .zen-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .zen-leaf {
+            position: absolute;
+            width: 12px;
+            height: 8px;
+            background: linear-gradient(45deg, #8FBC8F, #98FB98);
+            border-radius: 0 100% 0 100%;
+            opacity: 0.6;
+            animation: gentleFloat 20s infinite linear;
+        }
+
+        /* Main Container */
+        .zen-container {
+            position: relative;
+            z-index: 10;
+            max-width: 420px;
+            margin: 20px auto;
+            min-height: calc(100vh - 40px);
+            background: rgba(248, 248, 240, 0.95);
+            border-radius: 20px;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.1),
+                inset 0 1px 0 rgba(255,255,255,0.6);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        /* Header Section */
+        .zen-header {
+            text-align: center;
+            padding: 40px 30px 30px;
+            position: relative;
+            background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(248,248,240,0.9));
+        }
+
+        .zen-seal {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: radial-gradient(circle, #8FBC8F, #6B8E6B);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .zen-seal::before {
+            content: '和';
+            font-family: 'Noto Serif JP', serif;
+            font-size: 32px;
+            color: white;
+            font-weight: 500;
+        }
+
+        .zen-seal::after {
+            content: '';
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            border: 2px solid rgba(139, 185, 139, 0.3);
+            border-radius: 50%;
+            animation: ripple 4s infinite;
+        }
+
+        .zen-title {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 24px;
+            color: #5a5a5a;
+            margin-bottom: 8px;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .zen-subtitle {
+            font-size: 14px;
+            color: #8a8a8a;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        /* Garden Section */
+        .zen-garden {
+            padding: 40px 30px;
+            position: relative;
+        }
+
+        .rock-garden {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #f0f0e8, #e8e6db);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Rake Lines */
+        .rake-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 8px,
+                rgba(139, 119, 87, 0.1) 9px,
+                rgba(139, 119, 87, 0.1) 10px
+            );
+            animation: rakeFlow 30s infinite linear;
+        }
+
+        /* Zen Stones */
+        .zen-stone {
+            position: absolute;
+            background: linear-gradient(135deg, #d3d3d3, #a8a8a8);
+            border-radius: 50%;
+            box-shadow: 
+                0 4px 8px rgba(0,0,0,0.1),
+                inset 2px 2px 4px rgba(255,255,255,0.3);
+        }
+
+        .stone-1 {
+            width: 40px;
+            height: 30px;
+            top: 30%;
+            left: 20%;
+            animation: stoneBreath 8s infinite ease-in-out;
+        }
+
+        .stone-2 {
+            width: 50px;
+            height: 35px;
+            top: 50%;
+            right: 25%;
+            animation: stoneBreath 10s infinite ease-in-out 2s;
+        }
+
+        .stone-3 {
+            width: 30px;
+            height: 25px;
+            bottom: 30%;
+            left: 40%;
+            animation: stoneBreath 12s infinite ease-in-out 4s;
+        }
+
+        /* Water Ripples */
+        .water-section {
+            position: relative;
+            margin: 30px 0;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(176, 224, 230, 0.3), rgba(173, 216, 230, 0.4));
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .ripple {
+            position: absolute;
+            border: 2px solid rgba(176, 224, 230, 0.6);
+            border-radius: 50%;
+            animation: rippleExpand 4s infinite ease-out;
+        }
+
+        .ripple-1 {
+            top: 20px;
+            left: 30%;
+            width: 20px;
+            height: 20px;
+        }
+
+        .ripple-2 {
+            top: 15px;
+            right: 30%;
+            width: 30px;
+            height: 30px;
+            animation-delay: 2s;
+        }
+
+        /* Friend Name */
+        .zen-name {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 42px;
+            text-align: center;
+            color: #6B8E6B;
+            margin-bottom: 20px;
+            position: relative;
+            font-weight: 400;
+            letter-spacing: 2px;
+        }
+
+        .zen-name::before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #8FBC8F, transparent);
+        }
+
+        /* Wisdom Message */
+        .wisdom-scroll {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(139, 119, 87, 0.2);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .wisdom-scroll::before {
+            content: '♦';
+            position: absolute;
+            top: -8px;
+            left: 30px;
+            background: rgba(248, 248, 240, 1);
+            color: #8FBC8F;
+            padding: 0 8px;
+            font-size: 16px;
+        }
+
+        .birthday-wisdom {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #5a5a5a;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .zen-quote {
+            font-family: 'Noto Serif JP', serif;
+            font-style: italic;
+            color: #6B8E6B;
+            font-size: 15px;
+            text-align: center;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        .zen-quote::before,
+        .zen-quote::after {
+            content: '"';
+            font-size: 24px;
+            color: #8FBC8F;
+            position: absolute;
+            top: -5px;
+        }
+
+        .zen-quote::before {
+            left: 0;
+        }
+
+        .zen-quote::after {
+            right: 0;
+        }
+
+        /* Balance Elements */
+        .balance-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .balance-element {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(139, 185, 139, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .balance-element:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .balance-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: block;
+            animation: iconGlow 4s infinite ease-in-out;
+        }
+
+        .balance-value {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 18px;
+            color: #6B8E6B;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .balance-label {
+            font-size: 12px;
+            color: #8a8a8a;
+            font-weight: 300;
+        }
+
+        /* Meditation Circle */
+        .meditation-circle {
+            width: 150px;
+            height: 150px;
+            margin: 40px auto;
+            border: 3px solid rgba(139, 185, 139, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .meditation-circle:hover {
+            border-color: rgba(139, 185, 139, 0.6);
+            transform: scale(1.05);
+        }
+
+        .meditation-center {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #8FBC8F, #6B8E6B);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .meditation-aura {
+            position: absolute;
+            width: 160px;
+            height: 160px;
+            border: 2px solid rgba(139, 185, 139, 0.2);
+            border-radius: 50%;
+            animation: pulse 6s infinite ease-in-out;
+        }
+
+        /* Bamboo Decoration */
+        .bamboo-decoration {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 120px;
+            background: linear-gradient(180deg, #8FBC8F, #6B8E6B);
+            border-radius: 4px;
+            opacity: 0.3;
+        }
+
+        .bamboo-node {
+            position: absolute;
+            width: 12px;
+            height: 4px;
+            background: #6B8E6B;
+            border-radius: 2px;
+            left: -2px;
+        }
+
+        .node-1 { top: 20%; }
+        .node-2 { top: 50%; }
+        .node-3 { top: 80%; }
+
+        /* Animations */
+        @keyframes gentleFloat {
+            0% {
+                transform: translateY(100vh) translateX(-20px) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% {
+                transform: translateY(-100px) translateX(20px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        @keyframes rakeFlow {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(20px); }
+        }
+
+        @keyframes stoneBreath {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes rippleExpand {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(3);
+                opacity: 0;
+            }
+        }
+
+        @keyframes iconGlow {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.6;
+            }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 480px) {
+            .zen-container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .zen-name {
+                font-size: 32px;
+            }
+            
+            .zen-garden {
+                padding: 30px 20px;
+            }
+            
+            .rock-garden {
+                height: 150px;
+            }
+            
+            .balance-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="zen-particles">
+        <!-- Leaves will be generated by JavaScript -->
+    </div>
+
+    <div class="zen-container">
+        <header class="zen-header">
+            <div class="zen-seal"></div>
+            <h1 class="zen-title">生日の平和</h1>
+            <p class="zen-subtitle">Birthday Peace</p>
+        </header>
+
+        <section class="zen-garden">
+            <div class="rock-garden">
+                <div class="rake-lines"></div>
+                <div class="zen-stone stone-1"></div>
+                <div class="zen-stone stone-2"></div>
+                <div class="zen-stone stone-3"></div>
+            </div>
+
+            <div class="water-section">
+                <div class="ripple ripple-1"></div>
+                <div class="ripple ripple-2"></div>
+            </div>
+
+            <h2 class="zen-name">Taylor</h2>
+
+            <div class="bamboo-decoration">
+                <div class="bamboo-node node-1"></div>
+                <div class="bamboo-node node-2"></div>
+                <div class="bamboo-node node-3"></div>
+            </div>
+        </section>
+
+        <div class="wisdom-scroll">
+            <div class="birthday-wisdom">
+                On this day of celebration, may you find joy in the simple moments,<br>
+                peace in the present, and wisdom in another year of growth. 🌸
+            </div>
+            <div class="zen-quote">
+                The best birthday gift is the presence of loved ones and the peace within one's heart.
+            </div>
+        </div>
+
+        <div class="balance-grid">
+            <div class="balance-element">
+                <span class="balance-icon">🧘</span>
+                <div class="balance-value">Perfect</div>
+                <div class="balance-label">Inner Peace</div>
+            </div>
+            
+            <div class="balance-element">
+                <span class="balance-icon">🌱</span>
+                <div class="balance-value">Infinite</div>
+                <div class="balance-label">Growth</div>
+            </div>
+            
+            <div class="balance-element">
+                <span class="balance-icon">☯</span>
+                <div class="balance-value">Harmonious</div>
+                <div class="balance-label">Balance</div>
+            </div>
+            
+            <div class="balance-element">
+                <span class="balance-icon">🎂</span>
+                <div class="balance-value">Mindful</div>
+                <div class="balance-label">Celebration</div>
+            </div>
+        </div>
+
+        <div class="meditation-circle">
+            <div class="meditation-aura"></div>
+            <div class="meditation-center">🕉️</div>
+        </div>
+    </div>
+
+    <script>
+        // Generate floating leaves
+        function createZenLeaves() {
+            const container = document.querySelector('.zen-particles');
+            
+            for (let i = 0; i < 15; i++) {
+                const leaf = document.createElement('div');
+                leaf.className = 'zen-leaf';
+                
+                leaf.style.left = Math.random() * 100 + '%';
+                leaf.style.animationDelay = Math.random() * 20 + 's';
+                leaf.style.animationDuration = (Math.random() * 15 + 15) + 's';
+                
+                // Random leaf colors
+                const greenShades = [
+                    'linear-gradient(45deg, #8FBC8F, #98FB98)',
+                    'linear-gradient(45deg, #90EE90, #7CFC00)',
+                    'linear-gradient(45deg, #9ACD32, #ADFF2F)'
+                ];
+                leaf.style.background = greenShades[Math.floor(Math.random() * greenShades.length)];
+                
+                container.appendChild(leaf);
+            }
+        }
+
+        // Meditation interaction
+        function addMeditationEffect() {
+            const circle = document.querySelector('.meditation-circle');
+            let isMediating = false;
+            
+            circle.addEventListener('click', () => {
+                if (!isMediating) {
+                    isMediating = true;
+                    circle.style.animation = 'pulse 2s infinite ease-in-out';
+                    
+                    // Create ripple effect
+                    for (let i = 0; i < 5; i++) {
+                        setTimeout(() => {
+                            createRippleEffect(circle);
+                        }, i * 200);
+                    }
+                    
+                    setTimeout(() => {
+                        circle.style.animation = '';
+                        isMediating = false;
+                    }, 3000);
+                }
+            });
+        }
+
+        // Create ripple effect
+        function createRippleEffect(element) {
+            const ripple = document.createElement('div');
+            ripple.style.position = 'absolute';
+            ripple.style.border = '2px solid rgba(139, 185, 139, 0.6)';
+            ripple.style.borderRadius = '50%';
+            ripple.style.width = '160px';
+            ripple.style.height = '160px';
+            ripple.style.top = '50%';
+            ripple.style.left = '50%';
+            ripple.style.transform = 'translate(-50%, -50%)';
+            ripple.style.animation = 'rippleExpand 2s ease-out forwards';
+            ripple.style.pointerEvents = 'none';
+            
+            element.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 2000);
+        }
+
+        // Stone interaction
+        function addStoneInteraction() {
+            const stones = document.querySelectorAll('.zen-stone');
+            
+            stones.forEach(stone => {
+                stone.addEventListener('click', () => {
+                    stone.style.transform = 'scale(1.1)';
+                    stone.style.boxShadow = '0 6px 15px rgba(0,0,0,0.2)';
+                    
+                    setTimeout(() => {
+                        stone.style.transform = '';
+                        stone.style.boxShadow = '';
+                    }, 300);
+                    
+                    // Create zen particles
+                    createZenParticles(stone);
+                });
+            });
+        }
+
+        // Create zen particles on stone click
+        function createZenParticles(stone) {
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = '6px';
+                particle.style.height = '6px';
+                particle.style.background = '#8FBC8F';
+                particle.style.borderRadius = '50%';
+                particle.style.pointerEvents = 'none';
+                particle.style.left = (stone.offsetLeft + stone.offsetWidth / 2) + 'px';
+                particle.style.top = (stone.offsetTop + stone.offsetHeight / 2) + 'px';
+                
+                const angle = (i / 8) * Math.PI * 2;
+                const distance = 30;
+                const endX = Math.cos(angle) * distance;
+                const endY = Math.sin(angle) * distance;
+                
+                particle.style.animation = `zenFloat${i} 1s ease-out forwards`;
+                
+                // Create unique animation for each particle
+                const keyframes = `
+                    @keyframes zenFloat${i} {
+                        0% {
+                            transform: translate(0, 0) scale(1);
+                            opacity: 1;
+                        }
+                        100% {
+                            transform: translate(${endX}px, ${endY}px) scale(0);
+                            opacity: 0;
+                        }
+                    }
+                `;
+                
+                const styleSheet = document.createElement('style');
+                styleSheet.textContent = keyframes;
+                document.head.appendChild(styleSheet);
+                
+                document.body.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                    styleSheet.remove();
+                }, 1000);
+            }
+        }
+
+        // Rake lines interaction
+        function addRakeInteraction() {
+            const rakeLines = document.querySelector('.rake-lines');
+            
+            rakeLines.addEventListener('click', () => {
+                rakeLines.style.animationDuration = '5s';
+                setTimeout(() => {
+                    rakeLines.style.animationDuration = '30s';
+                }, 5000);
+            });
+        }
+
+        // Balance elements animation
+        function animateBalanceElements() {
+            const elements = document.querySelectorAll('.balance-element');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.transform = 'translateY(0)';
+                            entry.target.style.opacity = '1';
+                        }, index * 150);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            elements.forEach(element => {
+                element.style.transform = 'translateY(30px)';
+                element.style.opacity = '0';
+                element.style.transition = 'all 0.8s ease-out';
+                observer.observe(element);
+            });
+        }
+
+        // Breathing animation for the entire page
+        function addBreathingEffect() {
+            let breathingActive = false;
+            
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Space' && !breathingActive) {
+                    breathingActive = true;
+                    document.body.style.animation = 'breathe 4s ease-in-out infinite';
+                    
+                    setTimeout(() => {
+                        document.body.style.animation = '';
+                        breathingActive = false;
+                    }, 12000); // 3 breath cycles
+                }
+            });
+        }
+
+        // Add breathing keyframe
+        const breatheKeyframes = `
+            @keyframes breathe {
+                0%, 100% { 
+                    filter: brightness(1); 
+                    transform: scale(1);
+                }
+                50% { 
+                    filter: brightness(1.05); 
+                    transform: scale(1.005);
+                }
+            }
+        `;
+        
+        const breatheStyleSheet = document.createElement('style');
+        breatheStyleSheet.textContent = breatheKeyframes;
+        document.head.appendChild(breatheStyleSheet);
+
+        // Zen wisdom rotation
+        function rotateWisdom() {
+            const wisdoms = [
+                'The best birthday gift is the presence of loved ones and the peace within one\'s heart.',
+                'Another year older, another year wiser, another year more beautiful.',
+                'In the garden of life, birthdays are the flowers that mark our growth.',
+                'True celebration comes from gratitude for the present moment.',
+                'Each birthday is a new beginning, a chance to bloom anew.'
+            ];
+            
+            const quoteElement = document.querySelector('.zen-quote');
+            let currentIndex = 0;
+            
+            setInterval(() => {
+                quoteElement.style.opacity = '0';
+                setTimeout(() => {
+                    currentIndex = (currentIndex + 1) % wisdoms.length;
+                    quoteElement.textContent = wisdoms[currentIndex];
+                    quoteElement.style.opacity = '1';
+                }, 500);
+            }, 8000);
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', () => {
+            createZenLeaves();
+            addMeditationEffect();
+            addStoneInteraction();
+            addRakeInteraction();
+            animateBalanceElements();
+            addBreathingEffect();
+            rotateWisdom();
+            
+            // Gentle page load animation
+            const container = document.querySelector('.zen-container');
+            container.style.opacity = '0';
+            container.style.transform = 'translateY(20px)';
+            container.style.transition = 'all 1s ease-out';
+            
+            setTimeout(() => {
+                container.style.opacity = '1';
+                container.style.transform = 'translateY(0)';
+            }, 100);
+        });
+
+        // Mindful scrolling
+        let isScrolling = false;
+        window.addEventListener('scroll', () => {
+            if (!isScrolling) {
+                isScrolling = true;
+                document.body.style.filter = 'brightness(1.02)';
+                
+                setTimeout(() => {
+                    document.body.style.filter = 'brightness(1)';
+                    isScrolling = false;
+                }, 200);
+            }
+        });
+
+        // Easter egg: Konami code for cherry blossoms
+        let konamiCode = [];
+        const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
+        
+        document.addEventListener('keydown', (e) => {
+            konamiCode.push(e.code);
+            if (konamiCode.length > konamiSequence.length) {
+                konamiCode.shift();
+            }
+            
+            if (konamiCode.join(',') === konamiSequence.join(',')) {
+                // Rain cherry blossoms
+                for (let i = 0; i < 50; i++) {
+                    setTimeout(() => {
+                        const blossom = document.createElement('div');
+                        blossom.textContent = '🌸';
+                        blossom.style.position = 'fixed';
+                        blossom.style.left = Math.random() * 100 + '%';
+                        blossom.style.top = '-50px';
+                        blossom.style.fontSize = '24px';
+                        blossom.style.pointerEvents = 'none';
+                        blossom.style.zIndex = '1000';
+                        blossom.style.animation = 'gentleFloat 8s linear forwards';
+                        
+                        document.body.appendChild(blossom);
+                        
+                        setTimeout(() => {
+                            blossom.remove();
+                        }, 8000);
+                    }, i * 100);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

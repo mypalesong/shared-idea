@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>서초동 이그제큐티브 클럽 모임</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Optima', 'Noto Sans KR', sans-serif;
+            background: #1c1c1c;
+            color: #f7f7f7;
+            overflow-x: hidden;
+        }
+
+        .club-hero {
+            position: relative;
+            height: 100vh;
+            background: linear-gradient(135deg, 
+                rgba(28, 28, 28, 0.95) 0%,
+                rgba(45, 35, 30, 0.8) 30%,
+                rgba(139, 69, 19, 0.2) 60%,
+                rgba(28, 28, 28, 0.9) 100%
+            ), url('https://images.unsplash.com/photo-1582719471384-894fbb16e074?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2126&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .executive-atmosphere {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 40%, rgba(184, 134, 11, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(139, 69, 19, 0.1) 0%, transparent 40%);
+            animation: atmosphereShift 15s ease-in-out infinite;
+        }
+
+        @keyframes atmosphereShift {
+            0%, 100% { 
+                opacity: 0.7; 
+                transform: scale(1) rotate(0deg); 
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.05) rotate(1deg); 
+            }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 3;
+            position: relative;
+            max-width: 900px;
+            padding: 0 20px;
+        }
+
+        .club-title {
+            font-size: 5.5rem;
+            font-weight: 200;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, 
+                #b8860b 0%,
+                #daa520 25%,
+                #f7f7f7 50%,
+                #cd853f 75%,
+                #8b4513 100%
+            );
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 10px;
+            text-transform: uppercase;
+            animation: executiveGlow 6s ease-in-out infinite;
+            font-family: 'Times New Roman', 'Noto Serif KR', serif;
+        }
+
+        @keyframes executiveGlow {
+            0%, 100% { 
+                filter: brightness(1) drop-shadow(0 0 25px rgba(184, 134, 11, 0.4));
+                transform: translateY(0);
+            }
+            50% { 
+                filter: brightness(1.3) drop-shadow(0 0 40px rgba(218, 165, 32, 0.6));
+                transform: translateY(-3px);
+            }
+        }
+
+        .club-subtitle {
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin-bottom: 50px;
+            color: rgba(247, 247, 247, 0.9);
+            letter-spacing: 2px;
+            font-style: italic;
+        }
+
+        .membership-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .detail-panel {
+            background: linear-gradient(145deg, 
+                rgba(45, 35, 30, 0.9),
+                rgba(28, 28, 28, 0.95)
+            );
+            border: 2px solid rgba(184, 134, 11, 0.4);
+            border-radius: 12px;
+            padding: 25px;
+            backdrop-filter: blur(15px);
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .detail-panel::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, 
+                rgba(184, 134, 11, 0.3), 
+                transparent 30%, 
+                rgba(139, 69, 19, 0.25) 60%, 
+                transparent 90%, 
+                rgba(184, 134, 11, 0.3)
+            );
+            border-radius: 12px;
+            z-index: -1;
+            animation: membershipBorder 10s linear infinite;
+        }
+
+        @keyframes membershipBorder {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .detail-panel:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: rgba(184, 134, 11, 0.8);
+            box-shadow: 0 25px 50px rgba(184, 134, 11, 0.3);
+        }
+
+        .panel-label {
+            color: #b8860b;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .panel-value {
+            font-size: 1.4rem;
+            font-weight: 300;
+            line-height: 1.4;
+        }
+
+        .floating-prestige {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .prestige-element {
+            position: absolute;
+            font-size: 16px;
+            animation: floatPrestige 24s infinite linear;
+            opacity: 0.3;
+            color: #b8860b;
+        }
+
+        @keyframes floatPrestige {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .main-content {
+            padding: 120px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .content-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .content-title {
+            font-size: 3.8rem;
+            font-weight: 200;
+            color: #b8860b;
+            margin-bottom: 25px;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+        }
+
+        .content-tagline {
+            font-size: 1.3rem;
+            color: rgba(247, 247, 247, 0.8);
+            font-style: italic;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .member-reviews {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 50px;
+        }
+
+        .review-lounge {
+            background: linear-gradient(145deg, 
+                rgba(35, 30, 28, 0.95),
+                rgba(25, 22, 20, 0.9)
+            );
+            border: 3px solid rgba(184, 134, 11, 0.4);
+            border-radius: 18px;
+            padding: 45px;
+            position: relative;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .review-lounge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(184, 134, 11, 0.12), 
+                transparent
+            );
+            transition: left 0.8s ease;
+        }
+
+        .review-lounge:hover::before {
+            left: 100%;
+        }
+
+        .review-lounge:hover {
+            transform: translateY(-15px);
+            border-color: rgba(184, 134, 11, 0.8);
+            box-shadow: 0 30px 60px rgba(184, 134, 11, 0.25);
+        }
+
+        .member-name {
+            color: #b8860b;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .member-position {
+            color: #cd853f;
+            font-size: 1rem;
+            margin-bottom: 25px;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .member-review {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #f0f0f0;
+            text-align: justify;
+        }
+
+        .scroll-privilege {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(184, 134, 11, 0.8);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: privilegeFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes privilegeFloat {
+            0%, 100% { 
+                opacity: 0.7; 
+                transform: translateX(-50%) translateY(0); 
+            }
+            50% { 
+                opacity: 1; 
+                transform: translateX(-50%) translateY(-10px); 
+            }
+        }
+
+        @media (max-width: 768px) {
+            .club-title {
+                font-size: 3rem;
+                letter-spacing: 5px;
+            }
+            
+            .membership-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .member-reviews {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-prestige">
+        <div class="prestige-element" style="left: 5%; animation-delay: 0s;">🏆</div>
+        <div class="prestige-element" style="left: 15%; animation-delay: 4s;">💼</div>
+        <div class="prestige-element" style="left: 25%; animation-delay: 8s;">👔</div>
+        <div class="prestige-element" style="left: 35%; animation-delay: 12s;">🥃</div>
+        <div class="prestige-element" style="left: 45%; animation-delay: 16s;">⌚</div>
+        <div class="prestige-element" style="left: 55%; animation-delay: 20s;">🏅</div>
+        <div class="prestige-element" style="left: 65%; animation-delay: 2s;">💼</div>
+        <div class="prestige-element" style="left: 75%; animation-delay: 6s;">👔</div>
+        <div class="prestige-element" style="left: 85%; animation-delay: 10s;">🥃</div>
+        <div class="prestige-element" style="left: 95%; animation-delay: 14s;">🏆</div>
+    </div>
+
+    <section class="club-hero">
+        <div class="executive-atmosphere"></div>
+        
+        <div class="hero-content">
+            <h1 class="club-title">EXECUTIVE</h1>
+            <p class="club-subtitle">서초동 이그제큐티브 클럽 40대 리더들의 네트워킹</p>
+            
+            <div class="membership-details">
+                <div class="detail-panel">
+                    <div class="panel-label">Network Date</div>
+                    <div class="panel-value">2025년 2월 25일 화요일<br>오후 6시 집결</div>
+                </div>
+                <div class="detail-panel">
+                    <div class="panel-label">Venue</div>
+                    <div class="panel-value">서초동 럭셔리 클럽<br>VIP 라운지</div>
+                </div>
+                <div class="detail-panel">
+                    <div class="panel-label">Membership Fee</div>
+                    <div class="panel-value">1인당 30만원<br>(프리미엄 코스 + 위스키)</div>
+                </div>
+                <div class="detail-panel">
+                    <div class="panel-label">Executives</div>
+                    <div class="panel-value">총 6명<br>업계 리더들</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scroll-privilege">
+            ⬇ 멤버 후기 보기 ⬇
+        </div>
+    </section>
+
+    <section class="main-content">
+        <div class="content-header">
+            <h2 class="content-title">Member Reviews</h2>
+            <p class="content-tagline">업계 최고 리더들의 특급 네트워킹 후기</p>
+        </div>
+        
+        <div class="member-reviews">
+            <div class="review-lounge">
+                <div class="member-name">김회장</div>
+                <div class="member-position">대기업 계열사 회장</div>
+                <p class="member-review">
+                    이런 고급스러운 분위기에서 동년배 경영진들과 만나니까 정말 편안하더라고요! 평소에는 업무적인 만남이 대부분인데, 
+                    오늘은 진짜 개인적인 이야기도 나누고... 특히 25년 위스키 한 잔 하면서 나누는 경영 철학 얘기가 정말 값졌어요. 
+                    "이런 네트워킹이야말로 진짜 자산이죠" 다음에도 꼭 참석하겠습니다! 🥃
+                </p>
+            </div>
+            
+            <div class="review-lounge">
+                <div class="member-name">박사장</div>
+                <div class="member-position">IT 기업 대표이사</div>
+                <p class="member-review">
+                    요즘 스타트업들 만나다가 이런 클래식한 분위기의 모임에 오니까 마음이 차분해지더라고요. 
+                    젊은 직원들과는 나눌 수 없는, 40대만의 깊이 있는 대화가 가능했어요. 
+                    "역시 같은 세대끼리 통하는 게 있네요" 비즈니스 얘기도 좋지만 인생 선배들의 조언이 더 값졌습니다 💼
+                </p>
+            </div>
+            
+            <div class="review-lounge">
+                <div class="member-name">최부회장</div>
+                <div class="member-position">금융지주 부회장</div>
+                <p class="member-review">
+                    금융권에서 일하다 보니까 늘 딱딱한 분위기에만 익숙했는데, 이런 여유로운 모임이 정말 새로웠어요! 
+                    각자 다른 업계에서 쌓은 경험들을 듣는 재미가 쏠쏠하더라고요. 특히 해외 출장 에피소드들이... ㅋㅋ 
+                    "40대의 품격이란 이런 거구나" 싶었어요. 정말 멋있는 분들과 함께해서 영광이었습니다! 🏆
+                </p>
+            </div>
+            
+            <div class="review-lounge">
+                <div class="member-name">정전무</div>
+                <div class="member-position">제조업 전무이사</div>
+                <p class="member-review">
+                    공장에서 일하다가 이런 고급 라운지에 오니까 완전 다른 세상 같더라고요! 평소 작업복만 입다가... 
+                    오랜만에 정장 빼입고 나와서 그런지 기분도 새로웠어요. 다른 분들의 세련된 매너를 보면서 많이 배웠습니다. 
+                    "제조업도 이제 이런 품격을 갖춰야 하는구나" 회사 접대 문화도 업그레이드해야겠네요! ⌚
+                </p>
+            </div>
+            
+            <div class="review-lounge">
+                <div class="member-name">이이사</div>
+                <div class="member-position">유통업체 상무이사</div>
+                <p class="member-review">
+                    유통업 특성상 늘 바쁘게 뛰어다니는데, 이렇게 여유롭게 앉아서 대화할 시간이 정말 소중했어요! 
+                    각자의 성공 스토리와 실패 경험들을 듣는 게 정말 의미 있었죠. 특히 위기 극복 방법들이... 
+                    "어른이 되어서도 이렇게 배울 게 많구나" 정말 값진 시간이었습니다. 인생 선배님들 감사해요! 👔
+                </p>
+            </div>
+            
+            <div class="review-lounge">
+                <div class="member-name">한사장</div>
+                <div class="member-position">건설회사 대표</div>
+                <p class="member-review">
+                    건설현장에서만 일하다가 이런 세련된 공간에 와보니까... 정말 다른 세계더라고요! 
+                    평소 거친 환경에만 있다가 이런 우아한 분위기를 접하니 신선했어요. 다른 분들의 품격 있는 대화 방식도 인상적이었고요. 
+                    "40대 남자도 이렇게 멋있어질 수 있구나" 집에 가서 아내한테 자랑해야겠어요! 🏅
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Executive parallax effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.club-hero');
+            hero.style.transform = `translateY(${scrolled * 0.4}px)`;
+            
+            const atmosphere = document.querySelector('.executive-atmosphere');
+            atmosphere.style.transform = `translateY(${scrolled * 0.2}px) scale(${1 + scrolled * 0.0001})`;
+        });
+
+        // Executive intersection observer
+        const executiveObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0) scale(1)';
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        document.querySelectorAll('.review-lounge').forEach((lounge, index) => {
+            lounge.style.opacity = '0';
+            lounge.style.transform = 'translateY(60px) scale(0.95)';
+            lounge.style.transition = `all 1.2s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.12}s`;
+            executiveObserver.observe(lounge);
+        });
+
+        // Prestigious background movement
+        let prestigeOffset = 0;
+        setInterval(() => {
+            prestigeOffset += 0.15;
+            const hero = document.querySelector('.club-hero');
+            hero.style.backgroundPositionX = prestigeOffset + 'px';
+        }, 180);
+
+        // Prestige element interaction
+        document.addEventListener('mousemove', (e) => {
+            const prestige = document.querySelectorAll('.prestige-element');
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            prestige.forEach((element, index) => {
+                const speed = (index + 1) * 0.025;
+                const xMove = (mouseX - 0.5) * speed * 35;
+                const yMove = (mouseY - 0.5) * speed * 35;
+                
+                element.style.transform += ` translate(${xMove}px, ${yMove}px)`;
+            });
+        });
+    </script>
+</body>
+</html>

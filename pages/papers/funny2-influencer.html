@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📸 인플루언서 모임 VLOG 📸</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* 인스타 스타일 헤더 */
+        .insta-header {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-bg {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            background-image: url('https://images.unsplash.com/photo-1551218808-94e220e084d2?w=1200&h=1600&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.5) saturate(1.5);
+            animation: storyZoom 20s ease-in-out infinite alternate;
+        }
+
+        .gradient-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg,
+                rgba(102, 126, 234, 0.8) 0%,
+                rgba(118, 75, 162, 0.8) 25%,
+                rgba(255, 94, 77, 0.8) 50%,
+                rgba(255, 154, 0, 0.8) 75%,
+                rgba(102, 126, 234, 0.8) 100%);
+            background-size: 300% 300%;
+            animation: gradientMove 6s ease infinite;
+        }
+
+        .story-container {
+            position: relative;
+            z-index: 2;
+            max-width: 400px;
+            width: 90%;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 40px 30px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-pic {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            border: 3px solid #fff;
+        }
+
+        .profile-info {
+            flex: 1;
+            text-align: left;
+        }
+
+        .profile-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .profile-handle {
+            font-size: 12px;
+            opacity: 0.8;
+            color: #fff;
+        }
+
+        .story-content {
+            margin-bottom: 30px;
+        }
+
+        .story-title {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .story-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .hashtags {
+            font-size: 14px;
+            color: #87ceeb;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .event-quick-info {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .quick-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .quick-info-item {
+            text-align: center;
+        }
+
+        .quick-icon {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        /* 포스트 피드 스타일 */
+        .feed-section {
+            background: #fafafa;
+            color: #333;
+            padding: 80px 0;
+        }
+
+        .feed-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .feed-post {
+            background: #fff;
+            border-radius: 25px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid #e1e8ed;
+        }
+
+        .post-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .post-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .post-user-info {
+            flex: 1;
+        }
+
+        .post-username {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 3px;
+        }
+
+        .post-time {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .post-content {
+            padding: 20px;
+        }
+
+        .post-image {
+            width: 100%;
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .post-image:hover {
+            transform: scale(1.02);
+        }
+
+        .post-text {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .post-hashtags {
+            font-size: 14px;
+            color: #1DA1F2;
+            margin-bottom: 20px;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .stat-item:hover {
+            color: #667eea;
+        }
+
+        /* 스토리 하이라이트 */
+        .stories-section {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stories-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&h=1000&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.2) blur(2px);
+            animation: storiesDrift 30s ease-in-out infinite;
+        }
+
+        .stories-container {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        .stories-title {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 50px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .story-highlights {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+
+        .story-highlight {
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .story-highlight:hover {
+            transform: scale(1.1);
+        }
+
+        .highlight-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            border: 4px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .highlight-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .stories-recap {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .recap-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .recap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .recap-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .recap-emoji {
+            font-size: 40px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .recap-text {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* CTA 섹션 */
+        .cta-section {
+            background: #fff;
+            color: #333;
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .cta-title {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cta-subtitle {
+            font-size: 18px;
+            margin-bottom: 40px;
+            color: #666;
+        }
+
+        .next-event-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 25px;
+            padding: 50px 40px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .next-event-title {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 30px;
+        }
+
+        .event-details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .event-detail {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .detail-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .follow-button {
+            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .follow-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 107, 157, 0.4);
+        }
+
+        @keyframes storyZoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes storiesDrift {
+            0%, 100% { transform: translateX(0) scale(1.1); }
+            50% { transform: translateX(-30px) scale(1.15); }
+        }
+
+        @media (max-width: 768px) {
+            .story-highlights {
+                gap: 15px;
+            }
+            
+            .event-details-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .recap-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 인스타 스토리 스타일 헤더 -->
+    <section class="insta-header">
+        <div class="story-bg"></div>
+        <div class="gradient-overlay"></div>
+        <div class="story-container">
+            <div class="profile-section">
+                <div class="profile-pic">👥</div>
+                <div class="profile-info">
+                    <div class="profile-name">강남_모임_대장</div>
+                    <div class="profile-handle">@gangnam_crew_40s</div>
+                </div>
+            </div>
+            
+            <div class="story-content">
+                <h1 class="story-title">오늘 모임 레전드였다 🔥</h1>
+                <p class="story-subtitle">40대도 이렇게 재미있게 논다구!</p>
+                <div class="hashtags">
+                    #40대모임 #강남맛집 #인생샷 #우정스타그램 
+                    #모임추천 #강남핫플 #어른놀이
+                </div>
+            </div>
+
+            <div class="event-quick-info">
+                <div class="quick-info-grid">
+                    <div class="quick-info-item">
+                        <span class="quick-icon">📅</span>
+                        <div>12월 15일 (금)</div>
+                    </div>
+                    <div class="quick-info-item">
+                        <span class="quick-icon">👥</span>
+                        <div>총 6명 참석</div>
+                    </div>
+                    <div class="quick-info-item">
+                        <span class="quick-icon">📍</span>
+                        <div>강남역 이탈리안</div>
+                    </div>
+                    <div class="quick-info-item">
+                        <span class="quick-icon">💰</span>
+                        <div>1인 8만원</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 피드 포스트들 -->
+    <section class="feed-section">
+        <div class="feed-container">
+            <div class="feed-post">
+                <div class="post-header">
+                    <div class="post-avatar">김</div>
+                    <div class="post-user-info">
+                        <div class="post-username">김민수_전략맨</div>
+                        <div class="post-time">2시간 전</div>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <div class="post-image" style="background-image: url('https://images.unsplash.com/photo-1544148103-0773bf10d330?w=600&h=300&fit=crop');"></div>
+                    <div class="post-text">
+                        오늘 모임에서 진짜 배꼽잡고 웃었다 ㅋㅋㅋ 특히 현우형 파스타 소스 사건은 레전드... 
+                        40대 되니까 이런 소소한 재미가 더 소중하네요 👨‍💼✨
+                    </div>
+                    <div class="post-hashtags">#회사탈출 #모임후기 #웃음치료 #40대라이프</div>
+                    <div class="post-stats">
+                        <div class="stat-item">👍 142</div>
+                        <div class="stat-item">💬 23</div>
+                        <div class="stat-item">📤 8</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feed-post">
+                <div class="post-header">
+                    <div class="post-avatar">이</div>
+                    <div class="post-user-info">
+                        <div class="post-username">지영_디자이너</div>
+                        <div class="post-time">1시간 전</div>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <div class="post-image" style="background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=300&fit=crop');"></div>
+                    <div class="post-text">
+                        인생샷 대량 생산! 📸 오늘 분위기 진짜 좋았어요~ 
+                        태훈님이 음식 설명해주시는거 들으니까 미슐랭 가이드북 보는 기분? 
+                        다음엔 더 예쁘게 찍어야지! 💄✨
+                    </div>
+                    <div class="post-hashtags">#인생샷 #분위기맛집 #인스타그래머블 #셀카장인</div>
+                    <div class="post-stats">
+                        <div class="stat-item">👍 89</div>
+                        <div class="stat-item">💬 31</div>
+                        <div class="stat-item">📤 12</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feed-post">
+                <div class="post-header">
+                    <div class="post-avatar">박</div>
+                    <div class="post-user-info">
+                        <div class="post-username">현우_개발자</div>
+                        <div class="post-time">30분 전</div>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <div class="post-image" style="background-image: url('https://images.unsplash.com/photo-1551218808-94e220e084d2?w=600&h=300&fit=crop');"></div>
+                    <div class="post-text">
+                        파스타 소스 사건의 당사자입니다... 😅 
+                        화이트 셔츠에 토마토 소스는 진짜 치명적이네요 ㅠㅠ 
+                        그래도 다들 같이 웃어줘서 고마웠어요! 다음엔 검은옷 입고 갈게요 👨‍💻
+                    </div>
+                    <div class="post-hashtags">#소스사건 #개발자일상 #실수왕 #다음엔조심</div>
+                    <div class="post-stats">
+                        <div class="stat-item">👍 156</div>
+                        <div class="stat-item">💬 47</div>
+                        <div class="stat-item">📤 15</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 스토리 하이라이트 -->
+    <section class="stories-section">
+        <div class="stories-bg"></div>
+        <div class="stories-container">
+            <h2 class="stories-title">📱 모임 하이라이트 스토리 📱</h2>
+            
+            <div class="story-highlights">
+                <div class="story-highlight">
+                    <div class="highlight-circle">🍝</div>
+                    <div class="highlight-label">음식</div>
+                </div>
+                <div class="story-highlight">
+                    <div class="highlight-circle">😂</div>
+                    <div class="highlight-label">웃긴순간</div>
+                </div>
+                <div class="story-highlight">
+                    <div class="highlight-circle">📸</div>
+                    <div class="highlight-label">인생샷</div>
+                </div>
+                <div class="story-highlight">
+                    <div class="highlight-circle">🍷</div>
+                    <div class="highlight-label">와인</div>
+                </div>
+                <div class="story-highlight">
+                    <div class="highlight-circle">💬</div>
+                    <div class="highlight-label">수다</div>
+                </div>
+            </div>
+
+            <div class="stories-recap">
+                <h3 class="recap-title">🎬 오늘의 베스트 모먼트</h3>
+                <div class="recap-grid">
+                    <div class="recap-item">
+                        <span class="recap-emoji">🥂</span>
+                        <div class="recap-text">
+                            첫 건배할 때 다들 진짜 어색했는데<br>
+                            30분 후엔 완전 친구 됨 ㅋㅋ
+                        </div>
+                    </div>
+                    <div class="recap-item">
+                        <span class="recap-emoji">👨‍💻</span>
+                        <div class="recap-text">
+                            현우님 소스 튀기는 순간<br>
+                            시간이 멈춘 것 같았음...
+                        </div>
+                    </div>
+                    <div class="recap-item">
+                        <span class="recap-emoji">📱</span>
+                        <div class="recap-text">
+                            인증샷 찍으려고 다같이 폰 든 모습<br>
+                            완전 MZ세대 따라쟁이들 ㅋㅋ
+                        </div>
+                    </div>
+                    <div class="recap-item">
+                        <span class="recap-emoji">🍷</span>
+                        <div class="recap-text">
+                            와인 마시고 진짜 솔직한 이야기들<br>
+                            40대의 깊이 있는 대화 최고!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA 섹션 -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2 class="cta-title">📢 다음 모임 공지! 📢</h2>
+            <p class="cta-subtitle">이번엔 더 재미있게, 더 맛있게 만나요!</p>
+            
+            <div class="next-event-card">
+                <h3 class="next-event-title">🎉 신년 모임 2025 🎉</h3>
+                <div class="event-details-grid">
+                    <div class="event-detail">
+                        <span class="detail-icon">📅</span>
+                        <div class="detail-label">날짜 & 시간</div>
+                        <div class="detail-value">1월 19일 (일) 오후 6시</div>
+                    </div>
+                    <div class="event-detail">
+                        <span class="detail-icon">📍</span>
+                        <div class="detail-label">장소</div>
+                        <div class="detail-value">청담동 스테이크 하우스</div>
+                    </div>
+                    <div class="event-detail">
+                        <span class="detail-icon">💰</span>
+                        <div class="detail-label">회비</div>
+                        <div class="detail-value">1인당 12만원</div>
+                    </div>
+                    <div class="event-detail">
+                        <span class="detail-icon">🎯</span>
+                        <div class="detail-label">특별 이벤트</div>
+                        <div class="detail-value">2025 목표 공유회</div>
+                    </div>
+                </div>
+                <p style="margin-bottom: 30px; opacity: 0.9;">
+                    ⚠️ 이번엔 현우님 앞치마 지참! ⚠️<br>
+                    📸 인스타용 소품도 준비해올게요!
+                </p>
+            </div>
+            
+            <button class="follow-button" onclick="alert('단체 카톡방 링크로 이동합니다! 🎉')">
+                팔로우하고 참석하기! 💕
+            </button>
+        </div>
+    </section>
+
+    <script>
+        // 스크롤 애니메이션
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const fadeObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 150);
+                }
+            });
+        }, observerOptions);
+
+        // 포스트 카드 애니메이션
+        document.querySelectorAll('.feed-post').forEach((post, index) => {
+            post.style.opacity = '0';
+            post.style.transform = 'translateY(30px)';
+            post.style.transition = 'all 0.8s ease-out';
+            fadeObserver.observe(post);
+        });
+
+        // 하이라이트 호버 효과
+        document.querySelectorAll('.story-highlight').forEach(highlight => {
+            highlight.addEventListener('click', () => {
+                alert('스토리 준비중! 곧 업데이트 예정 📱');
+            });
+        });
+
+        // 좋아요 버튼 클릭 효과
+        document.querySelectorAll('.stat-item').forEach(item => {
+            if (item.textContent.includes('👍')) {
+                item.addEventListener('click', function() {
+                    const currentLikes = parseInt(this.textContent.match(/\d+/)[0]);
+                    const newLikes = currentLikes + 1;
+                    this.innerHTML = `👍 ${newLikes}`;
+                    
+                    // 하트 이펙트
+                    const heart = document.createElement('div');
+                    heart.innerHTML = '❤️';
+                    heart.style.position = 'fixed';
+                    heart.style.left = event.clientX + 'px';
+                    heart.style.top = event.clientY + 'px';
+                    heart.style.fontSize = '20px';
+                    heart.style.pointerEvents = 'none';
+                    heart.style.zIndex = '9999';
+                    heart.style.animation = 'heartFloat 1s ease-out forwards';
+                    
+                    document.body.appendChild(heart);
+                    
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 1000);
+                });
+            }
+        });
+
+        // CSS 애니메이션 추가
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes heartFloat {
+                0% {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+                100% {
+                    opacity: 0;
+                    transform: translateY(-50px) scale(1.5);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 자동 이모지 생성
+        setInterval(() => {
+            const emojis = ['📸', '💕', '✨', '🎉', '👍', '😍', '🔥', '💫'];
+            const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            const floatingEmoji = document.createElement('div');
+            floatingEmoji.textContent = randomEmoji;
+            floatingEmoji.style.position = 'fixed';
+            floatingEmoji.style.fontSize = '25px';
+            floatingEmoji.style.left = Math.random() * window.innerWidth + 'px';
+            floatingEmoji.style.top = window.innerHeight + 'px';
+            floatingEmoji.style.pointerEvents = 'none';
+            floatingEmoji.style.zIndex = '1000';
+            floatingEmoji.style.animation = 'floatUp 4s ease-out forwards';
+            
+            document.body.appendChild(floatingEmoji);
+            
+            setTimeout(() => {
+                floatingEmoji.remove();
+            }, 4000);
+        }, 3000);
+
+        // 플로팅 애니메이션
+        const floatStyle = document.createElement('style');
+        floatStyle.textContent = `
+            @keyframes floatUp {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(-${window.innerHeight + 100}px) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(floatStyle);
+    </script>
+</body>
+</html>

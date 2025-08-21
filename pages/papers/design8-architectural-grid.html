@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architectural Gathering - Gangnam Structure</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #0a0a0a;
+            --secondary-color: #f5f5f5;
+            --accent-color: #2563eb;
+            --grid-color: #e5e5e5;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--secondary-color);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Grid System */
+        .grid-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            animation: gridShift 20s ease-in-out infinite alternate;
+        }
+
+        .architectural-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: rgba(245, 245, 245, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid var(--primary-color);
+            z-index: 1000;
+        }
+
+        .header-grid {
+            height: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            align-items: center;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .header-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-section:nth-child(2) {
+            justify-content: center;
+        }
+
+        .header-section:nth-child(3) {
+            justify-content: flex-end;
+        }
+
+        .project-title {
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: -0.5px;
+            color: var(--primary-color);
+        }
+
+        .coordinates {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            margin-top: 80px;
+            min-height: calc(100vh - 80px);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: var(--secondary-color);
+        }
+
+        .section-a,
+        .section-b {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-a {
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 100px 60px;
+        }
+
+        .section-b {
+            background: var(--secondary-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Hero Image with Architectural Movement */
+        .hero-image-container {
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background-image: url('https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1200&h=1600&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.8) contrast(1.1);
+            animation: architecturalMove 30s ease-in-out infinite;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 500px;
+        }
+
+        .hero-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent-color);
+            margin-bottom: 30px;
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .hero-label::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 30px;
+            height: 2px;
+            background: var(--accent-color);
+            transform: translateY(-50%);
+        }
+
+        .hero-title {
+            font-size: clamp(42px, 6vw, 72px);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 40px;
+            letter-spacing: -2px;
+        }
+
+        .hero-description {
+            font-size: 18px;
+            font-weight: 300;
+            line-height: 1.6;
+            color: #cccccc;
+            margin-bottom: 60px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .metric-item {
+            padding: 20px 0;
+            border-top: 1px solid #333333;
+        }
+
+        .metric-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #999999;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: rgba(245, 245, 245, 0.98);
+            backdrop-filter: blur(20px);
+            display: grid;
+            grid-template-rows: auto 1fr;
+            padding: 40px 60px;
+        }
+
+        .content-header {
+            margin-bottom: 40px;
+        }
+
+        .content-title {
+            font-size: 36px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .content-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Participants Grid */
+        .participants-section {
+            background: white;
+            margin-top: 80px;
+            padding: 100px 0;
+        }
+
+        .participants-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .participants-header {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 100px;
+            margin-bottom: 80px;
+        }
+
+        .section-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 2px;
+        }
+
+        .section-headline {
+            font-size: 48px;
+            font-weight: 600;
+            line-height: 1.2;
+            color: var(--primary-color);
+        }
+
+        .participants-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            background: var(--grid-color);
+        }
+
+        .participant-card {
+            background: white;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 300px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .participant-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--accent-color);
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+        }
+
+        .participant-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+        }
+
+        .participant-card:hover::before {
+            transform: translateY(0);
+        }
+
+        .participant-card:hover .participant-content {
+            color: white;
+        }
+
+        .participant-content {
+            position: relative;
+            z-index: 2;
+            transition: color 0.4s ease;
+        }
+
+        .participant-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .participant-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .participant-role {
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .participant-description {
+            font-size: 16px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        /* Location Section */
+        .location-section {
+            background: var(--primary-color);
+            color: white;
+            padding: 120px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .location-bg {
+            position: absolute;
+            top: -30%;
+            left: -30%;
+            width: 160%;
+            height: 160%;
+            background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&h=1200&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.2) contrast(1.3);
+            animation: locationRotate 60s linear infinite;
+        }
+
+        .location-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 40px;
+        }
+
+        .location-coordinates {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            letter-spacing: 3px;
+            color: var(--accent-color);
+            margin-bottom: 40px;
+        }
+
+        .location-title {
+            font-size: 64px;
+            font-weight: 700;
+            letter-spacing: -2px;
+            margin-bottom: 30px;
+        }
+
+        .location-description {
+            font-size: 20px;
+            font-weight: 300;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #cccccc;
+        }
+
+        @keyframes gridShift {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(40px, 40px); }
+        }
+
+        @keyframes architecturalMove {
+            0%, 100% { transform: scale(1.1) rotate(0deg) translate(0, 0); }
+            25% { transform: scale(1.15) rotate(1deg) translate(-2%, -1%); }
+            50% { transform: scale(1.1) rotate(0deg) translate(1%, 2%); }
+            75% { transform: scale(1.13) rotate(-1deg) translate(-1%, -2%); }
+        }
+
+        @keyframes locationRotate {
+            0% { transform: rotate(0deg) scale(1.2); }
+            100% { transform: rotate(360deg) scale(1.2); }
+        }
+
+        @media (max-width: 768px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .participants-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .participants-header {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .section-a {
+                padding: 60px 30px;
+            }
+            
+            .content-grid {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-container"></div>
+
+    <header class="architectural-header">
+        <div class="header-grid">
+            <div class="header-section">
+                <div class="project-title">EXECUTIVE.GATHERING</div>
+            </div>
+            <div class="header-section">
+                <div class="coordinates">37.4979°N 127.0276°E</div>
+            </div>
+            <div class="header-section">
+                <div class="coordinates">2024.12.15</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-layout">
+        <section class="section-a">
+            <div class="hero-content">
+                <div class="hero-label">PROJECT: SYNTHESIS</div>
+                <h1 class="hero-title">Architectural Minds</h1>
+                <p class="hero-description">
+                    Six distinguished professionals converge in a carefully structured environment, 
+                    where the precision of architectural thinking meets the fluidity of human connection.
+                </p>
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <span class="metric-number">06</span>
+                        <span class="metric-label">Participants</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-number">04</span>
+                        <span class="metric-label">Hours</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-number">∞</span>
+                        <span class="metric-label">Connections</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-b">
+            <div class="hero-image-container"></div>
+            <div class="content-grid">
+                <div class="content-header">
+                    <h2 class="content-title">Structure Meets Spontaneity</h2>
+                    <p class="content-subtitle">
+                        In the geometric precision of Gangnam's urban landscape, this gathering 
+                        represents a calculated intersection of diverse professional perspectives, 
+                        creating new frameworks for collaboration and innovation.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <section class="participants-section">
+        <div class="participants-container">
+            <div class="participants-header">
+                <div class="section-number">02 / PARTICIPANTS</div>
+                <h2 class="section-headline">The Architectural Elements of Our Gathering</h2>
+            </div>
+            
+            <div class="participants-grid">
+                <div class="participant-card">
+                    <div class="participant-content">
+                        <div class="participant-number">01</div>
+                        <h3 class="participant-name">김민수</h3>
+                        <p class="participant-role">Strategic Architect</p>
+                        <p class="participant-description">
+                            Designs organizational frameworks that bridge vision and execution, 
+                            creating sustainable growth structures.
+                        </p>
+                    </div>
+                </div>
+                <div class="participant-card">
+                    <div class="participant-content">
+                        <div class="participant-number">02</div>
+                        <h3 class="participant-name">이지영</h3>
+                        <p class="participant-role">Creative Systems Designer</p>
+                        <p class="participant-description">
+                            Constructs visual and experiential frameworks that transform 
+                            abstract concepts into tangible brand experiences.
+                        </p>
+                    </div>
+                </div>
+                <div class="participant-card">
+                    <div class="participant-content">
+                        <div class="participant-number">03</div>
+                        <h3 class="participant-name">박현우</h3>
+                        <p class="participant-role">Technology Infrastructure Lead</p>
+                        <p class="participant-description">
+                            Builds scalable digital architectures that support innovation 
+                            and drive technological advancement.
+                        </p>
+                    </div>
+                </div>
+                <div class="participant-card">
+                    <div class="participant-content">
+                        <div class="participant-number">04</div>
+                        <h3 class="participant-name">정수빈</h3>
+                        <p class="participant-role">Learning Architecture Specialist</p>
+                        <p class="participant-description">
+                            Develops educational frameworks that optimize knowledge transfer 
+                            and human potential realization.
+                        </p>
+                    </div>
+                </div>
+                <div class="participant-card">
+                    <div class="participant-content">
+                        <div class="participant-number">05</div>
+                        <h3 class="participant-name">최태훈</h3>
+                        <p class="participant-role">Culinary Experience Architect</p>
+                        <p class="participant-description">
+                            Orchestrates multisensory dining experiences that create 
+                            memorable connections through food and atmosphere.
+                        </p>
+                    </div>
+                </div>
+                <div class="participant-card">
+                    <div class="participant-content">
+                        <div class="participant-number">06</div>
+                        <h3 class="participant-name">김예린</h3>
+                        <p class="participant-role">Health Systems Engineer</p>
+                        <p class="participant-description">
+                            Designs integrated healthcare solutions that optimize human 
+                            wellness through systematic medical approaches.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="location-section">
+        <div class="location-bg"></div>
+        <div class="location-content">
+            <div class="location-coordinates">GANGNAM-GU, SEOUL</div>
+            <h2 class="location-title">COORDINATES</h2>
+            <p class="location-description">
+                In the calculated precision of Seoul's business district, this gathering represents 
+                a deliberate convergence of professional excellence, where structured thinking 
+                meets organic conversation in perfect architectural harmony.
+            </p>
+        </div>
+    </section>
+
+    <script>
+        // Intersection Observer for participant cards
+        const participantObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 100);
+                }
+            });
+        }, {
+            threshold: 0.3
+        });
+
+        // Initialize participant cards
+        document.querySelectorAll('.participant-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(60px)';
+            card.style.transition = 'all 0.8s cubic-bezier(0.23, 1, 0.320, 1)';
+            participantObserver.observe(card);
+        });
+
+        // Parallax effect for hero image
+        let ticking = false;
+        
+        function updateParallax() {
+            const scrolled = window.pageYOffset;
+            const heroImage = document.querySelector('.hero-image-container');
+            
+            if (heroImage) {
+                const rate = scrolled * -0.3;
+                heroImage.style.transform = `translateY(${rate}px) scale(1.1)`;
+            }
+            
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateParallax);
+                ticking = true;
+            }
+        });
+
+        // Grid animation sync
+        let gridOffset = 0;
+        setInterval(() => {
+            gridOffset = gridOffset >= 40 ? 0 : gridOffset + 1;
+            document.querySelector('.grid-container').style.backgroundPosition = `${gridOffset}px ${gridOffset}px`;
+        }, 100);
+    </script>
+</body>
+</html>

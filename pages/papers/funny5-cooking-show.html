@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👨‍🍳 백종원의 모임요리 👨‍🍳</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #ff9a56 0%, #ff6b6b 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* 쿠킹쇼 헤더 */
+        .cooking-header {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kitchen-bg {
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background-image: url('https://images.unsplash.com/photo-1556909114-4d0efac4d6b5?w=1600&h=1200&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.3) contrast(1.3) sepia(0.3);
+            animation: kitchenSteam 25s ease-in-out infinite;
+        }
+
+        .chef-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(255, 154, 86, 0.8) 0%, 
+                rgba(255, 107, 107, 0.6) 50%, 
+                rgba(255, 154, 86, 0.8) 100%);
+        }
+
+        .show-container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            padding: 0 20px;
+        }
+
+        .chef-badge {
+            background: rgba(255, 255, 255, 0.95);
+            color: #ff6b6b;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            display: inline-block;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            animation: chefBadgeBounce 3s ease-in-out infinite;
+        }
+
+        .show-title {
+            font-size: clamp(36px, 8vw, 72px);
+            font-weight: 900;
+            margin-bottom: 25px;
+            text-shadow: 3px 3px 15px rgba(0, 0, 0, 0.7);
+            animation: titleSizzle 4s ease-in-out infinite;
+        }
+
+        .show-subtitle {
+            font-size: clamp(18px, 4vw, 24px);
+            margin-bottom: 40px;
+            opacity: 0.95;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .recipe-card {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            border: 3px solid #ff6b6b;
+        }
+
+        .recipe-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .recipe-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            font-size: 16px;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ff6b6b;
+        }
+
+        /* 요리 과정 */
+        .cooking-process {
+            background: #fff;
+            color: #333;
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .process-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&h=1000&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.1) blur(2px);
+            animation: processFlow 30s ease-in-out infinite;
+        }
+
+        .process-container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .process-title {
+            text-align: center;
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 60px;
+            color: #ff6b6b;
+        }
+
+        .cooking-steps {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+
+        .cooking-step {
+            background: #fff;
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            border-left: 8px solid #ff6b6b;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cooking-step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 107, 0.1), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .cooking-step:hover {
+            transform: translateX(10px);
+            box-shadow: 0 20px 50px rgba(255, 107, 107, 0.2);
+        }
+
+        .cooking-step:hover::before {
+            left: 100%;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #ff9a56, #ff6b6b);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            margin-right: 20px;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .step-time {
+            background: #fff3cd;
+            color: #856404;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        .step-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            flex: 1;
+        }
+
+        .step-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .step-description {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #555;
+        }
+
+        .chef-tip {
+            background: #fff8e1;
+            border: 2px solid #ffb74d;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .tip-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .tip-text {
+            font-size: 14px;
+            color: #e65100;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        /* 참가자 평가 */
+        .participant-reviews {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .review-bg {
+            position: absolute;
+            top: -30%;
+            left: -30%;
+            width: 160%;
+            height: 160%;
+            background-image: url('https://images.unsplash.com/photo-1551218808-94e220e084d2?w=1600&h=1000&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.2) hue-rotate(200deg);
+            animation: reviewSwirl 40s linear infinite;
+        }
+
+        .review-container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .review-title {
+            text-align: center;
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 60px;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .review-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .review-card {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 3px solid transparent;
+            position: relative;
+        }
+
+        .review-card:hover {
+            transform: translateY(-20px) scale(1.05);
+            border-color: #ff6b6b;
+            box-shadow: 0 25px 60px rgba(255, 107, 107, 0.3);
+        }
+
+        .reviewer-chef-hat {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ff9a56, #ff6b6b);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 20px;
+            border: 4px solid #fff;
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .reviewer-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .reviewer-role {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .food-rating {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .review-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #555;
+            font-style: italic;
+        }
+
+        /* 다음 요리 예고 */
+        .next-cooking {
+            background: #ff6b6b;
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .next-bg {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background-image: url('https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=1600&h=1000&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.2) contrast(1.5);
+            animation: nextRotate 50s linear infinite;
+        }
+
+        .next-container {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .next-title {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 30px;
+            text-shadow: 3px 3px 15px rgba(0, 0, 0, 0.8);
+        }
+
+        .next-episode-card {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            border-radius: 25px;
+            padding: 50px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            margin-bottom: 40px;
+        }
+
+        .episode-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ff6b6b;
+            margin-bottom: 30px;
+        }
+
+        .episode-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .episode-detail {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .detail-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .detail-title {
+            font-size: 12px;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .detail-content {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ff6b6b;
+        }
+
+        .chef-promise {
+            background: #fff3e0;
+            border: 2px solid #ffb74d;
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 16px;
+            color: #e65100;
+            font-weight: 500;
+            margin-bottom: 30px;
+        }
+
+        .subscribe-button {
+            background: linear-gradient(45deg, #ff9a56, #ff6b6b);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+            animation: buttonSizzle 4s ease-in-out infinite;
+        }
+
+        .subscribe-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.5);
+        }
+
+        @keyframes kitchenSteam {
+            0%, 100% { transform: scale(1.1) translate(0, 0); }
+            25% { transform: scale(1.15) translate(-1%, -2%); }
+            50% { transform: scale(1.1) translate(1%, 1%); }
+            75% { transform: scale(1.13) translate(-2%, -1%); }
+        }
+
+        @keyframes chefBadgeBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes titleSizzle {
+            0%, 100% { text-shadow: 3px 3px 15px rgba(0, 0, 0, 0.7); }
+            50% { text-shadow: 3px 3px 25px rgba(255, 107, 107, 0.8), 0 0 20px rgba(255, 154, 86, 0.6); }
+        }
+
+        @keyframes processFlow {
+            0%, 100% { transform: translateX(0) scale(1.1); }
+            50% { transform: translateX(-30px) scale(1.15); }
+        }
+
+        @keyframes reviewSwirl {
+            0% { transform: rotate(0deg) scale(1.3); }
+            100% { transform: rotate(360deg) scale(1.3); }
+        }
+
+        @keyframes nextRotate {
+            0% { transform: rotate(0deg) scale(1.4); }
+            100% { transform: rotate(-360deg) scale(1.4); }
+        }
+
+        @keyframes buttonSizzle {
+            0%, 100% { box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3); }
+            50% { box-shadow: 0 15px 40px rgba(255, 107, 107, 0.6), 0 0 20px rgba(255, 154, 86, 0.4); }
+        }
+
+        @media (max-width: 768px) {
+            .recipe-info,
+            .episode-details {
+                grid-template-columns: 1fr;
+            }
+
+            .step-content {
+                grid-template-columns: 1fr;
+            }
+
+            .review-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 쿠킹쇼 헤더 -->
+    <section class="cooking-header">
+        <div class="kitchen-bg"></div>
+        <div class="chef-overlay"></div>
+        <div class="show-container">
+            <div class="chef-badge">👨‍🍳 모임요리 마스터 클래스 👩‍🍳</div>
+            <h1 class="show-title">백종원의 모임요리!</h1>
+            <p class="show-subtitle">40대 직장인들의 완벽한 한 끼를 위한 레시피</p>
+            
+            <div class="recipe-card">
+                <h3 class="recipe-title">📖 오늘의 레시피: "강남 이탈리안 모임"</h3>
+                <div class="recipe-info">
+                    <div class="info-item">
+                        <div class="info-label">📅 요리 일시</div>
+                        <div class="info-value">2024년 12월 15일 (금) 7:30PM</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">🍽️ 메뉴</div>
+                        <div class="info-value">이탈리안 코스 + 와인</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">👥 인분</div>
+                        <div class="info-value">6명분 (대식가 포함)</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">💰 예산</div>
+                        <div class="info-value">1인당 80,000원</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 요리 과정 -->
+    <section class="cooking-process">
+        <div class="process-bg"></div>
+        <div class="process-container">
+            <h2 class="process-title">🔥 모임 요리 과정 🔥</h2>
+            
+            <div class="cooking-steps">
+                <div class="cooking-step">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <div class="step-title">재료 준비 (참석자 모집)</div>
+                        <div class="step-time">⏰ 2주 전</div>
+                    </div>
+                    <div class="step-content">
+                        <div class="step-description">
+                            <strong>주재료:</strong> 40대 직장인 6명 (신선한 상태로)<br>
+                            <strong>조미료:</strong> 유머 감각, 스트레스 해소 욕구, 술 한 잔 여유<br>
+                            <strong>특별 재료:</strong> 박현우님 (소스 튀김 전용)<br><br>
+                            <em>"여러분, 모임의 성공은 재료 선택에서 시작됩니다! 
+                            40대라는 최고급 재료를 사용하면 실패할 수가 없어요!"</em>
+                        </div>
+                        <div class="chef-tip">
+                            <div class="tip-icon">💡</div>
+                            <div class="tip-text">
+                                백 셰프 꿀팁!<br>
+                                현우님은 반드시 앞치마 착용!<br>
+                                (소스 사고 방지용)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cooking-step">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <div class="step-title">예열하기 (분위기 조성)</div>
+                        <div class="step-time">⏰ 19:30</div>
+                    </div>
+                    <div class="step-content">
+                        <div class="step-description">
+                            <strong>온도 설정:</strong> 은은한 조명, 적당한 소음, 편안한 온도<br>
+                            <strong>조리법:</strong> 가벼운 인사와 안부 인사로 워밍업<br>
+                            <strong>주의사항:</strong> 회사 얘기는 금물! (분위기 망침 주의)<br><br>
+                            <em>"자, 이제 팬을 달궈야죠? 모임도 마찬가지예요. 
+                            처음엔 어색해도 서서히 온도를 올려가는 거죠!"</em>
+                        </div>
+                        <div class="chef-tip">
+                            <div class="tip-icon">🔥</div>
+                            <div class="tip-text">
+                                백 셰프 꿀팁!<br>
+                                첫 15분이 중요해요!<br>
+                                와인 한 잔이면 OK!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cooking-step">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <div class="step-title">메인 요리 (대화와 웃음)</div>
+                        <div class="step-time">⏰ 20:00-22:00</div>
+                    </div>
+                    <div class="step-content">
+                        <div class="step-description">
+                            <strong>조리 방법:</strong> 진솔한 대화에 유머를 곁들여 볶기<br>
+                            <strong>필수 과정:</strong> 현우님 소스 사건으로 분위기 최고조 달성<br>
+                            <strong>간 맞추기:</strong> 서로의 고민과 조언으로 깊은 맛 우려내기<br><br>
+                            <em>"여기서 중요한 건, 급하게 하면 안 됩니다! 
+                            천천히 익혀가면서 서로 스며들게 해야 해요!"</em>
+                        </div>
+                        <div class="chef-tip">
+                            <div class="tip-icon">😂</div>
+                            <div class="tip-text">
+                                백 셰프 비밀 레시피!<br>
+                                소스 튀김은 계획에 없었지만<br>
+                                최고의 양념이 됐어요!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cooking-step">
+                    <div class="step-header">
+                        <div class="step-number">4</div>
+                        <div class="step-title">마무리 (다음 모임 약속)</div>
+                        <div class="step-time">⏰ 22:30</div>
+                    </div>
+                    <div class="step-content">
+                        <div class="step-description">
+                            <strong>플레이팅:</strong> 인증샷과 함께 아름답게 마무리<br>
+                            <strong>소스:</strong> "다음에 또 만나요" 약속으로 달콤하게 마감<br>
+                            <strong>후식:</strong> 집에 가서도 계속되는 단체 카톡방 수다<br><br>
+                            <em>"완성이에요! 보세요, 이렇게 예쁘게 나왔죠? 
+                            모임 요리의 핵심은 정성이에요!"</em>
+                        </div>
+                        <div class="chef-tip">
+                            <div class="tip-icon">📱</div>
+                            <div class="tip-text">
+                                백 셰프 마지막 조언!<br>
+                                인증샷은 필수!<br>
+                                추억도 요리예요!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 참가자 평가 -->
+    <section class="participant-reviews">
+        <div class="review-bg"></div>
+        <div class="review-container">
+            <h2 class="review-title">👨‍🍳 요리사들의 맛 평가 👩‍🍳</h2>
+            
+            <div class="review-grid">
+                <div class="review-card">
+                    <div class="reviewer-chef-hat">김</div>
+                    <h3 class="reviewer-name">김민수</h3>
+                    <p class="reviewer-role">전략 요리사</p>
+                    <div class="food-rating">⭐⭐⭐⭐⭐</div>
+                    <p class="review-text">
+                        "와인 페어링이 완벽했어요! 
+                        특히 분위기 조절 온도가 딱 맞았습니다. 
+                        다음엔 제가 메뉴 기획을 도와드릴게요!"
+                    </p>
+                </div>
+
+                <div class="review-card">
+                    <div class="reviewer-chef-hat">이</div>
+                    <h3 class="reviewer-name">이지영</h3>
+                    <p class="reviewer-role">플레이팅 전문가</p>
+                    <div class="food-rating">⭐⭐⭐⭐⭐</div>
+                    <p class="review-text">
+                        "비주얼이 정말 예뻤어요! 
+                        조명도 완벽하고 인스타용 사진이 
+                        이렇게 잘 나올 줄이야... 
+                        백 셰프님 짱!"
+                    </p>
+                </div>
+
+                <div class="review-card">
+                    <div class="reviewer-chef-hat">박</div>
+                    <h3 class="reviewer-name">박현우</h3>
+                    <p class="reviewer-role">소스 아티스트</p>
+                    <div class="food-rating">⭐⭐⭐⭐☆</div>
+                    <p class="review-text">
+                        "제가 만든 토마토 소스 아트가 
+                        생각보다 임팩트 있었네요 ㅎㅎ 
+                        다음엔 더 화려한 작품으로... 
+                        (농담이에요!)"
+                    </p>
+                </div>
+
+                <div class="review-card">
+                    <div class="reviewer-chef-hat">정</div>
+                    <h3 class="reviewer-name">정수빈</h3>
+                    <p class="reviewer-role">힐링 쿠킹 마스터</p>
+                    <div class="food-rating">⭐⭐⭐⭐⭐</div>
+                    <p class="review-text">
+                        "마음까지 따뜻해지는 요리였어요. 
+                        특히 대화의 온도가 완벽했습니다. 
+                        스트레스가 싹 사라졌어요!"
+                    </p>
+                </div>
+
+                <div class="review-card">
+                    <div class="reviewer-chef-hat">최</div>
+                    <h3 class="reviewer-name">최태훈</h3>
+                    <p class="reviewer-role">프로 셰프</p>
+                    <div class="food-rating">⭐⭐⭐⭐⭐</div>
+                    <p class="review-text">
+                        "동업자로서 정말 완벽한 레시피예요! 
+                        재료 선택부터 마무리까지 
+                        흠잡을 데가 없었습니다. 
+                        존경합니다!"
+                    </p>
+                </div>
+
+                <div class="review-card">
+                    <div class="reviewer-chef-hat">김</div>
+                    <h3 class="reviewer-name">김예린</h3>
+                    <p class="reviewer-role">헬시 쿡</p>
+                    <div class="food-rating">⭐⭐⭐⭐⭐</div>
+                    <p class="review-text">
+                        "몸과 마음에 모두 좋은 요리였어요! 
+                        웃음 치료 효과까지 있어서 
+                        건강에 아주 좋았습니다. 
+                        백 셰프님 최고!"
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 다음 요리 예고 -->
+    <section class="next-cooking">
+        <div class="next-bg"></div>
+        <div class="next-container">
+            <h2 class="next-title">🎬 다음 주 예고편! 🎬</h2>
+            
+            <div class="next-episode-card">
+                <h3 class="episode-title">🥩 백종원의 스테이크 하우스 정복기 🥩</h3>
+                
+                <div class="episode-details">
+                    <div class="episode-detail">
+                        <div class="detail-icon">📅</div>
+                        <div class="detail-title">방영일</div>
+                        <div class="detail-content">1월 19일 (일) 6:00PM</div>
+                    </div>
+                    
+                    <div class="episode-detail">
+                        <div class="detail-icon">🏪</div>
+                        <div class="detail-title">촬영 장소</div>
+                        <div class="detail-content">청담동 더 프라임</div>
+                    </div>
+                    
+                    <div class="episode-detail">
+                        <div class="detail-icon">🥩</div>
+                        <div class="detail-title">메인 요리</div>
+                        <div class="detail-content">프리미엄 스테이크 코스</div>
+                    </div>
+                    
+                    <div class="episode-detail">
+                        <div class="detail-icon">💰</div>
+                        <div class="detail-title">요리 비용</div>
+                        <div class="detail-content">1인당 120,000원</div>
+                    </div>
+                </div>
+
+                <div class="chef-promise">
+                    <strong>📢 백 셰프 특별 약속 📢</strong><br>
+                    "이번엔 현우님을 위한 특제 앞치마를 준비했습니다! 
+                    절대 소스가 튀지 않는 마법의 앞치마죠! 
+                    그리고 이번엔 2025년 목표 토크도 준비됐어요!"
+                </div>
+
+                <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
+                    ⭐ 특별 게스트: 현우님 전담 서빙 로봇 출연 예정<br>
+                    📺 시청자 참여 이벤트: 가장 웃긴 모임 사연 공모<br>
+                    🎁 경품: 백 셰프표 앞치마 + 다음 모임 초대권
+                </p>
+            </div>
+
+            <button class="subscribe-button" onclick="alert('구독 완료! 다음 요리도 기대해주세요! 👨‍🍳')">
+                채널 구독하기!
+            </button>
+        </div>
+    </section>
+
+    <script>
+        // 요리 단계 애니메이션
+        const stepObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateX(0)';
+                    }, index * 300);
+                }
+            });
+        }, {
+            threshold: 0.3
+        });
+
+        document.querySelectorAll('.cooking-step').forEach((step, index) => {
+            step.style.opacity = '0';
+            step.style.transform = 'translateX(-100px)';
+            step.style.transition = 'all 0.8s ease-out';
+            stepObserver.observe(step);
+        });
+
+        // 리뷰 카드 애니메이션
+        const reviewObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0) scale(1)';
+                    }, index * 150);
+                }
+            });
+        }, {
+            threshold: 0.2
+        });
+
+        document.querySelectorAll('.review-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(50px) scale(0.9)';
+            card.style.transition = 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            reviewObserver.observe(card);
+        });
+
+        // 요리사 모자 클릭 이벤트
+        document.querySelectorAll('.reviewer-chef-hat').forEach(hat => {
+            hat.addEventListener('click', function() {
+                this.style.animation = 'chef-hat-spin 1s ease-in-out';
+                setTimeout(() => {
+                    this.style.animation = 'none';
+                }, 1000);
+            });
+        });
+
+        // CSS 애니메이션 추가
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes chef-hat-spin {
+                0% { transform: rotate(0deg) scale(1); }
+                50% { transform: rotate(180deg) scale(1.2); }
+                100% { transform: rotate(360deg) scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 요리 효과음 (클릭 시)
+        document.querySelectorAll('.cooking-step').forEach(step => {
+            step.addEventListener('click', function() {
+                alert('🔥 지글지글~ 완벽한 요리 과정이에요! 👨‍🍳');
+            });
+        });
+
+        // 랜덤 요리 이모지 생성
+        setInterval(() => {
+            const cookingEmojis = ['🍳', '🔥', '👨‍🍳', '🍷', '🍝', '✨', '💫', '😋'];
+            const randomEmoji = cookingEmojis[Math.floor(Math.random() * cookingEmojis.length)];
+            
+            const cookingEffect = document.createElement('div');
+            cookingEffect.textContent = randomEmoji;
+            cookingEffect.style.position = 'fixed';
+            cookingEffect.style.fontSize = '30px';
+            cookingEffect.style.left = Math.random() * 100 + 'vw';
+            cookingEffect.style.top = '100vh';
+            cookingEffect.style.pointerEvents = 'none';
+            cookingEffect.style.zIndex = '1000';
+            cookingEffect.style.animation = 'cookingFloat 4s ease-out forwards';
+            
+            document.body.appendChild(cookingEffect);
+            
+            setTimeout(() => {
+                cookingEffect.remove();
+            }, 4000);
+        }, 2000);
+
+        // 플로팅 애니메이션
+        const cookingFloatStyle = document.createElement('style');
+        cookingFloatStyle.textContent = `
+            @keyframes cookingFloat {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(-100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(cookingFloatStyle);
+    </script>
+</body>
+</html>
