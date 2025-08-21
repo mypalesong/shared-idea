@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Club Chronicles - December Gathering</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #0f0f0f;
+            color: #f5f5f5;
+            overflow-x: hidden;
+        }
+
+        /* Navigation Header */
+        .nav-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid #2a2a2a;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+        }
+
+        .nav-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #f5f5f5;
+        }
+
+        .nav-info {
+            display: flex;
+            gap: 30px;
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+        }
+
+        .book-showcase {
+            position: relative;
+            width: 450px;
+            height: 600px;
+            transform-style: preserve-3d;
+            animation: bookFloat 6s ease-in-out infinite;
+        }
+
+        .book-cover {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2c1810, #1a0e08);
+            border: 2px solid #3a2518;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .book-spine {
+            position: absolute;
+            left: -30px;
+            top: 0;
+            width: 30px;
+            height: 100%;
+            background: linear-gradient(90deg, #1a0e08, #2c1810);
+            transform: rotateY(-90deg);
+            transform-origin: right;
+        }
+
+        .book-title-display {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .book-main-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: #d4af37;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .book-subtitle {
+            font-size: 18px;
+            color: #a89060;
+            font-style: italic;
+        }
+
+        .floating-quotes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .quote-particle {
+            position: absolute;
+            font-family: 'Playfair Display', serif;
+            font-size: 14px;
+            color: rgba(212, 175, 55, 0.3);
+            animation: floatUp 8s linear infinite;
+        }
+
+        /* Meeting Section */
+        .meeting-section {
+            background: #0a0a0a;
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-label {
+            font-size: 12px;
+            color: #666;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: #f5f5f5;
+        }
+
+        /* Member Gallery */
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-bottom: 100px;
+        }
+
+        .member-card {
+            position: relative;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .member-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2);
+            border-color: #d4af37;
+        }
+
+        .member-avatar {
+            height: 200px;
+            background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-initial {
+            font-family: 'Playfair Display', serif;
+            font-size: 64px;
+            font-weight: 700;
+            color: #d4af37;
+            opacity: 0.5;
+        }
+
+        .member-info {
+            padding: 25px;
+        }
+
+        .member-name {
+            font-size: 20px;
+            font-weight: 500;
+            color: #f5f5f5;
+            margin-bottom: 8px;
+        }
+
+        .member-book {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 15px;
+        }
+
+        .member-comment {
+            font-size: 13px;
+            color: #aaa;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        /* Discussion Highlights */
+        .discussion-section {
+            background: linear-gradient(180deg, #0a0a0a, #151515);
+            padding: 100px 0;
+        }
+
+        .discussion-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .discussion-card {
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid #2a2a2a;
+            border-radius: 16px;
+            padding: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .discussion-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #d4af37, transparent);
+        }
+
+        .discussion-topic {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #f5f5f5;
+            margin-bottom: 20px;
+        }
+
+        .discussion-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #ccc;
+        }
+
+        .discussion-author {
+            margin-top: 25px;
+            font-size: 14px;
+            color: #d4af37;
+            text-align: right;
+        }
+
+        /* Gallery Moments */
+        .moments-section {
+            background: #0f0f0f;
+            padding: 120px 0;
+        }
+
+        .moments-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .moment-frame {
+            position: relative;
+            aspect-ratio: 1;
+            background: #1a1a1a;
+            border: 8px solid #2a2a2a;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .moment-frame:hover {
+            transform: scale(1.05);
+            border-color: #d4af37;
+        }
+
+        .moment-image {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2a2525, #1a1a1a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .moment-icon {
+            font-size: 48px;
+            opacity: 0.3;
+        }
+
+        .moment-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            color: #f5f5f5;
+            font-size: 14px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .moment-frame:hover .moment-caption {
+            transform: translateY(0);
+        }
+
+        /* Closing Statement */
+        .closing-section {
+            background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+            padding: 150px 0;
+            text-align: center;
+        }
+
+        .closing-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .closing-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: #d4af37;
+            margin-bottom: 30px;
+        }
+
+        .closing-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #ccc;
+            margin-bottom: 50px;
+        }
+
+        .next-meeting {
+            display: inline-block;
+            padding: 20px 40px;
+            background: transparent;
+            border: 2px solid #d4af37;
+            color: #d4af37;
+            text-decoration: none;
+            font-size: 16px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .next-meeting:hover {
+            background: #d4af37;
+            color: #0f0f0f;
+        }
+
+        @keyframes bookFloat {
+            0%, 100% { transform: translateY(0) rotateY(-5deg); }
+            50% { transform: translateY(-20px) rotateY(5deg); }
+        }
+
+        @keyframes floatUp {
+            0% { 
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { 
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .members-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .discussion-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .moments-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .book-showcase {
+                width: 300px;
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-header">
+        <h1 class="nav-title">Book Club Chronicles</h1>
+        <div class="nav-info">
+            <span>December 2024</span>
+            <span>8 Members</span>
+            <span>Gangnam</span>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="book-showcase">
+            <div class="book-cover">
+                <div class="book-title-display">
+                    <h2 class="book-main-title">노르웨이의 숲</h2>
+                    <p class="book-subtitle">무라카미 하루키</p>
+                </div>
+            </div>
+            <div class="book-spine"></div>
+        </div>
+        <div class="floating-quotes">
+            <div class="quote-particle" style="left: 10%; animation-delay: 0s;">"죽음은 생의 반대편이 아니라"</div>
+            <div class="quote-particle" style="left: 30%; animation-delay: 2s;">"그 일부로서 존재한다"</div>
+            <div class="quote-particle" style="left: 50%; animation-delay: 4s;">"상실과 그리움"</div>
+            <div class="quote-particle" style="left: 70%; animation-delay: 6s;">"청춘의 방황"</div>
+            <div class="quote-particle" style="left: 90%; animation-delay: 8s;">"영원한 고독"</div>
+        </div>
+    </section>
+
+    <section class="meeting-section">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-label">Chapter One</div>
+                <h2 class="section-title">이번 달의 독서가들</h2>
+            </div>
+
+            <div class="members-grid">
+                <div class="member-card">
+                    <div class="member-avatar">
+                        <div class="avatar-initial">김</div>
+                    </div>
+                    <div class="member-info">
+                        <h3 class="member-name">김서연</h3>
+                        <p class="member-book">추천도서: 1Q84</p>
+                        <p class="member-comment">"하루키의 문체는 마치 재즈처럼 자유롭게 흐르면서도 깊은 여운을 남깁니다."</p>
+                    </div>
+                </div>
+
+                <div class="member-card">
+                    <div class="member-avatar">
+                        <div class="avatar-initial">이</div>
+                    </div>
+                    <div class="member-info">
+                        <h3 class="member-name">이준호</h3>
+                        <p class="member-book">추천도서: 상실의 시대</p>
+                        <p class="member-comment">"청춘의 아픔과 성장을 이토록 섬세하게 그려낸 작품은 드물죠."</p>
+                    </div>
+                </div>
+
+                <div class="member-card">
+                    <div class="member-avatar">
+                        <div class="avatar-initial">박</div>
+                    </div>
+                    <div class="member-info">
+                        <h3 class="member-name">박지민</h3>
+                        <p class="member-book">추천도서: 해변의 카프카</p>
+                        <p class="member-comment">"현실과 환상의 경계를 넘나드는 하루키만의 독특한 세계관이 매력적입니다."</p>
+                    </div>
+                </div>
+
+                <div class="member-card">
+                    <div class="member-avatar">
+                        <div class="avatar-initial">최</div>
+                    </div>
+                    <div class="member-info">
+                        <h3 class="member-name">최현우</h3>
+                        <p class="member-book">추천도서: 색채가 없는 다자키 쓰쿠루</p>
+                        <p class="member-comment">"고독과 소외감을 극복해가는 과정이 너무나 현실적으로 다가왔어요."</p>
+                    </div>
+                </div>
+
+                <div class="member-card">
+                    <div class="member-avatar">
+                        <div class="avatar-initial">정</div>
+                    </div>
+                    <div class="member-info">
+                        <h3 class="member-name">정수빈</h3>
+                        <p class="member-book">추천도서: 기사단장 죽이기</p>
+                        <p class="member-comment">"예술과 창작에 대한 깊은 통찰이 인상적인 작품이었습니다."</p>
+                    </div>
+                </div>
+
+                <div class="member-card">
+                    <div class="member-avatar">
+                        <div class="avatar-initial">강</div>
+                    </div>
+                    <div class="member-info">
+                        <h3 class="member-name">강예린</h3>
+                        <p class="member-book">추천도서: 댄스 댄스 댄스</p>
+                        <p class="member-comment">"도시인의 고독과 연결에 대한 갈망을 잘 표현한 수작입니다."</p>
+                    </div>
+                </div>
+
+                <div class="member-card">
+                    <div class="member-avatar">
+                        <div class="avatar-initial">윤</div>
+                    </div>
+                    <div class="member-info">
+                        <h3 class="member-name">윤태영</h3>
+                        <p class="member-book">추천도서: 세계의 끝과 하드보일드 원더랜드</p>
+                        <p class="member-comment">"SF와 하드보일드를 절묘하게 결합한 하루키의 실험정신이 돋보입니다."</p>
+                    </div>
+                </div>
+
+                <div class="member-card">
+                    <div class="member-avatar">
+                        <div class="avatar-initial">송</div>
+                    </div>
+                    <div class="member-info">
+                        <h3 class="member-name">송미라</h3>
+                        <p class="member-book">추천도서: 여자 없는 남자들</p>
+                        <p class="member-comment">"짧은 이야기 속에 담긴 깊은 고독과 상실감이 오래 남습니다."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="discussion-section">
+        <div class="section-header">
+            <div class="section-label">Chapter Two</div>
+            <h2 class="section-title">오늘의 토론 하이라이트</h2>
+        </div>
+
+        <div class="discussion-grid">
+            <div class="discussion-card">
+                <h3 class="discussion-topic">죽음과 삶의 경계</h3>
+                <p class="discussion-content">
+                    "나오코의 죽음이 단순한 비극이 아니라, 와타나베의 성장을 위한 필연적인 과정이었다는 해석이 인상적이었습니다. 
+                    죽음을 통해 삶의 의미를 되돌아보게 되는 아이러니가 하루키 문학의 핵심이 아닐까요?"
+                </p>
+                <p class="discussion-author">- 김서연</p>
+            </div>
+
+            <div class="discussion-card">
+                <h3 class="discussion-topic">음악과 문학의 조화</h3>
+                <p class="discussion-content">
+                    "비틀즈의 'Norwegian Wood'가 작품 전체를 관통하는 상징으로 작용한다는 점이 흥미로웠습니다. 
+                    60년대의 시대정신과 개인의 내면이 음악을 매개로 연결되는 구조가 탁월했어요."
+                </p>
+                <p class="discussion-author">- 이준호</p>
+            </div>
+
+            <div class="discussion-card">
+                <h3 class="discussion-topic">고독의 필연성</h3>
+                <p class="discussion-content">
+                    "미도리와 나오코 사이에서 방황하는 와타나베의 모습이 현대인의 고독을 대변한다고 봅니다. 
+                    연결되고 싶지만 연결될 수 없는 존재적 고독이 작품의 기저에 깔려있죠."
+                </p>
+                <p class="discussion-author">- 박지민</p>
+            </div>
+
+            <div class="discussion-card">
+                <h3 class="discussion-topic">기억의 재구성</h3>
+                <p class="discussion-content">
+                    "와타나베가 37세가 되어 과거를 회상하는 구조가 기억의 불완전성을 보여줍니다. 
+                    우리는 과거를 있는 그대로가 아닌, 현재의 시선으로 재구성한다는 것을 깨달았어요."
+                </p>
+                <p class="discussion-author">- 최현우</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="moments-section">
+        <div class="section-header">
+            <div class="section-label">Chapter Three</div>
+            <h2 class="section-title">모임의 순간들</h2>
+        </div>
+
+        <div class="moments-grid">
+            <div class="moment-frame">
+                <div class="moment-image">
+                    <div class="moment-icon">☕</div>
+                </div>
+                <div class="moment-caption">따뜻한 커피와 함께한 오프닝</div>
+            </div>
+
+            <div class="moment-frame">
+                <div class="moment-image">
+                    <div class="moment-icon">📚</div>
+                </div>
+                <div class="moment-caption">각자의 책갈피 속 인상깊은 구절 공유</div>
+            </div>
+
+            <div class="moment-frame">
+                <div class="moment-image">
+                    <div class="moment-icon">💭</div>
+                </div>
+                <div class="moment-caption">열띤 토론이 이어진 저녁</div>
+            </div>
+
+            <div class="moment-frame">
+                <div class="moment-image">
+                    <div class="moment-icon">🍷</div>
+                </div>
+                <div class="moment-caption">와인과 함께 깊어진 대화</div>
+            </div>
+
+            <div class="moment-frame">
+                <div class="moment-image">
+                    <div class="moment-icon">✍️</div>
+                </div>
+                <div class="moment-caption">독후감 노트 작성 시간</div>
+            </div>
+
+            <div class="moment-frame">
+                <div class="moment-image">
+                    <div class="moment-icon">🌙</div>
+                </div>
+                <div class="moment-caption">밤늦게까지 이어진 여운</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="closing-section">
+        <div class="closing-content">
+            <h2 class="closing-title">다음 장을 기다리며</h2>
+            <p class="closing-text">
+                오늘 우리는 하루키의 세계를 함께 여행했습니다. 
+                각자의 해석과 감상이 모여 더욱 풍성한 독서 경험을 만들어냈죠. 
+                문학은 혼자 읽을 때와 함께 읽을 때 전혀 다른 깊이를 선사합니다. 
+                다음 달에는 또 어떤 이야기로 만날까요?
+            </p>
+            <a href="#" class="next-meeting">Next Meeting: January 2025</a>
+        </div>
+    </section>
+
+    <script>
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Apply to all cards
+        document.querySelectorAll('.member-card, .discussion-card, .moment-frame').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.8s ease';
+            observer.observe(el);
+        });
+
+        // Parallax effect for hero section
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const heroSection = document.querySelector('.hero-section');
+            const bookShowcase = document.querySelector('.book-showcase');
+            
+            if (heroSection) {
+                heroSection.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+            
+            if (bookShowcase) {
+                bookShowcase.style.transform = `translateY(${-scrolled * 0.3}px) rotateY(${-5 + scrolled * 0.02}deg)`;
+            }
+        });
+
+        // Random quote particles
+        setInterval(() => {
+            const quotes = document.querySelectorAll('.quote-particle');
+            quotes.forEach(quote => {
+                const random = Math.random();
+                if (random < 0.3) {
+                    quote.style.opacity = '0.1';
+                } else if (random < 0.6) {
+                    quote.style.opacity = '0.2';
+                } else {
+                    quote.style.opacity = '0.3';
+                }
+            });
+        }, 2000);
+    </script>
+</body>
+</html>
