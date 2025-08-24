@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>장애 대응 보고서</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Malgun Gothic', sans-serif;
+            line-height: 1.6;
+            color: #1a202c;
+            background: linear-gradient(135deg, #e53e3e 0%, #fc8181 50%, #feb2b2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+        }
+
+        .alert-banner {
+            background: linear-gradient(90deg, #e53e3e, #f56565);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: white;
+            padding: 50px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><g fill="rgba(229,62,62,0.2)"><circle cx="10" cy="20" r="3"/><circle cx="30" cy="15" r="2"/><circle cx="50" cy="25" r="2.5"/><circle cx="70" cy="10" r="2"/><circle cx="90" cy="30" r="3"/><circle cx="20" cy="50" r="2.5"/><circle cx="40" cy="45" r="2"/><circle cx="60" cy="55" r="3"/><circle cx="80" cy="50" r="2"/><circle cx="15" cy="80" r="2.5"/><circle cx="35" cy="75" r="2"/><circle cx="55" cy="85" r="2.5"/><circle cx="75" cy="80" r="2"/><circle cx="85" cy="90" r="3"/></g></svg>');
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .incident-summary {
+            background: rgba(229, 62, 62, 0.2);
+            padding: 25px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(229, 62, 62, 0.4);
+        }
+
+        .content {
+            padding: 50px;
+        }
+
+        .toc {
+            background: linear-gradient(135deg, #f7fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 50px;
+            border: 3px solid #e53e3e;
+            position: relative;
+        }
+
+        .toc::before {
+            content: '🚨';
+            position: absolute;
+            top: -20px;
+            left: 40px;
+            background: white;
+            padding: 12px 16px;
+            border-radius: 50%;
+            font-size: 2rem;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        .toc h2 {
+            color: #1a202c;
+            margin-bottom: 25px;
+            font-size: 2rem;
+            margin-left: 35px;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .toc-item {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #e53e3e;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .toc-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .toc-item a {
+            color: #1a202c;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .section {
+            margin-bottom: 70px;
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 50px;
+            border-left: 8px solid #e53e3e;
+            position: relative;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section::before {
+            content: attr(data-icon);
+            position: absolute;
+            top: -20px;
+            left: 40px;
+            background: #e53e3e;
+            color: white;
+            padding: 15px 18px;
+            border-radius: 50%;
+            font-size: 1.8rem;
+            box-shadow: 0 6px 20px rgba(229, 62, 62, 0.4);
+        }
+
+        .section h2 {
+            color: #1a202c;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            margin-left: 35px;
+        }
+
+        .status-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .status-card {
+            background: white;
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            border-top: 6px solid #e53e3e;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-card::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(229, 62, 62, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse-slow 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-slow {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.1); opacity: 0.3; }
+        }
+
+        .status-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .status-card:nth-child(2n) { border-top-color: #ed8936; }
+        .status-card:nth-child(3n) { border-top-color: #38b2ac; }
+        .status-card:nth-child(4n) { border-top-color: #9f7aea; }
+
+        .impact-value {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 12px;
+            background: linear-gradient(45deg, #e53e3e, #fc8181);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .severity-critical {
+            background: linear-gradient(45deg, #e53e3e, #f56565);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+        }
+
+        .severity-high {
+            background: linear-gradient(45deg, #ed8936, #f6ad55);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(237, 137, 54, 0.4);
+        }
+
+        .timeline-container {
+            background: linear-gradient(135deg, #1a202c, #2d3748);
+            color: white;
+            padding: 50px;
+            border-radius: 16px;
+            margin: 40px 0;
+            position: relative;
+        }
+
+        .timeline-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(15px);
+            border-left: 6px solid #e53e3e;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item::before {
+            content: '●';
+            position: absolute;
+            left: -18px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #e53e3e;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .timeline-item:hover {
+            transform: translateX(10px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .timeline-resolved { border-left-color: #48bb78; }
+        .timeline-resolved::before { background: #48bb78; }
+        .timeline-ongoing { border-left-color: #ed8936; }
+        .timeline-ongoing::before { background: #ed8936; }
+
+        .impact-table {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            margin: 40px 0;
+        }
+
+        .impact-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .impact-table th {
+            background: linear-gradient(135deg, #1a202c, #2d3748);
+            color: white;
+            padding: 25px 20px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .impact-table td {
+            padding: 20px;
+            border-bottom: 2px solid #e2e8f0;
+            font-size: 1rem;
+        }
+
+        .impact-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        .impact-table tr:hover {
+            background: #edf2f7;
+            transition: all 0.2s ease;
+        }
+
+        .metrics-critical { color: #e53e3e; font-weight: 800; }
+        .metrics-high { color: #ed8936; font-weight: 700; }
+        .metrics-medium { color: #ecc94b; font-weight: 600; }
+        .metrics-low { color: #48bb78; font-weight: 600; }
+
+        .root-cause {
+            background: linear-gradient(135deg, #9f7aea, #805ad5);
+            color: white;
+            padding: 50px;
+            border-radius: 16px;
+            margin: 40px 0;
+        }
+
+        .cause-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 35px;
+        }
+
+        .cause-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 30px;
+            border-radius: 12px;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .lessons-learned {
+            background: linear-gradient(135deg, #38b2ac, #319795);
+            color: white;
+            padding: 50px;
+            border-radius: 16px;
+            margin: 40px 0;
+        }
+
+        .lessons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 35px;
+        }
+
+        .lesson-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 30px;
+            border-radius: 12px;
+            backdrop-filter: blur(15px);
+            border-left: 6px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .prevention-plan {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            padding: 50px;
+            border-radius: 16px;
+            margin: 40px 0;
+        }
+
+        .prevention-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 35px;
+        }
+
+        .prevention-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 30px;
+            border-radius: 12px;
+            backdrop-filter: blur(15px);
+            border-left: 6px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .chart-container {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            margin: 40px 0;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .chart-placeholder {
+            height: 400px;
+            background: linear-gradient(135deg, #f7fafc 0%, #e2e8f0 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px dashed #e53e3e;
+            color: #4a5568;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .footer {
+            background: #1a202c;
+            color: white;
+            padding: 40px 50px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .status-resolved {
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-ongoing {
+            background: #fef5e7;
+            color: #744210;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .header-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: 35px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="alert-banner">
+            🚨 INCIDENT REPORT - 서비스 장애 대응 완료 🚨
+        </div>
+
+        <header class="header">
+            <div class="header-content">
+                <div>
+                    <h1>장애 대응 보고서</h1>
+                    <p style="font-size: 1.3rem; opacity: 0.9; margin-bottom: 10px;">Incident Response Report</p>
+                    <p style="font-size: 1.1rem; opacity: 0.8;">데이터베이스 연결 장애 및 복구 활동 보고</p>
+                </div>
+                <div class="incident-summary">
+                    <h3 style="margin-bottom: 15px;">🔥 장애 등급</h3>
+                    <div style="font-size: 2.2rem; font-weight: 900; margin-bottom: 10px;">Critical</div>
+                    <div style="font-size: 1rem;">전체 서비스 중단</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 10px;">
+                        발생일시: 2025-08-22 14:35<br>
+                        복구완료: 2025-08-22 16:20<br>
+                        대응팀: 김장애대응팀장
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+            <div class="toc">
+                <h2>목차 (Table of Contents)</h2>
+                <div class="toc-grid">
+                    <div class="toc-item">
+                        <a href="#incident-summary">1. 장애 개요</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#impact-assessment">2. 영향도 분석</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#response-timeline">3. 대응 타임라인</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#root-cause-analysis">4. 근본 원인 분석</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#recovery-actions">5. 복구 조치사항</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#lessons-learned">6. 교훈 및 개선방안</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#prevention-plan">7. 재발 방지 계획</a>
+                    </div>
+                </div>
+            </div>
+
+            <section id="incident-summary" class="section" data-icon="📋">
+                <h2>장애 개요 (Incident Summary)</h2>
+                <div class="status-dashboard">
+                    <div class="status-card">
+                        <div class="impact-value">1시간 45분</div>
+                        <h3>총 장애 시간</h3>
+                        <div class="severity-critical">Critical</div>
+                        <p>목표 RTO(2시간) 내 복구 완료</p>
+                    </div>
+                    <div class="status-card">
+                        <div class="impact-value">12,450명</div>
+                        <h3>영향받은 사용자</h3>
+                        <div class="severity-high">높음</div>
+                        <p>전체 활성 사용자의 89%</p>
+                    </div>
+                    <div class="status-card">
+                        <div class="impact-value">₩2.8M</div>
+                        <h3>예상 손실액</h3>
+                        <div class="severity-critical">Critical</div>
+                        <p>매출 손실 및 SLA 위약금 포함</p>
+                    </div>
+                    <div class="status-card">
+                        <div class="impact-value">8명</div>
+                        <h3>대응 팀원 수</h3>
+                        <div class="severity-high">전담</div>
+                        <p>개발팀 5명, 인프라팀 3명</p>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 40px; border-radius: 16px; margin: 40px 0; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-left: 6px solid #e53e3e;">
+                    <h3 style="margin-bottom: 25px; color: #1a202c;">장애 상세 정보</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                        <div>
+                            <h4 style="color: #e53e3e; margin-bottom: 12px;">발생 정보</h4>
+                            <ul style="line-height: 2.2;">
+                                <li><strong>장애명:</strong> 데이터베이스 연결 풀 고갈</li>
+                                <li><strong>발생일시:</strong> 2025-08-22 14:35:23 KST</li>
+                                <li><strong>감지방법:</strong> 자동 모니터링 알람</li>
+                                <li><strong>최초감지자:</strong> Grafana Alert</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: #ed8936; margin-bottom: 12px;">영향 범위</h4>
+                            <ul style="line-height: 2.2;">
+                                <li><strong>서비스:</strong> 고객관리시스템 전체</li>
+                                <li><strong>사용자:</strong> 내부 직원 + 고객</li>
+                                <li><strong>기능:</strong> 로그인, 데이터 조회, 업데이트</li>
+                                <li><strong>지역:</strong> 한국 전국</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: #48bb78; margin-bottom: 12px;">복구 정보</h4>
+                            <ul style="line-height: 2.2;">
+                                <li><strong>복구완료:</strong> 2025-08-22 16:20:15 KST</li>
+                                <li><strong>복구방법:</strong> DB 연결 풀 설정 변경</li>
+                                <li><strong>확인시간:</strong> 16:35 (완전 정상화)</li>
+                                <li><strong>담당자:</strong> 김장애대응팀장</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: #fed7d7; padding: 30px; border-radius: 12px; border-left: 4px solid #e53e3e;">
+                    <h4 style="color: #742a2a; margin-bottom: 15px;">❌ 장애 증상</h4>
+                    <ul style="line-height: 2; color: #742a2a;">
+                        <li>사용자 로그인 시 "Connection timeout" 에러 발생</li>
+                        <li>기존 세션 사용자도 페이지 로딩 실패</li>
+                        <li>API 응답시간 평소 50ms → 30초 이상 지연</li>
+                        <li>데이터베이스 연결 풀이 최대치(100개) 도달 후 대기</li>
+                        <li>서버 CPU 사용률 95% 이상 급상승</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="impact-assessment" class="section" data-icon="📊">
+                <h2>영향도 분석 (Impact Assessment)</h2>
+                <div class="impact-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>구분</th>
+                                <th>영향도</th>
+                                <th>세부 내역</th>
+                                <th>수치</th>
+                                <th>비고</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>사용자 영향</strong></td>
+                                <td><span class="metrics-critical">매우 높음</span></td>
+                                <td>서비스 접근 불가</td>
+                                <td>12,450명 (89%)</td>
+                                <td>전체 활성 사용자 기준</td>
+                            </tr>
+                            <tr>
+                                <td><strong>매출 손실</strong></td>
+                                <td><span class="metrics-critical">매우 높음</span></td>
+                                <td>거래 처리 중단</td>
+                                <td>₩2,100,000</td>
+                                <td>시간당 ₩1.2M 기준</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SLA 위반</strong></td>
+                                <td><span class="metrics-high">높음</span></td>
+                                <td>99.9% 가용성 미달</td>
+                                <td>₩700,000</td>
+                                <td>계약상 위약금</td>
+                            </tr>
+                            <tr>
+                                <td><strong>고객 불만</strong></td>
+                                <td><span class="metrics-high">높음</span></td>
+                                <td>고객센터 문의 급증</td>
+                                <td>347건</td>
+                                <td>평소 대비 850% 증가</td>
+                            </tr>
+                            <tr>
+                                <td><strong>브랜드 신뢰도</strong></td>
+                                <td><span class="metrics-medium">중간</span></td>
+                                <td>소셜미디어 부정 언급</td>
+                                <td>89건</td>
+                                <td>SNS 모니터링 결과</td>
+                            </tr>
+                            <tr>
+                                <td><strong>운영 비용</strong></td>
+                                <td><span class="metrics-medium">중간</span></td>
+                                <td>긴급 대응 인력</td>
+                                <td>₩480,000</td>
+                                <td>야근 수당 및 외주 지원</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 40px 0;">
+                    <div class="chart-container" style="margin: 0;">
+                        <h3 style="margin-bottom: 20px;">시간대별 사용자 영향</h3>
+                        <div class="chart-placeholder" style="height: 300px;">
+                            [사용자 접속 실패율 차트]<br>
+                            14:35 → 100% 실패 시작<br>
+                            16:20 → 복구 완료
+                        </div>
+                    </div>
+                    <div class="chart-container" style="margin: 0;">
+                        <h3 style="margin-bottom: 20px;">서비스별 영향도</h3>
+                        <div class="chart-placeholder" style="height: 300px;">
+                            [서비스별 장애 영향 차트]<br>
+                            로그인: 100% 실패<br>
+                            데이터 조회: 95% 실패<br>
+                            파일 업로드: 80% 실패
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin: 40px 0;">
+                    <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-top: 6px solid #e53e3e;">
+                        <h4 style="color: #e53e3e; margin-bottom: 15px;">🔥 즉각적 영향</h4>
+                        <ul style="line-height: 2;">
+                            <li>모든 사용자 로그인 실패</li>
+                            <li>진행 중인 거래 중단</li>
+                            <li>실시간 데이터 동기화 중지</li>
+                            <li>자동화된 업무 프로세스 중단</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-top: 6px solid #ed8936;">
+                        <h4 style="color: #ed8936; margin-bottom: 15px;">⚠️ 2차 파급효과</h4>
+                        <ul style="line-height: 2;">
+                            <li>외부 시스템 연동 오류</li>
+                            <li>배치 작업 지연</li>
+                            <li>데이터 백업 실패</li>
+                            <li>모니터링 알람 폭주</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-top: 6px solid #38b2ac;">
+                        <h4 style="color: #38b2ac; margin-bottom: 15px;">📈 비즈니스 영향</h4>
+                        <ul style="line-height: 2;">
+                            <li>계약 갱신 협상에 불리</li>
+                            <li>신규 고객 획득 지연</li>
+                            <li>경쟁업체 대비 신뢰도 하락</li>
+                            <li>내부 업무 효율성 저하</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="response-timeline" class="section" data-icon="⏱️">
+                <h2>대응 타임라인 (Response Timeline)</h2>
+                <div class="timeline-container">
+                    <h3 style="margin-bottom: 30px; font-size: 1.8rem;">장애 대응 상세 일지</h3>
+                    
+                    <div class="timeline-item">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h4>장애 발생 감지</h4>
+                            <span style="background: rgba(229,62,62,0.3); padding: 4px 12px; border-radius: 12px; font-size: 0.9rem;">14:35:23</span>
+                        </div>
+                        <p><strong>상황:</strong> Grafana에서 Database Connection Pool 알람 발생</p>
+                        <p><strong>감지 지표:</strong> 연결 풀 사용률 98% 초과, 응답시간 5초 이상</p>
+                        <p><strong>자동 조치:</strong> Slack #alerts 채널로 긴급 알림 발송</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h4>초기 대응팀 소집</h4>
+                            <span style="background: rgba(229,62,62,0.3); padding: 4px 12px; border-radius: 12px; font-size: 0.9rem;">14:38:15</span>
+                        </div>
+                        <p><strong>참석자:</strong> 김장애대응팀장, 이인프라팀장, 박DBA, 최개발팀장</p>
+                        <p><strong>조치:</strong> 장애 심각도 Level 1 (Critical) 선언</p>
+                        <p><strong>소통:</strong> 전사 Incident Response 채널 개설</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h4>1차 원인 분석 시작</h4>
+                            <span style="background: rgba(229,62,62,0.3); padding: 4px 12px; border-radius: 12px; font-size: 0.9rem;">14:42:00</span>
+                        </div>
+                        <p><strong>조사 항목:</strong> DB 서버 상태, 연결 풀 설정, 최근 배포 내역</p>
+                        <p><strong>발견사항:</strong> 연결 풀 최대값 100개 모두 사용 중, 반환되지 않는 연결 다수</p>
+                        <p><strong>임시 조치:</strong> 신규 연결 생성 시도 (실패 - 풀 한계 도달)</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h4>고객 공지 발송</h4>
+                            <span style="background: rgba(237,137,54,0.3); padding: 4px 12px; border-radius: 12px; font-size: 0.9rem;">14:50:30</span>
+                        </div>
+                        <p><strong>채널:</strong> 공식 홈페이지, 이메일, SMS, 고객센터 안내메시지</p>
+                        <p><strong>내용:</strong> "현재 시스템 점검 중이며, 복구 작업을 진행하고 있습니다"</p>
+                        <p><strong>예상 복구시간:</strong> 15:30 (1시간 이내로 예상 전달)</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h4>근본 원인 파악</h4>
+                            <span style="background: rgba(237,137,54,0.3); padding: 4px 12px; border-radius: 12px; font-size: 0.9rem;">15:15:45</span>
+                        </div>
+                        <p><strong>원인:</strong> 최근 배포된 코드에서 DB 연결 후 미반환 버그 발견</p>
+                        <p><strong>위치:</strong> UserService.java의 getUserList() 메서드</p>
+                        <p><strong>상세:</strong> try-catch 블록에서 finally 구문 누락으로 연결 반환 실패</p>
+                    </div>
+
+                    <div class="timeline-item timeline-ongoing">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h4>긴급 수정 및 배포</h4>
+                            <span style="background: rgba(237,137,54,0.3); padding: 4px 12px; border-radius: 12px; font-size: 0.9rem;">15:35:20</span>
+                        </div>
+                        <p><strong>수정 내용:</strong> finally 블록에 connection.close() 추가</p>
+                        <p><strong>테스트:</strong> 로컬 환경에서 연결 누수 해결 확인</p>
+                        <p><strong>배포 방식:</strong> Blue-Green 배포로 무중단 적용</p>
+                    </div>
+
+                    <div class="timeline-item timeline-ongoing">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h4>DB 연결 풀 초기화</h4>
+                            <span style="background: rgba(237,137,54,0.3); padding: 4px 12px; border-radius: 12px; font-size: 0.9rem;">15:58:10</span>
+                        </div>
+                        <p><strong>조치 내용:</strong> 기존 연결 강제 종료 후 연결 풀 재시작</p>
+                        <p><strong>설정 변경:</strong> 최대 연결 수 100 → 150, 타임아웃 30초 → 60초</p>
+                        <p><strong>모니터링:</strong> 연결 상태 실시간 확인 시작</p>
+                    </div>
+
+                    <div class="timeline-item timeline-resolved">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h4>서비스 정상화 확인</h4>
+                            <span style="background: rgba(72,187,120,0.3); padding: 4px 12px; border-radius: 12px; font-size: 0.9rem;">16:20:15</span>
+                        </div>
+                        <p><strong>검증 결과:</strong> 로그인 성공률 100%, 응답시간 정상 범위 복귀</p>
+                        <p><strong>부하 테스트:</strong> 동시 접속자 5,000명 기준 안정성 확인</p>
+                        <p><strong>상태:</strong> 모든 서비스 기능 정상 작동</p>
+                    </div>
+
+                    <div class="timeline-item timeline-resolved">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h4>복구 완료 공지</h4>
+                            <span style="background: rgba(72,187,120,0.3); padding: 4px 12px; border-radius: 12px; font-size: 0.9rem;">16:35:00</span>
+                        </div>
+                        <p><strong>채널:</strong> 전 채널 복구 완료 공지 발송</p>
+                        <p><strong>내용:</strong> "시스템 정상화 완료, 서비스 이용 가능"</p>
+                        <p><strong>사과 메시지:</strong> 불편을 드린 점 공식 사과 및 재발 방지 약속</p>
+                    </div>
+
+                    <div style="background: rgba(255,255,255,0.1); padding: 25px; border-radius: 12px; margin-top: 30px;">
+                        <h4 style="margin-bottom: 15px;">📊 대응 시간 분석</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                            <div>
+                                <strong>감지 시간:</strong> 3분 23초<br>
+                                <strong>초기 대응:</strong> 6분 45초<br>
+                                <strong>원인 파악:</strong> 40분 22초
+                            </div>
+                            <div>
+                                <strong>수정 시간:</strong> 25분 30초<br>
+                                <strong>복구 시간:</strong> 22분 05초<br>
+                                <strong>검증 시간:</strong> 14분 45초
+                            </div>
+                            <div>
+                                <strong>총 대응 시간:</strong> 1시간 45분<br>
+                                <strong>RTO 대비:</strong> 15분 단축<br>
+                                <strong>목표 달성:</strong> ✅ 성공
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="root-cause-analysis" class="section" data-icon="🔍">
+                <h2>근본 원인 분석 (Root Cause Analysis)</h2>
+                <div class="root-cause">
+                    <h3 style="margin-bottom: 30px; font-size: 1.8rem;">5 Whys 분석법을 통한 근본 원인 도출</h3>
+                    <div class="cause-grid">
+                        <div class="cause-item">
+                            <h4 style="margin-bottom: 15px;">🔴 1차: 왜 서비스가 중단되었나?</h4>
+                            <p style="line-height: 1.8;">
+                                <strong>답:</strong> 데이터베이스 연결 풀이 고갈되어 새로운 연결을 생성할 수 없었기 때문입니다.
+                                <br><br>
+                                <strong>증거:</strong> 모니터링 로그에서 연결 풀 사용률 100% 지속, "Connection pool exhausted" 에러 다수 발생
+                            </p>
+                        </div>
+                        <div class="cause-item">
+                            <h4 style="margin-bottom: 15px;">🟠 2차: 왜 연결 풀이 고갈되었나?</h4>
+                            <p style="line-height: 1.8;">
+                                <strong>답:</strong> 사용 완료된 데이터베이스 연결이 연결 풀로 반환되지 않아 계속 누적되었기 때문입니다.
+                                <br><br>
+                                <strong>증거:</strong> 연결 모니터링에서 활성 연결 수는 증가하지만 반환되는 연결 수는 0에 가까움
+                            </p>
+                        </div>
+                        <div class="cause-item">
+                            <h4 style="margin-bottom: 15px;">🟡 3차: 왜 연결이 반환되지 않았나?</h4>
+                            <p style="line-height: 1.8;">
+                                <strong>답:</strong> UserService.java의 getUserList() 메서드에서 예외 발생 시 연결을 닫는 코드가 실행되지 않았기 때문입니다.
+                                <br><br>
+                                <strong>증거:</strong> 코드 리뷰 결과 finally 블록 누락, 예외 발생 시 connection.close() 미실행 확인
+                            </p>
+                        </div>
+                        <div class="cause-item">
+                            <h4 style="margin-bottom: 15px;">🔵 4차: 왜 finally 블록이 누락되었나?</h4>
+                            <p style="line-height: 1.8;">
+                                <strong>답:</strong> 개발자가 리팩토링 과정에서 기존의 finally 블록을 실수로 제거했고, 코드 리뷰에서 이를 발견하지 못했기 때문입니다.
+                                <br><br>
+                                <strong>증거:</strong> Git 히스토리 분석 결과 8월 20일 커밋에서 finally 블록 삭제 확인
+                            </p>
+                        </div>
+                        <div class="cause-item">
+                            <h4 style="margin-bottom: 15px;">🟢 5차: 왜 코드 리뷰에서 발견되지 못했나?</h4>
+                            <p style="line-height: 1.8;">
+                                <strong>답:</strong> 코드 리뷰 체크리스트에 리소스 관리(연결 해제) 항목이 없었고, 리뷰어가 비즈니스 로직에만 집중했기 때문입니다.
+                                <br><br>
+                                <strong>증거:</strong> 리뷰 코멘트 분석 결과 기능적 검토는 있으나 리소스 관리 관련 지적 없음
+                            </p>
+                        </div>
+                        <div class="cause-item">
+                            <h4 style="margin-bottom: 15px;">🎯 근본 원인 (Root Cause)</h4>
+                            <p style="line-height: 1.8; font-weight: 600; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                                <strong>결론:</strong> 코드 리뷰 프로세스에 리소스 관리 검증 절차가 부족하여, 
+                                개발자의 실수로 인한 메모리 누수가 배포 전에 발견되지 못했습니다.
+                                <br><br>
+                                <strong>핵심 문제:</strong> 프로세스 미비 + 도구 부족 + 교육 부족
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 40px 0;">
+                    <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
+                        <h4 style="color: #e53e3e; margin-bottom: 20px;">🔍 기여 요인 분석</h4>
+                        <ul style="line-height: 2.2;">
+                            <li><strong>직접 원인:</strong> finally 블록 누락</li>
+                            <li><strong>간접 원인:</strong> 불완전한 코드 리뷰</li>
+                            <li><strong>시스템 요인:</strong> 자동화된 리소스 누수 탐지 도구 부재</li>
+                            <li><strong>프로세스 요인:</strong> 배포 전 부하 테스트 미실시</li>
+                            <li><strong>인적 요인:</strong> 리소스 관리 교육 부족</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
+                        <h4 style="color: #38b2ac; margin-bottom: 20px;">📈 장애 확산 과정</h4>
+                        <ol style="line-height: 2.2;">
+                            <li>코드 배포 (8월 20일)</li>
+                            <li>사용자 요청 시 연결 누수 시작</li>
+                            <li>48시간에 걸쳐 연결 풀 점진적 고갈</li>
+                            <li>임계점 도달 (8월 22일 14:35)</li>
+                            <li>새로운 연결 생성 실패</li>
+                            <li>서비스 전체 마비</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <section id="recovery-actions" class="section" data-icon="🛠️">
+                <h2>복구 조치사항 (Recovery Actions)</h2>
+                <div class="impact-table">
+                    <h3 style="margin-bottom: 25px;">수행된 복구 조치 상세</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>조치 항목</th>
+                                <th>실행 시간</th>
+                                <th>담당자</th>
+                                <th>조치 내용</th>
+                                <th>결과</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>긴급 코드 수정</strong></td>
+                                <td>15:35 - 15:50</td>
+                                <td>박시니어개발자</td>
+                                <td>UserService.java에 finally 블록 추가</td>
+                                <td><span class="status-resolved">성공</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Hot Fix 배포</strong></td>
+                                <td>15:50 - 15:58</td>
+                                <td>김데브옵스</td>
+                                <td>Blue-Green 배포로 무중단 적용</td>
+                                <td><span class="status-resolved">성공</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>연결 풀 초기화</strong></td>
+                                <td>15:58 - 16:05</td>
+                                <td>이DBA</td>
+                                <td>기존 연결 강제 종료 및 풀 재시작</td>
+                                <td><span class="status-resolved">성공</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>설정 최적화</strong></td>
+                                <td>16:05 - 16:12</td>
+                                <td>이DBA</td>
+                                <td>최대 연결수 150개, 타임아웃 60초로 증설</td>
+                                <td><span class="status-resolved">성공</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>서비스 검증</strong></td>
+                                <td>16:12 - 16:20</td>
+                                <td>최QA팀장</td>
+                                <td>핵심 기능 테스트 및 부하 테스트</td>
+                                <td><span class="status-resolved">성공</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>모니터링 강화</strong></td>
+                                <td>16:20 - 16:30</td>
+                                <td>정모니터링</td>
+                                <td>연결 풀 사용률 알람 임계치 조정</td>
+                                <td><span class="status-resolved">성공</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>고객 공지</strong></td>
+                                <td>16:30 - 16:35</td>
+                                <td>안고객지원팀장</td>
+                                <td>복구 완료 및 사과 메시지 발송</td>
+                                <td><span class="status-resolved">성공</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="chart-container">
+                    <h3 style="margin-bottom: 25px;">복구 과정 중 시스템 지표 변화</h3>
+                    <div class="chart-placeholder">
+                        [복구 과정 모니터링 차트]<br>
+                        연결 풀 사용률: 100% → 85% → 15% (정상)<br>
+                        응답 시간: 30s → 10s → 0.05s (정상)<br>
+                        에러율: 100% → 50% → 0% (정상)
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin: 40px 0;">
+                    <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-left: 6px solid #48bb78;">
+                        <h4 style="color: #48bb78; margin-bottom: 15px;">✅ 성공한 조치</h4>
+                        <ul style="line-height: 2;">
+                            <li>신속한 근본 원인 파악 (40분)</li>
+                            <li>무중단 Hot Fix 배포 성공</li>
+                            <li>연결 풀 설정 최적화</li>
+                            <li>투명한 고객 소통</li>
+                            <li>전사 협력 체계 가동</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-left: 6px solid #ed8936;">
+                        <h4 style="color: #ed8936; margin-bottom: 15px;">⚠️ 개선 필요사항</h4>
+                        <ul style="line-height: 2;">
+                            <li>초기 감지 시간 단축</li>
+                            <li>자동 복구 메커니즘 부재</li>
+                            <li>백업 시스템 활용 미흡</li>
+                            <li>고객 공지 타이밍</li>
+                            <li>부하 테스트 자동화</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-left: 6px solid #9f7aea;">
+                        <h4 style="color: #9f7aea; margin-bottom: 15px;">📊 복구 성과 지표</h4>
+                        <ul style="line-height: 2;">
+                            <li>RTO 목표 대비 15분 단축</li>
+                            <li>데이터 손실 없음 (RPO 0)</li>
+                            <li>복구 후 재장애 발생 없음</li>
+                            <li>고객 만족도 조사 진행 중</li>
+                            <li>SLA 위반 최소화</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="lessons-learned" class="section" data-icon="🎓">
+                <h2>교훈 및 개선방안 (Lessons Learned)</h2>
+                <div class="lessons-learned">
+                    <h3 style="margin-bottom: 30px; font-size: 1.8rem;">이번 장애를 통해 얻은 주요 교훈</h3>
+                    <div class="lessons-grid">
+                        <div class="lesson-item">
+                            <h4 style="margin-bottom: 15px;">🔍 예방의 중요성</h4>
+                            <p style="line-height: 1.8; margin-bottom: 15px;">
+                                <strong>교훈:</strong> 리소스 누수 같은 미묘한 버그는 시간이 지나면서 심각한 장애로 발전할 수 있습니다.
+                            </p>
+                            <p style="line-height: 1.8; font-size: 0.95rem;">
+                                <strong>구체적 사례:</strong> 2일간 점진적으로 누적된 연결이 결국 전체 시스템을 마비시켰습니다. 
+                                조기 발견 메커니즘이 있었다면 사용자 영향 없이 해결 가능했을 것입니다.
+                            </p>
+                        </div>
+                        <div class="lesson-item">
+                            <h4 style="margin-bottom: 15px;">👥 코드 리뷰의 한계</h4>
+                            <p style="line-height: 1.8; margin-bottom: 15px;">
+                                <strong>교훈:</strong> 인간의 코드 리뷰만으로는 모든 종류의 버그를 잡아낼 수 없습니다.
+                            </p>
+                            <p style="line-height: 1.8; font-size: 0.95rem;">
+                                <strong>구체적 사례:</strong> 숙련된 개발자가 리뷰했음에도 리소스 관리 누락을 발견하지 못했습니다. 
+                                자동화된 정적 분석 도구의 필요성을 절감했습니다.
+                            </p>
+                        </div>
+                        <div class="lesson-item">
+                            <h4 style="margin-bottom: 15px;">📊 모니터링의 가치</h4>
+                            <p style="line-height: 1.8; margin-bottom: 15px;">
+                                <strong>교훈:</strong> 적절한 모니터링은 장애 예방과 신속한 복구의 핵심입니다.
+                            </p>
+                            <p style="line-height: 1.8; font-size: 0.95rem;">
+                                <strong>구체적 사례:</strong> 연결 풀 모니터링 덕분에 3분 내 장애를 감지했고, 
+                                상세한 지표를 통해 40분 만에 근본 원인을 파악할 수 있었습니다.
+                            </p>
+                        </div>
+                        <div class="lesson-item">
+                            <h4 style="margin-bottom: 15px;">🚀 신속한 의사결정</h4>
+                            <p style="line-height: 1.8; margin-bottom: 15px;">
+                                <strong>교훈:</strong> 명확한 에스컬레이션 절차와 의사결정권자 지정이 복구 시간을 단축시킵니다.
+                            </p>
+                            <p style="line-height: 1.8; font-size: 0.95rem;">
+                                <strong>구체적 사례:</strong> 장애 발생 3분 내에 대응팀이 소집되고 15분 내에 
+                                Level 1 선언 및 모든 필요한 자원을 투입할 수 있었습니다.
+                            </p>
+                        </div>
+                        <div class="lesson-item">
+                            <h4 style="margin-bottom: 15px;">💬 고객 소통의 중요성</h4>
+                            <p style="line-height: 1.8; margin-bottom: 15px;">
+                                <strong>교훈:</strong> 투명하고 신속한 소통이 고객 신뢰 유지의 핵심입니다.
+                            </p>
+                            <p style="line-height: 1.8; font-size: 0.95rem;">
+                                <strong>구체적 사례:</strong> 장애 발생 15분 내 첫 공지, 30분마다 진행 상황 업데이트를 
+                                통해 고객 불만을 최소화할 수 있었습니다.
+                            </p>
+                        </div>
+                        <div class="lesson-item">
+                            <h4 style="margin-bottom: 15px;">🔄 지속적 개선 필요</h4>
+                            <p style="line-height: 1.8; margin-bottom: 15px;">
+                                <strong>교훈:</strong> 장애 대응도 중요하지만, 근본적인 시스템 개선이 더 중요합니다.
+                            </p>
+                            <p style="line-height: 1.8; font-size: 0.95rem;">
+                                <strong>구체적 사례:</strong> 이번 장애를 계기로 전체 아키텍처와 개발 프로세스를 
+                                재검토하여 더 견고한 시스템을 구축해야 합니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 35px; border-radius: 16px; margin: 40px 0; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
+                    <h3 style="margin-bottom: 25px; color: #1a202c;">📈 대응 역량 평가</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+                        <div style="text-align: center; padding: 20px;">
+                            <div style="font-size: 3rem; color: #48bb78; font-weight: 900;">A</div>
+                            <h4 style="color: #48bb78; margin: 10px 0;">감지 능력</h4>
+                            <p>자동 모니터링으로 3분 내 감지</p>
+                        </div>
+                        <div style="text-align: center; padding: 20px;">
+                            <div style="font-size: 3rem; color: #38b2ac; font-weight: 900;">A-</div>
+                            <h4 style="color: #38b2ac; margin: 10px 0;">분석 능력</h4>
+                            <p>40분만에 근본 원인 파악</p>
+                        </div>
+                        <div style="text-align: center; padding: 20px;">
+                            <div style="font-size: 3rem; color: #4299e1; font-weight: 900;">B+</div>
+                            <h4 style="color: #4299e1; margin: 10px 0;">복구 능력</h4>
+                            <p>1시간 45분만에 완전 복구</p>
+                        </div>
+                        <div style="text-align: center; padding: 20px;">
+                            <div style="font-size: 3rem; color: #9f7aea; font-weight: 900;">A</div>
+                            <h4 style="color: #9f7aea; margin: 10px 0;">소통 능력</h4>
+                            <p>신속하고 투명한 고객 소통</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="prevention-plan" class="section" data-icon="🛡️">
+                <h2>재발 방지 계획 (Prevention Plan)</h2>
+                <div class="prevention-plan">
+                    <h3 style="margin-bottom: 30px; font-size: 1.8rem;">단계별 재발 방지 전략</h3>
+                    <div class="prevention-grid">
+                        <div class="prevention-item">
+                            <h4 style="margin-bottom: 15px;">🚨 즉시 시행 (1주 이내)</h4>
+                            <ul style="line-height: 2.2;">
+                                <li><strong>리소스 누수 탐지 도구:</strong> SonarQube에 리소스 관리 규칙 추가</li>
+                                <li><strong>코드 리뷰 체크리스트:</strong> 연결/스트림 해제 필수 확인 항목 추가</li>
+                                <li><strong>모니터링 강화:</strong> 연결 풀 사용률 70% 이상 시 경고 알람</li>
+                                <li><strong>자동 복구:</strong> 연결 풀 고갈 시 자동 재시작 스크립트 구현</li>
+                            </ul>
+                        </div>
+                        <div class="prevention-item">
+                            <h4 style="margin-bottom: 15px;">⚡ 단기 계획 (1개월 이내)</h4>
+                            <ul style="line-height: 2.2;">
+                                <li><strong>자동화된 테스트:</strong> 메모리 누수 탐지 테스트 케이스 추가</li>
+                                <li><strong>부하 테스트:</strong> 배포 전 필수 부하 테스트 자동화</li>
+                                <li><strong>Circuit Breaker:</strong> DB 연결 실패 시 서킷 브레이커 도입</li>
+                                <li><strong>교육 프로그램:</strong> 리소스 관리 베스트 프랙티스 교육</li>
+                            </ul>
+                        </div>
+                        <div class="prevention-item">
+                            <h4 style="margin-bottom: 15px;">📋 중기 계획 (3개월 이내)</h4>
+                            <ul style="line-height: 2.2;">
+                                <li><strong>아키텍처 개선:</strong> Connection Pool 분리 및 이중화</li>
+                                <li><strong>카나리 배포:</strong> 점진적 배포를 통한 위험 최소화</li>
+                                <li><strong>관측 가능성:</strong> 분산 추적으로 리소스 흐름 가시화</li>
+                                <li><strong>장애 시뮬레이션:</strong> 정기적인 카오스 엔지니어링</li>
+                            </ul>
+                        </div>
+                        <div class="prevention-item">
+                            <h4 style="margin-bottom: 15px;">🔄 장기 계획 (6개월 이내)</h4>
+                            <ul style="line-height: 2.2;">
+                                <li><strong>마이크로서비스:</strong> DB 의존성 분리를 위한 서비스 분할</li>
+                                <li><strong>클라우드 네이티브:</strong> 관리형 DB 서비스 도입 검토</li>
+                                <li><strong>AI 모니터링:</strong> ML 기반 이상 패턴 탐지</li>
+                                <li><strong>전사 SRE:</strong> Site Reliability Engineering 조직 구축</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="impact-table">
+                    <h3 style="margin-bottom: 25px;">재발 방지 조치 로드맵 및 담당자</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>조치 항목</th>
+                                <th>우선순위</th>
+                                <th>완료 목표일</th>
+                                <th>담당자</th>
+                                <th>예산</th>
+                                <th>기대 효과</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>SonarQube 규칙 추가</strong></td>
+                                <td><span class="severity-critical">긴급</span></td>
+                                <td>2025-08-26</td>
+                                <td>박시니어개발자</td>
+                                <td>₩0</td>
+                                <td>리소스 누수 100% 사전 차단</td>
+                            </tr>
+                            <tr>
+                                <td><strong>모니터링 알람 개선</strong></td>
+                                <td><span class="severity-critical">긴급</span></td>
+                                <td>2025-08-28</td>
+                                <td>정모니터링</td>
+                                <td>₩500,000</td>
+                                <td>장애 예측 및 조기 대응</td>
+                            </tr>
+                            <tr>
+                                <td><strong>자동 부하 테스트</strong></td>
+                                <td><span class="severity-high">높음</span></td>
+                                <td>2025-09-15</td>
+                                <td>최QA팀장</td>
+                                <td>₩3,000,000</td>
+                                <td>배포 전 성능 이슈 발견</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Circuit Breaker 도입</strong></td>
+                                <td><span class="severity-high">높음</span></td>
+                                <td>2025-09-30</td>
+                                <td>이아키텍트</td>
+                                <td>₩2,000,000</td>
+                                <td>장애 전파 방지</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Connection Pool 이중화</strong></td>
+                                <td><span class="severity-high">높음</span></td>
+                                <td>2025-10-31</td>
+                                <td>이DBA</td>
+                                <td>₩8,000,000</td>
+                                <td>DB 계층 가용성 향상</td>
+                            </tr>
+                            <tr>
+                                <td><strong>카나리 배포 시스템</strong></td>
+                                <td><span class="severity-high">높음</span></td>
+                                <td>2025-11-15</td>
+                                <td>김데브옵스</td>
+                                <td>₩5,000,000</td>
+                                <td>배포 위험 90% 감소</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="background: #f7fafc; padding: 35px; border-radius: 16px; margin: 40px 0; border: 2px solid #e53e3e;">
+                    <h4 style="color: #e53e3e; margin-bottom: 25px; font-size: 1.4rem;">🎯 성공 지표 및 검증 계획</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                        <div>
+                            <h5 style="color: #1a202c; margin-bottom: 10px;">단기 성과 지표</h5>
+                            <ul style="line-height: 2;">
+                                <li>리소스 누수 탐지율: 100%</li>
+                                <li>장애 조기 감지: 1분 내</li>
+                                <li>자동 복구 성공률: 95%</li>
+                                <li>배포 전 버그 발견률: +50%</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 style="color: #1a202c; margin-bottom: 10px;">장기 성과 지표</h5>
+                            <ul style="line-height: 2;">
+                                <li>시스템 가용성: 99.99%</li>
+                                <li>MTBF: 6개월 이상</li>
+                                <li>MTTR: 30분 이내</li>
+                                <li>고객 만족도: 95% 이상</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 style="color: #1a202c; margin-bottom: 10px;">정기 검증 계획</h5>
+                            <ul style="line-height: 2;">
+                                <li>월간 장애 대응 훈련</li>
+                                <li>분기별 시스템 건강성 검사</li>
+                                <li>반기별 아키텍처 리뷰</li>
+                                <li>연간 재해 복구 테스트</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer class="footer">
+            <p>본 장애 대응 보고서는 투명성과 지속적 개선을 위해 작성되었습니다.</p>
+            <p>장애대응팀 | 긴급상황: 1588-0119 | incident@company.com | 작성일: 2025-08-23</p>
+        </footer>
+    </div>
+</body>
+</html>

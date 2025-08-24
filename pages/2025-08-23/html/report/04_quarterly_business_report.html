@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>분기별 사업 실적 보고서</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+            color: white;
+            padding: 60px 50px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)" /></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fff, #a8e6cf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .quarter-info {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .content {
+            padding: 60px 50px;
+        }
+
+        .toc {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+            border: 3px solid #74b9ff;
+            position: relative;
+        }
+
+        .toc::before {
+            content: '📊';
+            position: absolute;
+            top: -20px;
+            left: 40px;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 50%;
+            font-size: 2rem;
+        }
+
+        .toc h2 {
+            color: #2d3436;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            margin-left: 40px;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .toc-item {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid #74b9ff;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .toc-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .toc-item a {
+            color: #2d3436;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .section {
+            margin-bottom: 70px;
+            background: #fafbfc;
+            border-radius: 20px;
+            padding: 50px;
+            border-left: 8px solid #00b894;
+            position: relative;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .section::before {
+            content: attr(data-icon);
+            position: absolute;
+            top: -20px;
+            left: 40px;
+            background: #00b894;
+            color: white;
+            padding: 12px 15px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
+        }
+
+        .section h2 {
+            color: #2d3436;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            margin-left: 40px;
+        }
+
+        .kpi-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .kpi-card {
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-top: 6px solid #74b9ff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(116, 185, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .kpi-card:nth-child(2n) { border-top-color: #00b894; }
+        .kpi-card:nth-child(3n) { border-top-color: #fd79a8; }
+        .kpi-card:nth-child(4n) { border-top-color: #fdcb6e; }
+
+        .kpi-value {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #2d3436;
+            margin-bottom: 10px;
+        }
+
+        .kpi-trend {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        .trend-up { color: #00b894; }
+        .trend-down { color: #e17055; }
+
+        .chart-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 40px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-placeholder {
+            height: 400px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #74b9ff;
+            color: #636e72;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .financial-table {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            margin: 40px 0;
+        }
+
+        .financial-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .financial-table th {
+            background: linear-gradient(135deg, #2d3436, #636e72);
+            color: white;
+            padding: 25px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .financial-table td {
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 1rem;
+        }
+
+        .financial-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .financial-table tr:hover {
+            background: #e3f2fd;
+            transition: all 0.2s ease;
+        }
+
+        .amount-positive {
+            color: #00b894;
+            font-weight: 600;
+        }
+
+        .amount-negative {
+            color: #e17055;
+            font-weight: 600;
+        }
+
+        .project-timeline {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 40px 0;
+        }
+
+        .timeline-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .project-status {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .status-completed { background: #00b894; }
+        .status-ongoing { background: #fdcb6e; color: #2d3436; }
+        .status-delayed { background: #e17055; }
+
+        .risk-analysis {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 40px 0;
+        }
+
+        .risk-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .risk-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .risk-level {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .risk-high { background: #e17055; }
+        .risk-medium { background: #fdcb6e; color: #2d3436; }
+        .risk-low { background: #00b894; }
+
+        .action-plan {
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 40px 0;
+        }
+
+        .plan-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .plan-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border-left: 4px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .footer {
+            background: #2d3436;
+            color: white;
+            padding: 40px 50px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 40px 25px;
+            }
+            
+            .header-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: 30px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div>
+                    <h1>분기별 사업 실적 보고서</h1>
+                    <p style="font-size: 1.2rem; opacity: 0.9;">소프트웨어 개발사업부 · 2025년 2분기</p>
+                    <p style="font-size: 1rem; opacity: 0.8; margin-top: 10px;">Software Development Division Quarterly Report</p>
+                </div>
+                <div class="quarter-info">
+                    <h3 style="margin-bottom: 15px;">보고서 정보</h3>
+                    <div style="display: grid; gap: 8px; font-size: 0.95rem;">
+                        <div><strong>보고 기간:</strong> 2025년 4월 ~ 6월</div>
+                        <div><strong>작성 부서:</strong> 소프트웨어개발사업부</div>
+                        <div><strong>작성자:</strong> 최사업기획 (사업기획팀장)</div>
+                        <div><strong>승인자:</strong> 김사업부장</div>
+                        <div><strong>보고일:</strong> 2025년 8월 23일</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+            <div class="toc">
+                <h2>목차 (Table of Contents)</h2>
+                <div class="toc-grid">
+                    <div class="toc-item">
+                        <a href="#executive-summary">1. 경영진 요약</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#financial-performance">2. 재무 성과</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#project-status">3. 프로젝트 현황</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#market-analysis">4. 시장 분석</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#team-performance">5. 팀 성과</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#risk-assessment">6. 위험 요소 분석</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#next-quarter">7. 차분기 계획</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#appendix">8. 부록</a>
+                    </div>
+                </div>
+            </div>
+
+            <section id="executive-summary" class="section" data-icon="📈">
+                <h2>경영진 요약 (Executive Summary)</h2>
+                <div class="kpi-dashboard">
+                    <div class="kpi-card">
+                        <div class="kpi-value">₩12.5B</div>
+                        <h3>분기 매출액</h3>
+                        <div class="kpi-trend trend-up">
+                            ↗️ +18.5% (전분기 대비)
+                        </div>
+                        <p>목표 대비 104.2% 달성</p>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value">₩2.8B</div>
+                        <h3>영업 이익</h3>
+                        <div class="kpi-trend trend-up">
+                            ↗️ +22.3% (전분기 대비)
+                        </div>
+                        <p>영업이익률 22.4%</p>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value">28</div>
+                        <h3>완료 프로젝트</h3>
+                        <div class="kpi-trend trend-up">
+                            ↗️ +16.7% (전분기 대비)
+                        </div>
+                        <p>성공률 96.4%</p>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value">145</div>
+                        <h3>팀 규모</h3>
+                        <div class="kpi-trend trend-up">
+                            ↗️ +8.2% (인원 증가)
+                        </div>
+                        <p>신규 채용 12명</p>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value">98.2%</div>
+                        <h3>고객 만족도</h3>
+                        <div class="kpi-trend trend-up">
+                            ↗️ +2.1% (전분기 대비)
+                        </div>
+                        <p>업계 평균 대비 +15%</p>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value">15</div>
+                        <h3>신규 고객</h3>
+                        <div class="kpi-trend trend-up">
+                            ↗️ +25.0% (전분기 대비)
+                        </div>
+                        <p>대기업 5곳 포함</p>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3 style="margin-bottom: 25px;">분기별 매출 및 이익 추이</h3>
+                    <div class="chart-placeholder">
+                        [매출/이익 추이 차트 - 실제 구현에서는 Chart.js나 D3.js 사용]<br>
+                        2024 Q3: ₩8.2B → 2024 Q4: ₩9.5B → 2025 Q1: ₩10.6B → 2025 Q2: ₩12.5B
+                    </div>
+                </div>
+
+                <h3>핵심 성과 요약</h3>
+                <ul style="font-size: 1.1rem; line-height: 2; margin-top: 20px;">
+                    <li><strong>매출 성장:</strong> 전년 동기 대비 35% 성장, 분기 목표 초과 달성</li>
+                    <li><strong>신기술 도입:</strong> AI/ML 솔루션 개발 역량 확보로 새로운 수익원 창출</li>
+                    <li><strong>고객 확대:</strong> 금융, 제조업 분야 대기업 신규 고객 5곳 확보</li>
+                    <li><strong>품질 향상:</strong> 프로젝트 성공률 96.4% 달성, 업계 최고 수준</li>
+                    <li><strong>조직 역량:</strong> 시니어 개발자 비율 45% 달성, 기술 경쟁력 강화</li>
+                </ul>
+            </section>
+
+            <section id="financial-performance" class="section" data-icon="💰">
+                <h2>재무 성과 (Financial Performance)</h2>
+                <div class="financial-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>항목</th>
+                                <th>2025 Q2 실적</th>
+                                <th>2025 Q1 실적</th>
+                                <th>전분기 대비</th>
+                                <th>2024 Q2 실적</th>
+                                <th>전년 동기 대비</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>총 매출액</strong></td>
+                                <td class="amount-positive">₩12,500,000,000</td>
+                                <td>₩10,550,000,000</td>
+                                <td class="amount-positive">+18.5%</td>
+                                <td>₩9,250,000,000</td>
+                                <td class="amount-positive">+35.1%</td>
+                            </tr>
+                            <tr>
+                                <td>SI 프로젝트</td>
+                                <td class="amount-positive">₩8,750,000,000</td>
+                                <td>₩7,400,000,000</td>
+                                <td class="amount-positive">+18.2%</td>
+                                <td>₩6,800,000,000</td>
+                                <td class="amount-positive">+28.7%</td>
+                            </tr>
+                            <tr>
+                                <td>솔루션 라이센스</td>
+                                <td class="amount-positive">₩2,250,000,000</td>
+                                <td>₩1,950,000,000</td>
+                                <td class="amount-positive">+15.4%</td>
+                                <td>₩1,650,000,000</td>
+                                <td class="amount-positive">+36.4%</td>
+                            </tr>
+                            <tr>
+                                <td>유지보수 서비스</td>
+                                <td class="amount-positive">₩1,500,000,000</td>
+                                <td>₩1,200,000,000</td>
+                                <td class="amount-positive">+25.0%</td>
+                                <td>₩800,000,000</td>
+                                <td class="amount-positive">+87.5%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>영업 비용</strong></td>
+                                <td class="amount-negative">₩9,700,000,000</td>
+                                <td>₩8,300,000,000</td>
+                                <td class="amount-negative">+16.9%</td>
+                                <td>₩7,200,000,000</td>
+                                <td class="amount-negative">+34.7%</td>
+                            </tr>
+                            <tr>
+                                <td>인건비</td>
+                                <td class="amount-negative">₩6,800,000,000</td>
+                                <td>₩5,900,000,000</td>
+                                <td class="amount-negative">+15.3%</td>
+                                <td>₩5,200,000,000</td>
+                                <td class="amount-negative">+30.8%</td>
+                            </tr>
+                            <tr>
+                                <td>개발 도구 & 인프라</td>
+                                <td class="amount-negative">₩1,200,000,000</td>
+                                <td>₩1,100,000,000</td>
+                                <td class="amount-negative">+9.1%</td>
+                                <td>₩900,000,000</td>
+                                <td class="amount-negative">+33.3%</td>
+                            </tr>
+                            <tr>
+                                <td>외주 개발</td>
+                                <td class="amount-negative">₩1,700,000,000</td>
+                                <td>₩1,300,000,000</td>
+                                <td class="amount-negative">+30.8%</td>
+                                <td>₩1,100,000,000</td>
+                                <td class="amount-negative">+54.5%</td>
+                            </tr>
+                            <tr style="background: #f1f3f4; font-weight: bold;">
+                                <td><strong>영업 이익</strong></td>
+                                <td class="amount-positive">₩2,800,000,000</td>
+                                <td>₩2,250,000,000</td>
+                                <td class="amount-positive">+24.4%</td>
+                                <td>₩2,050,000,000</td>
+                                <td class="amount-positive">+36.6%</td>
+                            </tr>
+                            <tr style="background: #f1f3f4; font-weight: bold;">
+                                <td><strong>영업이익률</strong></td>
+                                <td class="amount-positive">22.4%</td>
+                                <td>21.3%</td>
+                                <td class="amount-positive">+1.1%p</td>
+                                <td>22.2%</td>
+                                <td class="amount-positive">+0.2%p</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="chart-container">
+                    <h3 style="margin-bottom: 25px;">매출 구성 비율 (Revenue Breakdown)</h3>
+                    <div class="chart-placeholder">
+                        [파이 차트 - 매출 구성]<br>
+                        SI 프로젝트: 70% | 솔루션 라이센스: 18% | 유지보수 서비스: 12%
+                    </div>
+                </div>
+            </section>
+
+            <section id="project-status" class="section" data-icon="🚀">
+                <h2>프로젝트 현황 (Project Status)</h2>
+                <div class="project-timeline">
+                    <h3 style="margin-bottom: 30px;">주요 프로젝트 진행 현황</h3>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <h4>A그룹 통합 ERP 시스템</h4>
+                            <span class="project-status status-completed">완료</span>
+                        </div>
+                        <p><strong>규모:</strong> ₩3.2B | <strong>기간:</strong> 2025.01 ~ 2025.06</p>
+                        <p>대기업 그룹사 통합 ERP 구축 성공적 완료. 고객 만족도 99% 달성</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <h4>B금융 디지털 뱅킹 플랫폼</h4>
+                            <span class="project-status status-ongoing">진행중</span>
+                        </div>
+                        <p><strong>규모:</strong> ₩2.8B | <strong>기간:</strong> 2025.03 ~ 2025.09</p>
+                        <p>현재 75% 진행, 예정보다 1주 앞서 진행. 보안 감사 완료</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <h4>C제조업 스마트팩토리 솔루션</h4>
+                            <span class="project-status status-ongoing">진행중</span>
+                        </div>
+                        <p><strong>규모:</strong> ₩1.9B | <strong>기간:</strong> 2025.04 ~ 2025.10</p>
+                        <p>IoT 센서 데이터 수집 및 AI 분석 모듈 개발 완료</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <h4>D병원 전자의무기록 시스템</h4>
+                            <span class="project-status status-delayed">지연</span>
+                        </div>
+                        <p><strong>규모:</strong> ₩1.5B | <strong>기간:</strong> 2025.02 ~ 2025.08</p>
+                        <p>의료진 요구사항 변경으로 2주 지연. 추가 개발자 투입 완료</p>
+                    </div>
+                </div>
+
+                <div class="financial-table">
+                    <h3 style="margin-bottom: 25px;">프로젝트별 수익성 분석</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>프로젝트명</th>
+                                <th>계약금액</th>
+                                <th>진행률</th>
+                                <th>인정매출</th>
+                                <th>예상이익률</th>
+                                <th>위험도</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>A그룹 통합 ERP</td>
+                                <td>₩3,200,000,000</td>
+                                <td>100%</td>
+                                <td class="amount-positive">₩3,200,000,000</td>
+                                <td class="amount-positive">25.3%</td>
+                                <td style="color: #00b894;">낮음</td>
+                            </tr>
+                            <tr>
+                                <td>B금융 디지털 뱅킹</td>
+                                <td>₩2,800,000,000</td>
+                                <td>75%</td>
+                                <td class="amount-positive">₩2,100,000,000</td>
+                                <td class="amount-positive">22.8%</td>
+                                <td style="color: #00b894;">낮음</td>
+                            </tr>
+                            <tr>
+                                <td>C제조업 스마트팩토리</td>
+                                <td>₩1,900,000,000</td>
+                                <td>60%</td>
+                                <td class="amount-positive">₩1,140,000,000</td>
+                                <td class="amount-positive">20.5%</td>
+                                <td style="color: #fdcb6e;">중간</td>
+                            </tr>
+                            <tr>
+                                <td>D병원 EMR 시스템</td>
+                                <td>₩1,500,000,000</td>
+                                <td>85%</td>
+                                <td class="amount-positive">₩1,275,000,000</td>
+                                <td class="amount-negative">15.2%</td>
+                                <td style="color: #e17055;">높음</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="market-analysis" class="section" data-icon="📊">
+                <h2>시장 분석 (Market Analysis)</h2>
+                <div class="kpi-dashboard">
+                    <div class="kpi-card">
+                        <div class="kpi-value">₩45T</div>
+                        <h3>국내 SI 시장 규모</h3>
+                        <div class="kpi-trend trend-up">
+                            ↗️ +8.2% (전년 대비)
+                        </div>
+                        <p>디지털 전환 가속화</p>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value">2.8%</div>
+                        <h3>시장 점유율</h3>
+                        <div class="kpi-trend trend-up">
+                            ↗️ +0.3%p (전년 대비)
+                        </div>
+                        <p>업계 15위 → 12위</p>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value">35%</div>
+                        <h3>AI/ML 프로젝트 비중</h3>
+                        <div class="kpi-trend trend-up">
+                            ↗️ +15%p (전분기 대비)
+                        </div>
+                        <p>신성장 동력 확보</p>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value">8.5점</div>
+                        <h3>기술 경쟁력 평가</h3>
+                        <div class="kpi-trend trend-up">
+                            ↗️ +0.7점 (전년 대비)
+                        </div>
+                        <p>업계 평균 7.2점</p>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3 style="margin-bottom: 25px;">분야별 시장 성장률 및 당사 진출 현황</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                        <div>
+                            <h4 style="margin-bottom: 15px;">고성장 분야</h4>
+                            <ul style="line-height: 2;">
+                                <li><strong>AI/ML 솔루션:</strong> +35% (진출완료 ✅)</li>
+                                <li><strong>클라우드 마이그레이션:</strong> +28% (진출완료 ✅)</li>
+                                <li><strong>사이버보안:</strong> +22% (진출검토 🔄)</li>
+                                <li><strong>IoT/스마트팩토리:</strong> +18% (진출완료 ✅)</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 15px;">안정성장 분야</h4>
+                            <ul style="line-height: 2;">
+                                <li><strong>ERP/CRM 시스템:</strong> +12% (강점영역 💪)</li>
+                                <li><strong>모바일 앱:</strong> +8% (강점영역 💪)</li>
+                                <li><strong>웹 포털:</strong> +5% (성숙시장 📊)</li>
+                                <li><strong>레거시 현대화:</strong> +7% (전문영역 🎯)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="team-performance" class="section" data-icon="👥">
+                <h2>팀 성과 (Team Performance)</h2>
+                <div class="financial-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>팀명</th>
+                                <th>인원</th>
+                                <th>분기 기여매출</th>
+                                <th>생산성</th>
+                                <th>고객만족도</th>
+                                <th>평가</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>백엔드개발팀</strong></td>
+                                <td>45명</td>
+                                <td class="amount-positive">₩4,200,000,000</td>
+                                <td>93M원/명</td>
+                                <td>97.8%</td>
+                                <td style="color: #00b894; font-weight: bold;">우수</td>
+                            </tr>
+                            <tr>
+                                <td><strong>프론트엔드팀</strong></td>
+                                <td>32명</td>
+                                <td class="amount-positive">₩2,800,000,000</td>
+                                <td>87M원/명</td>
+                                <td>98.5%</td>
+                                <td style="color: #00b894; font-weight: bold;">우수</td>
+                            </tr>
+                            <tr>
+                                <td><strong>AI/ML팀</strong></td>
+                                <td>18명</td>
+                                <td class="amount-positive">₩2,100,000,000</td>
+                                <td>116M원/명</td>
+                                <td>99.1%</td>
+                                <td style="color: #00b894; font-weight: bold;">탁월</td>
+                            </tr>
+                            <tr>
+                                <td><strong>모바일개발팀</strong></td>
+                                <td>25명</td>
+                                <td class="amount-positive">₩1,800,000,000</td>
+                                <td>72M원/명</td>
+                                <td>96.2%</td>
+                                <td style="color: #4299e1; font-weight: bold;">양호</td>
+                            </tr>
+                            <tr>
+                                <td><strong>QA팀</strong></td>
+                                <td>15명</td>
+                                <td class="amount-positive">₩900,000,000</td>
+                                <td>60M원/명</td>
+                                <td>98.9%</td>
+                                <td style="color: #00b894; font-weight: bold;">우수</td>
+                            </tr>
+                            <tr>
+                                <td><strong>DevOps팀</strong></td>
+                                <td>10명</td>
+                                <td class="amount-positive">₩700,000,000</td>
+                                <td>70M원/명</td>
+                                <td>97.5%</td>
+                                <td style="color: #4299e1; font-weight: bold;">양호</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="kpi-dashboard">
+                    <div class="kpi-card">
+                        <div class="kpi-value">4.2/5.0</div>
+                        <h3>직원 만족도</h3>
+                        <div class="kpi-trend trend-up">
+                            ↗️ +0.3 (전분기 대비)
+                        </div>
+                        <p>복리후생 개선 효과</p>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value">12명</div>
+                        <h3>신규 채용</h3>
+                        <div class="kpi-trend trend-up">
+                            ↗️ 시니어 8명, 주니어 4명
+                        </div>
+                        <p>우수 인재 확보</p>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value">2.3%</div>
+                        <h3>이직률</h3>
+                        <div class="kpi-trend trend-down">
+                            ↘️ -1.2%p (업계 평균 8.5%)
+                        </div>
+                        <p>인재 유지 우수</p>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value">156시간</div>
+                        <h3>1인당 교육시간</h3>
+                        <div class="kpi-trend trend-up">
+                            ↗️ +24시간 (전분기 대비)
+                        </div>
+                        <p>역량 개발 집중</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="risk-assessment" class="section" data-icon="⚠️">
+                <h2>위험 요소 분석 (Risk Assessment)</h2>
+                <div class="risk-analysis">
+                    <h3 style="margin-bottom: 25px;">주요 위험 요소 및 대응 방안</h3>
+                    <div class="risk-grid">
+                        <div class="risk-item">
+                            <span class="risk-level risk-high">높음</span>
+                            <h4>인력 수급 불안정</h4>
+                            <p><strong>위험:</strong> 시니어 개발자 채용 어려움으로 프로젝트 지연 위험</p>
+                            <p><strong>대응:</strong> 헤드헌팅 강화, 내부 승진 프로그램 운영</p>
+                        </div>
+                        <div class="risk-item">
+                            <span class="risk-level risk-medium">중간</span>
+                            <h4>기술 변화 대응</h4>
+                            <p><strong>위험:</strong> AI/클라우드 등 신기술 도입 지연</p>
+                            <p><strong>대응:</strong> 기술 교육 투자 확대, 외부 전문가 영입</p>
+                        </div>
+                        <div class="risk-item">
+                            <span class="risk-level risk-medium">중간</span>
+                            <h4>프로젝트 집중도</h4>
+                            <p><strong>위험:</strong> 대규모 프로젝트 의존도 높음</p>
+                            <p><strong>대응:</strong> 중소규모 프로젝트 확대, 포트폴리오 다변화</p>
+                        </div>
+                        <div class="risk-item">
+                            <span class="risk-level risk-low">낮음</span>
+                            <h4>경쟁사 대응</h4>
+                            <p><strong>위험:</strong> 대형 SI업체 경쟁 심화</p>
+                            <p><strong>대응:</strong> 차별화된 기술력, 고객 관계 강화</p>
+                        </div>
+                        <div class="risk-item">
+                            <span class="risk-level risk-low">낮음</span>
+                            <h4>경제 환경 변화</h4>
+                            <p><strong>위험:</strong> 경기 침체로 IT 투자 위축</p>
+                            <p><strong>대응:</strong> 필수 시스템 영역 집중, 비용 효율화</p>
+                        </div>
+                        <div class="risk-item">
+                            <span class="risk-level risk-medium">중간</span>
+                            <h4>보안 위협 증가</h4>
+                            <p><strong>위험:</strong> 사이버 보안 사고 발생 가능성</p>
+                            <p><strong>대응:</strong> 보안 교육 강화, 보안 솔루션 도입</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="next-quarter" class="section" data-icon="🎯">
+                <h2>차분기 계획 (Next Quarter Plan)</h2>
+                <div class="action-plan">
+                    <h3 style="margin-bottom: 25px;">2025년 3분기 주요 목표 및 전략</h3>
+                    <div class="plan-grid">
+                        <div class="plan-item">
+                            <h4>📈 매출 목표</h4>
+                            <ul>
+                                <li>분기 매출 ₩14.2B 달성</li>
+                                <li>신규 계약 ₩8B 체결</li>
+                                <li>AI/ML 프로젝트 비중 40% 달성</li>
+                                <li>재계약율 85% 유지</li>
+                            </ul>
+                        </div>
+                        <div class="plan-item">
+                            <h4>🚀 신사업 개발</h4>
+                            <ul>
+                                <li>사이버보안 솔루션 개발</li>
+                                <li>블록체인 기반 서비스 출시</li>
+                                <li>메타버스 플랫폼 구축</li>
+                                <li>글로벌 파트너십 확대</li>
+                            </ul>
+                        </div>
+                        <div class="plan-item">
+                            <h4>👥 조직 강화</h4>
+                            <ul>
+                                <li>시니어 개발자 15명 채용</li>
+                                <li>AI 전문가팀 확대 (25명)</li>
+                                <li>해외 개발센터 설립 검토</li>
+                                <li>리더십 교육 프로그램 운영</li>
+                            </ul>
+                        </div>
+                        <div class="plan-item">
+                            <h4>🔧 기술 혁신</h4>
+                            <ul>
+                                <li>Low-Code 플랫폼 도입</li>
+                                <li>자동화 도구 고도화</li>
+                                <li>클라우드 네이티브 전환</li>
+                                <li>오픈소스 기여도 확대</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="financial-table">
+                    <h3 style="margin-bottom: 25px;">3분기 세부 실행 계획</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>구분</th>
+                                <th>세부 계획</th>
+                                <th>담당부서</th>
+                                <th>예산</th>
+                                <th>완료목표일</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>영업 확대</strong></td>
+                                <td>제조업 대상 스마트팩토리 솔루션 마케팅</td>
+                                <td>영업팀</td>
+                                <td>₩200M</td>
+                                <td>2025-09-30</td>
+                            </tr>
+                            <tr>
+                                <td><strong>기술 개발</strong></td>
+                                <td>AI 기반 코드 생성 도구 개발</td>
+                                <td>AI/ML팀</td>
+                                <td>₩150M</td>
+                                <td>2025-09-15</td>
+                            </tr>
+                            <tr>
+                                <td><strong>인력 확보</strong></td>
+                                <td>시니어 개발자 대상 채용 박람회</td>
+                                <td>인사팀</td>
+                                <td>₩80M</td>
+                                <td>2025-08-31</td>
+                            </tr>
+                            <tr>
+                                <td><strong>품질 향상</strong></td>
+                                <td>자동화 테스트 프레임워크 구축</td>
+                                <td>QA팀</td>
+                                <td>₩120M</td>
+                                <td>2025-09-20</td>
+                            </tr>
+                            <tr>
+                                <td><strong>교육 강화</strong></td>
+                                <td>클라우드 아키텍처 전문가 양성</td>
+                                <td>교육팀</td>
+                                <td>₩100M</td>
+                                <td>2025-09-30</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="appendix" class="section" data-icon="📋">
+                <h2>부록 (Appendix)</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                    <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                        <h4>주요 지표 정의</h4>
+                        <ul style="line-height: 1.8; margin-top: 15px;">
+                            <li><strong>생산성:</strong> 분기 기여매출 / 팀원 수</li>
+                            <li><strong>프로젝트 성공률:</strong> 완료 프로젝트 중 성공 비율</li>
+                            <li><strong>고객 만족도:</strong> 5점 척도 설문조사 결과</li>
+                            <li><strong>영업이익률:</strong> 영업이익 / 매출액 × 100</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                        <h4>참고 자료</h4>
+                        <ul style="line-height: 1.8; margin-top: 15px;">
+                            <li>한국소프트웨어산업협회 통계자료</li>
+                            <li>IDC Korea IT 시장 전망 보고서</li>
+                            <li>가트너 소프트웨어 개발 트렌드</li>
+                            <li>내부 프로젝트 관리 시스템 데이터</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px; padding: 30px; background: #f8f9fa; border-radius: 15px;">
+                    <h4 style="margin-bottom: 20px;">보고서 승인 현황</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        <div>
+                            <strong>작성자:</strong> 최사업기획 (사업기획팀장)<br>
+                            <strong>작성일:</strong> 2025-08-20<br>
+                            <strong>연락처:</strong> planning@company.com
+                        </div>
+                        <div>
+                            <strong>검토자:</strong> 박재무이사 (재무담당이사)<br>
+                            <strong>검토일:</strong> 2025-08-22<br>
+                            <strong>의견:</strong> 승인
+                        </div>
+                        <div>
+                            <strong>승인자:</strong> 김사업부장 (소프트웨어사업부장)<br>
+                            <strong>승인일:</strong> 2025-08-23<br>
+                            <strong>의견:</strong> 최종 승인
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer class="footer">
+            <p>본 보고서는 회사 기밀문서이며, 관계자 외 열람 및 배포를 금지합니다.</p>
+            <p>문의사항: 사업기획팀 (02-1234-5678) | planning@company.com</p>
+        </footer>
+    </div>
+</body>
+</html>

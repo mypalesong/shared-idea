@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n8n 리포팅 대시보드 자동화 - 실시간 비즈니스 인텔리전스</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+        
+        .workflow-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 40px;
+        }
+        
+        .workflow-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 30px;
+        }
+        
+        .workflow-title {
+            flex-grow: 1;
+        }
+        
+        .workflow-title h2 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .workflow-title p {
+            color: #666;
+            font-size: 0.95em;
+        }
+        
+        .dashboard-preview {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .preview-title {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 25px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .widget {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .widget-title {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .widget-icon {
+            color: #1e3c72;
+            font-size: 20px;
+        }
+        
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #1e3c72;
+            margin-bottom: 5px;
+        }
+        
+        .metric-change {
+            font-size: 0.9em;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        
+        .positive {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .negative {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .chart-placeholder {
+            height: 100px;
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .feature {
+            padding: 20px;
+            background: linear-gradient(135deg, #f0f7ff, #e6f3ff);
+            border-radius: 10px;
+            border-left: 4px solid #1e3c72;
+        }
+        
+        .feature h3 {
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .data-sources {
+            background: white;
+            border: 2px solid #f0f0f0;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        
+        .sources-title {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 25px;
+        }
+        
+        .sources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+        
+        .source-item {
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .source-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .source-icon {
+            background: linear-gradient(135deg, #f0f7ff, #e6f3ff);
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 30px;
+        }
+        
+        .report-types {
+            margin: 30px 0;
+        }
+        
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .report-card {
+            background: white;
+            border: 2px solid #f0f0f0;
+            border-radius: 15px;
+            padding: 25px;
+            transition: border-color 0.3s;
+        }
+        
+        .report-card:hover {
+            border-color: #1e3c72;
+        }
+        
+        .report-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .report-icon {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 24px;
+        }
+        
+        .automation-flow {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .flow-title {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 30px;
+        }
+        
+        .flow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .flow-step {
+            flex: 1;
+            min-width: 150px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: bold;
+        }
+        
+        .step-icon {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        
+        .flow-arrow {
+            color: #1e3c72;
+            font-size: 24px;
+        }
+        
+        .schedule-options {
+            background: linear-gradient(135deg, #f0f7ff, #e6f3ff);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .schedule-title {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 25px;
+        }
+        
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .schedule-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .schedule-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .schedule-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+        
+        .visualization-types {
+            background: white;
+            border: 2px solid #1e3c72;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        
+        .viz-title {
+            color: #1e3c72;
+            margin-bottom: 20px;
+        }
+        
+        .viz-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .viz-item {
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .viz-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+        
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #f0f7ff, #e6f3ff);
+            border-radius: 15px;
+        }
+        
+        .metric {
+            text-align: center;
+        }
+        
+        .metric-value-large {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .metric-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .alerts-section {
+            background: #fff5f5;
+            border-left: 4px solid #e53e3e;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+        
+        .alerts-title {
+            color: #e53e3e;
+            margin-bottom: 15px;
+        }
+        
+        .alert-list {
+            display: grid;
+            gap: 10px;
+        }
+        
+        .alert-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+        
+        .alert-icon {
+            color: #e53e3e;
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .cta {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .cta h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        
+        .cta p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .flow-steps {
+                flex-direction: column;
+            }
+            
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 리포팅 대시보드 자동화</h1>
+            <p class="subtitle">n8n으로 구축하는 실시간 비즈니스 인텔리전스 플랫폼</p>
+        </header>
+        
+        <div class="workflow-card">
+            <div class="workflow-header">
+                <div class="icon">📈</div>
+                <div class="workflow-title">
+                    <h2>자동화된 리포팅 대시보드 워크플로우</h2>
+                    <p>모든 비즈니스 데이터를 실시간으로 수집, 분석, 시각화</p>
+                </div>
+            </div>
+            
+            <div class="dashboard-preview">
+                <h3 class="preview-title">실시간 대시보드 미리보기</h3>
+                <div class="dashboard-grid">
+                    <div class="widget">
+                        <div class="widget-header">
+                            <span class="widget-title">매출</span>
+                            <span class="widget-icon">💰</span>
+                        </div>
+                        <div class="metric-value">₩12.5M</div>
+                        <span class="metric-change positive">+15.3% ↑</span>
+                        <div class="chart-placeholder" style="margin-top: 15px;">매출 추세 차트</div>
+                    </div>
+                    
+                    <div class="widget">
+                        <div class="widget-header">
+                            <span class="widget-title">신규 고객</span>
+                            <span class="widget-icon">👥</span>
+                        </div>
+                        <div class="metric-value">1,247</div>
+                        <span class="metric-change positive">+8.7% ↑</span>
+                        <div class="chart-placeholder" style="margin-top: 15px;">고객 획득 차트</div>
+                    </div>
+                    
+                    <div class="widget">
+                        <div class="widget-header">
+                            <span class="widget-title">전환율</span>
+                            <span class="widget-icon">🎯</span>
+                        </div>
+                        <div class="metric-value">3.8%</div>
+                        <span class="metric-change negative">-0.5% ↓</span>
+                        <div class="chart-placeholder" style="margin-top: 15px;">전환율 추이</div>
+                    </div>
+                    
+                    <div class="widget">
+                        <div class="widget-header">
+                            <span class="widget-title">웹사이트 방문</span>
+                            <span class="widget-icon">👁️</span>
+                        </div>
+                        <div class="metric-value">45.2K</div>
+                        <span class="metric-change positive">+22.1% ↑</span>
+                        <div class="chart-placeholder" style="margin-top: 15px;">방문자 수 차트</div>
+                    </div>
+                    
+                    <div class="widget">
+                        <div class="widget-header">
+                            <span class="widget-title">고객 만족도</span>
+                            <span class="widget-icon">⭐</span>
+                        </div>
+                        <div class="metric-value">4.7/5</div>
+                        <span class="metric-change positive">+0.2 ↑</span>
+                        <div class="chart-placeholder" style="margin-top: 15px;">만족도 분포</div>
+                    </div>
+                    
+                    <div class="widget">
+                        <div class="widget-header">
+                            <span class="widget-title">재고 회전율</span>
+                            <span class="widget-icon">📦</span>
+                        </div>
+                        <div class="metric-value">6.2x</div>
+                        <span class="metric-change positive">+0.8x ↑</span>
+                        <div class="chart-placeholder" style="margin-top: 15px;">재고 현황</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="features">
+                <div class="feature">
+                    <h3><span class="feature-icon">🔄</span>실시간 데이터</h3>
+                    <p>모든 소스에서 실시간으로 데이터 수집 및 업데이트</p>
+                </div>
+                <div class="feature">
+                    <h3><span class="feature-icon">🎨</span>커스텀 대시보드</h3>
+                    <p>드래그 앤 드롭으로 개인화된 대시보드 구성</p>
+                </div>
+                <div class="feature">
+                    <h3><span class="feature-icon">📧</span>자동 리포트</h3>
+                    <p>스케줄 기반 자동 리포트 생성 및 배포</p>
+                </div>
+                <div class="feature">
+                    <h3><span class="feature-icon">🚨</span>스마트 알람</h3>
+                    <p>임계값 기반 자동 알림 및 에스컬레이션</p>
+                </div>
+                <div class="feature">
+                    <h3><span class="feature-icon">📱</span>모바일 최적화</h3>
+                    <p>모든 기기에서 완벽한 반응형 대시보드</p>
+                </div>
+                <div class="feature">
+                    <h3><span class="feature-icon">🔐</span>접근 제어</h3>
+                    <p>역할 기반 데이터 접근 권한 관리</p>
+                </div>
+            </div>
+            
+            <div class="automation-flow">
+                <h3 class="flow-title">리포팅 자동화 프로세스</h3>
+                <div class="flow-steps">
+                    <div class="flow-step">
+                        <div class="step-number">1</div>
+                        <div class="step-icon">📊</div>
+                        <strong>데이터 수집</strong>
+                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">다양한 소스 연결</p>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">
+                        <div class="step-number">2</div>
+                        <div class="step-icon">🔧</div>
+                        <strong>데이터 가공</strong>
+                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">정제 및 변환</p>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">
+                        <div class="step-number">3</div>
+                        <div class="step-icon">📈</div>
+                        <strong>분석 및 계산</strong>
+                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">KPI 계산</p>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">
+                        <div class="step-number">4</div>
+                        <div class="step-icon">🎨</div>
+                        <strong>시각화</strong>
+                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">차트 및 그래프</p>
+                    </div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">
+                        <div class="step-number">5</div>
+                        <div class="step-icon">📤</div>
+                        <strong>배포</strong>
+                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">자동 전송</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="data-sources">
+                <h3 class="sources-title">📡 지원 데이터 소스</h3>
+                <div class="sources-grid">
+                    <div class="source-item">
+                        <div class="source-icon">📊</div>
+                        <p>Google Analytics</p>
+                    </div>
+                    <div class="source-item">
+                        <div class="source-icon">📈</div>
+                        <p>Facebook Ads</p>
+                    </div>
+                    <div class="source-item">
+                        <div class="source-icon">🛍️</div>
+                        <p>Shopify</p>
+                    </div>
+                    <div class="source-item">
+                        <div class="source-icon">💰</div>
+                        <p>Stripe</p>
+                    </div>
+                    <div class="source-item">
+                        <div class="source-icon">👥</div>
+                        <p>Salesforce</p>
+                    </div>
+                    <div class="source-item">
+                        <div class="source-icon">📧</div>
+                        <p>Mailchimp</p>
+                    </div>
+                    <div class="source-item">
+                        <div class="source-icon">🗄️</div>
+                        <p>MySQL</p>
+                    </div>
+                    <div class="source-item">
+                        <div class="source-icon">📋</div>
+                        <p>Google Sheets</p>
+                    </div>
+                    <div class="source-item">
+                        <div class="source-icon">📊</div>
+                        <p>QuickBooks</p>
+                    </div>
+                    <div class="source-item">
+                        <div class="source-icon">💬</div>
+                        <p>Zendesk</p>
+                    </div>
+                    <div class="source-item">
+                        <div class="source-icon">📱</div>
+                        <p>Social Media</p>
+                    </div>
+                    <div class="source-item">
+                        <div class="source-icon">🔗</div>
+                        <p>REST APIs</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="report-types">
+                <h3 style="color: #1e3c72; margin-bottom: 20px;">📋 자동 생성 리포트 유형</h3>
+                <div class="report-grid">
+                    <div class="report-card">
+                        <div class="report-header">
+                            <div class="report-icon">📊</div>
+                            <div>
+                                <h4>경영진 대시보드</h4>
+                                <p style="color: #666; font-size: 0.9em;">핵심 KPI 요약</p>
+                            </div>
+                        </div>
+                        <ul style="list-style: none; padding: 0;">
+                            <li>✓ 매출 및 수익성 지표</li>
+                            <li>✓ 고객 획득 비용</li>
+                            <li>✓ 시장 점유율 추이</li>
+                            <li>✓ 투자 수익률 (ROI)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="report-card">
+                        <div class="report-header">
+                            <div class="report-icon">🎯</div>
+                            <div>
+                                <h4>마케팅 성과 리포트</h4>
+                                <p style="color: #666; font-size: 0.9em;">캠페인 효과 분석</p>
+                            </div>
+                        </div>
+                        <ul style="list-style: none; padding: 0;">
+                            <li>✓ 채널별 전환율</li>
+                            <li>✓ 광고 ROAS 분석</li>
+                            <li>✓ 리드 품질 평가</li>
+                            <li>✓ 고객 여정 추적</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="report-card">
+                        <div class="report-header">
+                            <div class="report-icon">💰</div>
+                            <div>
+                                <h4>재무 보고서</h4>
+                                <p style="color: #666; font-size: 0.9em;">자동 회계 리포트</p>
+                            </div>
+                        </div>
+                        <ul style="list-style: none; padding: 0;">
+                            <li>✓ 손익계산서</li>
+                            <li>✓ 현금흐름 분석</li>
+                            <li>✓ 예산 대비 실적</li>
+                            <li>✓ 세무 준비 자료</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="report-card">
+                        <div class="report-header">
+                            <div class="report-icon">👥</div>
+                            <div>
+                                <h4>영업팀 리포트</h4>
+                                <p style="color: #666; font-size: 0.9em;">영업 활동 추적</p>
+                            </div>
+                        </div>
+                        <ul style="list-style: none; padding: 0;">
+                            <li>✓ 파이프라인 현황</li>
+                            <li>✓ 영업사원별 성과</li>
+                            <li>✓ 계절성 분석</li>
+                            <li>✓ 예측 매출</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="report-card">
+                        <div class="report-header">
+                            <div class="report-icon">🎧</div>
+                            <div>
+                                <h4>고객 서비스 리포트</h4>
+                                <p style="color: #666; font-size: 0.9em;">지원 품질 측정</p>
+                            </div>
+                        </div>
+                        <ul style="list-style: none; padding: 0;">
+                            <li>✓ 응답 시간 분석</li>
+                            <li>✓ 고객 만족도 조사</li>
+                            <li>✓ 티켓 해결율</li>
+                            <li>✓ 에스컬레이션 추이</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="report-card">
+                        <div class="report-header">
+                            <div class="report-icon">📦</div>
+                            <div>
+                                <h4>운영 효율성 리포트</h4>
+                                <p style="color: #666; font-size: 0.9em;">프로세스 최적화</p>
+                            </div>
+                        </div>
+                        <ul style="list-style: none; padding: 0;">
+                            <li>✓ 재고 회전율</li>
+                            <li>✓ 배송 성과</li>
+                            <li>✓ 반품률 분석</li>
+                            <li>✓ 공급망 효율성</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="schedule-options">
+                <h3 class="schedule-title">⏰ 리포트 스케줄링 옵션</h3>
+                <div class="schedule-grid">
+                    <div class="schedule-item">
+                        <div class="schedule-icon">⚡</div>
+                        <strong>실시간</strong>
+                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">즉시 업데이트</p>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-icon">🕐</div>
+                        <strong>시간별</strong>
+                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">매시간 자동 생성</p>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-icon">📅</div>
+                        <strong>일별</strong>
+                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">매일 아침 9시</p>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-icon">📆</div>
+                        <strong>주별</strong>
+                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">매주 월요일</p>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-icon">🗓️</div>
+                        <strong>월별</strong>
+                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">매월 1일</p>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-icon">📊</div>
+                        <strong>분기별</strong>
+                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">분기 시작일</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="visualization-types">
+                <h3 class="viz-title">📈 시각화 차트 유형</h3>
+                <div class="viz-grid">
+                    <div class="viz-item">
+                        <div class="viz-icon">📊</div>
+                        <strong>막대 차트</strong>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-icon">📈</div>
+                        <strong>선형 차트</strong>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-icon">🥧</div>
+                        <strong>원형 차트</strong>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-icon">🗺️</div>
+                        <strong>히트맵</strong>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-icon">📉</div>
+                        <strong>영역 차트</strong>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-icon">🎯</div>
+                        <strong>게이지 차트</strong>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-icon">📋</div>
+                        <strong>테이블</strong>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-icon">📊</div>
+                        <strong>워터폴</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="alerts-section">
+                <h3 class="alerts-title">🚨 스마트 알림 시스템</h3>
+                <div class="alert-list">
+                    <div class="alert-item">
+                        <span class="alert-icon">📉</span>
+                        <span>매출이 목표 대비 10% 감소했습니다</span>
+                    </div>
+                    <div class="alert-item">
+                        <span class="alert-icon">📈</span>
+                        <span>웹사이트 트래픽이 평소보다 50% 증가했습니다</span>
+                    </div>
+                    <div class="alert-item">
+                        <span class="alert-icon">⚠️</span>
+                        <span>고객 만족도가 4.0 이하로 떨어졌습니다</span>
+                    </div>
+                    <div class="alert-item">
+                        <span class="alert-icon">🎯</span>
+                        <span>월간 리드 목표를 달성했습니다</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="metrics">
+                <div class="metric">
+                    <div class="metric-value-large">85%</div>
+                    <div class="metric-label">리포트 생성 시간 단축</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value-large">24/7</div>
+                    <div class="metric-label">실시간 모니터링</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value-large">50+</div>
+                    <div class="metric-label">지원 데이터 소스</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value-large">99.9%</div>
+                    <div class="metric-label">데이터 정확도</div>
+                </div>
+            </div>
+            
+            <div class="cta">
+                <h3>데이터 기반 의사결정을 시작하세요!</h3>
+                <p>n8n의 강력한 리포팅 자동화로 비즈니스 인사이트를 실시간으로 확보하세요</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

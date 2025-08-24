@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MobileCraft - Cross-Platform App Development</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #f8fafc;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .mobile-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle-phone {
+            position: absolute;
+            width: 12px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            animation: phoneFloat 15s infinite linear;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '📱';
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 4em;
+            animation: phoneRing 3s ease-in-out infinite;
+        }
+
+        .header h1 {
+            font-size: 4.5em;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #ff6b6b);
+            background-size: 300% 300%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: colorFlow 4s ease infinite;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            font-size: 1.4em;
+            color: #cbd5e1;
+            margin-bottom: 30px;
+        }
+
+        .platform-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .platform-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+        }
+
+        .platform-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: cardShimmer 3s infinite;
+        }
+
+        .platform-card:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .platform-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            animation: iconFloat 4s ease-in-out infinite;
+        }
+
+        .platform-title {
+            font-size: 2.2em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .platform-description {
+            font-size: 1.1em;
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .platform-features {
+            list-style: none;
+            padding: 0;
+        }
+
+        .platform-features li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #e2e8f0;
+        }
+
+        .platform-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4ecdc4;
+            font-weight: bold;
+        }
+
+        .app-development-flow {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 30px;
+            padding: 40px;
+            margin: 50px 0;
+            text-align: center;
+        }
+
+        .flow-title {
+            font-size: 3em;
+            color: #ff6b6b;
+            margin-bottom: 40px;
+            font-weight: 800;
+        }
+
+        .development-stages {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .stage-card {
+            width: 180px;
+            height: 120px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.1em;
+            text-align: center;
+            position: relative;
+            animation: stageGlow 3s ease-in-out infinite;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .stage-card:nth-child(1) { animation-delay: 0s; background: linear-gradient(135deg, #667eea, #764ba2); }
+        .stage-card:nth-child(2) { animation-delay: 0.8s; background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+        .stage-card:nth-child(3) { animation-delay: 1.6s; background: linear-gradient(135deg, #4ecdc4, #44a08d); }
+        .stage-card:nth-child(4) { animation-delay: 2.4s; background: linear-gradient(135deg, #45b7d1, #96c93d); }
+
+        .stage-card::after {
+            content: '→';
+            position: absolute;
+            right: -40px;
+            font-size: 2.5em;
+            color: rgba(255, 255, 255, 0.8);
+            animation: stageFlow 2s ease-in-out infinite;
+        }
+
+        .stage-card:last-child::after {
+            display: none;
+        }
+
+        .stage-card:hover {
+            transform: scale(1.1) rotate(2deg);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .mobile-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+
+        .phone-mockup {
+            width: 280px;
+            height: 520px;
+            background: linear-gradient(135deg, #1a1a1a, #2d2d30);
+            border: 8px solid #333;
+            border-radius: 35px;
+            position: relative;
+            margin: 0 auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: phoneBob 4s ease-in-out infinite;
+        }
+
+        .phone-mockup:nth-child(1) { animation-delay: 0s; }
+        .phone-mockup:nth-child(2) { animation-delay: 1s; }
+        .phone-mockup:nth-child(3) { animation-delay: 2s; }
+
+        .phone-notch {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 25px;
+            background: #333;
+            border-radius: 15px;
+            z-index: 10;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 27px;
+            padding: 40px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .app-header {
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .app-content {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .app-item {
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            color: #fff;
+            animation: appItemPulse 2s ease-in-out infinite;
+        }
+
+        .app-item:nth-child(odd) { animation-delay: 0.5s; }
+        .app-item:nth-child(even) { animation-delay: 1s; }
+
+        .performance-metrics {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .metrics-title {
+            font-size: 2.5em;
+            text-align: center;
+            color: #4ecdc4;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+        }
+
+        .metric-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .metric-value {
+            font-size: 2.8em;
+            font-weight: 800;
+            color: #ff6b6b;
+            margin-bottom: 10px;
+            animation: metricCount 2s ease-out;
+        }
+
+        .metric-label {
+            font-size: 1.1em;
+            color: #cbd5e1;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .dev-tools {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 50px 0;
+            flex-wrap: wrap;
+        }
+
+        .tool-btn {
+            padding: 18px 35px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            border: none;
+            border-radius: 30px;
+            color: #fff;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .tool-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .tool-btn:hover::before {
+            left: 100%;
+        }
+
+        .tool-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #4ecdc4, #45b7d1);
+        }
+
+        @keyframes phoneFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(180deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes phoneRing {
+            0%, 100% { transform: translateX(-50%) rotate(-5deg); }
+            50% { transform: translateX(-50%) rotate(5deg); }
+        }
+
+        @keyframes colorFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes cardShimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        @keyframes stageGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); }
+            50% { box-shadow: 0 0 40px rgba(255, 255, 255, 0.4); }
+        }
+
+        @keyframes stageFlow {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        @keyframes phoneBob {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-10px) rotate(1deg); }
+            66% { transform: translateY(5px) rotate(-1deg); }
+        }
+
+        @keyframes appItemPulse {
+            0%, 100% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.02); }
+        }
+
+        @keyframes metricCount {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 3.2em; }
+            .development-stages { flex-direction: column; }
+            .stage-card::after { content: '↓'; right: 50%; bottom: -35px; top: auto; transform: translateX(50%); }
+            .dev-tools { flex-direction: column; align-items: center; }
+            .mobile-preview { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-particles"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>MobileCraft</h1>
+            <p>Cross-Platform Mobile App Development Studio</p>
+        </div>
+
+        <div class="platform-showcase">
+            <div class="platform-card">
+                <div class="platform-icon">🍎</div>
+                <div class="platform-title">iOS Development</div>
+                <div class="platform-description">Native iOS apps with Swift and SwiftUI</div>
+                <ul class="platform-features">
+                    <li>Swift 5.8 & SwiftUI</li>
+                    <li>Xcode Integration</li>
+                    <li>App Store Deployment</li>
+                    <li>Core Data & CloudKit</li>
+                </ul>
+            </div>
+            <div class="platform-card">
+                <div class="platform-icon">🤖</div>
+                <div class="platform-title">Android Development</div>
+                <div class="platform-description">Modern Android apps with Kotlin and Jetpack Compose</div>
+                <ul class="platform-features">
+                    <li>Kotlin & Jetpack Compose</li>
+                    <li>Android Studio</li>
+                    <li>Google Play Store</li>
+                    <li>Room & Firebase</li>
+                </ul>
+            </div>
+            <div class="platform-card">
+                <div class="platform-icon">⚡</div>
+                <div class="platform-title">React Native</div>
+                <div class="platform-description">Cross-platform apps with JavaScript and React</div>
+                <ul class="platform-features">
+                    <li>JavaScript/TypeScript</li>
+                    <li>Hot Reload</li>
+                    <li>Native Modules</li>
+                    <li>Expo Integration</li>
+                </ul>
+            </div>
+            <div class="platform-card">
+                <div class="platform-icon">🎯</div>
+                <div class="platform-title">Flutter</div>
+                <div class="platform-description">Beautiful cross-platform apps with Dart</div>
+                <ul class="platform-features">
+                    <li>Dart Programming</li>
+                    <li>Widget-based UI</li>
+                    <li>Hot Reload</li>
+                    <li>Multi-platform</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="app-development-flow">
+            <h2 class="flow-title">📱 Development Workflow</h2>
+            <div class="development-stages">
+                <div class="stage-card">
+                    <div>Design</div>
+                    <div>UI/UX</div>
+                </div>
+                <div class="stage-card">
+                    <div>Develop</div>
+                    <div>Code</div>
+                </div>
+                <div class="stage-card">
+                    <div>Test</div>
+                    <div>Debug</div>
+                </div>
+                <div class="stage-card">
+                    <div>Deploy</div>
+                    <div>Release</div>
+                </div>
+            </div>
+        </div>
+
+        <h3 style="text-align: center; color: #4ecdc4; font-size: 2.5em; margin: 50px 0; font-weight: 700;">App Previews</h3>
+        <div class="mobile-preview">
+            <div class="phone-mockup">
+                <div class="phone-notch"></div>
+                <div class="phone-screen">
+                    <div class="app-header">📊 Analytics Dashboard</div>
+                    <div class="app-content">
+                        <div class="app-item">Daily Active Users: 12.4K</div>
+                        <div class="app-item">Session Duration: 8m 32s</div>
+                        <div class="app-item">Retention Rate: 76%</div>
+                        <div class="app-item">Revenue Today: $2,847</div>
+                        <div class="app-item">Crash Rate: 0.02%</div>
+                    </div>
+                </div>
+            </div>
+            <div class="phone-mockup">
+                <div class="phone-notch"></div>
+                <div class="phone-screen">
+                    <div class="app-header">💬 Chat Application</div>
+                    <div class="app-content">
+                        <div class="app-item">Alex: Hey, how's the app?</div>
+                        <div class="app-item">Sarah: Looking great! 🚀</div>
+                        <div class="app-item">Mike: When do we launch?</div>
+                        <div class="app-item">You: Testing final build now</div>
+                        <div class="app-item">Team: Excited to see it live!</div>
+                    </div>
+                </div>
+            </div>
+            <div class="phone-mockup">
+                <div class="phone-notch"></div>
+                <div class="phone-screen">
+                    <div class="app-header">🎵 Music Player</div>
+                    <div class="app-content">
+                        <div class="app-item">♪ Now Playing: Code Beats</div>
+                        <div class="app-item">🎧 Artist: Dev Rhythms</div>
+                        <div class="app-item">⏱️ Duration: 3:42</div>
+                        <div class="app-item">📀 Album: Programming Flow</div>
+                        <div class="app-item">🔀 Next: Debug Symphony</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="performance-metrics">
+            <h3 class="metrics-title">⚡ Performance Metrics</h3>
+            <div class="metrics-grid">
+                <div class="metric-item">
+                    <div class="metric-value">2.3s</div>
+                    <div class="metric-label">App Launch Time</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-value">60fps</div>
+                    <div class="metric-label">Smooth Animations</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-value">15MB</div>
+                    <div class="metric-label">App Size</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-value">99.8%</div>
+                    <div class="metric-label">Crash-free Rate</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-value">4.9⭐</div>
+                    <div class="metric-label">Store Rating</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-value">1.2M+</div>
+                    <div class="metric-label">Downloads</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dev-tools">
+            <button class="tool-btn" onclick="buildApp()">Build App</button>
+            <button class="tool-btn" onclick="runTests()">Run Tests</button>
+            <button class="tool-btn" onclick="deployApp()">Deploy</button>
+            <button class="tool-btn" onclick="analyzePerformance()">Analyze</button>
+        </div>
+    </div>
+
+    <script>
+        // Generate floating mobile particles
+        function createMobileParticles() {
+            const container = document.querySelector('.mobile-particles');
+            const particleCount = 12;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle-phone';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Build app simulation
+        function buildApp() {
+            showNotification('Building app for multiple platforms...', 'info');
+            
+            const stages = document.querySelectorAll('.stage-card');
+            stages.forEach(stage => stage.style.opacity = '0.5');
+            
+            let currentStage = 0;
+            const buildMessages = [
+                'Initializing build environment...',
+                'Compiling source code...',
+                'Bundling assets and resources...',
+                'Optimizing for production...',
+                'Build completed successfully!'
+            ];
+            
+            const buildInterval = setInterval(() => {
+                if (currentStage < stages.length && currentStage < buildMessages.length - 1) {
+                    stages[currentStage].style.opacity = '1';
+                    stages[currentStage].style.transform = 'scale(1.1) rotate(2deg)';
+                    showBuildLog(buildMessages[currentStage]);
+                    currentStage++;
+                } else {
+                    clearInterval(buildInterval);
+                    showBuildLog(buildMessages[buildMessages.length - 1]);
+                    showNotification('App build completed! Ready for deployment 🚀', 'success');
+                    
+                    // Reset stages
+                    setTimeout(() => {
+                        stages.forEach(stage => {
+                            stage.style.opacity = '1';
+                            stage.style.transform = 'scale(1) rotate(0deg)';
+                        });
+                    }, 2000);
+                }
+            }, 1500);
+        }
+
+        // Run tests simulation
+        function runTests() {
+            showNotification('Running comprehensive test suite...', 'info');
+            
+            const testResults = [
+                { name: 'Unit Tests', total: 247, passed: 247, failed: 0 },
+                { name: 'Integration Tests', total: 89, passed: 87, failed: 2 },
+                { name: 'UI Tests', total: 156, passed: 154, failed: 2 },
+                { name: 'Performance Tests', total: 34, passed: 32, failed: 2 }
+            ];
+            
+            let testIndex = 0;
+            const testInterval = setInterval(() => {
+                if (testIndex < testResults.length) {
+                    const test = testResults[testIndex];
+                    const passRate = ((test.passed / test.total) * 100).toFixed(1);
+                    showBuildLog(`${test.name}: ${test.passed}/${test.total} passed (${passRate}%)`);
+                    testIndex++;
+                } else {
+                    clearInterval(testInterval);
+                    const totalTests = testResults.reduce((sum, test) => sum + test.total, 0);
+                    const totalPassed = testResults.reduce((sum, test) => sum + test.passed, 0);
+                    const overallRate = ((totalPassed / totalTests) * 100).toFixed(1);
+                    
+                    showBuildLog(`Test Summary: ${totalPassed}/${totalTests} tests passed (${overallRate}%)`);
+                    showNotification(`Tests completed! Overall pass rate: ${overallRate}% ✅`, 'success');
+                }
+            }, 1000);
+        }
+
+        // Deploy app simulation
+        function deployApp() {
+            showNotification('Deploying to app stores...', 'info');
+            
+            const deploymentSteps = [
+                'Uploading to App Store Connect...',
+                'Submitting to Google Play Console...',
+                'Processing screenshots and metadata...',
+                'Running automated review checks...',
+                'App successfully deployed to stores!'
+            ];
+            
+            deploymentSteps.forEach((step, index) => {
+                setTimeout(() => {
+                    showBuildLog(step);
+                    if (index === deploymentSteps.length - 1) {
+                        showNotification('App deployed successfully! Now live on app stores 🎉', 'success');
+                        updateMetrics();
+                    }
+                }, (index + 1) * 1200);
+            });
+        }
+
+        // Analyze performance simulation
+        function analyzePerformance() {
+            showNotification('Analyzing app performance metrics...', 'info');
+            
+            const metrics = [
+                'CPU Usage: 12% (Excellent)',
+                'Memory Usage: 45MB (Good)',
+                'Battery Impact: Low',
+                'Network Efficiency: 98%',
+                'Frame Rate: Consistent 60fps',
+                'App Size: 15MB (Optimized)'
+            ];
+            
+            metrics.forEach((metric, index) => {
+                setTimeout(() => {
+                    showBuildLog(`[ANALYSIS] ${metric}`);
+                    if (index === metrics.length - 1) {
+                        showNotification('Performance analysis complete! All metrics within optimal range ⚡', 'success');
+                    }
+                }, index * 800);
+            });
+        }
+
+        // Update performance metrics
+        function updateMetrics() {
+            const metricValues = document.querySelectorAll('.metric-value');
+            metricValues.forEach((metric, index) => {
+                const currentText = metric.textContent;
+                
+                // Simulate small improvements
+                if (index === 5) { // Downloads
+                    let current = parseFloat(currentText);
+                    current += 0.1;
+                    metric.textContent = current.toFixed(1) + 'M+';
+                } else if (index === 4) { // Rating
+                    // Keep rating stable
+                } else if (index === 3) { // Crash-free rate
+                    let current = parseFloat(currentText);
+                    if (current < 99.9) {
+                        current = Math.min(99.9, current + 0.1);
+                        metric.textContent = current.toFixed(1) + '%';
+                    }
+                }
+            });
+        }
+
+        // Show build log (simulated console)
+        function showBuildLog(message) {
+            console.log(`[MobileCraft] ${message}`);
+            
+            // You could add a terminal display here if desired
+            // For now, we'll just use console and notifications
+        }
+
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            const colors = {
+                success: '#4ecdc4',
+                info: '#45b7d1',
+                warning: '#f39c12',
+                error: '#e74c3c'
+            };
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 18px 25px;
+                background: rgba(0, 0, 0, 0.9);
+                border: 2px solid ${colors[type] || '#45b7d1'};
+                color: ${colors[type] || '#45b7d1'};
+                border-radius: 12px;
+                z-index: 1000;
+                font-family: 'SF Pro Display', sans-serif;
+                font-weight: 600;
+                animation: slideIn 0.5s ease;
+                max-width: 400px;
+                backdrop-filter: blur(15px);
+                box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.5s ease';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 500);
+            }, 4000);
+        }
+
+        // Add slide animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Interactive platform card clicks
+        function setupPlatformInteractions() {
+            document.querySelectorAll('.platform-card').forEach((card, index) => {
+                card.addEventListener('click', function() {
+                    const titles = ['iOS Development', 'Android Development', 'React Native', 'Flutter'];
+                    const details = [
+                        'Native iOS development with Swift 5.8, SwiftUI, and Xcode integration',
+                        'Modern Android apps with Kotlin, Jetpack Compose, and Android Studio',
+                        'Cross-platform development with React Native and JavaScript/TypeScript',
+                        'Beautiful UI with Flutter, Dart programming, and widget-based architecture'
+                    ];
+                    
+                    showNotification(details[index], 'info');
+                });
+            });
+        }
+
+        // Interactive stage card clicks
+        function setupStageInteractions() {
+            document.querySelectorAll('.stage-card').forEach((stage, index) => {
+                stage.addEventListener('click', function() {
+                    const stageDetails = [
+                        'Design Phase: Creating wireframes, mockups, and user experience flows',
+                        'Development Phase: Writing code, implementing features, and integrating APIs',
+                        'Testing Phase: Unit tests, integration tests, and user acceptance testing',
+                        'Deployment Phase: App store submission and production release'
+                    ];
+                    
+                    showNotification(stageDetails[index], 'info');
+                });
+            });
+        }
+
+        // Phone mockup interactions
+        function setupPhoneInteractions() {
+            document.querySelectorAll('.phone-mockup').forEach((phone, index) => {
+                phone.addEventListener('click', function() {
+                    const appTypes = ['Analytics Dashboard', 'Chat Application', 'Music Player'];
+                    const appDescriptions = [
+                        'Real-time analytics with user metrics, performance data, and business insights',
+                        'Instant messaging with real-time chat, file sharing, and push notifications',
+                        'Music streaming with playlists, offline mode, and social sharing features'
+                    ];
+                    
+                    showNotification(`${appTypes[index]}: ${appDescriptions[index]}`, 'info');
+                });
+            });
+        }
+
+        // Animate metrics on scroll
+        function animateMetrics() {
+            const metrics = document.querySelectorAll('.metric-value');
+            metrics.forEach((metric, index) => {
+                metric.style.animationDelay = (index * 0.2) + 's';
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createMobileParticles();
+            setupPlatformInteractions();
+            setupStageInteractions();
+            setupPhoneInteractions();
+            animateMetrics();
+            
+            // Simulate periodic metric updates
+            setInterval(() => {
+                if (Math.random() > 0.8) {
+                    updateMetrics();
+                }
+            }, 10000);
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'b':
+                        e.preventDefault();
+                        buildApp();
+                        break;
+                    case 't':
+                        e.preventDefault();
+                        runTests();
+                        break;
+                    case 'd':
+                        e.preventDefault();
+                        deployApp();
+                        break;
+                    case 'a':
+                        e.preventDefault();
+                        analyzePerformance();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Collaboration Hub - Semantic UI</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .main.container {
+            margin-top: 7em;
+        }
+        .sidebar-menu {
+            background: #2c3e50;
+            min-height: 100vh;
+            padding: 0;
+        }
+        .sidebar-menu .item {
+            color: #bdc3c7 !important;
+            border-radius: 0 !important;
+        }
+        .sidebar-menu .item:hover,
+        .sidebar-menu .item.active {
+            background: #34495e !important;
+            color: #3498db !important;
+        }
+        .project-card {
+            transition: all 0.3s ease;
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        }
+        .activity-item {
+            padding: 1em;
+            border-bottom: 1px solid #e1e8ed;
+        }
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .status-online { background: #27ae60; }
+        .status-away { background: #f39c12; }
+        .status-busy { background: #e74c3c; }
+        .status-offline { background: #95a5a6; }
+        .chat-message {
+            background: white;
+            border-radius: 10px;
+            padding: 10px 15px;
+            margin: 5px 0;
+            max-width: 70%;
+        }
+        .chat-message.own {
+            background: #3498db;
+            color: white;
+            margin-left: auto;
+        }
+        .file-preview {
+            border: 2px dashed #ddd;
+            padding: 2em;
+            text-align: center;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .file-preview:hover {
+            border-color: #3498db;
+            background: #f8f9fa;
+        }
+        .kanban-column {
+            background: #f8f9fa;
+            border-radius: 8px;
+            min-height: 400px;
+            padding: 1em;
+        }
+        .task-card {
+            margin-bottom: 1em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .task-card:hover {
+            transform: scale(1.02);
+        }
+        .priority-high { border-left: 4px solid #e74c3c; }
+        .priority-medium { border-left: 4px solid #f39c12; }
+        .priority-low { border-left: 4px solid #27ae60; }
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <div class="ui fixed inverted menu">
+        <div class="ui container">
+            <a href="#" class="header item">
+                <i class="users icon"></i>
+                TeamFlow Pro
+            </a>
+            <div class="ui simple dropdown item">
+                Workspaces
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <a class="item">Marketing Team</a>
+                    <a class="item">Development</a>
+                    <a class="item">Design Studio</a>
+                    <a class="item">HR Department</a>
+                </div>
+            </div>
+            <a href="#" class="item">Projects</a>
+            <a href="#" class="item">Calendar</a>
+            <a href="#" class="item">Documents</a>
+            
+            <div class="right menu">
+                <div class="ui search item">
+                    <div class="ui icon input">
+                        <input class="prompt" type="text" placeholder="Search...">
+                        <i class="search icon"></i>
+                    </div>
+                    <div class="results"></div>
+                </div>
+                <div class="ui dropdown item">
+                    <i class="bell outline icon"></i>
+                    <div class="notification-badge">5</div>
+                    <div class="menu">
+                        <div class="header">Notifications</div>
+                        <a class="item">
+                            <i class="comment icon"></i>
+                            New message from John
+                            <div class="ui label">2min</div>
+                        </a>
+                        <a class="item">
+                            <i class="check circle icon"></i>
+                            Task completed
+                            <div class="ui label">1h</div>
+                        </a>
+                        <a class="item">
+                            <i class="calendar icon"></i>
+                            Meeting reminder
+                            <div class="ui label">3h</div>
+                        </a>
+                    </div>
+                </div>
+                <div class="ui dropdown item">
+                    <img class="ui avatar image" src="https://via.placeholder.com/32">
+                    Sarah Wilson
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <a class="item"><i class="user icon"></i> Profile</a>
+                        <a class="item"><i class="settings icon"></i> Settings</a>
+                        <div class="divider"></div>
+                        <a class="item"><i class="sign out icon"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ui grid container main">
+        <!-- Sidebar -->
+        <div class="four wide column">
+            <div class="ui vertical fluid tabular menu sidebar-menu">
+                <a class="item active">
+                    <i class="home icon"></i>
+                    Dashboard
+                </a>
+                <a class="item">
+                    <i class="project diagram icon"></i>
+                    Projects
+                    <div class="ui teal label">12</div>
+                </a>
+                <a class="item">
+                    <i class="tasks icon"></i>
+                    My Tasks
+                    <div class="ui orange label">8</div>
+                </a>
+                <a class="item">
+                    <i class="comments icon"></i>
+                    Messages
+                    <div class="ui red label">3</div>
+                </a>
+                <a class="item">
+                    <i class="file alternate icon"></i>
+                    Documents
+                </a>
+                <a class="item">
+                    <i class="chart line icon"></i>
+                    Analytics
+                </a>
+                <div class="ui divider"></div>
+                <div class="header item">
+                    <i class="users icon"></i>
+                    Team Members
+                </div>
+                <a class="item">
+                    <img class="ui avatar image" src="https://via.placeholder.com/24">
+                    <span class="status-indicator status-online"></span>
+                    John Smith
+                </a>
+                <a class="item">
+                    <img class="ui avatar image" src="https://via.placeholder.com/24/ff6b6b">
+                    <span class="status-indicator status-away"></span>
+                    Emma Davis
+                </a>
+                <a class="item">
+                    <img class="ui avatar image" src="https://via.placeholder.com/24/4ecdc4">
+                    <span class="status-indicator status-busy"></span>
+                    Mike Johnson
+                </a>
+                <a class="item">
+                    <img class="ui avatar image" src="https://via.placeholder.com/24/95e1d3">
+                    <span class="status-indicator status-offline"></span>
+                    Lisa Chen
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="twelve wide column">
+            <!-- Welcome Header -->
+            <div class="ui segment">
+                <div class="ui grid">
+                    <div class="ten wide column">
+                        <h2 class="ui header">
+                            <i class="dashboard icon"></i>
+                            <div class="content">
+                                Good morning, Sarah!
+                                <div class="sub header">Here's what's happening with your team today</div>
+                            </div>
+                        </h2>
+                    </div>
+                    <div class="six wide column">
+                        <div class="ui right floated buttons">
+                            <button class="ui primary button">
+                                <i class="plus icon"></i>
+                                New Project
+                            </button>
+                            <button class="ui button">
+                                <i class="upload icon"></i>
+                                Upload
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="ui four column grid">
+                <div class="column">
+                    <div class="ui fluid card">
+                        <div class="content">
+                            <div class="ui grid">
+                                <div class="ten wide column">
+                                    <div class="ui statistic">
+                                        <div class="value">24</div>
+                                        <div class="label">Active Projects</div>
+                                    </div>
+                                </div>
+                                <div class="six wide column right aligned">
+                                    <i class="huge blue project diagram icon"></i>
+                                </div>
+                            </div>
+                            <div class="ui green small progress">
+                                <div class="bar" style="width: 75%;"></div>
+                                <div class="label">+15% this month</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="ui fluid card">
+                        <div class="content">
+                            <div class="ui grid">
+                                <div class="ten wide column">
+                                    <div class="ui statistic">
+                                        <div class="value">156</div>
+                                        <div class="label">Tasks Done</div>
+                                    </div>
+                                </div>
+                                <div class="six wide column right aligned">
+                                    <i class="huge green check circle icon"></i>
+                                </div>
+                            </div>
+                            <div class="ui orange small progress">
+                                <div class="bar" style="width: 60%;"></div>
+                                <div class="label">+8% this week</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="ui fluid card">
+                        <div class="content">
+                            <div class="ui grid">
+                                <div class="ten wide column">
+                                    <div class="ui statistic">
+                                        <div class="value">42</div>
+                                        <div class="label">Team Members</div>
+                                    </div>
+                                </div>
+                                <div class="six wide column right aligned">
+                                    <i class="huge orange users icon"></i>
+                                </div>
+                            </div>
+                            <div class="ui teal small progress">
+                                <div class="bar" style="width: 90%;"></div>
+                                <div class="label">38 online</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="ui fluid card">
+                        <div class="content">
+                            <div class="ui grid">
+                                <div class="ten wide column">
+                                    <div class="ui statistic">
+                                        <div class="value">98%</div>
+                                        <div class="label">Efficiency</div>
+                                    </div>
+                                </div>
+                                <div class="six wide column right aligned">
+                                    <i class="huge red chart line icon"></i>
+                                </div>
+                            </div>
+                            <div class="ui red small progress">
+                                <div class="bar" style="width: 98%;"></div>
+                                <div class="label">Excellent</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Board & Activity -->
+            <div class="ui grid">
+                <div class="eight wide column">
+                    <div class="ui segment">
+                        <h3 class="ui header">
+                            <i class="tasks icon"></i>
+                            Project Board
+                            <div class="sub header">Drag and drop to organize tasks</div>
+                        </h3>
+                        
+                        <div class="ui three column grid">
+                            <div class="column">
+                                <div class="kanban-column">
+                                    <h4 class="ui center aligned header">
+                                        <div class="ui blue circular label">5</div>
+                                        To Do
+                                    </h4>
+                                    
+                                    <div class="ui card task-card priority-high">
+                                        <div class="content">
+                                            <div class="ui red ribbon label">High</div>
+                                            <div class="header">Database Migration</div>
+                                            <div class="meta">Due: Jan 25</div>
+                                            <div class="description">
+                                                Migrate user data to new schema
+                                            </div>
+                                            <div class="ui bottom attached progress">
+                                                <div class="bar" style="width: 20%;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="extra content">
+                                            <img class="ui avatar image" src="https://via.placeholder.com/28">
+                                            <img class="ui avatar image" src="https://via.placeholder.com/28/ff6b6b">
+                                        </div>
+                                    </div>
+
+                                    <div class="ui card task-card priority-medium">
+                                        <div class="content">
+                                            <div class="ui orange ribbon label">Medium</div>
+                                            <div class="header">UI Components</div>
+                                            <div class="meta">Due: Jan 30</div>
+                                            <div class="description">
+                                                Create reusable components
+                                            </div>
+                                            <div class="ui bottom attached progress">
+                                                <div class="bar" style="width: 0%;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="extra content">
+                                            <img class="ui avatar image" src="https://via.placeholder.com/28/4ecdc4">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="column">
+                                <div class="kanban-column">
+                                    <h4 class="ui center aligned header">
+                                        <div class="ui orange circular label">3</div>
+                                        In Progress
+                                    </h4>
+                                    
+                                    <div class="ui card task-card priority-high">
+                                        <div class="content">
+                                            <div class="ui red ribbon label">High</div>
+                                            <div class="header">API Development</div>
+                                            <div class="meta">Due: Jan 22</div>
+                                            <div class="description">
+                                                Build REST API endpoints
+                                            </div>
+                                            <div class="ui bottom attached progress">
+                                                <div class="bar" style="width: 65%;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="extra content">
+                                            <img class="ui avatar image" src="https://via.placeholder.com/28/95e1d3">
+                                            <img class="ui avatar image" src="https://via.placeholder.com/28/f38ba8">
+                                        </div>
+                                    </div>
+
+                                    <div class="ui card task-card priority-low">
+                                        <div class="content">
+                                            <div class="ui green ribbon label">Low</div>
+                                            <div class="header">Documentation</div>
+                                            <div class="meta">Due: Feb 5</div>
+                                            <div class="description">
+                                                Update project documentation
+                                            </div>
+                                            <div class="ui bottom attached progress">
+                                                <div class="bar" style="width: 40%;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="extra content">
+                                            <img class="ui avatar image" src="https://via.placeholder.com/28/a8dadc">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="column">
+                                <div class="kanban-column">
+                                    <h4 class="ui center aligned header">
+                                        <div class="ui green circular label">7</div>
+                                        Complete
+                                    </h4>
+                                    
+                                    <div class="ui card task-card">
+                                        <div class="content">
+                                            <div class="ui green ribbon label">Done</div>
+                                            <div class="header">User Authentication</div>
+                                            <div class="meta">Completed: Jan 20</div>
+                                            <div class="description">
+                                                JWT authentication system
+                                            </div>
+                                            <div class="ui bottom attached progress">
+                                                <div class="bar" style="width: 100%;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="extra content">
+                                            <img class="ui avatar image" src="https://via.placeholder.com/28">
+                                        </div>
+                                    </div>
+
+                                    <div class="ui card task-card">
+                                        <div class="content">
+                                            <div class="ui green ribbon label">Done</div>
+                                            <div class="header">Design System</div>
+                                            <div class="meta">Completed: Jan 18</div>
+                                            <div class="description">
+                                                Brand guidelines and components
+                                            </div>
+                                            <div class="ui bottom attached progress">
+                                                <div class="bar" style="width: 100%;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="extra content">
+                                            <img class="ui avatar image" src="https://via.placeholder.com/28/4ecdc4">
+                                            <img class="ui avatar image" src="https://via.placeholder.com/28/ff6b6b">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="eight wide column">
+                    <div class="ui segment">
+                        <h3 class="ui header">
+                            <i class="history icon"></i>
+                            Recent Activity
+                        </h3>
+                        
+                        <div class="ui feed">
+                            <div class="event">
+                                <div class="label">
+                                    <img src="https://via.placeholder.com/40">
+                                </div>
+                                <div class="content">
+                                    <div class="summary">
+                                        <a class="user">John Smith</a> completed task
+                                        <a>User Authentication</a>
+                                        <div class="date">2 hours ago</div>
+                                    </div>
+                                    <div class="meta">
+                                        <a class="like">
+                                            <i class="like icon"></i> 5 likes
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="event">
+                                <div class="label">
+                                    <img src="https://via.placeholder.com/40/ff6b6b">
+                                </div>
+                                <div class="content">
+                                    <div class="summary">
+                                        <a class="user">Emma Davis</a> uploaded new files to
+                                        <a>Design Assets</a>
+                                        <div class="date">4 hours ago</div>
+                                    </div>
+                                    <div class="extra images">
+                                        <a><img src="https://via.placeholder.com/100x60"></a>
+                                        <a><img src="https://via.placeholder.com/100x60/4ecdc4"></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="event">
+                                <div class="label">
+                                    <img src="https://via.placeholder.com/40/4ecdc4">
+                                </div>
+                                <div class="content">
+                                    <div class="summary">
+                                        <a class="user">Mike Johnson</a> commented on
+                                        <a>API Development</a>
+                                        <div class="date">6 hours ago</div>
+                                    </div>
+                                    <div class="extra text">
+                                        "Great progress on the authentication endpoints! Let's review the error handling next."
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="event">
+                                <div class="label">
+                                    <img src="https://via.placeholder.com/40/95e1d3">
+                                </div>
+                                <div class="content">
+                                    <div class="summary">
+                                        <a class="user">Lisa Chen</a> created new project
+                                        <a>Mobile App Redesign</a>
+                                        <div class="date">1 day ago</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="event">
+                                <div class="label">
+                                    <i class="pencil icon"></i>
+                                </div>
+                                <div class="content">
+                                    <div class="summary">
+                                        <a class="user">Sarah Wilson</a> updated project timeline
+                                        <div class="date">1 day ago</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Communication Section -->
+            <div class="ui grid">
+                <div class="eight wide column">
+                    <div class="ui segment">
+                        <h3 class="ui header">
+                            <i class="comments icon"></i>
+                            Team Chat
+                        </h3>
+                        
+                        <div style="height: 300px; overflow-y: auto; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                            <div class="chat-message">
+                                <strong>John Smith</strong> <small>10:30 AM</small><br>
+                                Hey team! The authentication module is ready for testing.
+                            </div>
+                            <div class="chat-message own">
+                                <strong>You</strong> <small>10:32 AM</small><br>
+                                Awesome work John! I'll test it this afternoon.
+                            </div>
+                            <div class="chat-message">
+                                <strong>Emma Davis</strong> <small>10:35 AM</small><br>
+                                I've uploaded the new design mockups to the shared folder.
+                            </div>
+                            <div class="chat-message">
+                                <strong>Mike Johnson</strong> <small>10:40 AM</small><br>
+                                Can someone review the API documentation? I need feedback before the client meeting.
+                            </div>
+                            <div class="chat-message own">
+                                <strong>You</strong> <small>10:42 AM</small><br>
+                                Sure Mike, I'll review it in the next hour.
+                            </div>
+                        </div>
+                        
+                        <div class="ui form" style="margin-top: 15px;">
+                            <div class="ui action input fluid">
+                                <input type="text" placeholder="Type your message...">
+                                <button class="ui button primary">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="eight wide column">
+                    <div class="ui segment">
+                        <h3 class="ui header">
+                            <i class="calendar icon"></i>
+                            Upcoming Deadlines
+                        </h3>
+                        
+                        <div class="ui relaxed list">
+                            <div class="item">
+                                <i class="large red exclamation triangle icon"></i>
+                                <div class="content">
+                                    <a class="header">API Development</a>
+                                    <div class="description">Due: Tomorrow (Jan 22)</div>
+                                    <div class="ui red progress tiny">
+                                        <div class="bar" style="width: 65%;"></div>
+                                        <div class="label">65% Complete</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <i class="large orange clock icon"></i>
+                                <div class="content">
+                                    <a class="header">Database Migration</a>
+                                    <div class="description">Due: Jan 25 (3 days)</div>
+                                    <div class="ui orange progress tiny">
+                                        <div class="bar" style="width: 20%;"></div>
+                                        <div class="label">20% Complete</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <i class="large blue calendar icon"></i>
+                                <div class="content">
+                                    <a class="header">Client Presentation</a>
+                                    <div class="description">Due: Jan 28 (6 days)</div>
+                                    <div class="ui blue progress tiny">
+                                        <div class="bar" style="width: 45%;"></div>
+                                        <div class="label">45% Complete</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <i class="large green check circle icon"></i>
+                                <div class="content">
+                                    <a class="header">UI Components</a>
+                                    <div class="description">Due: Jan 30 (8 days)</div>
+                                    <div class="ui green progress tiny">
+                                        <div class="bar" style="width: 10%;"></div>
+                                        <div class="label">Just Started</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- File Sharing Section -->
+            <div class="ui segment">
+                <h3 class="ui header">
+                    <i class="cloud upload icon"></i>
+                    File Sharing
+                    <div class="sub header">Share documents and collaborate on files</div>
+                </h3>
+                
+                <div class="ui grid">
+                    <div class="eight wide column">
+                        <div class="file-preview">
+                            <i class="upload icon huge"></i>
+                            <h4>Drop files here to upload</h4>
+                            <p>or <a href="#">browse your computer</a></p>
+                        </div>
+                    </div>
+                    <div class="eight wide column">
+                        <h4 class="ui header">Recent Files</h4>
+                        <div class="ui relaxed list">
+                            <div class="item">
+                                <i class="file pdf outline icon"></i>
+                                <div class="content">
+                                    <a class="header">Project Requirements.pdf</a>
+                                    <div class="description">Uploaded by John Smith • 2 hours ago</div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <i class="file image outline icon"></i>
+                                <div class="content">
+                                    <a class="header">Design_Mockups_v2.zip</a>
+                                    <div class="description">Uploaded by Emma Davis • 4 hours ago</div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <i class="file code outline icon"></i>
+                                <div class="content">
+                                    <a class="header">api_documentation.md</a>
+                                    <div class="description">Uploaded by Mike Johnson • 1 day ago</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Initialize dropdowns
+            $('.ui.dropdown').dropdown();
+            
+            // Initialize search
+            $('.ui.search').search({
+                apiSettings: {
+                    url: '//api.github.com/search/repositories?q={query}'
+                },
+                fields: {
+                    results: 'items',
+                    title: 'name',
+                    url: 'html_url'
+                },
+                minCharacters: 3
+            });
+            
+            // Make cards draggable (simulation)
+            $('.task-card').hover(
+                function() { $(this).css('cursor', 'grab'); },
+                function() { $(this).css('cursor', 'default'); }
+            );
+            
+            // Simulate real-time updates
+            setInterval(function() {
+                var badge = $('.notification-badge');
+                var count = parseInt(badge.text());
+                if (Math.random() > 0.7) {
+                    badge.text(count + 1);
+                    badge.effect && badge.effect('bounce');
+                }
+            }, 30000);
+            
+            // Chat functionality
+            $('input[placeholder="Type your message..."]').keypress(function(e) {
+                if (e.which == 13) {
+                    var message = $(this).val();
+                    if (message.trim()) {
+                        var chatContainer = $(this).parent().parent().find('div[style*="overflow-y"]');
+                        var time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        chatContainer.append(
+                            '<div class="chat-message own">' +
+                            '<strong>You</strong> <small>' + time + '</small><br>' +
+                            message +
+                            '</div>'
+                        );
+                        chatContainer.scrollTop(chatContainer[0].scrollHeight);
+                        $(this).val('');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

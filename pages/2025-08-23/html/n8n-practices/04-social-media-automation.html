@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n8n 소셜미디어 자동화 - 멀티채널 마케팅 관리</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+        
+        .workflow-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 40px;
+        }
+        
+        .workflow-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 30px;
+        }
+        
+        .workflow-title {
+            flex-grow: 1;
+        }
+        
+        .workflow-title h2 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .workflow-title p {
+            color: #666;
+            font-size: 0.95em;
+        }
+        
+        .social-platforms {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #fff0fb, #fff0f0);
+            border-radius: 15px;
+        }
+        
+        .platform {
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .platform:hover {
+            transform: scale(1.1);
+        }
+        
+        .platform-icon {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .feature {
+            padding: 20px;
+            background: #fff5fb;
+            border-radius: 10px;
+            border-left: 4px solid #f093fb;
+        }
+        
+        .feature h3 {
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .automation-scenarios {
+            margin: 30px 0;
+        }
+        
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+        
+        .scenario-card {
+            background: linear-gradient(135deg, #fff, #fafafa);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .scenario-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .scenario-icon {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 20px;
+        }
+        
+        .scenario-workflow {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .workflow-step {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .step-number {
+            background: #f093fb;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 0.9em;
+        }
+        
+        .content-calendar {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .calendar-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        
+        .calendar-day {
+            background: white;
+            padding: 15px 10px;
+            border-radius: 8px;
+            text-align: center;
+            min-height: 80px;
+        }
+        
+        .calendar-day.active {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+        }
+        
+        .day-number {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .day-content {
+            font-size: 0.8em;
+        }
+        
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #fff0fb, #fff0f0);
+            border-radius: 15px;
+        }
+        
+        .metric {
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .metric-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .best-practices {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #f093fb;
+            margin: 30px 0;
+        }
+        
+        .best-practices h3 {
+            color: #f5576c;
+            margin-bottom: 20px;
+        }
+        
+        .practice-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .practice-item {
+            display: flex;
+            align-items: start;
+        }
+        
+        .practice-icon {
+            color: #f093fb;
+            margin-right: 15px;
+            font-size: 20px;
+        }
+        
+        .cta {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .cta h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        
+        .cta p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .scenario-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .calendar-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📱 소셜미디어 자동화</h1>
+            <p class="subtitle">n8n으로 구축하는 멀티채널 소셜미디어 관리 시스템</p>
+        </header>
+        
+        <div class="workflow-card">
+            <div class="workflow-header">
+                <div class="icon">🌐</div>
+                <div class="workflow-title">
+                    <h2>통합 소셜미디어 마케팅 워크플로우</h2>
+                    <p>모든 소셜 플랫폼을 하나의 워크플로우로 관리</p>
+                </div>
+            </div>
+            
+            <div class="social-platforms">
+                <div class="platform">
+                    <div class="platform-icon">📘</div>
+                    <p>Facebook</p>
+                </div>
+                <div class="platform">
+                    <div class="platform-icon">📷</div>
+                    <p>Instagram</p>
+                </div>
+                <div class="platform">
+                    <div class="platform-icon">🐦</div>
+                    <p>Twitter/X</p>
+                </div>
+                <div class="platform">
+                    <div class="platform-icon">💼</div>
+                    <p>LinkedIn</p>
+                </div>
+                <div class="platform">
+                    <div class="platform-icon">📺</div>
+                    <p>YouTube</p>
+                </div>
+                <div class="platform">
+                    <div class="platform-icon">🎵</div>
+                    <p>TikTok</p>
+                </div>
+            </div>
+            
+            <div class="features">
+                <div class="feature">
+                    <h3><span class="feature-icon">📅</span>일정 예약 포스팅</h3>
+                    <p>최적 시간대에 자동으로 콘텐츠 게시</p>
+                </div>
+                <div class="feature">
+                    <h3><span class="feature-icon">🔄</span>크로스 포스팅</h3>
+                    <p>한 번의 작성으로 모든 채널에 동시 게시</p>
+                </div>
+                <div class="feature">
+                    <h3><span class="feature-icon">💬</span>댓글 자동 응답</h3>
+                    <p>키워드 기반 자동 답변 및 DM 관리</p>
+                </div>
+                <div class="feature">
+                    <h3><span class="feature-icon">📊</span>성과 분석</h3>
+                    <p>통합 대시보드로 모든 채널 성과 추적</p>
+                </div>
+                <div class="feature">
+                    <h3><span class="feature-icon">🎨</span>콘텐츠 재활용</h3>
+                    <p>인기 게시물 자동 리포스팅 및 변형</p>
+                </div>
+                <div class="feature">
+                    <h3><span class="feature-icon">🔔</span>실시간 모니터링</h3>
+                    <p>브랜드 언급 및 해시태그 추적</p>
+                </div>
+            </div>
+            
+            <div class="automation-scenarios">
+                <h3 style="color: #f5576c; margin-bottom: 20px; text-align: center;">🚀 자동화 시나리오</h3>
+                <div class="scenario-grid">
+                    <div class="scenario-card">
+                        <div class="scenario-header">
+                            <div class="scenario-icon">📸</div>
+                            <div>
+                                <h4>콘텐츠 자동 배포</h4>
+                                <p style="color: #666; font-size: 0.9em;">블로그 포스트 → 소셜미디어</p>
+                            </div>
+                        </div>
+                        <div class="scenario-workflow">
+                            <div class="workflow-step">
+                                <span class="step-number">1</span>
+                                <span>새 블로그 포스트 감지</span>
+                            </div>
+                            <div class="workflow-step">
+                                <span class="step-number">2</span>
+                                <span>요약 및 이미지 추출</span>
+                            </div>
+                            <div class="workflow-step">
+                                <span class="step-number">3</span>
+                                <span>플랫폼별 포맷 변환</span>
+                            </div>
+                            <div class="workflow-step">
+                                <span class="step-number">4</span>
+                                <span>자동 게시 및 링크 생성</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="scenario-card">
+                        <div class="scenario-header">
+                            <div class="scenario-icon">🎯</div>
+                            <div>
+                                <h4>인플루언서 협업</h4>
+                                <p style="color: #666; font-size: 0.9em;">멘션 추적 및 관계 관리</p>
+                            </div>
+                        </div>
+                        <div class="scenario-workflow">
+                            <div class="workflow-step">
+                                <span class="step-number">1</span>
+                                <span>브랜드 멘션 감지</span>
+                            </div>
+                            <div class="workflow-step">
+                                <span class="step-number">2</span>
+                                <span>인플루언서 영향력 분석</span>
+                            </div>
+                            <div class="workflow-step">
+                                <span class="step-number">3</span>
+                                <span>CRM에 정보 저장</span>
+                            </div>
+                            <div class="workflow-step">
+                                <span class="step-number">4</span>
+                                <span>팔로우업 메시지 발송</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="scenario-card">
+                        <div class="scenario-header">
+                            <div class="scenario-icon">🏆</div>
+                            <div>
+                                <h4>콘테스트 자동화</h4>
+                                <p style="color: #666; font-size: 0.9em;">참가자 추적 및 당첨자 선정</p>
+                            </div>
+                        </div>
+                        <div class="scenario-workflow">
+                            <div class="workflow-step">
+                                <span class="step-number">1</span>
+                                <span>해시태그 모니터링</span>
+                            </div>
+                            <div class="workflow-step">
+                                <span class="step-number">2</span>
+                                <span>참가 조건 확인</span>
+                            </div>
+                            <div class="workflow-step">
+                                <span class="step-number">3</span>
+                                <span>무작위 당첨자 선정</span>
+                            </div>
+                            <div class="workflow-step">
+                                <span class="step-number">4</span>
+                                <span>당첨 알림 발송</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="scenario-card">
+                        <div class="scenario-header">
+                            <div class="scenario-icon">📈</div>
+                            <div>
+                                <h4>트렌드 활용</h4>
+                                <p style="color: #666; font-size: 0.9em;">실시간 트렌드 기반 콘텐츠</p>
+                            </div>
+                        </div>
+                        <div class="scenario-workflow">
+                            <div class="workflow-step">
+                                <span class="step-number">1</span>
+                                <span>트렌딩 토픽 감지</span>
+                            </div>
+                            <div class="workflow-step">
+                                <span class="step-number">2</span>
+                                <span>관련성 분석</span>
+                            </div>
+                            <div class="workflow-step">
+                                <span class="step-number">3</span>
+                                <span>콘텐츠 템플릿 적용</span>
+                            </div>
+                            <div class="workflow-step">
+                                <span class="step-number">4</span>
+                                <span>승인 후 자동 게시</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-calendar">
+                <div class="calendar-header">
+                    <h3 style="color: #f5576c;">📅 콘텐츠 캘린더 예시</h3>
+                    <p style="color: #666; margin-top: 5px;">자동화된 주간 포스팅 일정</p>
+                </div>
+                <div class="calendar-grid">
+                    <div class="calendar-day">
+                        <div class="day-number">월</div>
+                        <div class="day-content">동기부여<br>인용구</div>
+                    </div>
+                    <div class="calendar-day active">
+                        <div class="day-number">화</div>
+                        <div class="day-content">제품<br>스포트라이트</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">수</div>
+                        <div class="day-content">팁&트릭<br>공유</div>
+                    </div>
+                    <div class="calendar-day active">
+                        <div class="day-number">목</div>
+                        <div class="day-content">고객<br>후기</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">금</div>
+                        <div class="day-content">주말<br>프로모션</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">토</div>
+                        <div class="day-content">UGC<br>리포스트</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="day-number">일</div>
+                        <div class="day-content">주간<br>하이라이트</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="metrics">
+                <div class="metric">
+                    <div class="metric-value">500%</div>
+                    <div class="metric-label">참여율 증가</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">24/7</div>
+                    <div class="metric-label">자동 응답 가능</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">6개</div>
+                    <div class="metric-label">동시 관리 채널</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">80%</div>
+                    <div class="metric-label">시간 절약</div>
+                </div>
+            </div>
+            
+            <div class="best-practices">
+                <h3>💡 소셜미디어 자동화 베스트 프랙티스</h3>
+                <div class="practice-list">
+                    <div class="practice-item">
+                        <span class="practice-icon">✓</span>
+                        <div>
+                            <strong>적절한 게시 빈도 유지</strong>
+                            <p style="color: #666; margin-top: 5px;">플랫폼별 최적 게시 횟수를 설정하여 스팸으로 인식되지 않도록 주의</p>
+                        </div>
+                    </div>
+                    <div class="practice-item">
+                        <span class="practice-icon">✓</span>
+                        <div>
+                            <strong>개인화된 응답 템플릿</strong>
+                            <p style="color: #666; margin-top: 5px;">자동 응답도 브랜드 톤앤매너를 유지하며 인간적인 느낌 전달</p>
+                        </div>
+                    </div>
+                    <div class="practice-item">
+                        <span class="practice-icon">✓</span>
+                        <div>
+                            <strong>A/B 테스트 지속 실행</strong>
+                            <p style="color: #666; margin-top: 5px;">게시 시간, 해시태그, 콘텐츠 형식을 지속적으로 최적화</p>
+                        </div>
+                    </div>
+                    <div class="practice-item">
+                        <span class="practice-icon">✓</span>
+                        <div>
+                            <strong>위기 상황 수동 전환</strong>
+                            <p style="color: #666; margin-top: 5px;">부정적 피드백이나 위기 상황 감지 시 즉시 수동 모드로 전환</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cta">
+                <h3>소셜미디어 마케팅을 자동화하세요!</h3>
+                <p>n8n으로 모든 소셜 채널을 효율적으로 관리하고 참여도를 극대화하세요</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

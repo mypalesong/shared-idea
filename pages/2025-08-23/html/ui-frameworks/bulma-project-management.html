@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Management - Bulma</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <script src="https://kit.fontawesome.com/15181efa86.js" crossorigin="anonymous"></script>
+    <style>
+        .task-card {
+            border-left: 4px solid #3298dc;
+            transition: all 0.3s ease;
+        }
+        .task-card:hover {
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .task-card.is-high {
+            border-left-color: #ff3860;
+        }
+        .task-card.is-medium {
+            border-left-color: #ffdd57;
+        }
+        .task-card.is-low {
+            border-left-color: #00d1b2;
+        }
+        .kanban-board {
+            min-height: 500px;
+        }
+        .kanban-column {
+            background-color: #f5f5f5;
+            border-radius: 6px;
+            min-height: 500px;
+        }
+        .avatar-group {
+            display: flex;
+            margin-left: -8px;
+        }
+        .avatar-group .image {
+            margin-left: -8px;
+            border: 2px solid white;
+            border-radius: 50%;
+        }
+        .notification-dot {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            background: #ff3860;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar is-dark" role="navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item">
+                <i class="fas fa-tasks mr-2"></i>
+                <strong>ProjectFlow</strong>
+            </a>
+            <a role="button" class="navbar-burger" data-target="navbarBasicExample">
+                <span></span>
+                <span></span>
+                <span></span>
+            </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item">Projects</a>
+                <a class="navbar-item">Teams</a>
+                <a class="navbar-item">Reports</a>
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">More</a>
+                    <div class="navbar-dropdown">
+                        <a class="navbar-item">Analytics</a>
+                        <a class="navbar-item">Settings</a>
+                        <hr class="navbar-divider">
+                        <a class="navbar-item">Integrations</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <div class="button is-light is-small">
+                            <span class="icon">
+                                <i class="fas fa-bell"></i>
+                            </span>
+                            <span class="notification-dot"></span>
+                        </div>
+                        <div class="button is-light is-small">
+                            <span class="icon">
+                                <i class="fas fa-search"></i>
+                            </span>
+                        </div>
+                        <div class="dropdown is-hoverable">
+                            <div class="dropdown-trigger">
+                                <button class="button" aria-haspopup="true">
+                                    <figure class="image is-24x24 mr-2">
+                                        <img class="is-rounded" src="https://via.placeholder.com/40" alt="Profile">
+                                    </figure>
+                                    <span>Jane Doe</span>
+                                    <span class="icon is-small">
+                                        <i class="fas fa-angle-down"></i>
+                                    </span>
+                                </button>
+                            </div>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-content">
+                                    <a href="#" class="dropdown-item">Profile</a>
+                                    <a href="#" class="dropdown-item">Settings</a>
+                                    <hr class="dropdown-divider">
+                                    <a href="#" class="dropdown-item">Logout</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <section class="section">
+        <div class="container is-fluid">
+            <!-- Header Section -->
+            <div class="level">
+                <div class="level-left">
+                    <div class="level-item">
+                        <div>
+                            <h1 class="title">Enterprise Web Platform</h1>
+                            <p class="subtitle">Q1 2024 Development Sprint</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <div class="field has-addons">
+                            <div class="control">
+                                <div class="select">
+                                    <select>
+                                        <option>All Members</option>
+                                        <option>Frontend Team</option>
+                                        <option>Backend Team</option>
+                                        <option>DevOps Team</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control">
+                                <button class="button is-primary">
+                                    <span class="icon">
+                                        <i class="fas fa-plus"></i>
+                                    </span>
+                                    <span>New Task</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Stats -->
+            <div class="columns">
+                <div class="column is-3">
+                    <div class="card">
+                        <div class="card-content has-text-centered">
+                            <div class="title is-1 has-text-primary">42</div>
+                            <div class="subtitle">Total Tasks</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-3">
+                    <div class="card">
+                        <div class="card-content has-text-centered">
+                            <div class="title is-1 has-text-success">28</div>
+                            <div class="subtitle">Completed</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-3">
+                    <div class="card">
+                        <div class="card-content has-text-centered">
+                            <div class="title is-1 has-text-warning">9</div>
+                            <div class="subtitle">In Progress</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-3">
+                    <div class="card">
+                        <div class="card-content has-text-centered">
+                            <div class="title is-1 has-text-danger">5</div>
+                            <div class="subtitle">Blocked</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kanban Board -->
+            <div class="columns is-gapless kanban-board mt-5">
+                <!-- To Do Column -->
+                <div class="column is-3">
+                    <div class="kanban-column p-3">
+                        <div class="level">
+                            <div class="level-left">
+                                <div class="level-item">
+                                    <h3 class="title is-5">
+                                        <span class="icon">
+                                            <i class="fas fa-clipboard-list"></i>
+                                        </span>
+                                        To Do
+                                        <span class="tag is-light ml-2">5</span>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Task Cards -->
+                        <div class="card task-card is-high mb-4">
+                            <div class="card-content">
+                                <div class="level">
+                                    <div class="level-left">
+                                        <span class="tag is-danger is-small">High</span>
+                                    </div>
+                                    <div class="level-right">
+                                        <span class="icon has-text-grey-light">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <h4 class="title is-6 mt-2">Implement OAuth 2.0</h4>
+                                <p class="subtitle is-7 has-text-grey">Security authentication system</p>
+                                <div class="level mt-3">
+                                    <div class="level-left">
+                                        <div class="avatar-group">
+                                            <figure class="image is-24x24">
+                                                <img class="is-rounded" src="https://via.placeholder.com/40" alt="User">
+                                            </figure>
+                                            <figure class="image is-24x24">
+                                                <img class="is-rounded" src="https://via.placeholder.com/40/ff6b6b" alt="User">
+                                            </figure>
+                                        </div>
+                                    </div>
+                                    <div class="level-right">
+                                        <div class="tags">
+                                            <span class="tag is-light is-small">Backend</span>
+                                            <span class="tag is-light is-small">Security</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="level">
+                                    <div class="level-left">
+                                        <span class="icon has-text-grey-light">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </span>
+                                        <span class="has-text-grey is-size-7">Due: Jan 25</span>
+                                    </div>
+                                    <div class="level-right">
+                                        <span class="icon has-text-grey-light">
+                                            <i class="fas fa-comments"></i>
+                                        </span>
+                                        <span class="has-text-grey is-size-7">3</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card task-card is-medium mb-4">
+                            <div class="card-content">
+                                <div class="level">
+                                    <div class="level-left">
+                                        <span class="tag is-warning is-small">Medium</span>
+                                    </div>
+                                    <div class="level-right">
+                                        <span class="icon has-text-grey-light">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <h4 class="title is-6 mt-2">Design System Updates</h4>
+                                <p class="subtitle is-7 has-text-grey">Component library refresh</p>
+                                <div class="level mt-3">
+                                    <div class="level-left">
+                                        <div class="avatar-group">
+                                            <figure class="image is-24x24">
+                                                <img class="is-rounded" src="https://via.placeholder.com/40/4ecdc4" alt="User">
+                                            </figure>
+                                        </div>
+                                    </div>
+                                    <div class="level-right">
+                                        <div class="tags">
+                                            <span class="tag is-light is-small">Design</span>
+                                            <span class="tag is-light is-small">UI/UX</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="level">
+                                    <div class="level-left">
+                                        <span class="icon has-text-grey-light">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </span>
+                                        <span class="has-text-grey is-size-7">Due: Jan 28</span>
+                                    </div>
+                                    <div class="level-right">
+                                        <span class="icon has-text-grey-light">
+                                            <i class="fas fa-paperclip"></i>
+                                        </span>
+                                        <span class="has-text-grey is-size-7">2</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card task-card is-low mb-4">
+                            <div class="card-content">
+                                <div class="level">
+                                    <div class="level-left">
+                                        <span class="tag is-info is-small">Low</span>
+                                    </div>
+                                    <div class="level-right">
+                                        <span class="icon has-text-grey-light">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <h4 class="title is-6 mt-2">Documentation Update</h4>
+                                <p class="subtitle is-7 has-text-grey">API documentation refresh</p>
+                                <div class="level mt-3">
+                                    <div class="level-left">
+                                        <div class="avatar-group">
+                                            <figure class="image is-24x24">
+                                                <img class="is-rounded" src="https://via.placeholder.com/40/95e1d3" alt="User">
+                                            </figure>
+                                            <figure class="image is-24x24">
+                                                <img class="is-rounded" src="https://via.placeholder.com/40/f38ba8" alt="User">
+                                            </figure>
+                                            <figure class="image is-24x24">
+                                                <img class="is-rounded" src="https://via.placeholder.com/40/a8dadc" alt="User">
+                                            </figure>
+                                        </div>
+                                    </div>
+                                    <div class="level-right">
+                                        <div class="tags">
+                                            <span class="tag is-light is-small">Docs</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="level">
+                                    <div class="level-left">
+                                        <span class="icon has-text-grey-light">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </span>
+                                        <span class="has-text-grey is-size-7">Due: Feb 2</span>
+                                    </div>
+                                    <div class="level-right">
+                                        <span class="icon has-text-grey-light">
+                                            <i class="fas fa-comments"></i>
+                                        </span>
+                                        <span class="has-text-grey is-size-7">1</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- In Progress Column -->
+                <div class="column is-3">
+                    <div class="kanban-column p-3">
+                        <div class="level">
+                            <div class="level-left">
+                                <div class="level-item">
+                                    <h3 class="title is-5">
+                                        <span class="icon">
+                                            <i class="fas fa-spinner"></i>
+                                        </span>
+                                        In Progress
+                                        <span class="tag is-warning ml-2">3</span>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card task-card is-high mb-4">
+                            <div class="card-content">
+                                <div class="level">
+                                    <div class="level-left">
+                                        <span class="tag is-danger is-small">High</span>
+                                    </div>
+                                    <div class="level-right">
+                                        <span class="icon has-text-grey-light">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <h4 class="title is-6 mt-2">Database Migration</h4>
+                                <p class="subtitle is-7 has-text-grey">PostgreSQL to MongoDB</p>
+                                <div class="progress is-primary is-small mt-2">
+                                    <progress class="progress is-primary is-small" value="65" max="100">65%</progress>
+                                </div>
+                                <div class="level mt-3">
+                                    <div class="level-left">
+                                        <div class="avatar-group">
+                                            <figure class="image is-24x24">
+                                                <img class="is-rounded" src="https://via.placeholder.com/40/457b9d" alt="User">
+                                            </figure>
+                                            <figure class="image is-24x24">
+                                                <img class="is-rounded" src="https://via.placeholder.com/40/1d3557" alt="User">
+                                            </figure>
+                                        </div>
+                                    </div>
+                                    <div class="level-right">
+                                        <div class="tags">
+                                            <span class="tag is-light is-small">Database</span>
+                                            <span class="tag is-light is-small">Backend</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card task-card is-medium mb-4">
+                            <div class="card-content">
+                                <div class="level">
+                                    <div class="level-left">
+                                        <span class="tag is-warning is-small">Medium</span>
+                                    </div>
+                                    <div class="level-right">
+                                        <span class="icon has-text-grey-light">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <h4 class="title is-6 mt-2">API Rate Limiting</h4>
+                                <p class="subtitle is-7 has-text-grey">Implement rate limiting middleware</p>
+                                <div class="progress is-warning is-small mt-2">
+                                    <progress class="progress is-warning is-small" value="40" max="100">40%</progress>
+                                </div>
+                                <div class="level mt-3">
+                                    <div class="level-left">
+                                        <div class="avatar-group">
+                                            <figure class="image is-24x24">
+                                                <img class="is-rounded" src="https://via.placeholder.com/40/f1faee" alt="User">
+                                            </figure>
+                                        </div>
+                                    </div>
+                                    <div class="level-right">
+                                        <div class="tags">
+                                            <span class="tag is-light is-small">API</span>
+                                            <span class="tag is-light is-small">Security</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review Column -->
+                <div class="column is-3">
+                    <div class="kanban-column p-3">
+                        <div class="level">
+                            <div class="level-left">
+                                <div class="level-item">
+                                    <h3 class="title is-5">
+                                        <span class="icon">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                        Review
+                                        <span class="tag is-info ml-2">4</span>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card task-card mb-4">
+                            <div class="card-content">
+                                <div class="level">
+                                    <div class="level-left">
+                                        <span class="tag is-info is-small">Review</span>
+                                    </div>
+                                    <div class="level-right">
+                                        <span class="icon has-text-grey-light">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <h4 class="title is-6 mt-2">User Dashboard UI</h4>
+                                <p class="subtitle is-7 has-text-grey">New dashboard interface</p>
+                                <div class="level mt-3">
+                                    <div class="level-left">
+                                        <div class="avatar-group">
+                                            <figure class="image is-24x24">
+                                                <img class="is-rounded" src="https://via.placeholder.com/40/e63946" alt="User">
+                                            </figure>
+                                            <figure class="image is-24x24">
+                                                <img class="is-rounded" src="https://via.placeholder.com/40/f77f00" alt="User">
+                                            </figure>
+                                        </div>
+                                    </div>
+                                    <div class="level-right">
+                                        <div class="tags">
+                                            <span class="tag is-light is-small">Frontend</span>
+                                            <span class="tag is-light is-small">React</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="level">
+                                    <div class="level-left">
+                                        <span class="icon has-text-success">
+                                            <i class="fas fa-check-circle"></i>
+                                        </span>
+                                        <span class="has-text-success is-size-7">Tests Passed</span>
+                                    </div>
+                                    <div class="level-right">
+                                        <span class="icon has-text-grey-light">
+                                            <i class="fas fa-code-branch"></i>
+                                        </span>
+                                        <span class="has-text-grey is-size-7">PR #142</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card task-card mb-4">
+                            <div class="card-content">
+                                <div class="level">
+                                    <div class="level-left">
+                                        <span class="tag is-info is-small">Review</span>
+                                    </div>
+                                    <div class="level-right">
+                                        <span class="icon has-text-grey-light">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <h4 class="title is-6 mt-2">Payment Gateway</h4>
+                                <p class="subtitle is-7 has-text-grey">Stripe integration</p>
+                                <div class="level mt-3">
+                                    <div class="level-left">
+                                        <div class="avatar-group">
+                                            <figure class="image is-24x24">
+                                                <img class="is-rounded" src="https://via.placeholder.com/40/fcbf49" alt="User">
+                                            </figure>
+                                        </div>
+                                    </div>
+                                    <div class="level-right">
+                                        <div class="tags">
+                                            <span class="tag is-light is-small">Payment</span>
+                                            <span class="tag is-light is-small">Integration</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="level">
+                                    <div class="level-left">
+                                        <span class="icon has-text-warning">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                        </span>
+                                        <span class="has-text-warning is-size-7">Needs Testing</span>
+                                    </div>
+                                    <div class="level-right">
+                                        <span class="icon has-text-grey-light">
+                                            <i class="fas fa-code-branch"></i>
+                                        </span>
+                                        <span class="has-text-grey is-size-7">PR #139</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Done Column -->
+                <div class="column is-3">
+                    <div class="kanban-column p-3">
+                        <div class="level">
+                            <div class="level-left">
+                                <div class="level-item">
+                                    <h3 class="title is-5">
+                                        <span class="icon">
+                                            <i class="fas fa-check-circle"></i>
+                                        </span>
+                                        Done
+                                        <span class="tag is-success ml-2">6</span>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card task-card mb-4" style="opacity: 0.8;">
+                            <div class="card-content">
+                                <div class="level">
+                                    <div class="level-left">
+                                        <span class="tag is-success is-small">Done</span>
+                                    </div>
+                                    <div class="level-right">
+                                        <span class="icon has-text-success">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <h4 class="title is-6 mt-2">User Authentication</h4>
+                                <p class="subtitle is-7 has-text-grey">JWT implementation complete</p>
+                                <div class="level mt-3">
+                                    <div class="level-left">
+                                        <div class="avatar-group">
+                                            <figure class="image is-24x24">
+                                                <img class="is-rounded" src="https://via.placeholder.com/40/003049" alt="User">
+                                            </figure>
+                                            <figure class="image is-24x24">
+                                                <img class="is-rounded" src="https://via.placeholder.com/40/d62828" alt="User">
+                                            </figure>
+                                        </div>
+                                    </div>
+                                    <div class="level-right">
+                                        <div class="tags">
+                                            <span class="tag is-light is-small">Auth</span>
+                                            <span class="tag is-light is-small">Security</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="level">
+                                    <div class="level-left">
+                                        <span class="icon has-text-grey-light">
+                                            <i class="fas fa-calendar-check"></i>
+                                        </span>
+                                        <span class="has-text-grey is-size-7">Completed: Jan 20</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card task-card mb-4" style="opacity: 0.8;">
+                            <div class="card-content">
+                                <div class="level">
+                                    <div class="level-left">
+                                        <span class="tag is-success is-small">Done</span>
+                                    </div>
+                                    <div class="level-right">
+                                        <span class="icon has-text-success">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <h4 class="title is-6 mt-2">Email Templates</h4>
+                                <p class="subtitle is-7 has-text-grey">Responsive email designs</p>
+                                <div class="level mt-3">
+                                    <div class="level-left">
+                                        <div class="avatar-group">
+                                            <figure class="image is-24x24">
+                                                <img class="is-rounded" src="https://via.placeholder.com/40/f72585" alt="User">
+                                            </figure>
+                                        </div>
+                                    </div>
+                                    <div class="level-right">
+                                        <div class="tags">
+                                            <span class="tag is-light is-small">Email</span>
+                                            <span class="tag is-light is-small">Design</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="level">
+                                    <div class="level-left">
+                                        <span class="icon has-text-grey-light">
+                                            <i class="fas fa-calendar-check"></i>
+                                        </span>
+                                        <span class="has-text-grey is-size-7">Completed: Jan 18</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Activity Section -->
+            <div class="columns mt-5">
+                <div class="column is-8">
+                    <div class="card">
+                        <header class="card-header">
+                            <p class="card-header-title">Recent Activity</p>
+                            <button class="card-header-icon">
+                                <span class="icon">
+                                    <i class="fas fa-refresh"></i>
+                                </span>
+                            </button>
+                        </header>
+                        <div class="card-content">
+                            <div class="content">
+                                <div class="media">
+                                    <div class="media-left">
+                                        <figure class="image is-32x32">
+                                            <img class="is-rounded" src="https://via.placeholder.com/40" alt="User">
+                                        </figure>
+                                    </div>
+                                    <div class="media-content">
+                                        <p><strong>Jane Doe</strong> completed <em>User Authentication</em>
+                                        <br><small>2 hours ago</small></p>
+                                    </div>
+                                </div>
+                                <div class="media">
+                                    <div class="media-left">
+                                        <figure class="image is-32x32">
+                                            <img class="is-rounded" src="https://via.placeholder.com/40/ff6b6b" alt="User">
+                                        </figure>
+                                    </div>
+                                    <div class="media-content">
+                                        <p><strong>John Smith</strong> created <em>Database Migration</em>
+                                        <br><small>4 hours ago</small></p>
+                                    </div>
+                                </div>
+                                <div class="media">
+                                    <div class="media-left">
+                                        <figure class="image is-32x32">
+                                            <img class="is-rounded" src="https://via.placeholder.com/40/4ecdc4" alt="User">
+                                        </figure>
+                                    </div>
+                                    <div class="media-content">
+                                        <p><strong>Sarah Johnson</strong> commented on <em>Design System Updates</em>
+                                        <br><small>6 hours ago</small></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-4">
+                    <div class="card">
+                        <header class="card-header">
+                            <p class="card-header-title">Team Members</p>
+                        </header>
+                        <div class="card-content">
+                            <div class="content">
+                                <div class="level">
+                                    <div class="level-left">
+                                        <div class="level-item">
+                                            <figure class="image is-32x32">
+                                                <img class="is-rounded" src="https://via.placeholder.com/40" alt="User">
+                                            </figure>
+                                            <div class="ml-3">
+                                                <p class="title is-7">Jane Doe</p>
+                                                <p class="subtitle is-7">Team Lead</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="level-right">
+                                        <span class="tag is-success is-light">Online</span>
+                                    </div>
+                                </div>
+                                <div class="level">
+                                    <div class="level-left">
+                                        <div class="level-item">
+                                            <figure class="image is-32x32">
+                                                <img class="is-rounded" src="https://via.placeholder.com/40/ff6b6b" alt="User">
+                                            </figure>
+                                            <div class="ml-3">
+                                                <p class="title is-7">John Smith</p>
+                                                <p class="subtitle is-7">Backend Dev</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="level-right">
+                                        <span class="tag is-success is-light">Online</span>
+                                    </div>
+                                </div>
+                                <div class="level">
+                                    <div class="level-left">
+                                        <div class="level-item">
+                                            <figure class="image is-32x32">
+                                                <img class="is-rounded" src="https://via.placeholder.com/40/4ecdc4" alt="User">
+                                            </figure>
+                                            <div class="ml-3">
+                                                <p class="title is-7">Sarah Johnson</p>
+                                                <p class="subtitle is-7">UI Designer</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="level-right">
+                                        <span class="tag is-warning is-light">Away</span>
+                                    </div>
+                                </div>
+                                <div class="level">
+                                    <div class="level-left">
+                                        <div class="level-item">
+                                            <figure class="image is-32x32">
+                                                <img class="is-rounded" src="https://via.placeholder.com/40/95e1d3" alt="User">
+                                            </figure>
+                                            <div class="ml-3">
+                                                <p class="title is-7">Mike Wilson</p>
+                                                <p class="subtitle is-7">DevOps</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="level-right">
+                                        <span class="tag is-light">Offline</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Simple drag and drop functionality simulation
+        document.querySelectorAll('.task-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.style.transform = 'scale(1.02)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 200);
+            });
+        });
+
+        // Navbar burger toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+            if ($navbarBurgers.length > 0) {
+                $navbarBurgers.forEach(el => {
+                    el.addEventListener('click', () => {
+                        const target = el.dataset.target;
+                        const $target = document.getElementById(target);
+                        el.classList.toggle('is-active');
+                        $target.classList.toggle('is-active');
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

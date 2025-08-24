@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Form System - Ant Design</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/antd@5.12.8/dist/reset.css" />
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/antd@5.12.8/dist/antd.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .app-container {
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .form-header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #f0f0f0;
+        }
+        .form-container {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #f0f0f0;
+        }
+        .section-title {
+            color: #262626;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .ant-form-item {
+            margin-bottom: 24px;
+        }
+        .ant-form-item-label > label {
+            font-weight: 500;
+            color: #595959;
+        }
+        .ant-input, .ant-select-selector, .ant-picker, .ant-input-number {
+            border-radius: 6px;
+            border: 1px solid #d9d9d9;
+            transition: all 0.3s ease;
+        }
+        .ant-input:hover, .ant-select-selector:hover, .ant-picker:hover, .ant-input-number:hover {
+            border-color: #40a9ff;
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+        }
+        .ant-btn-primary {
+            background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+            border: none;
+            border-radius: 6px;
+            height: 40px;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        .ant-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(24, 144, 255, 0.4);
+        }
+        .progress-container {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .validation-summary {
+            background: #fff2f0;
+            border: 1px solid #ffccc7;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+        .validation-summary.success {
+            background: #f6ffed;
+            border-color: #b7eb8f;
+        }
+        .step-content {
+            min-height: 400px;
+            padding: 20px 0;
+        }
+        .file-upload-area {
+            border: 2px dashed #d9d9d9;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            background: #fafafa;
+            transition: all 0.3s ease;
+        }
+        .file-upload-area:hover {
+            border-color: #40a9ff;
+            background: #f0f9ff;
+        }
+        .review-section {
+            background: #fafafa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+        .review-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .review-item:last-child {
+            border-bottom: none;
+        }
+        .ant-card {
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        .ant-statistic-content {
+            color: #1890ff;
+        }
+        .dynamic-form-item {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { 
+            Form, Input, Button, Steps, Card, Row, Col, Select, DatePicker, 
+            InputNumber, Radio, Checkbox, Upload, message, Progress, Alert,
+            Divider, Space, Typography, Statistic, Tag, Modal, Table,
+            Switch, TimePicker, TreeSelect
+        } = antd;
+        const { Title, Text } = Typography;
+        const { Step } = Steps;
+        const { Option } = Select;
+        const { Dragger } = Upload;
+        const { RangePicker } = DatePicker;
+
+        const EnterpriseFormSystem = () => {
+            const [form] = Form.useForm();
+            const [currentStep, setCurrentStep] = React.useState(0);
+            const [formData, setFormData] = React.useState({});
+            const [loading, setLoading] = React.useState(false);
+            const [formProgress, setFormProgress] = React.useState(0);
+            const [validationErrors, setValidationErrors] = React.useState([]);
+
+            const steps = [
+                {
+                    title: 'Basic Information',
+                    content: 'basic-info',
+                    icon: <i className="anticon anticon-user" />
+                },
+                {
+                    title: 'Company Details',
+                    content: 'company-details',
+                    icon: <i className="anticon anticon-bank" />
+                },
+                {
+                    title: 'Project Specifications',
+                    content: 'project-specs',
+                    icon: <i className="anticon anticon-project" />
+                },
+                {
+                    title: 'Financial Information',
+                    content: 'financial-info',
+                    icon: <i className="anticon anticon-dollar" />
+                },
+                {
+                    title: 'Documents & Review',
+                    content: 'documents-review',
+                    icon: <i className="anticon anticon-file-text" />
+                }
+            ];
+
+            const calculateProgress = () => {
+                const values = form.getFieldsValue();
+                const totalFields = 25;
+                let filledFields = 0;
+                
+                Object.keys(values).forEach(key => {
+                    if (values[key] && values[key] !== '') {
+                        filledFields++;
+                    }
+                });
+                
+                return Math.round((filledFields / totalFields) * 100);
+            };
+
+            const validateCurrentStep = async () => {
+                try {
+                    const values = await form.validateFields();
+                    setValidationErrors([]);
+                    return true;
+                } catch (errorInfo) {
+                    const errors = errorInfo.errorFields.map(field => field.errors[0]);
+                    setValidationErrors(errors);
+                    return false;
+                }
+            };
+
+            const next = async () => {
+                const isValid = await validateCurrentStep();
+                if (isValid) {
+                    setCurrentStep(currentStep + 1);
+                    setFormProgress(calculateProgress());
+                }
+            };
+
+            const prev = () => {
+                setCurrentStep(currentStep - 1);
+            };
+
+            const onFinish = async (values) => {
+                setLoading(true);
+                try {
+                    // Simulate API call
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    message.success('Enterprise application submitted successfully!');
+                    console.log('Form submitted:', values);
+                } catch (error) {
+                    message.error('Submission failed. Please try again.');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const uploadProps = {
+                name: 'file',
+                multiple: true,
+                action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+                onChange(info) {
+                    const { status } = info.file;
+                    if (status === 'done') {
+                        message.success(`${info.file.name} file uploaded successfully.`);
+                    } else if (status === 'error') {
+                        message.error(`${info.file.name} file upload failed.`);
+                    }
+                },
+                onDrop(e) {
+                    console.log('Dropped files', e.dataTransfer.files);
+                },
+            };
+
+            const companyTypes = [
+                'Technology', 'Healthcare', 'Finance', 'Manufacturing', 'Education',
+                'Retail', 'Construction', 'Transportation', 'Energy', 'Other'
+            ];
+
+            const projectCategories = [
+                'Software Development', 'Infrastructure', 'Research & Development',
+                'Marketing Campaign', 'Process Improvement', 'Expansion', 'Compliance'
+            ];
+
+            React.useEffect(() => {
+                setFormProgress(calculateProgress());
+            }, []);
+
+            const renderBasicInfo = () => (
+                <div className="step-content">
+                    <div className="section-title">Personal Information</div>
+                    <Row gutter={16}>
+                        <Col xs={24} sm={12}>
+                            <Form.Item
+                                name="firstName"
+                                label="First Name"
+                                rules={[{ required: true, message: 'Please input your first name!' }]}
+                            >
+                                <Input placeholder="Enter your first name" />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={12}>
+                            <Form.Item
+                                name="lastName"
+                                label="Last Name"
+                                rules={[{ required: true, message: 'Please input your last name!' }]}
+                            >
+                                <Input placeholder="Enter your last name" />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    
+                    <Row gutter={16}>
+                        <Col xs={24} sm={12}>
+                            <Form.Item
+                                name="email"
+                                label="Email Address"
+                                rules={[
+                                    { required: true, message: 'Please input your email!' },
+                                    { type: 'email', message: 'Please enter a valid email!' }
+                                ]}
+                            >
+                                <Input placeholder="Enter your email address" />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={12}>
+                            <Form.Item
+                                name="phone"
+                                label="Phone Number"
+                                rules={[{ required: true, message: 'Please input your phone number!' }]}
+                            >
+                                <Input placeholder="Enter your phone number" />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Form.Item
+                        name="position"
+                        label="Job Title/Position"
+                        rules={[{ required: true, message: 'Please input your position!' }]}
+                    >
+                        <Input placeholder="Enter your job title" />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="department"
+                        label="Department"
+                        rules={[{ required: true, message: 'Please select your department!' }]}
+                    >
+                        <Select placeholder="Select your department">
+                            <Option value="executive">Executive</Option>
+                            <Option value="engineering">Engineering</Option>
+                            <Option value="marketing">Marketing</Option>
+                            <Option value="sales">Sales</Option>
+                            <Option value="finance">Finance</Option>
+                            <Option value="hr">Human Resources</Option>
+                            <Option value="operations">Operations</Option>
+                            <Option value="other">Other</Option>
+                        </Select>
+                    </Form.Item>
+                </div>
+            );
+
+            const renderCompanyDetails = () => (
+                <div className="step-content">
+                    <div className="section-title">Company Information</div>
+                    <Form.Item
+                        name="companyName"
+                        label="Company Name"
+                        rules={[{ required: true, message: 'Please input your company name!' }]}
+                    >
+                        <Input placeholder="Enter company name" />
+                    </Form.Item>
+
+                    <Row gutter={16}>
+                        <Col xs={24} sm={12}>
+                            <Form.Item
+                                name="companyType"
+                                label="Industry"
+                                rules={[{ required: true, message: 'Please select company type!' }]}
+                            >
+                                <Select placeholder="Select industry">
+                                    {companyTypes.map(type => (
+                                        <Option key={type} value={type}>{type}</Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={12}>
+                            <Form.Item
+                                name="companySize"
+                                label="Company Size"
+                                rules={[{ required: true, message: 'Please select company size!' }]}
+                            >
+                                <Select placeholder="Select company size">
+                                    <Option value="1-10">1-10 employees</Option>
+                                    <Option value="11-50">11-50 employees</Option>
+                                    <Option value="51-200">51-200 employees</Option>
+                                    <Option value="201-500">201-500 employees</Option>
+                                    <Option value="501-1000">501-1000 employees</Option>
+                                    <Option value="1000+">1000+ employees</Option>
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Form.Item
+                        name="companyAddress"
+                        label="Company Address"
+                        rules={[{ required: true, message: 'Please input company address!' }]}
+                    >
+                        <Input.TextArea rows={3} placeholder="Enter full company address" />
+                    </Form.Item>
+
+                    <Row gutter={16}>
+                        <Col xs={24} sm={8}>
+                            <Form.Item
+                                name="city"
+                                label="City"
+                                rules={[{ required: true, message: 'Please input city!' }]}
+                            >
+                                <Input placeholder="Enter city" />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={8}>
+                            <Form.Item
+                                name="state"
+                                label="State/Province"
+                                rules={[{ required: true, message: 'Please input state!' }]}
+                            >
+                                <Input placeholder="Enter state" />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={8}>
+                            <Form.Item
+                                name="zipCode"
+                                label="ZIP/Postal Code"
+                                rules={[{ required: true, message: 'Please input ZIP code!' }]}
+                            >
+                                <Input placeholder="Enter ZIP code" />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Form.Item
+                        name="website"
+                        label="Company Website"
+                        rules={[{ type: 'url', message: 'Please enter a valid URL!' }]}
+                    >
+                        <Input placeholder="https://www.company.com" />
+                    </Form.Item>
+                </div>
+            );
+
+            const renderProjectSpecs = () => (
+                <div className="step-content">
+                    <div className="section-title">Project Details</div>
+                    <Form.Item
+                        name="projectName"
+                        label="Project Name"
+                        rules={[{ required: true, message: 'Please input project name!' }]}
+                    >
+                        <Input placeholder="Enter project name" />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="projectCategory"
+                        label="Project Category"
+                        rules={[{ required: true, message: 'Please select project category!' }]}
+                    >
+                        <Select placeholder="Select project category">
+                            {projectCategories.map(category => (
+                                <Option key={category} value={category}>{category}</Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item
+                        name="projectDescription"
+                        label="Project Description"
+                        rules={[{ required: true, message: 'Please provide project description!' }]}
+                    >
+                        <Input.TextArea rows={4} placeholder="Provide detailed description of your project" />
+                    </Form.Item>
+
+                    <Row gutter={16}>
+                        <Col xs={24} sm={12}>
+                            <Form.Item
+                                name="startDate"
+                                label="Planned Start Date"
+                                rules={[{ required: true, message: 'Please select start date!' }]}
+                            >
+                                <DatePicker style={{ width: '100%' }} />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={12}>
+                            <Form.Item
+                                name="endDate"
+                                label="Expected End Date"
+                                rules={[{ required: true, message: 'Please select end date!' }]}
+                            >
+                                <DatePicker style={{ width: '100%' }} />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Form.Item
+                        name="priority"
+                        label="Project Priority"
+                        rules={[{ required: true, message: 'Please select priority!' }]}
+                    >
+                        <Radio.Group>
+                            <Radio.Button value="low">Low</Radio.Button>
+                            <Radio.Button value="medium">Medium</Radio.Button>
+                            <Radio.Button value="high">High</Radio.Button>
+                            <Radio.Button value="critical">Critical</Radio.Button>
+                        </Radio.Group>
+                    </Form.Item>
+
+                    <Form.Item
+                        name="teamSize"
+                        label="Expected Team Size"
+                        rules={[{ required: true, message: 'Please input team size!' }]}
+                    >
+                        <InputNumber min={1} max={100} style={{ width: '100%' }} placeholder="Number of team members" />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="technologies"
+                        label="Required Technologies/Skills"
+                    >
+                        <Select mode="tags" placeholder="Enter technologies or skills required">
+                            <Option value="react">React</Option>
+                            <Option value="nodejs">Node.js</Option>
+                            <Option value="python">Python</Option>
+                            <Option value="aws">AWS</Option>
+                            <Option value="docker">Docker</Option>
+                            <Option value="kubernetes">Kubernetes</Option>
+                        </Select>
+                    </Form.Item>
+                </div>
+            );
+
+            const renderFinancialInfo = () => (
+                <div className="step-content">
+                    <div className="section-title">Budget & Financial Information</div>
+                    <Row gutter={16}>
+                        <Col xs={24} sm={12}>
+                            <Form.Item
+                                name="totalBudget"
+                                label="Total Project Budget"
+                                rules={[{ required: true, message: 'Please input total budget!' }]}
+                            >
+                                <InputNumber 
+                                    style={{ width: '100%' }}
+                                    formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                    parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                                    placeholder="Enter total budget"
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={12}>
+                            <Form.Item
+                                name="currency"
+                                label="Currency"
+                                rules={[{ required: true, message: 'Please select currency!' }]}
+                            >
+                                <Select placeholder="Select currency">
+                                    <Option value="USD">USD - US Dollar</Option>
+                                    <Option value="EUR">EUR - Euro</Option>
+                                    <Option value="GBP">GBP - British Pound</Option>
+                                    <Option value="CAD">CAD - Canadian Dollar</Option>
+                                    <Option value="AUD">AUD - Australian Dollar</Option>
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
+                    <Form.Item
+                        name="budgetBreakdown"
+                        label="Budget Allocation"
+                    >
+                        <Input.TextArea rows={3} placeholder="Provide budget breakdown if available" />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="paymentTerms"
+                        label="Preferred Payment Terms"
+                        rules={[{ required: true, message: 'Please select payment terms!' }]}
+                    >
+                        <Select placeholder="Select payment terms">
+                            <Option value="upfront">100% Upfront</Option>
+                            <Option value="50-50">50% Upfront, 50% on Completion</Option>
+                            <Option value="milestone">Milestone-based Payments</Option>
+                            <Option value="monthly">Monthly Payments</Option>
+                            <Option value="net30">Net 30 Days</Option>
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item
+                        name="fundingSource"
+                        label="Funding Source"
+                    >
+                        <Checkbox.Group>
+                            <Row>
+                                <Col span={12}>
+                                    <Checkbox value="internal">Internal Funds</Checkbox>
+                                </Col>
+                                <Col span={12}>
+                                    <Checkbox value="loan">Business Loan</Checkbox>
+                                </Col>
+                                <Col span={12}>
+                                    <Checkbox value="investor">Investor Funding</Checkbox>
+                                </Col>
+                                <Col span={12}>
+                                    <Checkbox value="grant">Government Grant</Checkbox>
+                                </Col>
+                            </Row>
+                        </Checkbox.Group>
+                    </Form.Item>
+
+                    <Row gutter={16}>
+                        <Col xs={24} sm={12}>
+                            <Form.Item
+                                name="taxId"
+                                label="Tax ID / EIN"
+                            >
+                                <Input placeholder="Enter Tax ID or EIN" />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={12}>
+                            <Form.Item
+                                name="billingContact"
+                                label="Billing Contact Email"
+                                rules={[{ type: 'email', message: 'Please enter a valid email!' }]}
+                            >
+                                <Input placeholder="billing@company.com" />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                </div>
+            );
+
+            const renderDocumentsReview = () => {
+                const values = form.getFieldsValue();
+                
+                return (
+                    <div className="step-content">
+                        <div className="section-title">Document Upload</div>
+                        <Form.Item
+                            name="documents"
+                            label="Supporting Documents"
+                        >
+                            <Dragger {...uploadProps} className="file-upload-area">
+                                <p className="ant-upload-drag-icon">
+                                    <i className="anticon anticon-inbox" style={{ fontSize: '48px', color: '#1890ff' }} />
+                                </p>
+                                <p className="ant-upload-text">Click or drag files to this area to upload</p>
+                                <p className="ant-upload-hint">
+                                    Support for single or bulk upload. Upload business documents, contracts, or specifications.
+                                </p>
+                            </Dragger>
+                        </Form.Item>
+
+                        <Divider />
+
+                        <div className="section-title">Application Review</div>
+                        <Alert
+                            message="Please review all information before submitting"
+                            description="Once submitted, you will receive a confirmation email and our team will contact you within 2 business days."
+                            type="info"
+                            showIcon
+                        />
+
+                        <div className="review-section">
+                            <Row gutter={[16, 16]}>
+                                <Col xs={24} sm={12}>
+                                    <Card title="Personal Information" size="small">
+                                        <div className="review-item">
+                                            <Text strong>Name:</Text>
+                                            <Text>{values.firstName} {values.lastName}</Text>
+                                        </div>
+                                        <div className="review-item">
+                                            <Text strong>Email:</Text>
+                                            <Text>{values.email}</Text>
+                                        </div>
+                                        <div className="review-item">
+                                            <Text strong>Position:</Text>
+                                            <Text>{values.position}</Text>
+                                        </div>
+                                    </Card>
+                                </Col>
+                                <Col xs={24} sm={12}>
+                                    <Card title="Company Information" size="small">
+                                        <div className="review-item">
+                                            <Text strong>Company:</Text>
+                                            <Text>{values.companyName}</Text>
+                                        </div>
+                                        <div className="review-item">
+                                            <Text strong>Industry:</Text>
+                                            <Text>{values.companyType}</Text>
+                                        </div>
+                                        <div className="review-item">
+                                            <Text strong>Size:</Text>
+                                            <Text>{values.companySize}</Text>
+                                        </div>
+                                    </Card>
+                                </Col>
+                                <Col xs={24} sm={12}>
+                                    <Card title="Project Details" size="small">
+                                        <div className="review-item">
+                                            <Text strong>Project:</Text>
+                                            <Text>{values.projectName}</Text>
+                                        </div>
+                                        <div className="review-item">
+                                            <Text strong>Category:</Text>
+                                            <Text>{values.projectCategory}</Text>
+                                        </div>
+                                        <div className="review-item">
+                                            <Text strong>Priority:</Text>
+                                            <Tag color={
+                                                values.priority === 'critical' ? 'red' :
+                                                values.priority === 'high' ? 'orange' :
+                                                values.priority === 'medium' ? 'blue' : 'green'
+                                            }>
+                                                {values.priority?.toUpperCase()}
+                                            </Tag>
+                                        </div>
+                                    </Card>
+                                </Col>
+                                <Col xs={24} sm={12}>
+                                    <Card title="Financial Information" size="small">
+                                        <div className="review-item">
+                                            <Text strong>Budget:</Text>
+                                            <Text>{values.currency} {values.totalBudget?.toLocaleString()}</Text>
+                                        </div>
+                                        <div className="review-item">
+                                            <Text strong>Payment Terms:</Text>
+                                            <Text>{values.paymentTerms}</Text>
+                                        </div>
+                                    </Card>
+                                </Col>
+                            </Row>
+                        </div>
+
+                        <Form.Item
+                            name="agreement"
+                            valuePropName="checked"
+                            rules={[{ 
+                                validator: (_, value) => 
+                                    value ? Promise.resolve() : Promise.reject(new Error('Please accept the terms and conditions!'))
+                            }]}
+                        >
+                            <Checkbox>
+                                I agree to the <a href="#" target="_blank">Terms and Conditions</a> and 
+                                <a href="#" target="_blank"> Privacy Policy</a>
+                            </Checkbox>
+                        </Form.Item>
+                    </div>
+                );
+            };
+
+            const renderStepContent = () => {
+                switch (currentStep) {
+                    case 0:
+                        return renderBasicInfo();
+                    case 1:
+                        return renderCompanyDetails();
+                    case 2:
+                        return renderProjectSpecs();
+                    case 3:
+                        return renderFinancialInfo();
+                    case 4:
+                        return renderDocumentsReview();
+                    default:
+                        return renderBasicInfo();
+                }
+            };
+
+            return (
+                <div className="app-container">
+                    <div className="form-header">
+                        <Row gutter={24} align="middle">
+                            <Col xs={24} lg={16}>
+                                <Title level={2} style={{ margin: 0, color: '#1890ff' }}>
+                                    Enterprise Partnership Application
+                                </Title>
+                                <Text type="secondary" style={{ fontSize: '16px' }}>
+                                    Complete this comprehensive form to begin your enterprise partnership journey with us.
+                                </Text>
+                            </Col>
+                            <Col xs={24} lg={8}>
+                                <Row gutter={16}>
+                                    <Col span={8}>
+                                        <Statistic title="Progress" value={formProgress} suffix="%" />
+                                    </Col>
+                                    <Col span={8}>
+                                        <Statistic title="Step" value={currentStep + 1} suffix={`/ ${steps.length}`} />
+                                    </Col>
+                                    <Col span={8}>
+                                        <Statistic title="Fields" value="25" />
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                        
+                        <div className="progress-container">
+                            <Progress 
+                                percent={formProgress} 
+                                status={formProgress === 100 ? 'success' : 'active'}
+                                strokeColor={{
+                                    '0%': '#108ee9',
+                                    '100%': '#87d068',
+                                }}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-container">
+                        <Steps current={currentStep} style={{ marginBottom: '40px' }}>
+                            {steps.map((step, index) => (
+                                <Step key={index} title={step.title} />
+                            ))}
+                        </Steps>
+
+                        {validationErrors.length > 0 && (
+                            <div className="validation-summary">
+                                <Alert
+                                    message="Please fix the following errors:"
+                                    description={
+                                        <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                                            {validationErrors.map((error, index) => (
+                                                <li key={index}>{error}</li>
+                                            ))}
+                                        </ul>
+                                    }
+                                    type="error"
+                                    showIcon
+                                />
+                            </div>
+                        )}
+
+                        <Form
+                            form={form}
+                            layout="vertical"
+                            onFinish={onFinish}
+                            onValuesChange={() => setFormProgress(calculateProgress())}
+                            scrollToFirstError
+                        >
+                            {renderStepContent()}
+
+                            <Divider />
+                            
+                            <div style={{ textAlign: 'center' }}>
+                                <Space size="large">
+                                    {currentStep > 0 && (
+                                        <Button size="large" onClick={prev}>
+                                            Previous
+                                        </Button>
+                                    )}
+                                    {currentStep < steps.length - 1 && (
+                                        <Button type="primary" size="large" onClick={next}>
+                                            Next Step
+                                        </Button>
+                                    )}
+                                    {currentStep === steps.length - 1 && (
+                                        <Button 
+                                            type="primary" 
+                                            size="large" 
+                                            htmlType="submit"
+                                            loading={loading}
+                                            style={{ minWidth: '200px' }}
+                                        >
+                                            Submit Application
+                                        </Button>
+                                    )}
+                                </Space>
+                            </div>
+                        </Form>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<EnterpriseFormSystem />, document.getElementById('root'));
+    </script>
+</body>
+</html>

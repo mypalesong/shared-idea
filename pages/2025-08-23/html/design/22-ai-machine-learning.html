@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuralLab - AI & Machine Learning Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0d1421 0%, #1a1f3a 50%, #2d1b69 100%);
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #e8eaed;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .neural-network {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .neuron {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, #00ffff 0%, #0080ff 100%);
+            border-radius: 50%;
+            animation: neuronPulse 3s infinite;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .synapse {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ffff, transparent);
+            animation: synapseTransmit 2s infinite;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '🧠';
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 4em;
+            animation: brainPulse 2s infinite;
+        }
+
+        .header h1 {
+            font-size: 4.5em;
+            font-weight: 900;
+            background: linear-gradient(45deg, #00ffff, #0080ff, #8a2be2, #00ffff);
+            background-size: 400% 400%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 4s ease infinite;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            font-size: 1.4em;
+            color: #a8b5c8;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .ai-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(138, 43, 226, 0.1));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+            animation: cardScan 3s infinite;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 255, 255, 0.2);
+            border-color: rgba(0, 255, 255, 0.6);
+        }
+
+        .metric-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        .metric-value {
+            font-size: 3.5em;
+            font-weight: 800;
+            color: #00ffff;
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .metric-label {
+            font-size: 1.2em;
+            color: #a8b5c8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .metric-progress {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #0080ff, #8a2be2);
+            background-size: 200% 100%;
+            animation: progressFlow 2s linear infinite;
+            border-radius: 4px;
+        }
+
+        .model-training {
+            background: rgba(0, 255, 255, 0.05);
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 40px;
+            margin: 50px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .training-title {
+            font-size: 3em;
+            color: #00ffff;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .model-architecture {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .layer {
+            width: 120px;
+            height: 80px;
+            background: linear-gradient(135deg, #4a0e4e, #8a2be2);
+            border: 3px solid #00ffff;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            position: relative;
+            animation: layerPulse 2s ease-in-out infinite;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .layer:nth-child(1) { animation-delay: 0s; }
+        .layer:nth-child(2) { animation-delay: 0.5s; }
+        .layer:nth-child(3) { animation-delay: 1s; }
+        .layer:nth-child(4) { animation-delay: 1.5s; }
+
+        .layer::after {
+            content: '→';
+            position: absolute;
+            right: -40px;
+            font-size: 2em;
+            color: #00ffff;
+            animation: dataFlow 1.5s ease-in-out infinite;
+        }
+
+        .layer:last-child::after {
+            display: none;
+        }
+
+        .layer:hover {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, #8a2be2, #4a0e4e);
+        }
+
+        .training-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .training-stat {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.2em;
+            color: #00ffff;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .stat-description {
+            color: #a8b5c8;
+            font-size: 1em;
+        }
+
+        .dataset-visualizer {
+            background: rgba(138, 43, 226, 0.1);
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .dataset-title {
+            font-size: 2.5em;
+            color: #8a2be2;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .data-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .data-point {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+            animation: dataFloat 4s ease-in-out infinite;
+            cursor: pointer;
+        }
+
+        .data-point:nth-child(odd) { animation-delay: 1s; }
+        .data-point:nth-child(even) { animation-delay: 2s; }
+
+        .data-point:hover {
+            background: rgba(0, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .data-value {
+            font-size: 1.8em;
+            color: #00ffff;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .data-label {
+            font-size: 0.9em;
+            color: #a8b5c8;
+        }
+
+        .ai-controls {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 50px 0;
+            flex-wrap: wrap;
+        }
+
+        .ai-btn {
+            padding: 18px 35px;
+            background: linear-gradient(135deg, #00ffff, #0080ff);
+            border: none;
+            border-radius: 30px;
+            color: #000;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+        }
+
+        .ai-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .ai-btn:hover::before {
+            left: 100%;
+        }
+
+        .ai-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 255, 255, 0.4);
+            background: linear-gradient(135deg, #0080ff, #8a2be2);
+            color: #fff;
+        }
+
+        .prediction-output {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .output-line {
+            color: #00ff00;
+            margin-bottom: 8px;
+            animation: typewriter 2s ease-out;
+        }
+
+        @keyframes neuronPulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.5); opacity: 1; }
+        }
+
+        @keyframes synapseTransmit {
+            0% { transform: scaleX(0); opacity: 0; }
+            50% { transform: scaleX(1); opacity: 1; }
+            100% { transform: scaleX(0); opacity: 0; }
+        }
+
+        @keyframes brainPulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1); }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes cardScan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        @keyframes progressFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        @keyframes layerPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(0, 255, 255, 0.8); }
+        }
+
+        @keyframes dataFlow {
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.7; }
+        }
+
+        @keyframes dataFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-8px) rotate(1deg); }
+            66% { transform: translateY(8px) rotate(-1deg); }
+        }
+
+        @keyframes typewriter {
+            0% { opacity: 0; transform: translateX(-10px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 3em; }
+            .model-architecture { flex-direction: column; }
+            .layer::after { content: '↓'; right: 50%; bottom: -35px; top: auto; transform: translateX(50%); }
+            .ai-controls { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="neural-network"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>NeuralLab</h1>
+            <p>Advanced AI & Machine Learning Development Platform</p>
+        </div>
+
+        <div class="ai-metrics">
+            <div class="metric-card">
+                <div class="metric-icon">⚡</div>
+                <div class="metric-value">97.8%</div>
+                <div class="metric-label">Model Accuracy</div>
+                <div class="metric-progress">
+                    <div class="progress-bar" style="width: 97.8%;"></div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">🔥</div>
+                <div class="metric-value">847K</div>
+                <div class="metric-label">Training Samples</div>
+                <div class="metric-progress">
+                    <div class="progress-bar" style="width: 85%;"></div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">🎯</div>
+                <div class="metric-value">0.023</div>
+                <div class="metric-label">Loss Function</div>
+                <div class="metric-progress">
+                    <div class="progress-bar" style="width: 92%;"></div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">⚙️</div>
+                <div class="metric-value">247</div>
+                <div class="metric-label">Epochs Completed</div>
+                <div class="metric-progress">
+                    <div class="progress-bar" style="width: 74%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="model-training">
+            <h2 class="training-title">🧠 Neural Network Architecture</h2>
+            <div class="model-architecture">
+                <div class="layer">Input<br>Layer</div>
+                <div class="layer">Hidden<br>Layer 1</div>
+                <div class="layer">Hidden<br>Layer 2</div>
+                <div class="layer">Output<br>Layer</div>
+            </div>
+            
+            <div class="training-metrics">
+                <div class="training-stat">
+                    <div class="stat-number">12.3ms</div>
+                    <div class="stat-description">Inference Time</div>
+                </div>
+                <div class="training-stat">
+                    <div class="stat-number">2.1GB</div>
+                    <div class="stat-description">Model Size</div>
+                </div>
+                <div class="training-stat">
+                    <div class="stat-number">94.7%</div>
+                    <div class="stat-description">Validation Score</div>
+                </div>
+                <div class="training-stat">
+                    <div class="stat-number">1,847</div>
+                    <div class="stat-description">Parameters (M)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dataset-visualizer">
+            <h3 class="dataset-title">📊 Training Dataset Visualization</h3>
+            <div class="data-points">
+                <div class="data-point">
+                    <div class="data-value">78.5%</div>
+                    <div class="data-label">Accuracy</div>
+                </div>
+                <div class="data-point">
+                    <div class="data-value">15.2K</div>
+                    <div class="data-label">Images</div>
+                </div>
+                <div class="data-point">
+                    <div class="data-value">92.1%</div>
+                    <div class="data-label">Precision</div>
+                </div>
+                <div class="data-point">
+                    <div class="data-value">88.7%</div>
+                    <div class="data-label">Recall</div>
+                </div>
+                <div class="data-point">
+                    <div class="data-value">0.034</div>
+                    <div class="data-label">F1 Score</div>
+                </div>
+                <div class="data-point">
+                    <div class="data-value">245</div>
+                    <div class="data-label">Classes</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="prediction-output">
+            <div class="output-line">[INFO] Loading pre-trained model...</div>
+            <div class="output-line">[INFO] Model loaded successfully: ResNet-50</div>
+            <div class="output-line">[PREDICT] Running inference on input data...</div>
+            <div class="output-line">[RESULT] Prediction: Cat (confidence: 97.8%)</div>
+            <div class="output-line">[RESULT] Alternative: Dog (confidence: 1.9%)</div>
+            <div class="output-line">[STATUS] Inference completed in 12.3ms</div>
+        </div>
+
+        <div class="ai-controls">
+            <button class="ai-btn" onclick="trainModel()">Train Model</button>
+            <button class="ai-btn" onclick="runInference()">Run Inference</button>
+            <button class="ai-btn" onclick="optimizeModel()">Optimize Model</button>
+            <button class="ai-btn" onclick="exportModel()">Export Model</button>
+        </div>
+    </div>
+
+    <script>
+        // Generate neural network background
+        function createNeuralNetwork() {
+            const network = document.querySelector('.neural-network');
+            const neuronCount = 25;
+            const synapseCount = 15;
+
+            // Create neurons
+            for (let i = 0; i < neuronCount; i++) {
+                const neuron = document.createElement('div');
+                neuron.className = 'neuron';
+                neuron.style.left = Math.random() * 100 + '%';
+                neuron.style.top = Math.random() * 100 + '%';
+                neuron.style.animationDelay = Math.random() * 3 + 's';
+                network.appendChild(neuron);
+            }
+
+            // Create synapses
+            for (let i = 0; i < synapseCount; i++) {
+                const synapse = document.createElement('div');
+                synapse.className = 'synapse';
+                synapse.style.left = Math.random() * 100 + '%';
+                synapse.style.top = Math.random() * 100 + '%';
+                synapse.style.width = Math.random() * 150 + 50 + 'px';
+                synapse.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+                synapse.style.animationDelay = Math.random() * 2 + 's';
+                network.appendChild(synapse);
+            }
+        }
+
+        // Training simulation
+        let isTraining = false;
+        function trainModel() {
+            if (isTraining) return;
+            
+            isTraining = true;
+            const button = event.target;
+            button.textContent = 'Training...';
+            button.style.background = 'linear-gradient(135deg, #ff6600, #ff8800)';
+            
+            let epoch = 247;
+            let accuracy = 97.8;
+            let loss = 0.023;
+            
+            const trainingInterval = setInterval(() => {
+                epoch += 1;
+                accuracy = Math.min(99.9, accuracy + (Math.random() * 0.2));
+                loss = Math.max(0.001, loss - (Math.random() * 0.002));
+                
+                // Update metrics
+                document.querySelector('.metric-card:nth-child(1) .metric-value').textContent = accuracy.toFixed(1) + '%';
+                document.querySelector('.metric-card:nth-child(3) .metric-value').textContent = loss.toFixed(3);
+                document.querySelector('.metric-card:nth-child(4) .metric-value').textContent = epoch;
+                
+                // Update progress bars
+                const progressBars = document.querySelectorAll('.progress-bar');
+                progressBars[0].style.width = accuracy + '%';
+                progressBars[2].style.width = (1 - loss) * 100 + '%';
+                progressBars[3].style.width = (epoch / 500) * 100 + '%';
+                
+                addOutputLine(`[EPOCH ${epoch}] Loss: ${loss.toFixed(4)}, Accuracy: ${accuracy.toFixed(2)}%`);
+            }, 1000);
+            
+            setTimeout(() => {
+                clearInterval(trainingInterval);
+                button.textContent = 'Training Complete!';
+                button.style.background = 'linear-gradient(135deg, #00ff00, #32cd32)';
+                showNotification('Model training completed successfully!', 'success');
+                addOutputLine('[INFO] Training completed. Model saved to /models/neural_net_v2.h5');
+                
+                setTimeout(() => {
+                    button.textContent = 'Train Model';
+                    button.style.background = 'linear-gradient(135deg, #00ffff, #0080ff)';
+                    isTraining = false;
+                }, 3000);
+            }, 8000);
+        }
+
+        function runInference() {
+            showNotification('Running inference on test dataset...', 'info');
+            
+            const predictions = [
+                'Cat (97.8%)',
+                'Dog (94.2%)', 
+                'Bird (89.5%)',
+                'Car (92.1%)',
+                'Tree (86.7%)'
+            ];
+            
+            let predictionIndex = 0;
+            const inferenceInterval = setInterval(() => {
+                const prediction = predictions[predictionIndex];
+                const confidence = prediction.match(/\(([\d.]+)%\)/)[1];
+                addOutputLine(`[RESULT] Prediction: ${prediction}`);
+                addOutputLine(`[INFO] Confidence score: ${confidence}%`);
+                
+                predictionIndex = (predictionIndex + 1) % predictions.length;
+                
+                if (predictionIndex === 0) {
+                    clearInterval(inferenceInterval);
+                    showNotification('Inference completed on 5 samples', 'success');
+                }
+            }, 1500);
+        }
+
+        function optimizeModel() {
+            showNotification('Optimizing model architecture...', 'info');
+            
+            const optimizations = [
+                'Pruning unnecessary connections...',
+                'Quantizing weights to INT8...',
+                'Applying knowledge distillation...',
+                'Optimizing for target hardware...',
+                'Model compression complete!'
+            ];
+            
+            optimizations.forEach((opt, index) => {
+                setTimeout(() => {
+                    addOutputLine(`[OPTIMIZE] ${opt}`);
+                    if (index === optimizations.length - 1) {
+                        showNotification('Model optimization completed! Size reduced by 67%', 'success');
+                        // Update model size metric
+                        document.querySelector('.training-stat:nth-child(2) .stat-number').textContent = '0.7GB';
+                    }
+                }, index * 1200);
+            });
+        }
+
+        function exportModel() {
+            showNotification('Exporting model in multiple formats...', 'info');
+            
+            const formats = ['ONNX', 'TensorFlow SavedModel', 'PyTorch', 'TensorFlow Lite', 'Core ML'];
+            
+            formats.forEach((format, index) => {
+                setTimeout(() => {
+                    addOutputLine(`[EXPORT] Generating ${format} format...`);
+                    if (index === formats.length - 1) {
+                        showNotification('Model exported successfully in all formats!', 'success');
+                    }
+                }, index * 800);
+            });
+        }
+
+        function addOutputLine(text) {
+            const output = document.querySelector('.prediction-output');
+            const line = document.createElement('div');
+            line.className = 'output-line';
+            line.textContent = text;
+            output.appendChild(line);
+            output.scrollTop = output.scrollHeight;
+            
+            // Keep only last 10 lines
+            if (output.children.length > 10) {
+                output.removeChild(output.firstChild);
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            const colors = {
+                success: '#00ff00',
+                info: '#00ffff',
+                warning: '#ffaa00',
+                error: '#ff4444'
+            };
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 18px 25px;
+                background: rgba(0, 0, 0, 0.9);
+                border: 2px solid ${colors[type] || '#00ffff'};
+                color: ${colors[type] || '#00ffff'};
+                border-radius: 12px;
+                z-index: 1000;
+                font-weight: bold;
+                animation: slideIn 0.5s ease;
+                max-width: 400px;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.5s ease';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 500);
+            }, 4000);
+        }
+
+        // Add slide animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Simulate real-time metrics updates
+        function updateMetrics() {
+            const metricValues = document.querySelectorAll('.metric-value');
+            const progressBars = document.querySelectorAll('.progress-bar');
+            
+            if (!isTraining) {
+                // Small random fluctuations
+                metricValues.forEach((value, index) => {
+                    if (index === 0) { // Accuracy
+                        let current = parseFloat(value.textContent);
+                        current += (Math.random() - 0.5) * 0.1;
+                        current = Math.max(95, Math.min(99.9, current));
+                        value.textContent = current.toFixed(1) + '%';
+                        progressBars[index].style.width = current + '%';
+                    }
+                });
+            }
+        }
+
+        // Interactive layer clicks
+        function setupLayerInteractions() {
+            document.querySelectorAll('.layer').forEach((layer, index) => {
+                layer.addEventListener('click', function() {
+                    const layerTypes = ['Input', 'Hidden 1', 'Hidden 2', 'Output'];
+                    const layerInfo = [
+                        'Input Layer: 784 neurons (28x28 image pixels)',
+                        'Hidden Layer 1: 128 neurons with ReLU activation',
+                        'Hidden Layer 2: 64 neurons with ReLU activation',
+                        'Output Layer: 10 neurons with Softmax activation'
+                    ];
+                    
+                    showNotification(layerInfo[index], 'info');
+                    addOutputLine(`[INFO] ${layerInfo[index]}`);
+                });
+            });
+        }
+
+        // Data point interactions
+        function setupDataPointInteractions() {
+            document.querySelectorAll('.data-point').forEach(point => {
+                point.addEventListener('click', function() {
+                    const value = this.querySelector('.data-value').textContent;
+                    const label = this.querySelector('.data-label').textContent;
+                    
+                    addOutputLine(`[DATA] ${label}: ${value} - Click to view detailed analytics`);
+                    showNotification(`${label} metric selected: ${value}`, 'info');
+                });
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createNeuralNetwork();
+            setupLayerInteractions();
+            setupDataPointInteractions();
+            
+            // Update metrics periodically
+            setInterval(updateMetrics, 3000);
+            
+            // Add initial output
+            setTimeout(() => {
+                addOutputLine('[INFO] NeuralLab initialized successfully');
+                addOutputLine('[INFO] GPU acceleration enabled: CUDA 11.8');
+                addOutputLine('[INFO] Ready for training and inference');
+            }, 1000);
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 't':
+                        e.preventDefault();
+                        trainModel();
+                        break;
+                    case 'i':
+                        e.preventDefault();
+                        runInference();
+                        break;
+                    case 'o':
+                        e.preventDefault();
+                        optimizeModel();
+                        break;
+                    case 'e':
+                        e.preventDefault();
+                        exportModel();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

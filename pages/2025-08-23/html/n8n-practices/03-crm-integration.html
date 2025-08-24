@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n8n CRM 통합 자동화 - 고객 관계 관리 최적화</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #00d2ff 0%, #3a47d5 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+        
+        .workflow-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 40px;
+        }
+        
+        .workflow-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00d2ff, #3a47d5);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 30px;
+        }
+        
+        .workflow-title {
+            flex-grow: 1;
+        }
+        
+        .workflow-title h2 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .workflow-title p {
+            color: #666;
+            font-size: 0.95em;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .feature {
+            padding: 20px;
+            background: #f0f8ff;
+            border-radius: 10px;
+            border-left: 4px solid #00d2ff;
+        }
+        
+        .feature h3 {
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .crm-systems {
+            background: linear-gradient(135deg, #f0f8ff, #e6f3ff);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .crm-systems h3 {
+            color: #3a47d5;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .crm-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+        }
+        
+        .crm-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .crm-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .crm-logo {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .automation-flows {
+            margin: 30px 0;
+        }
+        
+        .flow-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .flow-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .flow-icon {
+            background: #00d2ff;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        
+        .flow-steps {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .step {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-size: 0.9em;
+        }
+        
+        .step-arrow {
+            color: #00d2ff;
+            font-size: 20px;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .benefit-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .benefit-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #00d2ff, #3a47d5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .benefit-label {
+            margin-top: 10px;
+            color: #666;
+        }
+        
+        .integration-matrix {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #00d2ff, #3a47d5);
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .check {
+            color: #00d2ff;
+            font-size: 20px;
+        }
+        
+        .cta {
+            background: linear-gradient(135deg, #00d2ff, #3a47d5);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .cta h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        
+        .cta p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .flow-steps {
+                flex-direction: column;
+            }
+            
+            .step-arrow {
+                transform: rotate(90deg);
+            }
+            
+            table {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤝 CRM 통합 자동화</h1>
+            <p class="subtitle">n8n으로 구현하는 완벽한 고객 데이터 동기화 시스템</p>
+        </header>
+        
+        <div class="workflow-card">
+            <div class="workflow-header">
+                <div class="icon">👥</div>
+                <div class="workflow-title">
+                    <h2>CRM 멀티 플랫폼 통합 워크플로우</h2>
+                    <p>다양한 CRM 시스템 간 실시간 데이터 동기화 및 자동화</p>
+                </div>
+            </div>
+            
+            <div class="features">
+                <div class="feature">
+                    <h3><span class="feature-icon">🔄</span>양방향 동기화</h3>
+                    <p>모든 CRM 플랫폼 간 실시간 데이터 동기화</p>
+                </div>
+                <div class="feature">
+                    <h3><span class="feature-icon">🎯</span>리드 스코어링</h3>
+                    <p>행동 기반 자동 리드 점수 계산 및 분류</p>
+                </div>
+                <div class="feature">
+                    <h3><span class="feature-icon">📱</span>멀티채널 추적</h3>
+                    <p>이메일, 전화, 소셜미디어 활동 통합 관리</p>
+                </div>
+                <div class="feature">
+                    <h3><span class="feature-icon">🚀</span>영업 자동화</h3>
+                    <p>파이프라인 단계별 자동 액션 실행</p>
+                </div>
+            </div>
+            
+            <div class="crm-systems">
+                <h3>🔗 지원 CRM 플랫폼</h3>
+                <div class="crm-grid">
+                    <div class="crm-item">
+                        <div class="crm-logo">☁️</div>
+                        <strong>Salesforce</strong>
+                    </div>
+                    <div class="crm-item">
+                        <div class="crm-logo">🎯</div>
+                        <strong>HubSpot</strong>
+                    </div>
+                    <div class="crm-item">
+                        <div class="crm-logo">📊</div>
+                        <strong>Pipedrive</strong>
+                    </div>
+                    <div class="crm-item">
+                        <div class="crm-logo">💼</div>
+                        <strong>Zoho CRM</strong>
+                    </div>
+                    <div class="crm-item">
+                        <div class="crm-logo">🚀</div>
+                        <strong>Monday.com</strong>
+                    </div>
+                    <div class="crm-item">
+                        <div class="crm-logo">📈</div>
+                        <strong>Airtable</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="automation-flows">
+                <h3 style="color: #3a47d5; margin-bottom: 20px;">🔄 주요 자동화 프로세스</h3>
+                
+                <div class="flow-section">
+                    <div class="flow-header">
+                        <div class="flow-icon">1</div>
+                        <div>
+                            <h4>리드 생성 및 배정</h4>
+                            <p style="color: #666; font-size: 0.9em;">웹폼 제출부터 영업 담당자 배정까지</p>
+                        </div>
+                    </div>
+                    <div class="flow-steps">
+                        <span class="step">웹폼 제출</span>
+                        <span class="step-arrow">→</span>
+                        <span class="step">리드 검증</span>
+                        <span class="step-arrow">→</span>
+                        <span class="step">스코어링</span>
+                        <span class="step-arrow">→</span>
+                        <span class="step">담당자 배정</span>
+                        <span class="step-arrow">→</span>
+                        <span class="step">알림 발송</span>
+                    </div>
+                </div>
+                
+                <div class="flow-section">
+                    <div class="flow-header">
+                        <div class="flow-icon">2</div>
+                        <div>
+                            <h4>거래 파이프라인 관리</h4>
+                            <p style="color: #666; font-size: 0.9em;">단계별 자동 업데이트 및 액션</p>
+                        </div>
+                    </div>
+                    <div class="flow-steps">
+                        <span class="step">기회 생성</span>
+                        <span class="step-arrow">→</span>
+                        <span class="step">제안서 발송</span>
+                        <span class="step-arrow">→</span>
+                        <span class="step">협상 진행</span>
+                        <span class="step-arrow">→</span>
+                        <span class="step">계약 체결</span>
+                        <span class="step-arrow">→</span>
+                        <span class="step">온보딩</span>
+                    </div>
+                </div>
+                
+                <div class="flow-section">
+                    <div class="flow-header">
+                        <div class="flow-icon">3</div>
+                        <div>
+                            <h4>고객 지원 티켓 연동</h4>
+                            <p style="color: #666; font-size: 0.9em;">서비스 데스크와 CRM 실시간 동기화</p>
+                        </div>
+                    </div>
+                    <div class="flow-steps">
+                        <span class="step">티켓 생성</span>
+                        <span class="step-arrow">→</span>
+                        <span class="step">고객 매칭</span>
+                        <span class="step-arrow">→</span>
+                        <span class="step">이력 조회</span>
+                        <span class="step-arrow">→</span>
+                        <span class="step">우선순위 설정</span>
+                        <span class="step-arrow">→</span>
+                        <span class="step">해결 기록</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="integration-matrix">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>기능</th>
+                            <th>연락처 동기화</th>
+                            <th>거래 관리</th>
+                            <th>활동 추적</th>
+                            <th>보고서 생성</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Salesforce ↔ HubSpot</strong></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pipedrive ↔ Slack</strong></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Zoho ↔ Google Sheets</strong></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Monday ↔ Email</strong></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-value">85%</div>
+                    <div class="benefit-label">데이터 정확도 향상</div>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-value">3시간</div>
+                    <div class="benefit-label">일일 시간 절약</div>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-value">40%</div>
+                    <div class="benefit-label">영업 생산성 증가</div>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-value">0</div>
+                    <div class="benefit-label">데이터 누락 건수</div>
+                </div>
+            </div>
+            
+            <div class="cta">
+                <h3>CRM 통합의 새로운 기준!</h3>
+                <p>n8n으로 모든 고객 데이터를 하나로 연결하고 영업 프로세스를 자동화하세요</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced JSON Tree Explorer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-brand">
+                <i class="fas fa-code-branch"></i>
+                <h1>Advanced JSON Tree Explorer</h1>
+                <span class="version">v1.0</span>
+            </div>
+            <div class="header-actions">
+                <button id="exportBtn" class="btn btn-secondary">
+                    <i class="fas fa-download"></i> Export
+                </button>
+                <button id="settingsBtn" class="btn btn-secondary">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="toolbar-section">
+                <label class="input-group">
+                    <span><i class="fas fa-file-alt"></i> Data Source:</span>
+                    <select id="dataSource">
+                        <option value="file">Load from file</option>
+                        <option value="raw">Raw JSON input</option>
+                        <option value="url">From URL</option>
+                    </select>
+                </label>
+                
+                <button id="loadBtn" class="btn btn-primary">
+                    <i class="fas fa-upload"></i> Load Data
+                </button>
+                
+                <button id="diffBtn" class="btn btn-accent">
+                    <i class="fas fa-code-compare"></i> Compare Mode
+                </button>
+            </div>
+
+            <div class="toolbar-section">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search keys, values, paths...">
+                    <button id="searchAdvanced" class="btn-icon">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="toolbar-section">
+                <label class="checkbox-group">
+                    <input type="checkbox" id="hideEmpty" checked>
+                    <span><i class="fas fa-eye-slash"></i> Hide empty</span>
+                </label>
+                
+                <label class="checkbox-group">
+                    <input type="checkbox" id="showTypes">
+                    <span><i class="fas fa-tag"></i> Show types</span>
+                </label>
+                
+                <div class="btn-group">
+                    <button id="expandAll" class="btn btn-sm">
+                        <i class="fas fa-expand-alt"></i> Expand
+                    </button>
+                    <button id="collapseAll" class="btn btn-sm">
+                        <i class="fas fa-compress-alt"></i> Collapse
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-tabs">
+                    <button class="tab-btn active" data-tab="stats">
+                        <i class="fas fa-chart-bar"></i> Stats
+                    </button>
+                    <button class="tab-btn" data-tab="bookmarks">
+                        <i class="fas fa-bookmark"></i> Bookmarks
+                    </button>
+                    <button class="tab-btn" data-tab="history">
+                        <i class="fas fa-history"></i> History
+                    </button>
+                </div>
+                
+                <div class="tab-content">
+                    <div id="statsTab" class="tab-pane active">
+                        <div class="stats-grid" id="statsGrid">
+                            <!-- Stats will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div id="bookmarksTab" class="tab-pane">
+                        <div class="bookmarks-list" id="bookmarksList">
+                            <div class="empty-state">
+                                <i class="fas fa-bookmark"></i>
+                                <p>No bookmarks yet</p>
+                                <small>Right-click on any key to bookmark</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="historyTab" class="tab-pane">
+                        <div class="history-list" id="historyList">
+                            <div class="empty-state">
+                                <i class="fas fa-history"></i>
+                                <p>No navigation history</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Normal Mode -->
+                <div id="normalMode" class="mode-container">
+                    <div class="split-view">
+                        <div class="left-panel">
+                            <div class="panel-header">
+                                <h3><i class="fas fa-sitemap"></i> Tree Structure</h3>
+                                <div class="panel-controls">
+                                    <button id="refreshTree" class="btn-icon">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="jsonViewer" class="json-viewer">
+                                <div class="loading-state">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <p>Load JSON data to begin analysis</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="right-panel">
+                            <div class="panel-header">
+                                <h3 id="detailTitle">
+                                    <i class="fas fa-info-circle"></i> Select an object
+                                </h3>
+                                <div class="panel-controls">
+                                    <button id="bookmarkCurrent" class="btn-icon" title="Bookmark current selection">
+                                        <i class="fas fa-bookmark"></i>
+                                    </button>
+                                    <button id="copyPath" class="btn-icon" title="Copy path">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                    <button id="closeDetail" class="btn-icon">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="detailViewer" class="detail-viewer">
+                                <div class="empty-state">
+                                    <i class="fas fa-mouse-pointer"></i>
+                                    <p>Click on any object key to view details</p>
+                                    <small>Use right-click for additional options</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Diff Mode -->
+                <div id="diffMode" class="mode-container hidden">
+                    <div class="diff-controls">
+                        <div class="diff-inputs">
+                            <div class="diff-input-group">
+                                <label>First JSON:</label>
+                                <input type="file" id="diffFile1" accept=".json">
+                                <button id="diffPaste1" class="btn btn-sm">Paste JSON</button>
+                            </div>
+                            <div class="diff-input-group">
+                                <label>Second JSON:</label>
+                                <input type="file" id="diffFile2" accept=".json">
+                                <button id="diffPaste2" class="btn btn-sm">Paste JSON</button>
+                            </div>
+                            <button id="runDiff" class="btn btn-primary">
+                                <i class="fas fa-code-compare"></i> Compare
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="diff-view">
+                        <div class="diff-panel">
+                            <div class="panel-header">
+                                <h3><i class="fas fa-file-alt"></i> First JSON</h3>
+                            </div>
+                            <div id="diffViewer1" class="json-viewer"></div>
+                        </div>
+                        
+                        <div class="diff-panel">
+                            <div class="panel-header">
+                                <h3><i class="fas fa-file-alt"></i> Second JSON</h3>
+                            </div>
+                            <div id="diffViewer2" class="json-viewer"></div>
+                        </div>
+                        
+                        <div class="diff-panel">
+                            <div class="panel-header">
+                                <h3><i class="fas fa-exchange-alt"></i> Differences</h3>
+                                <div class="diff-legend">
+                                    <span class="legend-item added"><i class="fas fa-plus"></i> Added</span>
+                                    <span class="legend-item removed"><i class="fas fa-minus"></i> Removed</span>
+                                    <span class="legend-item modified"><i class="fas fa-edit"></i> Modified</span>
+                                </div>
+                            </div>
+                            <div id="diffResults" class="diff-results"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Modals -->
+        <div id="rawInputModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-code"></i> Raw JSON Input</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <textarea id="rawJsonInput" placeholder="Paste your JSON here..."></textarea>
+                    <div class="modal-actions">
+                        <button id="validateJson" class="btn btn-secondary">
+                            <i class="fas fa-check-circle"></i> Validate
+                        </button>
+                        <button id="loadRawJson" class="btn btn-primary">
+                            <i class="fas fa-upload"></i> Load JSON
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="advancedSearchModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-filter"></i> Advanced Search & Filter</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="filter-group">
+                        <label>Search in:</label>
+                        <div class="checkbox-list">
+                            <label><input type="checkbox" checked> Keys</label>
+                            <label><input type="checkbox" checked> Values</label>
+                            <label><input type="checkbox"> Paths</label>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label>Value types:</label>
+                        <div class="checkbox-list">
+                            <label><input type="checkbox" checked> String</label>
+                            <label><input type="checkbox" checked> Number</label>
+                            <label><input type="checkbox" checked> Boolean</label>
+                            <label><input type="checkbox" checked> Object</label>
+                            <label><input type="checkbox" checked> Array</label>
+                            <label><input type="checkbox"> Null</label>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label>Regular expression:</label>
+                        <input type="text" id="regexFilter" placeholder="Enter regex pattern...">
+                    </div>
+                    <div class="modal-actions">
+                        <button id="clearFilters" class="btn btn-secondary">Clear All</button>
+                        <button id="applyFilters" class="btn btn-primary">Apply Filters</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

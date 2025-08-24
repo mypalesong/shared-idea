@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>DOM Debug</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <h2>DOM 구조 디버깅</h2>
+  <table class="data-table" id="testTable">
+    <thead>
+      <tr>
+        <th class="col-id">ID</th>
+        <th class="col-question">Question</th>
+        <th class="col-ground-truth">GroundTruth</th>
+        <th class="col-actual-intent">ActualIntent</th>
+        <th class="col-answer">Answer</th>
+        <th class="col-sender">Sender</th>
+        <th class="col-start-time">StartTime</th>
+        <th class="col-end-time">EndTime</th>
+        <th class="col-duration">Duration</th>
+        <th class="col-status">Status</th>
+        <th class="col-result">Result</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+
+  <button onclick="addTestRow()">테스트 행 추가</button>
+  <div id="output"></div>
+
+  <script>
+    function addTestRow() {
+      const tbody = document.getElementById('tbody');
+      const row = document.createElement('tr');
+      
+      // UI.js와 동일한 방식으로 생성
+      row.innerHTML = `
+        <td class="col-id">999</td>
+        <td class="col-question" title="Test message">Test message</td>
+        <td class="col-ground-truth">test_intent</td>
+        <td class="col-actual-intent">-</td>
+        <td class="col-answer" data-row-id="test123">-</td>
+        <td class="col-sender">testuser</td>
+        <td class="col-start-time">14:30:15</td>
+        <td class="col-end-time">-</td>
+        <td class="col-duration">-</td>
+        <td class="col-status">
+          <span class="status status-ready">Ready</span>
+        </td>
+        <td class="col-result">
+          <span class="result result-none">-</span>
+        </td>
+      `;
+      
+      tbody.appendChild(row);
+      
+      // 디버그 정보 출력
+      const output = document.getElementById('output');
+      const cells = row.children;
+      
+      let debugInfo = '<h3>DOM 분석 결과:</h3>';
+      debugInfo += `<p><strong>총 children 개수:</strong> ${cells.length}</p>`;
+      debugInfo += `<p><strong>총 childNodes 개수:</strong> ${row.childNodes.length}</p>`;
+      
+      debugInfo += '<h4>children[] 내용:</h4><ul>';
+      for (let i = 0; i < cells.length; i++) {
+        const cell = cells[i];
+        const className = cell.className || 'no-class';
+        const content = cell.textContent.trim().substring(0, 20);
+        debugInfo += `<li>cells[${i}]: ${className} = "${content}"</li>`;
+      }
+      debugInfo += '</ul>';
+      
+      // cells[3] 테스트
+      debugInfo += '<h4>특정 셀 테스트:</h4>';
+      debugInfo += `<p>cells[3].textContent = "${cells[3] ? cells[3].textContent : 'UNDEFINED'}"</p>`;
+      debugInfo += `<p>cells[3].className = "${cells[3] ? cells[3].className : 'UNDEFINED'}"</p>`;
+      
+      output.innerHTML = debugInfo;
+      
+      // UI.js와 동일한 updateTableRow 시뮬레이션
+      setTimeout(() => {
+        console.log('=== updateTableRow 시뮬레이션 ===');
+        cells[3].textContent = 'actual_intent_updated';
+        console.log('cells[3] 업데이트 완료');
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

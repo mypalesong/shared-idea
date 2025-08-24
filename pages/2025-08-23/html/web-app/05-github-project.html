@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repository Dashboard - GitHub Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: #0d1117;
+            color: #f0f6fc;
+            line-height: 1.5;
+        }
+        
+        .header {
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+            padding: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .logo {
+            color: #f0f6fc;
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .search-container {
+            flex: 1;
+            max-width: 350px;
+        }
+        
+        .search-input {
+            width: 100%;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #f0f6fc;
+            font-size: 14px;
+        }
+        
+        .search-input::placeholder {
+            color: #7d8590;
+        }
+        
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .nav-link {
+            color: #f0f6fc;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: #30363d;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 24px 16px;
+        }
+        
+        .repo-header {
+            margin-bottom: 24px;
+        }
+        
+        .repo-path {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .repo-owner {
+            color: #58a6ff;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .repo-separator {
+            color: #7d8590;
+            font-size: 20px;
+        }
+        
+        .repo-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #58a6ff;
+        }
+        
+        .repo-visibility {
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 12px;
+            color: #7d8590;
+            margin-left: 8px;
+        }
+        
+        .repo-description {
+            color: #7d8590;
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+        
+        .repo-stats {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 14px;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #7d8590;
+        }
+        
+        .stat-number {
+            color: #f0f6fc;
+            font-weight: 600;
+        }
+        
+        .tabs {
+            border-bottom: 1px solid #30363d;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 0;
+        }
+        
+        .tab {
+            padding: 12px 16px;
+            background: none;
+            border: none;
+            color: #7d8590;
+            font-size: 14px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tab:hover {
+            color: #f0f6fc;
+            border-bottom-color: #30363d;
+        }
+        
+        .tab.active {
+            color: #f0f6fc;
+            border-bottom-color: #fd7e14;
+        }
+        
+        .tab-badge {
+            background: #30363d;
+            color: #f0f6fc;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .content-section {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 24px;
+        }
+        
+        .main-content {
+            background: #0d1117;
+        }
+        
+        .filters {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .filter-group {
+            margin-bottom: 12px;
+        }
+        
+        .filter-label {
+            font-size: 12px;
+            color: #7d8590;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .filter-button {
+            background: #21262d;
+            border: 1px solid #30363d;
+            color: #f0f6fc;
+            border-radius: 6px;
+            padding: 6px 12px;
+            margin: 2px 4px 2px 0;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .filter-button:hover {
+            background: #30363d;
+        }
+        
+        .filter-button.active {
+            background: #238636;
+            border-color: #238636;
+        }
+        
+        .issue-list {
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            background: #161b22;
+        }
+        
+        .issue-item {
+            border-bottom: 1px solid #30363d;
+            padding: 16px;
+            transition: background 0.2s;
+        }
+        
+        .issue-item:hover {
+            background: #21262d;
+        }
+        
+        .issue-item:last-child {
+            border-bottom: none;
+        }
+        
+        .issue-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .issue-icon {
+            color: #238636;
+            margin-top: 2px;
+        }
+        
+        .issue-title {
+            flex: 1;
+            font-size: 16px;
+            color: #f0f6fc;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .issue-title:hover {
+            color: #58a6ff;
+        }
+        
+        .issue-number {
+            color: #7d8590;
+            font-size: 14px;
+        }
+        
+        .issue-meta {
+            font-size: 12px;
+            color: #7d8590;
+            margin-bottom: 8px;
+        }
+        
+        .issue-labels {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        
+        .label {
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        .label-bug { background: #da3633; color: white; }
+        .label-feature { background: #0969da; color: white; }
+        .label-enhancement { background: #a2eeef; color: #0d1117; }
+        .label-documentation { background: #0075ca; color: white; }
+        
+        .sidebar {
+            space-y: 16px;
+        }
+        
+        .sidebar-section {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .sidebar-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #f0f6fc;
+        }
+        
+        .contributor-list {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .contributor {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+            border-bottom: 1px solid #30363d;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 16px;
+            height: 16px;
+            color: #58a6ff;
+        }
+        
+        .activity-text {
+            font-size: 12px;
+            color: #7d8590;
+        }
+        
+        .activity-user {
+            color: #f0f6fc;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                🐙 GitHub
+            </div>
+            <div class="search-container">
+                <input class="search-input" placeholder="Search or jump to...">
+            </div>
+            <nav class="header-nav">
+                <a href="#" class="nav-link">Pull requests</a>
+                <a href="#" class="nav-link">Issues</a>
+                <a href="#" class="nav-link">Codespaces</a>
+                <a href="#" class="nav-link">Marketplace</a>
+                <a href="#" class="nav-link">Explore</a>
+                <div class="user-avatar">JS</div>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="repo-header">
+            <div class="repo-path">
+                <a href="#" class="repo-owner">techcorp</a>
+                <span class="repo-separator">/</span>
+                <span class="repo-name">web-platform</span>
+                <span class="repo-visibility">Private</span>
+            </div>
+            <div class="repo-description">
+                Enterprise web platform with modern microservices architecture
+            </div>
+            <div class="repo-stats">
+                <div class="stat-item">
+                    ⭐ <span class="stat-number">127</span> stars
+                </div>
+                <div class="stat-item">
+                    👁️ <span class="stat-number">23</span> watching
+                </div>
+                <div class="stat-item">
+                    🍴 <span class="stat-number">45</span> forks
+                </div>
+                <div class="stat-item">
+                    JavaScript 67.2% • TypeScript 24.8% • CSS 8.0%
+                </div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab">
+                📄 Code
+            </button>
+            <button class="tab active">
+                ❗ Issues <span class="tab-badge">23</span>
+            </button>
+            <button class="tab">
+                🔄 Pull requests <span class="tab-badge">7</span>
+            </button>
+            <button class="tab">
+                ⚡ Actions
+            </button>
+            <button class="tab">
+                📊 Projects <span class="tab-badge">3</span>
+            </button>
+            <button class="tab">
+                🛡️ Security
+            </button>
+            <button class="tab">
+                📈 Insights
+            </button>
+        </div>
+        
+        <div class="content-section">
+            <div class="main-content">
+                <div class="filters">
+                    <div class="filter-group">
+                        <div class="filter-label">Status</div>
+                        <button class="filter-button active">Open</button>
+                        <button class="filter-button">Closed</button>
+                    </div>
+                    <div class="filter-group">
+                        <div class="filter-label">Labels</div>
+                        <button class="filter-button">bug</button>
+                        <button class="filter-button">feature</button>
+                        <button class="filter-button">enhancement</button>
+                        <button class="filter-button">documentation</button>
+                    </div>
+                    <div class="filter-group">
+                        <div class="filter-label">Assignee</div>
+                        <button class="filter-button">Assigned to me</button>
+                        <button class="filter-button">Unassigned</button>
+                    </div>
+                </div>
+                
+                <div class="issue-list">
+                    <div class="issue-item">
+                        <div class="issue-header">
+                            <span class="issue-icon">●</span>
+                            <a href="#" class="issue-title">Performance optimization for dashboard loading</a>
+                            <span class="issue-number">#147</span>
+                        </div>
+                        <div class="issue-meta">
+                            opened 2 days ago by <strong>sarah-dev</strong> • 3 comments
+                        </div>
+                        <div class="issue-labels">
+                            <span class="label label-enhancement">enhancement</span>
+                            <span class="label label-feature">performance</span>
+                        </div>
+                    </div>
+                    
+                    <div class="issue-item">
+                        <div class="issue-header">
+                            <span class="issue-icon">●</span>
+                            <a href="#" class="issue-title">Mobile navigation menu not responsive on iOS Safari</a>
+                            <span class="issue-number">#146</span>
+                        </div>
+                        <div class="issue-meta">
+                            opened 3 days ago by <strong>mike-qa</strong> • 1 comment
+                        </div>
+                        <div class="issue-labels">
+                            <span class="label label-bug">bug</span>
+                            <span class="label label-documentation">mobile</span>
+                        </div>
+                    </div>
+                    
+                    <div class="issue-item">
+                        <div class="issue-header">
+                            <span class="issue-icon">●</span>
+                            <a href="#" class="issue-title">Add user authentication with SSO integration</a>
+                            <span class="issue-number">#145</span>
+                        </div>
+                        <div class="issue-meta">
+                            opened 5 days ago by <strong>alex-pm</strong> • 7 comments
+                        </div>
+                        <div class="issue-labels">
+                            <span class="label label-feature">feature</span>
+                            <span class="label label-enhancement">auth</span>
+                        </div>
+                    </div>
+                    
+                    <div class="issue-item">
+                        <div class="issue-header">
+                            <span class="issue-icon">●</span>
+                            <a href="#" class="issue-title">Update API documentation for v2.0 endpoints</a>
+                            <span class="issue-number">#144</span>
+                        </div>
+                        <div class="issue-meta">
+                            opened 1 week ago by <strong>jenny-docs</strong> • 2 comments
+                        </div>
+                        <div class="issue-labels">
+                            <span class="label label-documentation">documentation</span>
+                        </div>
+                    </div>
+                    
+                    <div class="issue-item">
+                        <div class="issue-header">
+                            <span class="issue-icon">●</span>
+                            <a href="#" class="issue-title">Database connection timeout in production environment</a>
+                            <span class="issue-number">#143</span>
+                        </div>
+                        <div class="issue-meta">
+                            opened 1 week ago by <strong>david-ops</strong> • 12 comments
+                        </div>
+                        <div class="issue-labels">
+                            <span class="label label-bug">bug</span>
+                            <span class="label label-feature">infrastructure</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-title">Contributors</div>
+                    <div class="contributor-list">
+                        <div class="contributor">SD</div>
+                        <div class="contributor">MQ</div>
+                        <div class="contributor">AP</div>
+                        <div class="contributor">JD</div>
+                        <div class="contributor">DO</div>
+                        <div class="contributor">+5</div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="sidebar-title">Recent Activity</div>
+                    <div class="activity-item">
+                        <div class="activity-icon">✓</div>
+                        <div class="activity-text">
+                            <span class="activity-user">sarah-dev</span> closed issue #142
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">🔄</div>
+                        <div class="activity-text">
+                            <span class="activity-user">mike-qa</span> opened PR #48
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">💬</div>
+                        <div class="activity-text">
+                            <span class="activity-user">alex-pm</span> commented on #145
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">✏️</div>
+                        <div class="activity-text">
+                            <span class="activity-user">jenny-docs</span> updated documentation
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="sidebar-title">Repository Info</div>
+                    <div style="font-size: 12px; color: #7d8590; line-height: 1.5;">
+                        <div>Created: Jan 15, 2024</div>
+                        <div>Last commit: 2 hours ago</div>
+                        <div>License: MIT</div>
+                        <div>Size: 47.2 MB</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

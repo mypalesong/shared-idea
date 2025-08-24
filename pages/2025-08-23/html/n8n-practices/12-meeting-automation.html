@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n8n 회의 자동화 - 스마트한 미팅 라이프사이클 관리</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+        
+        .workflow-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 40px;
+        }
+        
+        .workflow-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 30px;
+        }
+        
+        .workflow-title {
+            flex-grow: 1;
+        }
+        
+        .workflow-title h2 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .workflow-title p {
+            color: #666;
+            font-size: 0.95em;
+        }
+        
+        .scenario-intro {
+            background: linear-gradient(135deg, #fff5f5, #f0fdfa);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .scenario-title {
+            text-align: center;
+            color: #FF6B6B;
+            margin-bottom: 25px;
+        }
+        
+        .meeting-scenario {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .meeting-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .meeting-info {
+            flex-grow: 1;
+        }
+        
+        .meeting-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .meeting-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            color: #666;
+        }
+        
+        .meta-icon {
+            margin-right: 8px;
+            color: #FF6B6B;
+        }
+        
+        .meeting-status {
+            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .automation-phases {
+            margin: 30px 0;
+        }
+        
+        .phase-timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        
+        .phase-item {
+            display: flex;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .phase-marker {
+            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-right: 25px;
+            z-index: 2;
+        }
+        
+        .phase-content {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            flex-grow: 1;
+        }
+        
+        .phase-title {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .detailed-scenario {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .scenario-header {
+            text-align: center;
+            color: #FF6B6B;
+            margin-bottom: 30px;
+        }
+        
+        .scenario-step {
+            background: white;
+            margin: 20px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .step-header {
+            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .step-number {
+            background: rgba(255,255,255,0.2);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        
+        .step-content {
+            padding: 20px;
+        }
+        
+        .step-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .trigger-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .action-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .meeting-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minWidth(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .meeting-type-card {
+            background: white;
+            border: 2px solid #f0f0f0;
+            border-radius: 15px;
+            padding: 25px;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        
+        .meeting-type-card:hover {
+            border-color: #FF6B6B;
+            transform: translateY(-5px);
+        }
+        
+        .type-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .type-icon {
+            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 24px;
+        }
+        
+        .ai-features {
+            background: linear-gradient(135deg, #fff5f5, #f0fdfa);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .ai-title {
+            text-align: center;
+            color: #FF6B6B;
+            margin-bottom: 25px;
+        }
+        
+        .ai-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minWidth(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .ai-feature {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .ai-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+        
+        .productivity-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minWidth(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .metric-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .integration-tools {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minWidth(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            border: 2px solid #f0f0f0;
+        }
+        
+        .tool-item {
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .tool-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .tool-icon {
+            background: linear-gradient(135deg, #fff5f5, #f0fdfa);
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 30px;
+        }
+        
+        .demo-section {
+            background: white;
+            border: 2px solid #FF6B6B;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        
+        .demo-title {
+            color: #FF6B6B;
+            margin-bottom: 20px;
+        }
+        
+        .demo-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .demo-step {
+            flex: 1;
+            min-width: 200px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .demo-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+        
+        .demo-arrow {
+            color: #FF6B6B;
+            font-size: 24px;
+        }
+        
+        .cta {
+            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .cta h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        
+        .cta p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .step-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .meeting-meta {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .demo-flow {
+                flex-direction: column;
+            }
+            
+            .demo-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📅 회의 자동화</h1>
+            <p class="subtitle">n8n으로 구현하는 스마트한 미팅 라이프사이클 완전 관리</p>
+        </header>
+        
+        <div class="workflow-card">
+            <div class="workflow-header">
+                <div class="icon">🤖</div>
+                <div class="workflow-title">
+                    <h2>지능형 회의 관리 워크플로우</h2>
+                    <p>예약부터 후속 조치까지 모든 회의 프로세스 자동화</p>
+                </div>
+            </div>
+            
+            <div class="scenario-intro">
+                <h3 class="scenario-title">📋 실제 시나리오: 마케팅 팀 주간 회의</h3>
+                <div class="meeting-scenario">
+                    <div class="meeting-header">
+                        <div class="meeting-info">
+                            <div class="meeting-title">마케팅 팀 주간 성과 리뷰</div>
+                            <div class="meeting-meta">
+                                <div class="meta-item">
+                                    <span class="meta-icon">📅</span>
+                                    <span>매주 월요일 오전 10시</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-icon">👥</span>
+                                    <span>8명 참석</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-icon">⏱️</span>
+                                    <span>60분 예정</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-icon">📍</span>
+                                    <span>A동 2층 회의실 + Zoom</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="meeting-status">진행 중</div>
+                    </div>
+                    <p><strong>참석자:</strong> 마케팅 팀장 이수진, 디지털 마케터 김철수, 콘텐츠 기획자 박영희, 퍼포먼스 마케터 정민호, 브랜드 매니저 최유리, 디자이너 한지민, 데이터 애널리스트 오승환, 마케팅 인턴 신입이</p>
+                    <p><strong>주요 안건:</strong> 지난주 캠페인 성과 분석, 이번 주 마케팅 계획, 예산 검토, 크리에이티브 리뷰</p>
+                </div>
+            </div>
+            
+            <div class="automation-phases">
+                <h3 style="color: #FF6B6B; margin-bottom: 30px; text-align: center;">🔄 자동화된 회의 라이프사이클</h3>
+                
+                <div class="phase-item">
+                    <div class="phase-marker">1</div>
+                    <div class="phase-content">
+                        <div class="phase-title">🎯 회의 계획 & 예약 (24시간 전)</div>
+                        <ul style="margin-top: 10px;">
+                            <li><strong>자동 일정 생성:</strong> 구글 캘린더에 반복 일정 설정</li>
+                            <li><strong>참석자 초대:</strong> 팀 구성원 자동 초대 및 확인 요청</li>
+                            <li><strong>회의실 예약:</strong> 사용 가능한 회의실 자동 검색 및 예약</li>
+                            <li><strong>Zoom 링크:</strong> 화상회의 링크 자동 생성 및 공유</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="phase-item">
+                    <div class="phase-marker">2</div>
+                    <div class="phase-content">
+                        <div class="phase-title">📋 회의 준비 & 자료 수집 (2시간 전)</div>
+                        <ul style="margin-top: 10px;">
+                            <li><strong>안건 자동 생성:</strong> 이전 액션 아이템과 주간 데이터 기반</li>
+                            <li><strong>자료 취합:</strong> GA4, 광고 계정에서 성과 데이터 자동 수집</li>
+                            <li><strong>리마인더 발송:</strong> 참석자들에게 준비사항 알림</li>
+                            <li><strong>사전 설문:</strong> 논의하고 싶은 주제 사전 수집</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="phase-item">
+                    <div class="phase-marker">3</div>
+                    <div class="phase-content">
+                        <div class="phase-title">🎤 회의 진행 & 기록 (실시간)</div>
+                        <ul style="margin-top: 10px;">
+                            <li><strong>자동 녹음/녹화:</strong> Zoom 자동 녹화 및 클라우드 저장</li>
+                            <li><strong>실시간 전사:</strong> AI 음성 인식으로 회의록 자동 생성</li>
+                            <li><strong>참석 확인:</strong> 지각자 자동 알림 및 참석률 추적</li>
+                            <li><strong>시간 관리:</strong> 안건별 소요시간 추적 및 알림</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="phase-item">
+                    <div class="phase-marker">4</div>
+                    <div class="phase-content">
+                        <div class="phase-title">📝 회의록 정리 & 배포 (30분 후)</div>
+                        <ul style="margin-top: 10px;">
+                            <li><strong>회의록 요약:</strong> AI가 주요 내용과 결정사항 요약</li>
+                            <li><strong>액션 아이템:</strong> 담당자별 할 일과 마감일 자동 추출</li>
+                            <li><strong>자동 배포:</strong> 참석자와 관련 부서에 회의록 전송</li>
+                            <li><strong>프로젝트 도구 연동:</strong> Jira, Notion에 태스크 자동 생성</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="phase-item">
+                    <div class="phase-marker">5</div>
+                    <div class="phase-content">
+                        <div class="phase-title">📊 후속 조치 & 추적 (지속적)</div>
+                        <ul style="margin-top: 10px;">
+                            <li><strong>진행 상황 추적:</strong> 액션 아이템 완료 여부 자동 확인</li>
+                            <li><strong>리마인더:</strong> 마감일 임박 시 담당자에게 알림</li>
+                            <li><strong>성과 분석:</strong> 회의 효율성과 결과 지표 수집</li>
+                            <li><strong>다음 회의 준비:</strong> 미완료 항목을 다음 안건에 자동 추가</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detailed-scenario">
+                <h3 class="scenario-header">🔍 상세 자동화 시나리오 분석</h3>
+                
+                <div class="scenario-step">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <div>
+                            <h4>일요일 저녁 8시 - 주간 데이터 수집 시작</h4>
+                            <p>다음날 회의를 위한 자동 데이터 준비</p>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <p><strong>상황:</strong> 시스템이 월요일 마케팅 회의를 24시간 앞두고 자동으로 준비 작업을 시작합니다.</p>
+                        <div class="step-details">
+                            <div class="trigger-box">
+                                <strong>🎯 트리거 조건</strong>
+                                <ul style="margin-top: 8px;">
+                                    <li>• 일요일 20:00 정시 실행</li>
+                                    <li>• 다음날 마케팅 회의 일정 확인</li>
+                                    <li>• 휴일 제외 로직 적용</li>
+                                </ul>
+                            </div>
+                            <div class="action-box">
+                                <strong>⚡ 자동 실행 액션</strong>
+                                <ul style="margin-top: 8px;">
+                                    <li>• Google Analytics 주간 데이터 수집</li>
+                                    <li>• Facebook Ads, Google Ads 성과 추출</li>
+                                    <li>• 이메일 마케팅 지표 (Mailchimp) 수집</li>
+                                    <li>• CRM에서 리드 전환율 데이터 추출</li>
+                                    <li>• 자동 리포트 템플릿에 데이터 삽입</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scenario-step">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <div>
+                            <h4>월요일 오전 8시 - 회의 준비 완료 알림</h4>
+                            <p>참석자들에게 회의 자료와 함께 리마인더 발송</p>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <p><strong>상황:</strong> 회의 2시간 전, 모든 참석자에게 준비된 자료와 함께 상세한 안내 메시지를 전송합니다.</p>
+                        <div class="step-details">
+                            <div class="trigger-box">
+                                <strong>🎯 트리거 조건</strong>
+                                <ul style="margin-top: 8px;">
+                                    <li>• 회의 시작 2시간 전</li>
+                                    <li>• 참석 확인 미응답자 확인</li>
+                                    <li>• 회의실 예약 상태 점검</li>
+                                </ul>
+                            </div>
+                            <div class="action-box">
+                                <strong>⚡ 자동 실행 액션</strong>
+                                <ul style="margin-top: 8px;">
+                                    <li>• 개인별 맞춤 리마인더 이메일</li>
+                                    <li>• 주간 성과 대시보드 PDF 첨부</li>
+                                    <li>• Slack에 회의 채널 생성</li>
+                                    <li>• Zoom 링크와 회의실 정보 공유</li>
+                                    <li>• 미응답자에게 개별 메시지</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scenario-step">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <div>
+                            <h4>오전 10시 - 회의 시작과 실시간 관리</h4>
+                            <p>자동 녹화, 실시간 전사, 시간 관리</p>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <p><strong>상황:</strong> 팀장 이수진님이 Zoom 회의를 시작하면서 모든 자동화 프로세스가 활성화됩니다.</p>
+                        <div class="step-details">
+                            <div class="trigger-box">
+                                <strong>🎯 트리거 조건</strong>
+                                <ul style="margin-top: 8px;">
+                                    <li>• Zoom 회의 시작 감지</li>
+                                    <li>• 참석자 3명 이상 입장</li>
+                                    <li>• 회의 호스트 권한 확인</li>
+                                </ul>
+                            </div>
+                            <div class="action-box">
+                                <strong>⚡ 자동 실행 액션</strong>
+                                <ul style="margin-top: 8px;">
+                                    <li>• Zoom 클라우드 녹화 시작</li>
+                                    <li>• 실시간 음성-텍스트 변환</li>
+                                    <li>• 늦은 참석자 자동 알림</li>
+                                    <li>• 안건별 시간 추적 시작</li>
+                                    <li>• 화면 공유 내용 스크린샷 저장</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scenario-step">
+                    <div class="step-header">
+                        <div class="step-number">4</div>
+                        <div>
+                            <h4>오전 11시 - 회의 종료 후 즉시 처리</h4>
+                            <p>AI 기반 회의록 생성과 액션 아이템 추출</p>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <p><strong>상황:</strong> 회의가 종료되자마자 AI가 녹음 파일을 분석하여 구조화된 회의록을 생성합니다.</p>
+                        <div class="step-details">
+                            <div class="trigger-box">
+                                <strong>🎯 트리거 조건</strong>
+                                <ul style="margin-top: 8px;">
+                                    <li>• Zoom 회의 종료 감지</li>
+                                    <li>• 녹화 파일 클라우드 업로드 완료</li>
+                                    <li>• 최소 30분 이상 진행된 회의</li>
+                                </ul>
+                            </div>
+                            <div class="action-box">
+                                <strong>⚡ 자동 실행 액션</strong>
+                                <ul style="margin-top: 8px;">
+                                    <li>• GPT API로 회의록 요약 생성</li>
+                                    <li>• 액션 아이템과 담당자 자동 추출</li>
+                                    <li>• 다음 회의 일정 제안</li>
+                                    <li>• Notion/Jira에 태스크 생성</li>
+                                    <li>• 회의록을 참석자에게 자동 발송</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="meeting-types">
+                <h3 style="color: #FF6B6B; margin-bottom: 25px; text-align: center;">📊 다양한 회의 유형별 자동화</h3>
+                
+                <div class="meeting-type-card">
+                    <div class="type-header">
+                        <div class="type-icon">📈</div>
+                        <div>
+                            <h4>정기 팀 미팅</h4>
+                            <p style="color: #666; font-size: 0.9em;">주간/월간 성과 리뷰</p>
+                        </div>
+                    </div>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>✓ 자동 KPI 데이터 수집</li>
+                        <li>✓ 진행 상황 추적</li>
+                        <li>✓ 액션 아이템 관리</li>
+                        <li>✓ 참석률 분석</li>
+                    </ul>
+                </div>
+                
+                <div class="meeting-type-card">
+                    <div class="type-header">
+                        <div class="type-icon">🎯</div>
+                        <div>
+                            <h4>프로젝트 킥오프</h4>
+                            <p style="color: #666; font-size: 0.9em;">새 프로젝트 시작</p>
+                        </div>
+                    </div>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>✓ 프로젝트 템플릿 자동 생성</li>
+                        <li>✓ 팀원 역할 배정</li>
+                        <li>✓ 타임라인 설정</li>
+                        <li>✓ 리소스 할당</li>
+                    </ul>
+                </div>
+                
+                <div class="meeting-type-card">
+                    <div class="type-header">
+                        <div class="type-icon">🤝</div>
+                        <div>
+                            <h4>클라이언트 미팅</h4>
+                            <p style="color: #666; font-size: 0.9em;">외부 고객 상담</p>
+                        </div>
+                    </div>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>✓ 고객 히스토리 자동 조회</li>
+                        <li>✓ 맞춤형 프레젠테이션</li>
+                        <li>✓ CRM 연동 업데이트</li>
+                        <li>✓ 후속 조치 자동화</li>
+                    </ul>
+                </div>
+                
+                <div class="meeting-type-card">
+                    <div class="type-header">
+                        <div class="type-icon">🧠</div>
+                        <div>
+                            <h4>브레인스토밍</h4>
+                            <p style="color: #666; font-size: 0.9em;">아이디어 발굴 세션</p>
+                        </div>
+                    </div>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>✓ 아이디어 자동 수집</li>
+                        <li>✓ 카테고리별 분류</li>
+                        <li>✓ 투표 시스템 연동</li>
+                        <li>✓ 실행 계획 생성</li>
+                    </ul>
+                </div>
+                
+                <div class="meeting-type-card">
+                    <div class="type-header">
+                        <div class="type-icon">📊</div>
+                        <div>
+                            <h4>성과 평가</h4>
+                            <p style="color: #666; font-size: 0.9em;">직원 평가 미팅</p>
+                        </div>
+                    </div>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>✓ 성과 데이터 자동 정리</li>
+                        <li>✓ 360도 피드백 수집</li>
+                        <li>✓ 개발 계획 수립</li>
+                        <li>✓ HR 시스템 업데이트</li>
+                    </ul>
+                </div>
+                
+                <div class="meeting-type-card">
+                    <div class="type-header">
+                        <div class="type-icon">🚨</div>
+                        <div>
+                            <h4>위기 대응</h4>
+                            <p style="color: #666; font-size: 0.9em;">긴급 상황 대처</p>
+                        </div>
+                    </div>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>✓ 즉시 소집 시스템</li>
+                        <li>✓ 상황 정보 실시간 공유</li>
+                        <li>✓ 대응 체크리스트</li>
+                        <li>✓ 이해관계자 자동 알림</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ai-features">
+                <h3 class="ai-title">🤖 AI 기반 스마트 기능</h3>
+                <div class="ai-grid">
+                    <div class="ai-feature">
+                        <div class="ai-icon">🎤</div>
+                        <h4>음성 인식 전사</h4>
+                        <p style="color: #666; margin-top: 8px;">실시간 음성을 텍스트로 변환하여 즉시 회의록 초안 생성</p>
+                    </div>
+                    <div class="ai-feature">
+                        <div class="ai-icon">📝</div>
+                        <h4>자동 요약</h4>
+                        <p style="color: #666; margin-top: 8px;">긴 토론 내용을 핵심 포인트와 결정사항으로 압축 정리</p>
+                    </div>
+                    <div class="ai-feature">
+                        <div class="ai-icon">🎯</div>
+                        <h4>액션 아이템 추출</h4>
+                        <p style="color: #666; margin-top: 8px;">"~해야 한다", "~까지 완료" 등 표현을 인식하여 할 일 자동 생성</p>
+                    </div>
+                    <div class="ai-feature">
+                        <div class="ai-icon">😊</div>
+                        <h4>감정 분석</h4>
+                        <p style="color: #666; margin-top: 8px;">참석자들의 목소리 톤을 분석하여 회의 분위기와 만족도 측정</p>
+                    </div>
+                    <div class="ai-feature">
+                        <div class="ai-icon">📊</div>
+                        <h4>발언 시간 분석</h4>
+                        <p style="color: #666; margin-top: 8px;">참석자별 발언 시간과 참여도를 시각화하여 회의 효율성 개선</p>
+                    </div>
+                    <div class="ai-feature">
+                        <div class="ai-icon">🔍</div>
+                        <h4>키워드 추출</h4>
+                        <p style="color: #666; margin-top: 8px;">회의에서 자주 언급된 주제와 키워드를 추출하여 태그 자동 생성</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="integration-tools">
+                <div class="tool-item">
+                    <div class="tool-icon">📅</div>
+                    <p>Google Calendar</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">📹</div>
+                    <p>Zoom</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">💬</div>
+                    <p>Slack</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">📧</div>
+                    <p>Gmail</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">📋</div>
+                    <p>Notion</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">🎯</div>
+                    <p>Jira</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">📊</div>
+                    <p>Google Sheets</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">🤝</div>
+                    <p>Microsoft Teams</p>
+                </div>
+            </div>
+            
+            <div class="demo-section">
+                <h3 class="demo-title">🎬 실제 동작 플로우</h3>
+                <div class="demo-flow">
+                    <div class="demo-step">
+                        <div class="demo-icon">📋</div>
+                        <strong>안건 준비</strong>
+                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">AI가 이전 회의와 데이터 분석</p>
+                    </div>
+                    <span class="demo-arrow">→</span>
+                    <div class="demo-step">
+                        <div class="demo-icon">📧</div>
+                        <strong>초대 발송</strong>
+                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">참석자별 맞춤 리마인더</p>
+                    </div>
+                    <span class="demo-arrow">→</span>
+                    <div class="demo-step">
+                        <div class="demo-icon">🎤</div>
+                        <strong>회의 진행</strong>
+                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">실시간 녹음/전사</p>
+                    </div>
+                    <span class="demo-arrow">→</span>
+                    <div class="demo-step">
+                        <div class="demo-icon">📝</div>
+                        <strong>회의록 생성</strong>
+                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">AI 요약 및 액션 아이템</p>
+                    </div>
+                    <span class="demo-arrow">→</span>
+                    <div class="demo-step">
+                        <div class="demo-icon">📊</div>
+                        <strong>후속 조치</strong>
+                        <p style="color: #666; font-size: 0.9em; margin-top: 5px;">태스크 생성 및 추적</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="productivity-metrics">
+                <div class="metric-card">
+                    <div class="metric-value">70%</div>
+                    <div class="metric-label">회의 준비 시간 단축</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">90%</div>
+                    <div class="metric-label">회의록 작성 자동화</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">85%</div>
+                    <div class="metric-label">액션 아이템 이행률</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">60%</div>
+                    <div class="metric-label">후속 조치 시간 절약</div>
+                </div>
+            </div>
+            
+            <div class="cta">
+                <h3>회의 문화를 혁신하세요!</h3>
+                <p>n8n의 스마트 회의 자동화로 생산적이고 효율적인 미팅 환경을 구축하세요</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

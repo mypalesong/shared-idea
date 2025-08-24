@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoBlock - Blockchain Development Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(ellipse at center, #0a0a0a 0%, #1a1a2e 40%, #16213e 100%);
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            color: #e0e6ed;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .blockchain-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 215, 0, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 215, 0, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '⛓️';
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 3em;
+            animation: chainRotate 4s infinite;
+        }
+
+        .header h1 {
+            font-size: 4em;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ffd700, #ff8c00, #ffd700);
+            background-size: 200% 200%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: goldShine 3s ease-in-out infinite;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .header p {
+            font-size: 1.3em;
+            color: #b8bcc8;
+            margin-bottom: 30px;
+        }
+
+        .blockchain-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .stat-block {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 140, 0, 0.05));
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .stat-block::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ffd700, #ff8c00, #ffd700, #ff8c00);
+            background-size: 400% 400%;
+            border-radius: 15px;
+            z-index: -1;
+            animation: borderGlow 3s ease infinite;
+            opacity: 0;
+        }
+
+        .stat-block:hover::before {
+            opacity: 1;
+        }
+
+        .stat-block:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.2);
+        }
+
+        .stat-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            animation: blockFloat 3s ease-in-out infinite;
+        }
+
+        .stat-value {
+            font-size: 2.8em;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 10px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .stat-label {
+            font-size: 1.1em;
+            color: #b8bcc8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .blockchain-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 50px 0;
+            position: relative;
+            height: 200px;
+        }
+
+        .block {
+            width: 120px;
+            height: 80px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            border: 3px solid #ffd700;
+            border-radius: 10px;
+            margin: 0 10px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+            animation: blockPulse 2s ease-in-out infinite;
+            cursor: pointer;
+        }
+
+        .block:nth-child(1) { animation-delay: 0s; }
+        .block:nth-child(2) { animation-delay: 0.5s; }
+        .block:nth-child(3) { animation-delay: 1s; }
+        .block:nth-child(4) { animation-delay: 1.5s; }
+
+        .block::after {
+            content: '→';
+            position: absolute;
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2em;
+            color: #ffd700;
+            animation: chainLink 1s ease-in-out infinite alternate;
+        }
+
+        .block:last-child::after {
+            display: none;
+        }
+
+        .block:hover {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+        }
+
+        .mining-section {
+            background: rgba(30, 58, 138, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .mining-title {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+
+        .mining-progress {
+            width: 100%;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .mining-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ff8c00, #ffd700);
+            background-size: 200% 100%;
+            animation: miningProgress 4s ease-in-out infinite, goldFlow 2s linear infinite;
+            border-radius: 10px;
+            width: 0%;
+        }
+
+        .hash-display {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #ffd700;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+        }
+
+        .hash-text {
+            color: #00ff00;
+            font-size: 0.9em;
+            line-height: 1.6;
+            animation: hashGenerate 3s linear infinite;
+        }
+
+        .transaction-pool {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .transaction {
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.1), rgba(0, 200, 0, 0.05));
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            animation: transactionFloat 4s ease-in-out infinite;
+        }
+
+        .transaction:nth-child(odd) { animation-delay: 1s; }
+        .transaction:nth-child(even) { animation-delay: 2s; }
+
+        .tx-hash {
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+            font-size: 0.8em;
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+
+        .tx-amount {
+            font-size: 1.5em;
+            color: #ffd700;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .tx-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .tx-status.pending {
+            background: rgba(255, 165, 0, 0.2);
+            color: #ffa500;
+        }
+
+        .tx-status.confirmed {
+            background: rgba(0, 255, 0, 0.2);
+            color: #00ff00;
+        }
+
+        .crypto-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .crypto-btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            border: 2px solid #ffd700;
+            border-radius: 25px;
+            color: #fff;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .crypto-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .crypto-btn:hover::before {
+            left: 100%;
+        }
+
+        .crypto-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(255, 215, 0, 0.3);
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+        }
+
+        .network-nodes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .node {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #ffd700;
+            border-radius: 50%;
+            animation: nodeFloat 8s infinite linear;
+        }
+
+        .connection-line {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #ffd700, transparent);
+            animation: connectionPulse 3s infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        @keyframes chainRotate {
+            0%, 100% { transform: translateX(-50%) rotate(0deg); }
+            50% { transform: translateX(-50%) rotate(10deg); }
+        }
+
+        @keyframes goldShine {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes borderGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes blockFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes blockPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.8); }
+        }
+
+        @keyframes chainLink {
+            0% { transform: translateY(-50%) scale(1); }
+            100% { transform: translateY(-50%) scale(1.2); }
+        }
+
+        @keyframes miningProgress {
+            0% { width: 0%; }
+            50% { width: 75%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes goldFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        @keyframes hashGenerate {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        @keyframes transactionFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-5px) rotate(0.5deg); }
+            66% { transform: translateY(5px) rotate(-0.5deg); }
+        }
+
+        @keyframes nodeFloat {
+            0% {
+                transform: translate(0, 100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(100px, -100px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        @keyframes connectionPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2.5em; }
+            .blockchain-visual { flex-direction: column; height: auto; }
+            .block { margin: 10px 0; }
+            .block::after { content: '↓'; right: 50%; bottom: -30px; top: auto; transform: translateX(50%); }
+            .crypto-buttons { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="blockchain-grid"></div>
+    <div class="network-nodes"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>CryptoBlock</h1>
+            <p>Next-Generation Blockchain Development Platform</p>
+        </div>
+
+        <div class="blockchain-stats">
+            <div class="stat-block">
+                <div class="stat-icon">⛏️</div>
+                <div class="stat-value">2,847</div>
+                <div class="stat-label">Blocks Mined</div>
+            </div>
+            <div class="stat-block">
+                <div class="stat-icon">💎</div>
+                <div class="stat-value">15.7K</div>
+                <div class="stat-label">Total Transactions</div>
+            </div>
+            <div class="stat-block">
+                <div class="stat-icon">🔗</div>
+                <div class="stat-value">99.9%</div>
+                <div class="stat-label">Network Uptime</div>
+            </div>
+            <div class="stat-block">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-value">2.3s</div>
+                <div class="stat-label">Block Time</div>
+            </div>
+        </div>
+
+        <div class="blockchain-visual">
+            <div class="block">Block #2845</div>
+            <div class="block">Block #2846</div>
+            <div class="block">Block #2847</div>
+            <div class="block">Mining...</div>
+        </div>
+
+        <div class="mining-section">
+            <h2 class="mining-title">⛏️ Active Mining Process</h2>
+            <p>Mining new block with difficulty: 0x1a00ffff</p>
+            <div class="mining-progress">
+                <div class="mining-bar"></div>
+            </div>
+            <div class="hash-display">
+                <div class="hash-text">Current Hash: 0x000000a8d9c4e7f2b1a5c8d3e9f4a7b2c6e1f8d4a9c7e2f5b8d1a4c7e9f3b6</div>
+                <div class="hash-text">Target Hash: 0x00000000000000000000000000000000000000000000000000000000000000</div>
+                <div class="hash-text">Nonce: 2,847,392</div>
+            </div>
+        </div>
+
+        <h3 style="text-align: center; color: #ffd700; font-size: 2em; margin: 40px 0;">Transaction Pool</h3>
+        <div class="transaction-pool">
+            <div class="transaction">
+                <div class="tx-hash">0x7f9fade1c0d57a7af66ab4ead79fade1c0d57a7af66ab4ead7c2c2eb7b11a91385</div>
+                <div class="tx-amount">2.5 BTC</div>
+                <div class="tx-status pending">Pending</div>
+            </div>
+            <div class="transaction">
+                <div class="tx-hash">0xa1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456</div>
+                <div class="tx-amount">0.75 ETH</div>
+                <div class="tx-status confirmed">Confirmed</div>
+            </div>
+            <div class="transaction">
+                <div class="tx-hash">0x9876543210fedcba0987654321fedcba098765432fedcba0987654321fedcba09</div>
+                <div class="tx-amount">1250 USDT</div>
+                <div class="tx-status pending">Pending</div>
+            </div>
+            <div class="transaction">
+                <div class="tx-hash">0xdeadbeefcafebabe1337c0de4815162342108421084210842108421084210842</div>
+                <div class="tx-amount">5.8 SOL</div>
+                <div class="tx-status confirmed">Confirmed</div>
+            </div>
+        </div>
+
+        <div class="crypto-buttons">
+            <button class="crypto-btn" onclick="startMining()">Start Mining</button>
+            <button class="crypto-btn" onclick="createTransaction()">New Transaction</button>
+            <button class="crypto-btn" onclick="validateChain()">Validate Chain</button>
+            <button class="crypto-btn" onclick="showWallet()">Open Wallet</button>
+        </div>
+    </div>
+
+    <script>
+        // Generate network nodes
+        function createNetworkNodes() {
+            const networkNodes = document.querySelector('.network-nodes');
+            const nodeCount = 20;
+
+            for (let i = 0; i < nodeCount; i++) {
+                const node = document.createElement('div');
+                node.className = 'node';
+                node.style.left = Math.random() * 100 + '%';
+                node.style.animationDelay = Math.random() * 8 + 's';
+                node.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                networkNodes.appendChild(node);
+
+                // Create connection lines
+                if (i > 0 && Math.random() > 0.5) {
+                    const line = document.createElement('div');
+                    line.className = 'connection-line';
+                    line.style.left = Math.random() * 100 + '%';
+                    line.style.top = Math.random() * 100 + '%';
+                    line.style.width = Math.random() * 200 + 50 + 'px';
+                    line.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+                    line.style.animationDelay = Math.random() * 3 + 's';
+                    networkNodes.appendChild(line);
+                }
+            }
+        }
+
+        // Mining simulation
+        let isMining = false;
+        function startMining() {
+            if (isMining) return;
+            
+            isMining = true;
+            const button = event.target;
+            button.textContent = 'Mining...';
+            button.style.background = 'linear-gradient(135deg, #ff6b00, #ff8c00)';
+            
+            // Animate mining progress
+            const miningBar = document.querySelector('.mining-bar');
+            miningBar.style.animation = 'miningProgress 8s ease-in-out, goldFlow 2s linear infinite';
+            
+            // Generate random hash updates
+            const hashText = document.querySelector('.hash-text');
+            let nonce = 2847392;
+            
+            const hashInterval = setInterval(() => {
+                nonce += Math.floor(Math.random() * 1000) + 1;
+                const randomHash = generateRandomHash();
+                hashText.innerHTML = `Current Hash: ${randomHash}<br>Target Hash: 0x00000000000000000000000000000000000000000000000000000000000000<br>Nonce: ${nonce.toLocaleString()}`;
+            }, 500);
+            
+            setTimeout(() => {
+                clearInterval(hashInterval);
+                button.textContent = 'Block Mined!';
+                button.style.background = 'linear-gradient(135deg, #00ff00, #32cd32)';
+                showNotification('Block #2848 successfully mined!', 'success');
+                
+                // Add new block to chain
+                addBlockToChain();
+                
+                setTimeout(() => {
+                    button.textContent = 'Start Mining';
+                    button.style.background = 'linear-gradient(135deg, #1e3a8a, #3b82f6)';
+                    isMining = false;
+                }, 3000);
+            }, 8000);
+        }
+
+        function generateRandomHash() {
+            const chars = '0123456789abcdef';
+            let hash = '0x';
+            for (let i = 0; i < 64; i++) {
+                hash += chars[Math.floor(Math.random() * chars.length)];
+            }
+            return hash;
+        }
+
+        function addBlockToChain() {
+            const blockchainVisual = document.querySelector('.blockchain-visual');
+            const blocks = blockchainVisual.querySelectorAll('.block');
+            
+            // Update block numbers
+            blocks[0].textContent = 'Block #2846';
+            blocks[1].textContent = 'Block #2847';
+            blocks[2].textContent = 'Block #2848';
+            blocks[3].textContent = 'Mining...';
+            
+            // Update stats
+            const statValue = document.querySelector('.stat-block .stat-value');
+            statValue.textContent = '2,848';
+        }
+
+        function createTransaction() {
+            const transactionPool = document.querySelector('.transaction-pool');
+            const newTx = document.createElement('div');
+            newTx.className = 'transaction';
+            newTx.style.animation = 'transactionFloat 4s ease-in-out infinite';
+            
+            const currencies = ['BTC', 'ETH', 'SOL', 'ADA', 'DOT'];
+            const randomCurrency = currencies[Math.floor(Math.random() * currencies.length)];
+            const randomAmount = (Math.random() * 10).toFixed(2);
+            const randomHash = generateRandomHash();
+            
+            newTx.innerHTML = `
+                <div class="tx-hash">${randomHash}</div>
+                <div class="tx-amount">${randomAmount} ${randomCurrency}</div>
+                <div class="tx-status pending">Pending</div>
+            `;
+            
+            transactionPool.insertBefore(newTx, transactionPool.firstChild);
+            showNotification(`New transaction created: ${randomAmount} ${randomCurrency}`, 'info');
+            
+            // Remove oldest transaction if too many
+            if (transactionPool.children.length > 6) {
+                transactionPool.removeChild(transactionPool.lastChild);
+            }
+        }
+
+        function validateChain() {
+            showNotification('Validating blockchain integrity...', 'info');
+            
+            setTimeout(() => {
+                const isValid = Math.random() > 0.1; // 90% chance of valid chain
+                if (isValid) {
+                    showNotification('✅ Blockchain is valid and secure!', 'success');
+                } else {
+                    showNotification('⚠️ Chain validation failed - potential fork detected!', 'warning');
+                }
+            }, 2000);
+        }
+
+        function showWallet() {
+            const walletData = {
+                address: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa',
+                balance: '3.24 BTC',
+                transactions: 127
+            };
+            
+            showNotification(`Wallet: ${walletData.address.substring(0, 10)}... | Balance: ${walletData.balance}`, 'info');
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            const colors = {
+                success: '#00ff00',
+                warning: '#ffa500',
+                info: '#00d4ff',
+                error: '#ff4444'
+            };
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                background: rgba(0, 0, 0, 0.9);
+                border: 2px solid ${colors[type] || '#ffd700'};
+                color: ${colors[type] || '#ffd700'};
+                border-radius: 10px;
+                z-index: 1000;
+                font-family: 'Courier New', monospace;
+                font-weight: bold;
+                animation: slideInRight 0.5s ease;
+                max-width: 400px;
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.5s ease';
+                setTimeout(() => document.body.removeChild(notification), 500);
+            }, 4000);
+        }
+
+        // Add slide animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Auto-update hash display
+        function updateHashDisplay() {
+            const hashElements = document.querySelectorAll('.hash-text');
+            if (!isMining && hashElements.length > 0) {
+                const randomHash = generateRandomHash();
+                let nonce = parseInt(hashElements[0].textContent.match(/Nonce: ([\d,]+)/)?.[1].replace(/,/g, '') || '2847392');
+                nonce += Math.floor(Math.random() * 100) + 1;
+                
+                hashElements[0].innerHTML = `Current Hash: ${randomHash}<br>Target Hash: 0x00000000000000000000000000000000000000000000000000000000000000<br>Nonce: ${nonce.toLocaleString()}`;
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createNetworkNodes();
+            
+            // Auto-generate transactions
+            setInterval(() => {
+                if (Math.random() > 0.7) {
+                    createTransaction();
+                }
+            }, 10000);
+            
+            // Update hash display
+            setInterval(updateHashDisplay, 2000);
+            
+            // Interactive block clicks
+            document.querySelectorAll('.block').forEach(block => {
+                block.addEventListener('click', function() {
+                    if (this.textContent === 'Mining...') {
+                        startMining();
+                    } else {
+                        const blockNum = this.textContent.match(/#(\d+)/)?.[1];
+                        if (blockNum) {
+                            showNotification(`Block #${blockNum} details: Hash verified, 247 transactions included`, 'info');
+                        }
+                    }
+                });
+            });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'm':
+                        e.preventDefault();
+                        startMining();
+                        break;
+                    case 't':
+                        e.preventDefault();
+                        createTransaction();
+                        break;
+                    case 'v':
+                        e.preventDefault();
+                        validateChain();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

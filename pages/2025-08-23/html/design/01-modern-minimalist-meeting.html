@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Minimalist Meeting - 심플한 회의 공간</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 200;
+            letter-spacing: -0.02em;
+            margin-bottom: 20px;
+            color: #34495e;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            font-weight: 300;
+        }
+
+        .meeting-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .meeting-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .meeting-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .meeting-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .meeting-time {
+            font-size: 0.9rem;
+            color: #95a5a6;
+            font-weight: 500;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meeting-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .meeting-description {
+            font-size: 1rem;
+            color: #7f8c8d;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .attendees {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            margin-right: -10px;
+            border: 3px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .join-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .join-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            text-align: center;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.6);
+            padding: 30px 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #7f8c8d;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .meeting-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Today's Meetings</h1>
+            <p>간결하고 명확한 회의 공간에서 협업하세요</p>
+        </div>
+
+        <div class="meeting-grid">
+            <div class="meeting-card">
+                <div class="meeting-time">09:00 AM</div>
+                <h3 class="meeting-title">프로젝트 킥오프 미팅</h3>
+                <p class="meeting-description">새로운 프로젝트의 목표와 일정을 논의하고 팀원들과 비전을 공유합니다.</p>
+                <div class="attendees">
+                    <div class="avatar">김</div>
+                    <div class="avatar">이</div>
+                    <div class="avatar">박</div>
+                    <div class="avatar">최</div>
+                </div>
+                <button class="join-btn">참여하기</button>
+            </div>
+
+            <div class="meeting-card">
+                <div class="meeting-time">11:30 AM</div>
+                <h3 class="meeting-title">디자인 리뷰</h3>
+                <p class="meeting-description">최신 디자인 작업을 검토하고 피드백을 통해 개선 방향을 설정합니다.</p>
+                <div class="attendees">
+                    <div class="avatar">정</div>
+                    <div class="avatar">한</div>
+                    <div class="avatar">윤</div>
+                </div>
+                <button class="join-btn">참여하기</button>
+            </div>
+
+            <div class="meeting-card">
+                <div class="meeting-time">02:00 PM</div>
+                <h3 class="meeting-title">주간 스탠드업</h3>
+                <p class="meeting-description">지난 주 진행사항을 공유하고 이번 주 목표를 설정하는 정기 미팅입니다.</p>
+                <div class="attendees">
+                    <div class="avatar">조</div>
+                    <div class="avatar">강</div>
+                    <div class="avatar">신</div>
+                    <div class="avatar">오</div>
+                </div>
+                <button class="join-btn">참여하기</button>
+            </div>
+
+            <div class="meeting-card">
+                <div class="meeting-time">04:30 PM</div>
+                <h3 class="meeting-title">브레인스토밍</h3>
+                <p class="meeting-description">창의적인 아이디어를 자유롭게 공유하고 혁신적인 솔루션을 모색합니다.</p>
+                <div class="attendees">
+                    <div class="avatar">송</div>
+                    <div class="avatar">임</div>
+                    <div class="avatar">황</div>
+                </div>
+                <button class="join-btn">참여하기</button>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-number">24</span>
+                <div class="stat-label">오늘의 회의</div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">156</span>
+                <div class="stat-label">참석자 수</div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">92%</span>
+                <div class="stat-label">참석률</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

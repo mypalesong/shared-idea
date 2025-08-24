@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkPlace - Projects</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #0dcaf0;
+            --dark-color: #212529;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            z-index: 1000;
+            transition: all 0.3s;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.1);
+            border-left: 4px solid #fff;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .top-navbar {
+            background: white;
+            padding: 15px 30px;
+            margin: -20px -20px 30px -20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 0 0 10px 10px;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .project-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+
+        .project-card.high-priority {
+            border-left-color: #dc3545;
+        }
+
+        .project-card.medium-priority {
+            border-left-color: #ffc107;
+        }
+
+        .project-card.low-priority {
+            border-left-color: #198754;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .project-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 5px;
+        }
+
+        .project-meta {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .priority-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-high {
+            background: #dc3545;
+            color: white;
+        }
+
+        .priority-medium {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .priority-low {
+            background: #198754;
+            color: white;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-planning {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .status-progress {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .status-testing {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .status-completed {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .progress-section {
+            margin: 15px 0;
+        }
+
+        .progress {
+            height: 8px;
+            border-radius: 10px;
+        }
+
+        .team-avatars {
+            display: flex;
+            gap: -5px;
+            margin: 15px 0;
+        }
+
+        .team-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+            border: 3px solid white;
+            margin-left: -5px;
+        }
+
+        .team-avatar:first-child {
+            margin-left: 0;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid #dee2e6;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .project-stats {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-transform: uppercase;
+        }
+
+        .project-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+
+        .project-tag {
+            padding: 4px 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-briefcase me-2"></i>WorkPlace</h3>
+            <small>Enterprise Solution</small>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-item">
+                <i class="fas fa-tachometer-alt me-3"></i>Dashboard
+            </div>
+            <div class="nav-item active">
+                <i class="fas fa-tasks me-3"></i>Projects
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-kanban me-3"></i>Task Board
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-users me-3"></i>Team
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-chart-line me-3"></i>Analytics
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-calendar me-3"></i>Calendar
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-file-alt me-3"></i>Documents
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-headset me-3"></i>Support
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-cog me-3"></i>Settings
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navbar -->
+        <div class="top-navbar">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-0">프로젝트 관리</h4>
+                    <small class="text-muted">총 24개 프로젝트 진행 중</small>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>새 프로젝트
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="fas fa-download me-2"></i>내보내기
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-file-excel me-2"></i>Excel</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-file-pdf me-2"></i>PDF</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-file-csv me-2"></i>CSV</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="filter-group">
+                        <span class="fw-semibold">상태:</span>
+                        <span class="filter-btn active">전체</span>
+                        <span class="filter-btn">계획중</span>
+                        <span class="filter-btn">진행중</span>
+                        <span class="filter-btn">테스트</span>
+                        <span class="filter-btn">완료</span>
+                    </div>
+                    <div class="filter-group mt-3">
+                        <span class="fw-semibold">우선순위:</span>
+                        <span class="filter-btn active">전체</span>
+                        <span class="filter-btn">높음</span>
+                        <span class="filter-btn">중간</span>
+                        <span class="filter-btn">낮음</span>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control" placeholder="프로젝트 검색...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Grid -->
+        <div class="row">
+            <!-- Project Card 1 -->
+            <div class="col-lg-6 col-xl-4">
+                <div class="project-card high-priority">
+                    <div class="project-header">
+                        <div class="flex-grow-1">
+                            <h5 class="project-title">모바일 앱 개발</h5>
+                            <div class="project-meta">
+                                <i class="fas fa-calendar me-1"></i>2024.01.15 - 2024.05.30
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <span class="priority-badge priority-high">높음</span>
+                            <span class="status-badge status-progress">진행중</span>
+                        </div>
+                    </div>
+
+                    <p class="text-muted mb-3">
+                        고객 서비스 향상을 위한 네이티브 모바일 애플리케이션 개발 프로젝트입니다.
+                    </p>
+
+                    <div class="project-tags">
+                        <span class="project-tag">React Native</span>
+                        <span class="project-tag">API</span>
+                        <span class="project-tag">Mobile</span>
+                    </div>
+
+                    <div class="progress-section">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small">진행률</span>
+                            <span class="small fw-semibold">72%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-warning" style="width: 72%"></div>
+                        </div>
+                    </div>
+
+                    <div class="team-avatars">
+                        <div class="team-avatar" style="background: #007bff;">김</div>
+                        <div class="team-avatar" style="background: #28a745;">이</div>
+                        <div class="team-avatar" style="background: #dc3545;">박</div>
+                        <div class="team-avatar" style="background: #6f42c1;">+2</div>
+                    </div>
+
+                    <div class="project-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">24</div>
+                            <div class="stat-label">작업</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">18</div>
+                            <div class="stat-label">완료</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">6</div>
+                            <div class="stat-label">대기</div>
+                        </div>
+                    </div>
+
+                    <div class="project-actions">
+                        <button class="action-btn btn btn-primary btn-sm">
+                            <i class="fas fa-eye me-1"></i>보기
+                        </button>
+                        <button class="action-btn btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-edit me-1"></i>편집
+                        </button>
+                        <button class="action-btn btn btn-outline-info btn-sm">
+                            <i class="fas fa-chart-bar me-1"></i>리포트
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Card 2 -->
+            <div class="col-lg-6 col-xl-4">
+                <div class="project-card medium-priority">
+                    <div class="project-header">
+                        <div class="flex-grow-1">
+                            <h5 class="project-title">웹사이트 리뉴얼</h5>
+                            <div class="project-meta">
+                                <i class="fas fa-calendar me-1"></i>2024.02.01 - 2024.04.15
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <span class="priority-badge priority-medium">중간</span>
+                            <span class="status-badge status-testing">테스트</span>
+                        </div>
+                    </div>
+
+                    <p class="text-muted mb-3">
+                        기존 웹사이트의 UI/UX 개선 및 성능 최적화를 통한 사용자 경험 향상 프로젝트입니다.
+                    </p>
+
+                    <div class="project-tags">
+                        <span class="project-tag">Vue.js</span>
+                        <span class="project-tag">UI/UX</span>
+                        <span class="project-tag">Performance</span>
+                    </div>
+
+                    <div class="progress-section">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small">진행률</span>
+                            <span class="small fw-semibold">85%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-info" style="width: 85%"></div>
+                        </div>
+                    </div>
+
+                    <div class="team-avatars">
+                        <div class="team-avatar" style="background: #fd7e14;">최</div>
+                        <div class="team-avatar" style="background: #20c997;">정</div>
+                        <div class="team-avatar" style="background: #6610f2;">한</div>
+                    </div>
+
+                    <div class="project-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">16</div>
+                            <div class="stat-label">작업</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">14</div>
+                            <div class="stat-label">완료</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">2</div>
+                            <div class="stat-label">대기</div>
+                        </div>
+                    </div>
+
+                    <div class="project-actions">
+                        <button class="action-btn btn btn-primary btn-sm">
+                            <i class="fas fa-eye me-1"></i>보기
+                        </button>
+                        <button class="action-btn btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-edit me-1"></i>편집
+                        </button>
+                        <button class="action-btn btn btn-outline-info btn-sm">
+                            <i class="fas fa-chart-bar me-1"></i>리포트
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Card 3 -->
+            <div class="col-lg-6 col-xl-4">
+                <div class="project-card low-priority">
+                    <div class="project-header">
+                        <div class="flex-grow-1">
+                            <h5 class="project-title">데이터 분석 플랫폼</h5>
+                            <div class="project-meta">
+                                <i class="fas fa-calendar me-1"></i>2024.03.01 - 2024.07.30
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <span class="priority-badge priority-low">낮음</span>
+                            <span class="status-badge status-planning">계획중</span>
+                        </div>
+                    </div>
+
+                    <p class="text-muted mb-3">
+                        빅데이터 처리 및 실시간 분석을 위한 종합적인 데이터 분석 플랫폼 구축 프로젝트입니다.
+                    </p>
+
+                    <div class="project-tags">
+                        <span class="project-tag">Python</span>
+                        <span class="project-tag">BigData</span>
+                        <span class="project-tag">Analytics</span>
+                    </div>
+
+                    <div class="progress-section">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small">진행률</span>
+                            <span class="small fw-semibold">15%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" style="width: 15%"></div>
+                        </div>
+                    </div>
+
+                    <div class="team-avatars">
+                        <div class="team-avatar" style="background: #e83e8c;">윤</div>
+                        <div class="team-avatar" style="background: #fd7e14;">강</div>
+                        <div class="team-avatar" style="background: #6f42c1;">+1</div>
+                    </div>
+
+                    <div class="project-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">32</div>
+                            <div class="stat-label">작업</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">5</div>
+                            <div class="stat-label">완료</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">27</div>
+                            <div class="stat-label">대기</div>
+                        </div>
+                    </div>
+
+                    <div class="project-actions">
+                        <button class="action-btn btn btn-primary btn-sm">
+                            <i class="fas fa-eye me-1"></i>보기
+                        </button>
+                        <button class="action-btn btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-edit me-1"></i>편집
+                        </button>
+                        <button class="action-btn btn btn-outline-info btn-sm">
+                            <i class="fas fa-chart-bar me-1"></i>리포트
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Card 4 -->
+            <div class="col-lg-6 col-xl-4">
+                <div class="project-card high-priority">
+                    <div class="project-header">
+                        <div class="flex-grow-1">
+                            <h5 class="project-title">보안 시스템 강화</h5>
+                            <div class="project-meta">
+                                <i class="fas fa-calendar me-1"></i>2024.01.20 - 2024.03.30
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <span class="priority-badge priority-high">높음</span>
+                            <span class="status-badge status-progress">진행중</span>
+                        </div>
+                    </div>
+
+                    <p class="text-muted mb-3">
+                        기업 보안 정책 강화 및 취약점 분석을 통한 종합 보안 시스템 업그레이드 프로젝트입니다.
+                    </p>
+
+                    <div class="project-tags">
+                        <span class="project-tag">Security</span>
+                        <span class="project-tag">Infrastructure</span>
+                        <span class="project-tag">Compliance</span>
+                    </div>
+
+                    <div class="progress-section">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small">진행률</span>
+                            <span class="small fw-semibold">58%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-danger" style="width: 58%"></div>
+                        </div>
+                    </div>
+
+                    <div class="team-avatars">
+                        <div class="team-avatar" style="background: #198754;">서</div>
+                        <div class="team-avatar" style="background: #dc3545;">오</div>
+                        <div class="team-avatar" style="background: #0dcaf0;">임</div>
+                        <div class="team-avatar" style="background: #6f42c1;">+3</div>
+                    </div>
+
+                    <div class="project-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">18</div>
+                            <div class="stat-label">작업</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">10</div>
+                            <div class="stat-label">완료</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">8</div>
+                            <div class="stat-label">대기</div>
+                        </div>
+                    </div>
+
+                    <div class="project-actions">
+                        <button class="action-btn btn btn-primary btn-sm">
+                            <i class="fas fa-eye me-1"></i>보기
+                        </button>
+                        <button class="action-btn btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-edit me-1"></i>편집
+                        </button>
+                        <button class="action-btn btn btn-outline-info btn-sm">
+                            <i class="fas fa-chart-bar me-1"></i>리포트
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Card 5 -->
+            <div class="col-lg-6 col-xl-4">
+                <div class="project-card medium-priority">
+                    <div class="project-header">
+                        <div class="flex-grow-1">
+                            <h5 class="project-title">CRM 시스템 개발</h5>
+                            <div class="project-meta">
+                                <i class="fas fa-calendar me-1"></i>2024.02.15 - 2024.06.30
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <span class="priority-badge priority-medium">중간</span>
+                            <span class="status-badge status-progress">진행중</span>
+                        </div>
+                    </div>
+
+                    <p class="text-muted mb-3">
+                        고객 관계 관리 및 영업 프로세스 자동화를 위한 통합 CRM 시스템 개발 프로젝트입니다.
+                    </p>
+
+                    <div class="project-tags">
+                        <span class="project-tag">CRM</span>
+                        <span class="project-tag">.NET</span>
+                        <span class="project-tag">Database</span>
+                    </div>
+
+                    <div class="progress-section">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small">진행률</span>
+                            <span class="small fw-semibold">43%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-primary" style="width: 43%"></div>
+                        </div>
+                    </div>
+
+                    <div class="team-avatars">
+                        <div class="team-avatar" style="background: #ffc107;">남</div>
+                        <div class="team-avatar" style="background: #20c997;">송</div>
+                        <div class="team-avatar" style="background: #fd7e14;">배</div>
+                    </div>
+
+                    <div class="project-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">28</div>
+                            <div class="stat-label">작업</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">12</div>
+                            <div class="stat-label">완료</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">16</div>
+                            <div class="stat-label">대기</div>
+                        </div>
+                    </div>
+
+                    <div class="project-actions">
+                        <button class="action-btn btn btn-primary btn-sm">
+                            <i class="fas fa-eye me-1"></i>보기
+                        </button>
+                        <button class="action-btn btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-edit me-1"></i>편집
+                        </button>
+                        <button class="action-btn btn btn-outline-info btn-sm">
+                            <i class="fas fa-chart-bar me-1"></i>리포트
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Card 6 -->
+            <div class="col-lg-6 col-xl-4">
+                <div class="project-card low-priority">
+                    <div class="project-header">
+                        <div class="flex-grow-1">
+                            <h5 class="project-title">AI 챗봇 구축</h5>
+                            <div class="project-meta">
+                                <i class="fas fa-calendar me-1"></i>2024.04.01 - 2024.08.15
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <span class="priority-badge priority-low">낮음</span>
+                            <span class="status-badge status-completed">완료</span>
+                        </div>
+                    </div>
+
+                    <p class="text-muted mb-3">
+                        고객 서비스 자동화를 위한 AI 기반 챗봇 시스템 구축 및 학습 데이터 최적화 프로젝트입니다.
+                    </p>
+
+                    <div class="project-tags">
+                        <span class="project-tag">AI/ML</span>
+                        <span class="project-tag">NLP</span>
+                        <span class="project-tag">Chatbot</span>
+                    </div>
+
+                    <div class="progress-section">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small">진행률</span>
+                            <span class="small fw-semibold">100%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" style="width: 100%"></div>
+                        </div>
+                    </div>
+
+                    <div class="team-avatars">
+                        <div class="team-avatar" style="background: #6610f2;">홍</div>
+                        <div class="team-avatar" style="background: #e83e8c;">백</div>
+                    </div>
+
+                    <div class="project-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">14</div>
+                            <div class="stat-label">작업</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">14</div>
+                            <div class="stat-label">완료</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">0</div>
+                            <div class="stat-label">대기</div>
+                        </div>
+                    </div>
+
+                    <div class="project-actions">
+                        <button class="action-btn btn btn-primary btn-sm">
+                            <i class="fas fa-eye me-1"></i>보기
+                        </button>
+                        <button class="action-btn btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-edit me-1"></i>편집
+                        </button>
+                        <button class="action-btn btn btn-outline-info btn-sm">
+                            <i class="fas fa-chart-bar me-1"></i>리포트
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="d-flex justify-content-center mt-4">
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item disabled">
+                        <span class="page-link">이전</span>
+                    </li>
+                    <li class="page-item active">
+                        <span class="page-link">1</span>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">2</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">3</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">다음</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from siblings
+                this.parentElement.querySelectorAll('.filter-btn').forEach(sibling => {
+                    sibling.classList.remove('active');
+                });
+                // Add active class to clicked button
+                this.classList.add('active');
+            });
+        });
+
+        // Project card hover effects
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.borderLeftWidth = '6px';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.borderLeftWidth = '4px';
+            });
+        });
+    </script>
+</body>
+</html>

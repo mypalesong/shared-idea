@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered JSON Intelligence Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-brain"></i>
+                    <h1>JSON Intelligence Platform</h1>
+                </div>
+                <div class="ai-status">
+                    <div class="ai-indicator active"></div>
+                    <span>AI Assistant Online</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="btn-icon" id="settingsBtn" title="Settings">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="btn-icon" id="helpBtn" title="AI Help">
+                    <i class="fas fa-question-circle"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="main-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <nav class="nav-menu">
+                    <div class="nav-section">
+                        <h3>Data Input</h3>
+                        <button class="nav-item active" data-section="import">
+                            <i class="fas fa-upload"></i>
+                            Import Data
+                        </button>
+                        <button class="nav-item" data-section="samples">
+                            <i class="fas fa-database"></i>
+                            Sample Datasets
+                        </button>
+                    </div>
+                    
+                    <div class="nav-section">
+                        <h3>AI Analysis</h3>
+                        <button class="nav-item" data-section="insights">
+                            <i class="fas fa-lightbulb"></i>
+                            Smart Insights
+                        </button>
+                        <button class="nav-item" data-section="patterns">
+                            <i class="fas fa-search"></i>
+                            Pattern Detection
+                        </button>
+                        <button class="nav-item" data-section="anomalies">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Anomaly Detection
+                        </button>
+                        <button class="nav-item" data-section="predictions">
+                            <i class="fas fa-chart-line"></i>
+                            Predictions
+                        </button>
+                    </div>
+
+                    <div class="nav-section">
+                        <h3>Tools</h3>
+                        <button class="nav-item" data-section="nlq">
+                            <i class="fas fa-comments"></i>
+                            Natural Language Query
+                        </button>
+                        <button class="nav-item" data-section="validator">
+                            <i class="fas fa-check-circle"></i>
+                            Smart Validator
+                        </button>
+                        <button class="nav-item" data-section="diff">
+                            <i class="fas fa-code-branch"></i>
+                            Intelligent Diff
+                        </button>
+                    </div>
+                </nav>
+
+                <div class="ai-chat-preview">
+                    <h4>AI Assistant</h4>
+                    <div class="chat-messages" id="chatPreview">
+                        <div class="message ai">
+                            <i class="fas fa-robot"></i>
+                            <span>Ready to analyze your JSON data!</span>
+                        </div>
+                    </div>
+                    <button class="expand-chat" id="expandChat">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Import Section -->
+                <section class="content-section active" id="import">
+                    <div class="section-header">
+                        <h2>Import Your Data</h2>
+                        <p>Upload JSON data for AI-powered analysis</p>
+                    </div>
+                    
+                    <div class="import-options">
+                        <div class="import-card">
+                            <div class="import-header">
+                                <i class="fas fa-file-upload"></i>
+                                <h3>Upload File</h3>
+                            </div>
+                            <input type="file" id="fileInput" accept=".json" hidden>
+                            <button class="btn-primary" onclick="document.getElementById('fileInput').click()">
+                                Choose JSON File
+                            </button>
+                        </div>
+
+                        <div class="import-card">
+                            <div class="import-header">
+                                <i class="fas fa-link"></i>
+                                <h3>URL Import</h3>
+                            </div>
+                            <input type="url" id="urlInput" placeholder="https://api.example.com/data.json" class="input-field">
+                            <button class="btn-primary" id="urlImportBtn">Import from URL</button>
+                        </div>
+
+                        <div class="import-card full-width">
+                            <div class="import-header">
+                                <i class="fas fa-edit"></i>
+                                <h3>Raw JSON Input</h3>
+                            </div>
+                            <textarea id="rawInput" placeholder="Paste your JSON here..." class="textarea-field"></textarea>
+                            <button class="btn-primary" id="rawImportBtn">Analyze JSON</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Sample Datasets Section -->
+                <section class="content-section" id="samples">
+                    <div class="section-header">
+                        <h2>Sample Datasets</h2>
+                        <p>Explore pre-loaded datasets with AI analysis</p>
+                    </div>
+                    
+                    <div class="samples-grid">
+                        <div class="sample-card" data-sample="ecommerce">
+                            <div class="sample-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <h3>E-commerce Data</h3>
+                            <p>Product catalog with sales metrics</p>
+                            <span class="sample-size">~1.2k records</span>
+                        </div>
+                        
+                        <div class="sample-card" data-sample="users">
+                            <div class="sample-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h3>User Profiles</h3>
+                            <p>Customer demographics and behavior</p>
+                            <span class="sample-size">~850 records</span>
+                        </div>
+                        
+                        <div class="sample-card" data-sample="financial">
+                            <div class="sample-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <h3>Financial Data</h3>
+                            <p>Transaction logs and market data</p>
+                            <span class="sample-size">~2.1k records</span>
+                        </div>
+                        
+                        <div class="sample-card" data-sample="iot">
+                            <div class="sample-icon">
+                                <i class="fas fa-microchip"></i>
+                            </div>
+                            <h3>IoT Sensors</h3>
+                            <p>Time-series sensor measurements</p>
+                            <span class="sample-size">~5.3k records</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Smart Insights Section -->
+                <section class="content-section" id="insights">
+                    <div class="section-header">
+                        <h2>AI-Generated Insights</h2>
+                        <p>Automated analysis and key findings</p>
+                        <button class="btn-primary" id="generateInsights">
+                            <i class="fas fa-magic"></i> Generate New Insights
+                        </button>
+                    </div>
+                    
+                    <div class="insights-container">
+                        <div class="insight-card">
+                            <div class="insight-header">
+                                <i class="fas fa-chart-pie"></i>
+                                <h3>Data Structure Analysis</h3>
+                                <span class="confidence-score">98%</span>
+                            </div>
+                            <div class="insight-content">
+                                <p>Your JSON contains <strong>hierarchical product data</strong> with consistent schema patterns.</p>
+                                <ul>
+                                    <li>3 main entity types detected</li>
+                                    <li>95% schema consistency</li>
+                                    <li>Deep nesting level: 4</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="insight-card">
+                            <div class="insight-header">
+                                <i class="fas fa-trending-up"></i>
+                                <h3>Value Distribution</h3>
+                                <span class="confidence-score">92%</span>
+                            </div>
+                            <div class="insight-content">
+                                <p>Identified <strong>unusual value distributions</strong> in numeric fields.</p>
+                                <div class="mini-chart" id="distributionChart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pattern Detection Section -->
+                <section class="content-section" id="patterns">
+                    <div class="section-header">
+                        <h2>Pattern Detection</h2>
+                        <p>AI-discovered patterns and relationships</p>
+                    </div>
+                    
+                    <div class="patterns-grid">
+                        <div class="pattern-card">
+                            <div class="pattern-header">
+                                <i class="fas fa-project-diagram"></i>
+                                <h3>Schema Patterns</h3>
+                            </div>
+                            <div class="pattern-list" id="schemaPatterns">
+                                <div class="pattern-item">
+                                    <span class="pattern-name">Consistent Object Structure</span>
+                                    <span class="pattern-confidence">95%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pattern-card">
+                            <div class="pattern-header">
+                                <i class="fas fa-link"></i>
+                                <h3>Relationship Patterns</h3>
+                            </div>
+                            <div class="pattern-list" id="relationshipPatterns">
+                                <div class="pattern-item">
+                                    <span class="pattern-name">ID Reference Links</span>
+                                    <span class="pattern-confidence">88%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Natural Language Query Section -->
+                <section class="content-section" id="nlq">
+                    <div class="section-header">
+                        <h2>Natural Language Query</h2>
+                        <p>Ask questions about your data in plain English</p>
+                    </div>
+                    
+                    <div class="nlq-interface">
+                        <div class="query-input-container">
+                            <input type="text" id="nlqInput" placeholder="e.g., 'Show me all products with price greater than $100'" class="nlq-input">
+                            <button class="btn-primary" id="askBtn">
+                                <i class="fas fa-paper-plane"></i> Ask
+                            </button>
+                        </div>
+                        
+                        <div class="query-suggestions">
+                            <h4>Try these questions:</h4>
+                            <div class="suggestion-tags">
+                                <span class="suggestion-tag" data-query="What are the most common values?">Most common values</span>
+                                <span class="suggestion-tag" data-query="Find all objects with missing fields">Missing fields</span>
+                                <span class="suggestion-tag" data-query="Show data distribution by category">Distribution by category</span>
+                                <span class="suggestion-tag" data-query="What patterns do you see?">Find patterns</span>
+                            </div>
+                        </div>
+                        
+                        <div class="nlq-results" id="nlqResults"></div>
+                    </div>
+                </section>
+
+                <!-- Diff Section -->
+                <section class="content-section" id="diff">
+                    <div class="section-header">
+                        <h2>Intelligent JSON Diff</h2>
+                        <p>AI-enhanced comparison with semantic understanding</p>
+                    </div>
+                    
+                    <div class="diff-container">
+                        <div class="diff-controls">
+                            <button class="btn-secondary" id="loadDiffFile1">Load File 1</button>
+                            <button class="btn-secondary" id="loadDiffFile2">Load File 2</button>
+                            <button class="btn-primary" id="performDiff">
+                                <i class="fas fa-balance-scale"></i> Compare with AI
+                            </button>
+                        </div>
+                        
+                        <div class="diff-results" id="diffResults">
+                            <div class="diff-summary">
+                                <h4>Comparison Summary</h4>
+                                <div class="diff-stats" id="diffStats"></div>
+                            </div>
+                            
+                            <div class="diff-viewer">
+                                <div class="diff-pane">
+                                    <h5>Original</h5>
+                                    <div class="diff-content" id="diffOriginal"></div>
+                                </div>
+                                <div class="diff-pane">
+                                    <h5>Modified</h5>
+                                    <div class="diff-content" id="diffModified"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- JSON Viewer Panel -->
+        <div class="viewer-panel" id="viewerPanel">
+            <div class="viewer-header">
+                <h3>JSON Data</h3>
+                <div class="viewer-controls">
+                    <button class="btn-icon" id="expandAll" title="Expand All">
+                        <i class="fas fa-plus-square"></i>
+                    </button>
+                    <button class="btn-icon" id="collapseAll" title="Collapse All">
+                        <i class="fas fa-minus-square"></i>
+                    </button>
+                    <button class="btn-icon" id="downloadJson" title="Download JSON">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="viewer-content" id="jsonViewer"></div>
+        </div>
+
+        <!-- AI Chat Modal -->
+        <div class="modal" id="chatModal">
+            <div class="modal-content chat-modal">
+                <div class="modal-header">
+                    <h3>AI Assistant</h3>
+                    <button class="btn-icon" id="closeChatModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message ai">
+                            <i class="fas fa-robot"></i>
+                            <div class="message-content">
+                                <p>Hello! I'm your AI assistant for JSON analysis. I can help you:</p>
+                                <ul>
+                                    <li>Understand your data structure</li>
+                                    <li>Find patterns and anomalies</li>
+                                    <li>Answer questions about your data</li>
+                                    <li>Suggest optimizations</li>
+                                </ul>
+                                <p>What would you like to explore?</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-container">
+                        <input type="text" id="chatInput" placeholder="Ask me anything about your JSON data..." class="chat-input">
+                        <button class="btn-primary" id="sendChatBtn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

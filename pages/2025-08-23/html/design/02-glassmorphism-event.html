@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glassmorphism Event Cards - 투명한 이벤트 카드</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, 
+                #667eea 0%, 
+                #764ba2 25%, 
+                #f093fb 50%, 
+                #f5576c 75%, 
+                #4facfe 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 3.8rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 400;
+        }
+
+        .events-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .event-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 35px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .event-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .event-card:hover::before {
+            opacity: 1;
+        }
+
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+
+        .event-date {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 10px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .date-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            display: block;
+            line-height: 1;
+        }
+
+        .date-month {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .event-category {
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .event-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .event-description {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .event-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+        }
+
+        .detail-icon {
+            width: 18px;
+            height: 18px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .attendees-section {
+            margin-bottom: 25px;
+        }
+
+        .attendees-title {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .attendees-list {
+            display: flex;
+            align-items: center;
+            gap: -8px;
+        }
+
+        .attendee-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            margin-left: -8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .more-attendees {
+            background: rgba(255, 255, 255, 0.2);
+            font-size: 0.8rem;
+        }
+
+        .join-button {
+            width: 100%;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .join-button:hover {
+            background: rgba(255, 255, 255, 0.35);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-circle:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 85%;
+            animation-delay: 0s;
+        }
+
+        .floating-circle:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            left: 5%;
+            animation-delay: 2s;
+        }
+
+        .floating-circle:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            top: 80%;
+            left: 90%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.8rem;
+            }
+            
+            .events-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .event-card {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Glass Events</h1>
+            <p>투명한 글래스모피즘 디자인으로 만나는 특별한 모임</p>
+        </div>
+
+        <div class="events-container">
+            <div class="event-card">
+                <div class="event-header">
+                    <div class="event-date">
+                        <span class="date-number">24</span>
+                        <span class="date-month">AUG</span>
+                    </div>
+                    <div class="event-category">워크샵</div>
+                </div>
+                
+                <h2 class="event-title">크리에이티브 디자인 워크샵</h2>
+                <p class="event-description">최신 디자인 트렌드와 글래스모피즘 기법을 배우고 실습하는 집중 워크샵입니다. 실무에 바로 적용할 수 있는 노하우를 공유합니다.</p>
+                
+                <div class="event-details">
+                    <div class="detail-item">
+                        <div class="detail-icon">🕐</div>
+                        <span>오후 2:00 - 6:00</span>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">📍</div>
+                        <span>강남 크리에이티브 센터</span>
+                    </div>
+                </div>
+
+                <div class="attendees-section">
+                    <div class="attendees-title">참석자 (23명)</div>
+                    <div class="attendees-list">
+                        <div class="attendee-avatar">김</div>
+                        <div class="attendee-avatar">이</div>
+                        <div class="attendee-avatar">박</div>
+                        <div class="attendee-avatar">최</div>
+                        <div class="attendee-avatar more-attendees">+19</div>
+                    </div>
+                </div>
+
+                <button class="join-button">참가 신청하기</button>
+            </div>
+
+            <div class="event-card">
+                <div class="event-header">
+                    <div class="event-date">
+                        <span class="date-number">26</span>
+                        <span class="date-month">AUG</span>
+                    </div>
+                    <div class="event-category">네트워킹</div>
+                </div>
+                
+                <h2 class="event-title">스타트업 네트워킹 나이트</h2>
+                <p class="event-description">스타트업 창업자와 투자자들이 만나 아이디어를 공유하고 새로운 기회를 모색하는 네트워킹 이벤트입니다.</p>
+                
+                <div class="event-details">
+                    <div class="detail-item">
+                        <div class="detail-icon">🕕</div>
+                        <span>오후 6:00 - 10:00</span>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">📍</div>
+                        <span>홍대 이노베이션 허브</span>
+                    </div>
+                </div>
+
+                <div class="attendees-section">
+                    <div class="attendees-title">참석자 (45명)</div>
+                    <div class="attendees-list">
+                        <div class="attendee-avatar">정</div>
+                        <div class="attendee-avatar">한</div>
+                        <div class="attendee-avatar">윤</div>
+                        <div class="attendee-avatar">조</div>
+                        <div class="attendee-avatar more-attendees">+41</div>
+                    </div>
+                </div>
+
+                <button class="join-button">참가 신청하기</button>
+            </div>
+
+            <div class="event-card">
+                <div class="event-header">
+                    <div class="event-date">
+                        <span class="date-number">28</span>
+                        <span class="date-month">AUG</span>
+                    </div>
+                    <div class="event-category">컨퍼런스</div>
+                </div>
+                
+                <h2 class="event-title">미래 기술 컨퍼런스</h2>
+                <p class="event-description">AI, 블록체인, 메타버스 등 미래 기술 동향을 살펴보고 업계 전문가들의 인사이트를 공유하는 컨퍼런스입니다.</p>
+                
+                <div class="event-details">
+                    <div class="detail-item">
+                        <div class="detail-icon">🕘</div>
+                        <span>오전 9:00 - 오후 5:00</span>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">📍</div>
+                        <span>코엑스 컨벤션센터</span>
+                    </div>
+                </div>
+
+                <div class="attendees-section">
+                    <div class="attendees-title">참석자 (187명)</div>
+                    <div class="attendees-list">
+                        <div class="attendee-avatar">강</div>
+                        <div class="attendee-avatar">신</div>
+                        <div class="attendee-avatar">오</div>
+                        <div class="attendee-avatar">송</div>
+                        <div class="attendee-avatar more-attendees">+183</div>
+                    </div>
+                </div>
+
+                <button class="join-button">참가 신청하기</button>
+            </div>
+
+            <div class="event-card">
+                <div class="event-header">
+                    <div class="event-date">
+                        <span class="date-number">30</span>
+                        <span class="date-month">AUG</span>
+                    </div>
+                    <div class="event-category">모임</div>
+                </div>
+                
+                <h2 class="event-title">크리에이터 모임</h2>
+                <p class="event-description">다양한 분야의 크리에이터들이 모여 작업을 공유하고 협업 기회를 모색하는 정기 모임입니다.</p>
+                
+                <div class="event-details">
+                    <div class="detail-item">
+                        <div class="detail-icon">🕒</div>
+                        <span>오후 3:00 - 7:00</span>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon">📍</div>
+                        <span>성수동 크리에이터 스페이스</span>
+                    </div>
+                </div>
+
+                <div class="attendees-section">
+                    <div class="attendees-title">참석자 (32명)</div>
+                    <div class="attendees-list">
+                        <div class="attendee-avatar">임</div>
+                        <div class="attendee-avatar">황</div>
+                        <div class="attendee-avatar">류</div>
+                        <div class="attendee-avatar">노</div>
+                        <div class="attendee-avatar more-attendees">+28</div>
+                    </div>
+                </div>
+
+                <button class="join-button">참가 신청하기</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

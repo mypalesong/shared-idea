@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n8n 프로젝트 관리 자동화 - 스마트한 업무 흐름 제어</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+        
+        .workflow-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 40px;
+        }
+        
+        .workflow-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 30px;
+        }
+        
+        .workflow-title {
+            flex-grow: 1;
+        }
+        
+        .workflow-title h2 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .workflow-title p {
+            color: #666;
+            font-size: 0.95em;
+        }
+        
+        .project-overview {
+            background: linear-gradient(135deg, #f5f3ff, #f0f0ff);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .overview-title {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 25px;
+        }
+        
+        .project-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .project-info {
+            flex-grow: 1;
+        }
+        
+        .project-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .project-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            color: #666;
+        }
+        
+        .meta-icon {
+            margin-right: 8px;
+            color: #667eea;
+        }
+        
+        .project-status {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minWidth(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .team-member {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-size: 18px;
+            color: white;
+        }
+        
+        .automation-scenarios {
+            margin: 40px 0;
+        }
+        
+        .scenarios-title {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+        }
+        
+        .scenario-step {
+            background: white;
+            margin: 20px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .step-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .step-number {
+            background: rgba(255,255,255,0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .step-content {
+            padding: 25px;
+        }
+        
+        .step-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .trigger-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .action-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .kanban-demo {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .kanban-title {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 25px;
+        }
+        
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minWidth(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .kanban-column {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .column-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .task-card {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .task-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .task-meta {
+            font-size: 0.8em;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .notification-examples {
+            background: linear-gradient(135deg, #f5f3ff, #f0f0ff);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .notification-title {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 25px;
+        }
+        
+        .notification-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minWidth(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .notification-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .notification-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .notification-icon {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 18px;
+        }
+        
+        .reporting-dashboard {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        
+        .dashboard-title {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .dashboard-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minWidth(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .metric-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .metric-label {
+            color: #666;
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+        
+        .progress-chart {
+            background: #f0f0ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .progress-bar {
+            background: #e9ecef;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+        }
+        
+        .integration-tools {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minWidth(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #f5f3ff, #f0f0ff);
+            border-radius: 15px;
+        }
+        
+        .tool-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .tool-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .tool-icon {
+            font-size: 35px;
+            margin-bottom: 10px;
+        }
+        
+        .benefits-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minWidth(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+        
+        .benefit-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .benefit-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .benefit-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .cta {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .cta h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        
+        .cta p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .step-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .kanban-board {
+                grid-template-columns: 1fr;
+            }
+            
+            .project-meta {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 프로젝트 관리 자동화</h1>
+            <p class="subtitle">n8n으로 구현하는 스마트한 업무 흐름 및 팀 협업 시스템</p>
+        </header>
+        
+        <div class="workflow-card">
+            <div class="workflow-header">
+                <div class="icon">🎯</div>
+                <div class="workflow-title">
+                    <h2>지능형 프로젝트 관리 워크플로우</h2>
+                    <p>계획부터 완료까지 모든 프로젝트 단계의 완전 자동화</p>
+                </div>
+            </div>
+            
+            <div class="project-overview">
+                <h3 class="overview-title">📋 실제 프로젝트: 신규 모바일 앱 개발</h3>
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-info">
+                            <div class="project-title">헬스케어 모바일 앱 "FitLife" 개발</div>
+                            <div class="project-meta">
+                                <div class="meta-item">
+                                    <span class="meta-icon">📅</span>
+                                    <span>기간: 2024.03.01 ~ 2024.08.31 (6개월)</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-icon">💰</span>
+                                    <span>예산: 5억원</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-icon">👥</span>
+                                    <span>팀원: 12명</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-icon">🎯</span>
+                                    <span>목표: MAU 10만명</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="project-status">진행중 (65%)</div>
+                    </div>
+                    <p style="color: #666; margin-bottom: 20px;">
+                        <strong>프로젝트 개요:</strong> AI 기반 개인 맞춤형 운동 및 식단 관리 앱 개발. 
+                        웨어러블 기기 연동, 소셜 기능, 전문가 상담 서비스 포함.
+                    </p>
+                    
+                    <div class="team-grid">
+                        <div class="team-member">
+                            <div class="member-avatar">👨‍💼</div>
+                            <strong>이프매 (PM)</strong>
+                            <div style="font-size: 0.9em; color: #666;">프로젝트 총괄</div>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-avatar">👨‍💻</div>
+                            <strong>김개발</strong>
+                            <div style="font-size: 0.9em; color: #666;">백엔드 리드</div>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-avatar">👩‍💻</div>
+                            <strong>박앱개</strong>
+                            <div style="font-size: 0.9em; color: #666;">iOS 개발자</div>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-avatar">👨‍🎨</div>
+                            <strong>최디자</strong>
+                            <div style="font-size: 0.9em; color: #666;">UI/UX 디자이너</div>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-avatar">👩‍🔬</div>
+                            <strong>정테스</strong>
+                            <div style="font-size: 0.9em; color: #666;">QA 엔지니어</div>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-avatar">👨‍💼</div>
+                            <strong>한마케</strong>
+                            <div style="font-size: 0.9em; color: #666;">마케팅 담당</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="automation-scenarios">
+                <h3 class="scenarios-title">🔄 프로젝트 자동화 시나리오</h3>
+                
+                <div class="scenario-step">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <div>
+                            <h4>새 스프린트 시작 - 자동 태스크 분배</h4>
+                            <p>매주 월요일 오전 9시, 새로운 스프린트 계획 자동 실행</p>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <p><strong>시나리오:</strong> PM 이프매님이 Jira에서 새 스프린트를 시작하면, 모든 팀원에게 개인별 맞춤 태스크가 자동 할당됩니다.</p>
+                        <div class="step-details">
+                            <div class="trigger-box">
+                                <strong>🎯 트리거 조건</strong>
+                                <ul style="margin-top: 10px; font-size: 0.9em;">
+                                    <li>• Jira 스프린트 시작 이벤트</li>
+                                    <li>• 팀원별 업무 용량 확인</li>
+                                    <li>• 우선순위 및 의존성 분석</li>
+                                    <li>• 이전 스프린트 완료율 고려</li>
+                                </ul>
+                            </div>
+                            <div class="action-box">
+                                <strong>⚡ 자동 실행 액션</strong>
+                                <ul style="margin-top: 10px; font-size: 0.9em;">
+                                    <li>• 개별 팀원에게 태스크 자동 할당</li>
+                                    <li>• Slack으로 스프린트 목표 공유</li>
+                                    <li>• 캘린더에 데일리 스탠드업 예약</li>
+                                    <li>• 진행률 추적 대시보드 업데이트</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scenario-step">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <div>
+                            <h4>코드 커밋 시 자동 QA 프로세스</h4>
+                            <p>개발자가 GitHub에 코드를 푸시하면 자동 테스트 및 리뷰 시작</p>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <p><strong>시나리오:</strong> 백엔드 개발자 김개발님이 사용자 인증 API를 완성하여 GitHub에 푸시합니다.</p>
+                        <div class="step-details">
+                            <div class="trigger-box">
+                                <strong>🎯 트리거 조건</strong>
+                                <ul style="margin-top: 10px; font-size: 0.9em;">
+                                    <li>• GitHub Pull Request 생성</li>
+                                    <li>• 메인 브랜치 대상 푸시</li>
+                                    <li>• 최소 테스트 커버리지 확인</li>
+                                </ul>
+                            </div>
+                            <div class="action-box">
+                                <strong>⚡ 자동 실행 액션</strong>
+                                <ul style="margin-top: 10px; font-size: 0.9em;">
+                                    <li>• 자동 CI/CD 파이프라인 실행</li>
+                                    <li>• QA팀에 테스트 요청 알림</li>
+                                    <li>• 코드 리뷰어 자동 배정</li>
+                                    <li>• Jira 티켓 상태 자동 업데이트</li>
+                                    <li>• Slack에 완료 알림 전송</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scenario-step">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <div>
+                            <h4>마일스톤 지연 감지 및 대응</h4>
+                            <p>프로젝트 일정이 지연될 위험을 사전 감지하고 자동 대응</p>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <p><strong>시나리오:</strong> 시스템이 현재 진행률을 분석하여 8월 말 출시 목표 달성이 어려울 것으로 예측</p>
+                        <div class="step-details">
+                            <div class="trigger-box">
+                                <strong>🎯 트리거 조건</strong>
+                                <ul style="margin-top: 10px; font-size: 0.9em;">
+                                    <li>• 매주 금요일 진행률 분석</li>
+                                    <li>• 목표 대비 20% 이상 지연</li>
+                                    <li>• 중요 경로(Critical Path) 위험 감지</li>
+                                </ul>
+                            </div>
+                            <div class="action-box">
+                                <strong>⚡ 자동 실행 액션</strong>
+                                <ul style="margin-top: 10px; font-size: 0.9em;">
+                                    <li>• 경영진에게 위험 알림 보고서</li>
+                                    <li>• PM에게 대안 솔루션 제안</li>
+                                    <li>• 리소스 재배치 옵션 분석</li>
+                                    <li>• 긴급 회의 스케줄 자동 제안</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scenario-step">
+                    <div class="step-header">
+                        <div class="step-number">4</div>
+                        <div>
+                            <h4>릴리스 전 자동 체크리스트 실행</h4>
+                            <p>앱 스토어 배포 전 모든 필수 조건 자동 검증</p>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <p><strong>시나리오:</strong> 베타 버전 출시를 앞두고 모든 품질 기준과 법적 요구사항을 자동으로 점검</p>
+                        <div class="step-details">
+                            <div class="trigger-box">
+                                <strong>🎯 트리거 조건</strong>
+                                <ul style="margin-top: 10px; font-size: 0.9em;">
+                                    <li>• 릴리스 브랜치 생성</li>
+                                    <li>• QA 테스트 100% 통과</li>
+                                    <li>• 보안 스캔 완료</li>
+                                </ul>
+                            </div>
+                            <div class="action-box">
+                                <strong>⚡ 자동 실행 액션</strong>
+                                <ul style="margin-top: 10px; font-size: 0.9em;">
+                                    <li>• 성능 테스트 자동 실행</li>
+                                    <li>• 개인정보 보호 정책 확인</li>
+                                    <li>• 앱스토어 메타데이터 검증</li>
+                                    <li>• 배포 승인 요청 워크플로우 시작</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="kanban-demo">
+                <h3 class="kanban-title">📋 실시간 칸반 보드 동기화</h3>
+                <div class="kanban-board">
+                    <div class="kanban-column">
+                        <div class="column-header">백로그</div>
+                        <div class="task-card">
+                            <div class="task-title">AI 추천 알고리즘 설계</div>
+                            <div class="task-meta">
+                                <span>김개발</span>
+                                <span>High</span>
+                            </div>
+                        </div>
+                        <div class="task-card">
+                            <div class="task-title">소셜 기능 UI 디자인</div>
+                            <div class="task-meta">
+                                <span>최디자</span>
+                                <span>Medium</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="kanban-column">
+                        <div class="column-header">진행 중</div>
+                        <div class="task-card">
+                            <div class="task-title">사용자 인증 API 개발</div>
+                            <div class="task-meta">
+                                <span>김개발</span>
+                                <span>High</span>
+                            </div>
+                        </div>
+                        <div class="task-card">
+                            <div class="task-title">운동 기록 화면</div>
+                            <div class="task-meta">
+                                <span>박앱개</span>
+                                <span>Medium</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="kanban-column">
+                        <div class="column-header">리뷰</div>
+                        <div class="task-card">
+                            <div class="task-title">로그인/회원가입 플로우</div>
+                            <div class="task-meta">
+                                <span>정테스</span>
+                                <span>High</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="kanban-column">
+                        <div class="column-header">완료</div>
+                        <div class="task-card">
+                            <div class="task-title">프로젝트 킥오프</div>
+                            <div class="task-meta">
+                                <span>이프매</span>
+                                <span>Completed</span>
+                            </div>
+                        </div>
+                        <div class="task-card">
+                            <div class="task-title">기술 스택 선정</div>
+                            <div class="task-meta">
+                                <span>김개발</span>
+                                <span>Completed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="notification-examples">
+                <h3 class="notification-title">🔔 스마트 알림 시스템</h3>
+                <div class="notification-grid">
+                    <div class="notification-card">
+                        <div class="notification-header">
+                            <div class="notification-icon">⚠️</div>
+                            <div>
+                                <h4>일정 지연 경고</h4>
+                                <small style="color: #666;">자동 위험 감지</small>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.9em;">
+                            "FitLife 프로젝트의 백엔드 개발이 계획보다 3일 지연되고 있습니다. 
+                            전체 일정에 영향을 줄 수 있어 조치가 필요합니다."
+                        </p>
+                    </div>
+                    
+                    <div class="notification-card">
+                        <div class="notification-header">
+                            <div class="notification-icon">🎉</div>
+                            <div>
+                                <h4>마일스톤 달성</h4>
+                                <small style="color: #666;">자동 축하 메시지</small>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.9em;">
+                            "축하합니다! FitLife 프로젝트가 베타 버전 완성 마일스톤을 달성했습니다. 
+                            팀 전체가 수고 많으셨습니다! 🎊"
+                        </p>
+                    </div>
+                    
+                    <div class="notification-card">
+                        <div class="notification-header">
+                            <div class="notification-icon">📊</div>
+                            <div>
+                                <h4>주간 진행 보고서</h4>
+                                <small style="color: #666;">자동 리포트 생성</small>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.9em;">
+                            "이번 주 진행률: 73% (목표: 70%) ✅<br>
+                            완료: 8개 태스크<br>
+                            지연: 2개 태스크<br>
+                            다음 주 주의사항: iOS 앱스토어 심사 준비"
+                        </p>
+                    </div>
+                    
+                    <div class="notification-card">
+                        <div class="notification-header">
+                            <div class="notification-icon">🔄</div>
+                            <div>
+                                <h4>배포 상태 알림</h4>
+                                <small style="color: #666;">CI/CD 파이프라인</small>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.9em;">
+                            "베타 v1.2.0 배포가 성공적으로 완료되었습니다. 
+                            스테이징 환경에서 확인 가능하며, QA 테스트를 시작해주세요."
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="reporting-dashboard">
+                <h3 class="dashboard-title">📊 실시간 프로젝트 대시보드</h3>
+                <div class="dashboard-metrics">
+                    <div class="metric-box">
+                        <div class="metric-value">65%</div>
+                        <div class="metric-label">전체 진행률</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-value">124</div>
+                        <div class="metric-label">총 태스크</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-value">81</div>
+                        <div class="metric-label">완료된 태스크</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-value">15</div>
+                        <div class="metric-label">남은 일수</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-value">4.2억</div>
+                        <div class="metric-label">사용된 예산</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-value">92%</div>
+                        <div class="metric-label">팀 만족도</div>
+                    </div>
+                </div>
+                
+                <div class="progress-chart">
+                    <h4 style="margin-bottom: 15px;">주요 모듈별 진행 상황</h4>
+                    <div style="margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span>백엔드 API</span>
+                            <span>85%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 85%;"></div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span>iOS 앱</span>
+                            <span>70%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 70%;"></div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span>안드로이드 앱</span>
+                            <span>65%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%;"></div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span>QA 테스트</span>
+                            <span>45%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 45%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="integration-tools">
+                <div class="tool-item">
+                    <div class="tool-icon">🎯</div>
+                    <p>Jira</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">💻</div>
+                    <p>GitHub</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">💬</div>
+                    <p>Slack</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">📋</div>
+                    <p>Notion</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">📊</div>
+                    <p>Confluence</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">🔄</div>
+                    <p>Jenkins</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">📅</div>
+                    <p>Google Calendar</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">📧</div>
+                    <p>Gmail</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">📊</div>
+                    <p>Google Sheets</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">🎨</div>
+                    <p>Figma</p>
+                </div>
+            </div>
+            
+            <div class="benefits-section">
+                <div class="benefit-card">
+                    <div class="benefit-value">40%</div>
+                    <div class="benefit-label">프로젝트 완료 시간 단축</div>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-value">75%</div>
+                    <div class="benefit-label">수동 작업 감소</div>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-value">90%</div>
+                    <div class="benefit-label">일정 준수율 향상</div>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-value">85%</div>
+                    <div class="benefit-label">팀 협업 효율성 증가</div>
+                </div>
+            </div>
+            
+            <div class="cta">
+                <h3>프로젝트 관리를 혁신하세요!</h3>
+                <p>n8n의 스마트 자동화로 모든 프로젝트를 성공적으로 완수하고 팀의 생산성을 극대화하세요</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

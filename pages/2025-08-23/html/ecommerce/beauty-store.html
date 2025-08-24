@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeautyGlow - 뷰티 & 코스메틱</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #ff6b9d, #f06292);
+            color: white;
+            padding: 1rem 0;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: #ffe0e6;
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(255,182,193,0.9), rgba(255,105,180,0.9)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23fff0f5" width="1200" height="600"/><text x="600" y="300" text-anchor="middle" font-size="48" fill="%23ff69b4">Beauty Hero</text></svg>');
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+        
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #ff4081;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .btn:hover {
+            background: #e91e63;
+            transform: translateY(-2px);
+        }
+        
+        .categories {
+            padding: 80px 0;
+            background: #fce4ec;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #ad1457;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(255,105,180,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .category-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .category-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #ad1457;
+        }
+        
+        .products {
+            padding: 80px 0;
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .product-img {
+            height: 250px;
+            background: #f8bbd9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ad1457;
+            font-size: 1.2rem;
+            position: relative;
+        }
+        
+        .discount-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff4081;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+        }
+        
+        .brand {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .rating {
+            color: #ffc107;
+            margin-bottom: 1rem;
+        }
+        
+        .product-price {
+            font-size: 1.5rem;
+            color: #ff4081;
+            font-weight: bold;
+        }
+        
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 1rem;
+            margin-right: 0.5rem;
+        }
+        
+        .skincare-tips {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #ff6b9d, #f06292);
+            color: white;
+            text-align: center;
+        }
+        
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .tip-card {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .tip-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .newsletter {
+            padding: 60px 0;
+            background: #fff;
+            text-align: center;
+        }
+        
+        .newsletter-form {
+            max-width: 500px;
+            margin: 2rem auto;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .newsletter-form input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ff6b9d;
+            border-radius: 25px;
+            outline: none;
+        }
+        
+        .newsletter-form button {
+            background: #ff4081;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        footer {
+            background: #2d2d2d;
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minItems(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #ff6b9d;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: #ff6b9d;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: #ff6b9d;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        
+        .social-icon:hover {
+            background: #ff4081;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">BeautyGlow</div>
+            <ul>
+                <li><a href="#home">홈</a></li>
+                <li><a href="#categories">카테고리</a></li>
+                <li><a href="#products">상품</a></li>
+                <li><a href="#tips">뷰티팁</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>아름다운 당신을 위해</h1>
+            <p>프리미엄 뷰티 제품으로 당신만의 특별한 아름다움을 완성하세요</p>
+            <a href="#products" class="btn">지금 쇼핑하기</a>
+        </div>
+    </section>
+
+    <section id="categories" class="categories">
+        <div class="container">
+            <h2 class="section-title">카테고리</h2>
+            <div class="category-grid">
+                <div class="category-card">
+                    <div class="category-icon">💄</div>
+                    <h3>메이크업</h3>
+                    <p>립스틱, 파운데이션, 아이섀도우</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🧴</div>
+                    <h3>스킨케어</h3>
+                    <p>토너, 에센스, 크림, 마스크</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🌸</div>
+                    <h3>향수</h3>
+                    <p>오드퍼퓸, 오드투알렛, 바디미스트</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">💅</div>
+                    <h3>네일케어</h3>
+                    <p>매니큐어, 젤네일, 네일아트</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="products" class="products">
+        <div class="container">
+            <h2 class="section-title">베스트셀러</h2>
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-img">
+                        <div class="discount-badge">30% OFF</div>
+                        샤넬 립스틱 이미지
+                    </div>
+                    <div class="product-info">
+                        <div class="brand">CHANEL</div>
+                        <h3>루즈 코코 립스틱</h3>
+                        <div class="rating">★★★★★ (4.8)</div>
+                        <div class="product-price">
+                            <span class="original-price">65,000원</span>
+                            45,500원
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">라네즈 워터 뱅크 이미지</div>
+                    <div class="product-info">
+                        <div class="brand">LANEIGE</div>
+                        <h3>워터 뱅크 모이스처 크림</h3>
+                        <div class="rating">★★★★☆ (4.6)</div>
+                        <div class="product-price">38,000원</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">
+                        <div class="discount-badge">25% OFF</div>
+                        에스티로더 세럼 이미지
+                    </div>
+                    <div class="product-info">
+                        <div class="brand">ESTÉE LAUDER</div>
+                        <h3>어드밴스드 나이트 리페어</h3>
+                        <div class="rating">★★★★★ (4.9)</div>
+                        <div class="product-price">
+                            <span class="original-price">120,000원</span>
+                            90,000원
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">설화수 자음생 크림 이미지</div>
+                    <div class="product-info">
+                        <div class="brand">SULWHASOO</div>
+                        <h3>자음생 크림</h3>
+                        <div class="rating">★★★★★ (4.7)</div>
+                        <div class="product-price">180,000원</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tips" class="skincare-tips">
+        <div class="container">
+            <h2 class="section-title">뷰티 팁</h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <div class="tip-icon">🌅</div>
+                    <h3>모닝 스킨케어</h3>
+                    <p>아침에는 가벼운 클렌징 후 토너, 세럼, 자외선차단제 순서로 발라주세요.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">🌙</div>
+                    <h3>나이트 스킨케어</h3>
+                    <p>저녁에는 이중세안으로 깨끗하게 세안 후 영양크림으로 집중 관리해주세요.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">💧</div>
+                    <h3>수분 관리</h3>
+                    <p>충분한 수분 섭취와 함께 히알루론산 세럼으로 피부 수분을 지켜주세요.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="newsletter">
+        <div class="container">
+            <h2 class="section-title">뷰티 소식 받기</h2>
+            <p>새로운 제품 출시 소식과 특별 할인 혜택을 가장 먼저 받아보세요</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="이메일 주소를 입력하세요">
+                <button type="submit">구독하기</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>고객서비스</h3>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">배송/교환/반품</a></li>
+                        <li><a href="#">1:1 상담</a></li>
+                        <li><a href="#">적립금 안내</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>브랜드</h3>
+                    <ul>
+                        <li><a href="#">샤넬</a></li>
+                        <li><a href="#">디올</a></li>
+                        <li><a href="#">라네즈</a></li>
+                        <li><a href="#">설화수</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>회사정보</h3>
+                    <ul>
+                        <li><a href="#">회사소개</a></li>
+                        <li><a href="#">채용정보</a></li>
+                        <li><a href="#">개인정보처리방침</a></li>
+                        <li><a href="#">이용약관</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="social-icons">
+                <a href="#" class="social-icon">f</a>
+                <a href="#" class="social-icon">i</a>
+                <a href="#" class="social-icon">y</a>
+                <a href="#" class="social-icon">k</a>
+            </div>
+            <p style="text-align: center; color: #999;">&copy; 2025 BeautyGlow. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

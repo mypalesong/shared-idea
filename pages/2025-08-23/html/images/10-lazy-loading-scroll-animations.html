@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Lazy Loading with Scroll Animations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .hero-section {
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: slideInUp 1s ease-out 0.5s forwards;
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            opacity: 0;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            transform: translateY(30px);
+            animation: slideInUp 1s ease-out 1s forwards;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            animation: fadeIn 1s ease-out 1.5s forwards, bounce 2s ease-in-out 2s infinite;
+        }
+
+        @keyframes slideInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 60px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+
+        .image-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            position: relative;
+            opacity: 0;
+            transform: translateY(50px) scale(0.9);
+            transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .image-card.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .image-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .lazy-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: all 0.3s ease;
+            filter: blur(10px);
+            opacity: 0;
+        }
+
+        .lazy-image.loaded {
+            filter: blur(0);
+            opacity: 1;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0, #f0f0f0);
+            background-size: 400% 400%;
+            animation: shimmer 2s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 1rem;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .card-content {
+            padding: 25px;
+        }
+
+        .card-content h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .card-content p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .loading-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 25px;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            transform: translateX(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .loading-counter.visible {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .progressive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 80px;
+        }
+
+        .progressive-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: rotate(-2deg) scale(0.8);
+            transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .progressive-item:nth-child(even) {
+            transform: rotate(2deg) scale(0.8);
+        }
+
+        .progressive-item.visible {
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        .progressive-item:hover {
+            transform: scale(1.05) rotate(1deg);
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(60px);
+            transition: all 1s ease-out;
+        }
+
+        .scroll-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stagger-container .scroll-reveal {
+            transition-delay: 0.1s;
+        }
+
+        .stagger-container .scroll-reveal:nth-child(2) {
+            transition-delay: 0.2s;
+        }
+
+        .stagger-container .scroll-reveal:nth-child(3) {
+            transition-delay: 0.3s;
+        }
+
+        .stagger-container .scroll-reveal:nth-child(4) {
+            transition-delay: 0.4s;
+        }
+
+        .performance-stats {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 60px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .stat-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+
+        .stat-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .infinite-scroll {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .load-more-btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .load-more-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .load-more-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading-wave {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+            opacity: 0;
+        }
+
+        .loading-wave.active {
+            opacity: 1;
+            animation: wave 1.5s ease-in-out infinite;
+        }
+
+        @keyframes wave {
+            0%, 60%, 100% { transform: initial; }
+            30% { transform: translateY(-10px); }
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .image-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .progressive-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
+            .loading-counter {
+                top: 10px;
+                right: 10px;
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateX(-100px);
+            transition: all 1s ease-out;
+        }
+
+        .reveal-on-scroll.from-right {
+            transform: translateX(100px);
+        }
+
+        .reveal-on-scroll.from-bottom {
+            transform: translateY(100px);
+        }
+
+        .reveal-on-scroll.from-top {
+            transform: translateY(-100px);
+        }
+
+        .reveal-on-scroll.visible {
+            opacity: 1;
+            transform: translate(0, 0);
+        }
+
+        .zoom-in-reveal {
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .zoom-in-reveal.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1>Lazy Loading & Animations</h1>
+            <p>Experience smooth image loading combined with beautiful scroll-triggered animations. This page demonstrates modern web performance techniques while maintaining visual appeal.</p>
+        </div>
+        <div class="scroll-indicator">
+            <div>↓</div>
+            <div>Scroll to explore</div>
+        </div>
+    </section>
+
+    <div class="loading-counter" id="loadingCounter">
+        Images loaded: <span id="loadedCount">0</span> / <span id="totalCount">0</span>
+    </div>
+
+    <div class="container">
+        <div class="scroll-reveal">
+            <h2 class="section-title">Smart Image Loading</h2>
+            <p class="section-subtitle">Images are loaded progressively as they come into view, improving page performance and user experience</p>
+        </div>
+
+        <div class="image-grid stagger-container">
+            <div class="image-card scroll-reveal">
+                <img class="lazy-image" data-src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&w=600&q=80" alt="Mountain Vista">
+                <div class="card-content">
+                    <h3>Mountain Vista</h3>
+                    <p>Breathtaking mountain peaks reaching towards the endless blue sky, captured during golden hour.</p>
+                    <div class="card-meta">
+                        <span>📍 Swiss Alps</span>
+                        <span>📸 High Resolution</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="image-card scroll-reveal">
+                <img class="lazy-image" data-src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&w=600&q=80" alt="Urban Cityscape">
+                <div class="card-content">
+                    <h3>Urban Energy</h3>
+                    <p>The vibrant pulse of modern metropolitan life, where architecture meets human ambition.</p>
+                    <div class="card-meta">
+                        <span>📍 Tokyo</span>
+                        <span>📸 Street Photography</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="image-card scroll-reveal">
+                <img class="lazy-image" data-src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&w=600&q=80" alt="Forest Path">
+                <div class="card-content">
+                    <h3>Woodland Mystery</h3>
+                    <p>Ancient trees creating natural cathedrals, where sunlight dances through emerald canopies.</p>
+                    <div class="card-meta">
+                        <span>📍 Oregon Forest</span>
+                        <span>📸 Nature</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="image-card scroll-reveal">
+                <img class="lazy-image" data-src="https://images.unsplash.com/photo-1520637736862-4d197d17c86a?ixlib=rb-4.0.3&w=600&q=80" alt="Ocean Waves">
+                <div class="card-content">
+                    <h3>Ocean Power</h3>
+                    <p>Endless waves meeting rugged coastlines in an eternal dance of water and stone.</p>
+                    <div class="card-meta">
+                        <span>📍 Big Sur</span>
+                        <span>📸 Seascape</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="performance-stats reveal-on-scroll">
+            <h2>Performance Benefits</h2>
+            <p>Lazy loading reduces initial page load time and saves bandwidth by only loading images when needed</p>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" data-target="75">0</div>
+                    <div class="stat-label">% Faster Loading</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="60">0</div>
+                    <div class="stat-label">% Less Bandwidth</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="90">0</div>
+                    <div class="stat-label">% Better UX Score</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reveal-on-scroll from-right">
+            <h2 class="section-title">Scroll Animation Showcase</h2>
+            <p class="section-subtitle">Different animation styles triggered as elements enter the viewport</p>
+        </div>
+
+        <div class="progressive-grid">
+            <div class="progressive-item zoom-in-reveal">
+                <img class="lazy-image" data-src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&w=400&q=80" alt="Desert Dunes">
+            </div>
+            <div class="progressive-item zoom-in-reveal">
+                <img class="lazy-image" data-src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&w=400&q=80" alt="Portrait">
+            </div>
+            <div class="progressive-item zoom-in-reveal">
+                <img class="lazy-image" data-src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?ixlib=rb-4.0.3&w=400&q=80" alt="Architecture">
+            </div>
+            <div class="progressive-item zoom-in-reveal">
+                <img class="lazy-image" data-src="https://images.unsplash.com/photo-1502780402662-acc01917ab59?ixlib=rb-4.0.3&w=400&q=80" alt="Travel">
+            </div>
+            <div class="progressive-item zoom-in-reveal">
+                <img class="lazy-image" data-src="https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?ixlib=rb-4.0.3&w=400&q=80" alt="Wildlife">
+            </div>
+            <div class="progressive-item zoom-in-reveal">
+                <img class="lazy-image" data-src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&w=400&q=80" alt="Abstract">
+            </div>
+        </div>
+
+        <div class="infinite-scroll">
+            <button class="load-more-btn" id="loadMoreBtn">
+                Load More Images
+                <span class="loading-wave">🌊</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        class LazyImageLoader {
+            constructor() {
+                this.images = document.querySelectorAll('.lazy-image');
+                this.loadedCount = 0;
+                this.totalCount = this.images.length;
+                this.loadingCounter = document.getElementById('loadingCounter');
+                this.loadedCountSpan = document.getElementById('loadedCount');
+                this.totalCountSpan = document.getElementById('totalCount');
+                this.loadMoreBtn = document.getElementById('loadMoreBtn');
+                
+                this.init();
+            }
+            
+            init() {
+                this.updateCounter();
+                this.setupIntersectionObserver();
+                this.setupScrollAnimations();
+                this.setupLoadMoreButton();
+                this.animateStatNumbers();
+                
+                setTimeout(() => {
+                    this.loadingCounter.classList.add('visible');
+                }, 1000);
+            }
+            
+            setupIntersectionObserver() {
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            this.loadImage(entry.target);
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    rootMargin: '50px'
+                });
+                
+                this.images.forEach(img => {
+                    imageObserver.observe(img);
+                });
+            }
+            
+            loadImage(img) {
+                const placeholder = document.createElement('div');
+                placeholder.className = 'image-placeholder';
+                placeholder.textContent = 'Loading...';
+                
+                img.parentNode.insertBefore(placeholder, img);
+                img.style.display = 'none';
+                
+                const fullImg = new Image();
+                fullImg.onload = () => {
+                    img.src = fullImg.src;
+                    img.classList.add('loaded');
+                    img.style.display = 'block';
+                    placeholder.remove();
+                    
+                    this.loadedCount++;
+                    this.updateCounter();
+                    
+                    setTimeout(() => {
+                        const card = img.closest('.image-card, .progressive-item');
+                        if (card) {
+                            card.classList.add('visible');
+                        }
+                    }, 100);
+                };
+                
+                fullImg.onerror = () => {
+                    placeholder.textContent = 'Failed to load';
+                    placeholder.style.color = '#e74c3c';
+                };
+                
+                fullImg.src = img.dataset.src;
+            }
+            
+            updateCounter() {
+                this.loadedCountSpan.textContent = this.loadedCount;
+                this.totalCountSpan.textContent = this.totalCount;
+                
+                if (this.loadedCount === this.totalCount) {
+                    setTimeout(() => {
+                        this.loadingCounter.classList.remove('visible');
+                    }, 2000);
+                }
+            }
+            
+            setupScrollAnimations() {
+                const animationObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                        }
+                    });
+                }, {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                });
+                
+                document.querySelectorAll('.scroll-reveal, .reveal-on-scroll, .zoom-in-reveal, .stat-item').forEach(el => {
+                    animationObserver.observe(el);
+                });
+            }
+            
+            setupLoadMoreButton() {
+                this.loadMoreBtn.addEventListener('click', () => {
+                    this.loadMoreImages();
+                });
+            }
+            
+            loadMoreImages() {
+                const loadingWave = this.loadMoreBtn.querySelector('.loading-wave');
+                loadingWave.classList.add('active');
+                this.loadMoreBtn.disabled = true;
+                this.loadMoreBtn.textContent = 'Loading...';
+                this.loadMoreBtn.appendChild(loadingWave);
+                
+                setTimeout(() => {
+                    this.addNewImages();
+                    loadingWave.classList.remove('active');
+                    this.loadMoreBtn.disabled = false;
+                    this.loadMoreBtn.textContent = 'Load More Images';
+                    this.loadMoreBtn.appendChild(loadingWave);
+                }, 2000);
+            }
+            
+            addNewImages() {
+                const container = document.querySelector('.progressive-grid');
+                const newImageUrls = [
+                    'https://images.unsplash.com/photo-1528834342780-3c972b6de3d9?ixlib=rb-4.0.3&w=400&q=80',
+                    'https://images.unsplash.com/photo-1518978612925-5ca3e1c8de63?ixlib=rb-4.0.3&w=400&q=80',
+                    'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?ixlib=rb-4.0.3&w=400&q=80'
+                ];
+                
+                newImageUrls.forEach((url, index) => {
+                    const newItem = document.createElement('div');
+                    newItem.className = 'progressive-item zoom-in-reveal';
+                    newItem.innerHTML = `<img class="lazy-image" data-src="${url}" alt="New Image ${index + 1}">`;
+                    container.appendChild(newItem);
+                    
+                    const newImg = newItem.querySelector('.lazy-image');
+                    this.totalCount++;
+                    
+                    setTimeout(() => {
+                        this.loadImage(newImg);
+                        newItem.classList.add('visible');
+                    }, index * 200);
+                });
+                
+                this.updateCounter();
+            }
+            
+            animateStatNumbers() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const target = parseInt(entry.target.dataset.target);
+                            this.animateNumber(entry.target, 0, target, 2000);
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                });
+                
+                document.querySelectorAll('.stat-number').forEach(stat => {
+                    observer.observe(stat);
+                });
+            }
+            
+            animateNumber(element, start, end, duration) {
+                const increment = (end - start) / (duration / 16);
+                let current = start;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= end) {
+                        current = end;
+                        clearInterval(timer);
+                    }
+                    element.textContent = Math.floor(current);
+                }, 16);
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            new LazyImageLoader();
+        });
+
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.5;
+            
+            document.querySelector('.hero-section').style.transform = `translateY(${rate}px)`;
+        });
+
+        let ticking = false;
+        
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    const scrollTop = window.pageYOffset;
+                    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                    const scrollPercent = scrollTop / docHeight;
+                    
+                    document.body.style.setProperty('--scroll-progress', scrollPercent);
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        const handleScrollPerformance = () => {
+            let timeout;
+            return () => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                }, 100);
+            };
+        };
+
+        window.addEventListener('scroll', handleScrollPerformance());
+    </script>
+</body>
+</html>

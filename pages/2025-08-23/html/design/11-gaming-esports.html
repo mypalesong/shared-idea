@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gaming Code - Esports Development</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .gaming-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 255, 0, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(0, 255, 255, 0.15) 0%, transparent 50%);
+            animation: gamingAura 10s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        header {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero {
+            text-align: center;
+            z-index: 2;
+            position: relative;
+        }
+        
+        .hero h1 {
+            font-size: 6rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, #00ff00, #ff00ff, #00ffff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gamingGlow 2s ease-in-out infinite, textShift 4s linear infinite;
+            text-shadow: 0 0 30px #00ff00;
+            position: relative;
+        }
+        
+        .hero h1::before {
+            content: 'GAME CODE';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff00ff, #00ff00, #ff00ff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textShift 4s linear infinite reverse;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        .hero p {
+            font-size: 1.8rem;
+            margin-bottom: 3rem;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .gaming-hud {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .hud-element {
+            position: absolute;
+            border: 2px solid #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+            font-family: 'Courier New', monospace;
+            padding: 10px;
+            font-size: 0.8rem;
+        }
+        
+        .hud-health {
+            top: 20px;
+            left: 20px;
+            width: 200px;
+            height: 60px;
+        }
+        
+        .hud-ammo {
+            bottom: 20px;
+            right: 20px;
+            width: 150px;
+            height: 50px;
+        }
+        
+        .hud-radar {
+            top: 20px;
+            right: 20px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .gaming-button {
+            display: inline-block;
+            padding: 18px 45px;
+            background: linear-gradient(45deg, #ff00ff, #00ff00);
+            color: #000000;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: 900;
+            letter-spacing: 3px;
+            border: none;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: crosshair;
+            clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%, 15px 50%);
+        }
+        
+        .gaming-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px #ff00ff, 0 0 60px #00ff00;
+            filter: brightness(1.2);
+        }
+        
+        .gaming-button::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(45deg, #00ff00, #ff00ff, #00ffff, #ff00ff);
+            background-size: 400% 400%;
+            z-index: -1;
+            animation: gamingBorder 2s ease infinite;
+            clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%, 15px 50%);
+        }
+        
+        .achievements-section {
+            padding: 150px 0;
+            position: relative;
+        }
+        
+        .section-title {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            color: #00ff00;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px #00ff00;
+            animation: titlePulse 3s ease-in-out infinite;
+        }
+        
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+        
+        .achievement-card {
+            background: rgba(0, 255, 0, 0.05);
+            border: 2px solid #00ff00;
+            padding: 2.5rem;
+            position: relative;
+            transition: all 0.4s ease;
+            clip-path: polygon(20px 0%, 100% 0%, calc(100% - 20px) 100%, 0% 100%);
+        }
+        
+        .achievement-card:nth-child(2n) {
+            border-color: #ff00ff;
+            background: rgba(255, 0, 255, 0.05);
+        }
+        
+        .achievement-card:nth-child(3n) {
+            border-color: #00ffff;
+            background: rgba(0, 255, 255, 0.05);
+        }
+        
+        .achievement-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 255, 0, 0.3);
+            background: rgba(0, 255, 0, 0.1);
+        }
+        
+        .achievement-card:hover::before {
+            opacity: 1;
+        }
+        
+        .achievement-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent, rgba(0, 255, 0, 0.2), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            animation: scanLine 1.5s linear infinite;
+        }
+        
+        .achievement-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #ff00ff, #00ff00);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .achievement-icon::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: iconGlow 2s linear infinite;
+        }
+        
+        .achievement-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #00ff00;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .achievement-card p {
+            color: #cccccc;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .gaming-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            background: rgba(0,0,0,0.5);
+            padding: 1rem;
+            border-radius: 5px;
+            border: 1px solid #333;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff00ff;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #999;
+            text-transform: uppercase;
+        }
+        
+        .gaming-terminal {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 3rem 0;
+            font-family: 'Courier New', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .gaming-terminal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.3), transparent);
+            animation: terminalGlow 3s ease-in-out infinite;
+        }
+        
+        .terminal-line {
+            color: #00ff00;
+            margin-bottom: 8px;
+            text-shadow: 0 0 5px #00ff00;
+        }
+        
+        .terminal-prompt {
+            color: #ff00ff;
+        }
+        
+        .terminal-output {
+            color: #00ffff;
+        }
+        
+        .leaderboard-section {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 100%);
+            padding: 150px 0;
+        }
+        
+        .leaderboard {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff00ff;
+            border-radius: 15px;
+            padding: 3rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 0, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .leaderboard-item:hover {
+            background: rgba(255, 0, 255, 0.1);
+            transform: translateX(10px);
+        }
+        
+        .player-rank {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff00ff;
+            width: 50px;
+        }
+        
+        .player-name {
+            font-size: 1.2rem;
+            color: #ffffff;
+            flex: 1;
+            margin-left: 2rem;
+        }
+        
+        .player-score {
+            font-size: 1.5rem;
+            color: #00ff00;
+            font-weight: bold;
+        }
+        
+        .power-ups {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .power-up {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(45deg, #ff00ff, #00ff00);
+            border-radius: 50%;
+            animation: powerUpFloat 6s ease-in-out infinite;
+            box-shadow: 0 0 20px #ff00ff;
+        }
+        
+        .power-up:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+        .power-up:nth-child(2) { top: 30%; right: 10%; animation-delay: 2s; }
+        .power-up:nth-child(3) { bottom: 40%; left: 15%; animation-delay: 4s; }
+        .power-up:nth-child(4) { bottom: 20%; right: 20%; animation-delay: 1s; }
+        
+        @keyframes gamingAura {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+        
+        @keyframes gamingGlow {
+            0%, 100% { text-shadow: 0 0 30px #00ff00; }
+            50% { text-shadow: 0 0 50px #00ff00, 0 0 80px #ff00ff; }
+        }
+        
+        @keyframes textShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes gamingBorder {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes titlePulse {
+            0%, 100% { transform: scale(1); text-shadow: 0 0 20px #00ff00; }
+            50% { transform: scale(1.02); text-shadow: 0 0 30px #00ff00, 0 0 40px #ff00ff; }
+        }
+        
+        @keyframes scanLine {
+            0% { transform: translateX(-100%) skewX(-45deg); }
+            100% { transform: translateX(300%) skewX(-45deg); }
+        }
+        
+        @keyframes iconGlow {
+            0% { transform: translateX(-200%) translateY(-200%) rotate(45deg); }
+            100% { transform: translateX(200%) translateY(200%) rotate(45deg); }
+        }
+        
+        @keyframes terminalGlow {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        @keyframes powerUpFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
+        
+        .crosshair {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        
+        .crosshair::before,
+        .crosshair::after {
+            content: '';
+            position: absolute;
+            background: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        
+        .crosshair::before {
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            transform: translateY(-50%);
+        }
+        
+        .crosshair::after {
+            left: 50%;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="gaming-bg"></div>
+    <div class="crosshair" id="crosshair"></div>
+    
+    <header>
+        <div class="container">
+            <div class="hero">
+                <h1>GAME CODE</h1>
+                <p>Level Up Your Development Skills</p>
+                <a href="#" class="gaming-button">Start Mission</a>
+                
+                <div class="gaming-terminal">
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">[PLAYER]></span> initialize_game_engine()
+                    </div>
+                    <div class="terminal-line terminal-output">
+                        Loading assets... [████████████████] 100%
+                    </div>
+                    <div class="terminal-line terminal-output">
+                        Game engine initialized successfully!
+                    </div>
+                    <div class="terminal-line terminal-output">
+                        Ready for epic gaming development...
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">[PLAYER]></span> 
+                        <span style="animation: blink 1s infinite;">_</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="gaming-hud">
+            <div class="hud-element hud-health">
+                <div>HEALTH: 100%</div>
+                <div>STATUS: READY</div>
+            </div>
+            <div class="hud-element hud-ammo">
+                <div>CODE: ∞</div>
+                <div>SKILLS: MAX</div>
+            </div>
+            <div class="hud-element hud-radar">
+                <div>RADAR</div>
+            </div>
+        </div>
+        
+        <div class="power-ups">
+            <div class="power-up"></div>
+            <div class="power-up"></div>
+            <div class="power-up"></div>
+            <div class="power-up"></div>
+        </div>
+    </header>
+    
+    <section class="achievements-section">
+        <div class="container">
+            <h2 class="section-title">Achievements Unlocked</h2>
+            
+            <div class="achievements-grid">
+                <div class="achievement-card">
+                    <div class="achievement-icon">🎮</div>
+                    <h3>Game Engine Master</h3>
+                    <p>Expert in Unity, Unreal Engine, and custom game development frameworks. Create immersive gaming experiences with cutting-edge technology.</p>
+                    <div class="gaming-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">50+</span>
+                            <span class="stat-label">Games</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">Unity</span>
+                            <span class="stat-label">Expert</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">C#</span>
+                            <span class="stat-label">Master</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement-card">
+                    <div class="achievement-icon">⚡</div>
+                    <h3>Performance Optimizer</h3>
+                    <p>Optimize game performance for smooth 60+ FPS gameplay across multiple platforms. Memory management and GPU optimization specialist.</p>
+                    <div class="gaming-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">60+</span>
+                            <span class="stat-label">FPS</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">Multi</span>
+                            <span class="stat-label">Platform</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">GPU</span>
+                            <span class="stat-label">Expert</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement-card">
+                    <div class="achievement-icon">🏆</div>
+                    <h3>Esports Platform</h3>
+                    <p>Built comprehensive esports platforms with real-time multiplayer, tournaments, and streaming integration for competitive gaming.</p>
+                    <div class="gaming-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">1000+</span>
+                            <span class="stat-label">Players</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">Real-time</span>
+                            <span class="stat-label">Multiplayer</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">Live</span>
+                            <span class="stat-label">Streaming</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement-card">
+                    <div class="achievement-icon">🎯</div>
+                    <h3>AR/VR Gaming</h3>
+                    <p>Pioneering augmented and virtual reality gaming experiences with advanced motion tracking and immersive interactions.</p>
+                    <div class="gaming-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">AR</span>
+                            <span class="stat-label">Specialist</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">VR</span>
+                            <span class="stat-label">Expert</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">Motion</span>
+                            <span class="stat-label">Tracking</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement-card">
+                    <div class="achievement-icon">📱</div>
+                    <h3>Mobile Gaming</h3>
+                    <p>Native mobile game development for iOS and Android with touch controls, monetization, and social features integration.</p>
+                    <div class="gaming-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">iOS</span>
+                            <span class="stat-label">Native</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">Android</span>
+                            <span class="stat-label">Expert</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">Social</span>
+                            <span class="stat-label">Features</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="achievement-card">
+                    <div class="achievement-icon">🤖</div>
+                    <h3>AI Game Systems</h3>
+                    <p>Advanced AI systems for NPCs, procedural content generation, and adaptive difficulty systems that enhance gameplay experience.</p>
+                    <div class="gaming-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">AI</span>
+                            <span class="stat-label">Systems</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">Procedural</span>
+                            <span class="stat-label">Generation</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">Adaptive</span>
+                            <span class="stat-label">Difficulty</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="leaderboard-section">
+        <div class="container">
+            <h2 class="section-title">Developer Leaderboard</h2>
+            
+            <div class="leaderboard">
+                <div class="leaderboard-item">
+                    <div class="player-rank">#1</div>
+                    <div class="player-name">GameDev Master</div>
+                    <div class="player-score">999,999</div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="player-rank">#2</div>
+                    <div class="player-name">Unity Expert</div>
+                    <div class="player-score">888,888</div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="player-rank">#3</div>
+                    <div class="player-name">VR Specialist</div>
+                    <div class="player-score">777,777</div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="player-rank">#4</div>
+                    <div class="player-name">Mobile Guru</div>
+                    <div class="player-score">666,666</div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="player-rank">#5</div>
+                    <div class="player-name">AI Developer</div>
+                    <div class="player-score">555,555</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <script>
+        // Gaming cursor
+        const crosshair = document.getElementById('crosshair');
+        document.addEventListener('mousemove', (e) => {
+            crosshair.style.left = e.clientX - 10 + 'px';
+            crosshair.style.top = e.clientY - 10 + 'px';
+        });
+        
+        // Gaming click effects
+        document.addEventListener('click', (e) => {
+            const explosion = document.createElement('div');
+            explosion.style.cssText = `
+                position: fixed;
+                width: 100px;
+                height: 100px;
+                left: ${e.clientX - 50}px;
+                top: ${e.clientY - 50}px;
+                background: radial-gradient(circle, #ff00ff 0%, #00ff00 50%, transparent 70%);
+                border-radius: 50%;
+                z-index: 9999;
+                pointer-events: none;
+                animation: explosion 0.5s ease-out forwards;
+            `;
+            
+            document.body.appendChild(explosion);
+            
+            setTimeout(() => {
+                explosion.remove();
+            }, 500);
+        });
+        
+        // HUD updates
+        setInterval(() => {
+            const health = document.querySelector('.hud-health');
+            const ammo = document.querySelector('.hud-ammo');
+            
+            if (Math.random() > 0.8) {
+                health.style.borderColor = '#ff0000';
+                setTimeout(() => {
+                    health.style.borderColor = '#00ff00';
+                }, 200);
+            }
+            
+            if (Math.random() > 0.9) {
+                ammo.style.background = 'rgba(255, 0, 255, 0.2)';
+                setTimeout(() => {
+                    ammo.style.background = 'rgba(0, 255, 0, 0.1)';
+                }, 300);
+            }
+        }, 1000);
+        
+        // Achievement card animations
+        const achievementObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.animation = 'fadeInUp 0.8s ease-out';
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 100);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.achievement-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(50px)';
+            achievementObserver.observe(card);
+        });
+        
+        // Gaming sound effects simulation
+        function playSound(type) {
+            // Sound effect simulation with visual feedback
+            const soundEffect = document.createElement('div');
+            soundEffect.textContent = type === 'click' ? 'CLICK!' : 'POWER UP!';
+            soundEffect.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #ff00ff;
+                color: #000;
+                padding: 10px 20px;
+                border-radius: 5px;
+                font-weight: bold;
+                z-index: 9999;
+                animation: soundPop 1s ease-out forwards;
+            `;
+            
+            document.body.appendChild(soundEffect);
+            
+            setTimeout(() => {
+                soundEffect.remove();
+            }, 1000);
+        }
+        
+        // Power-up collection simulation
+        document.querySelectorAll('.power-up').forEach(powerUp => {
+            powerUp.addEventListener('click', (e) => {
+                e.stopPropagation();
+                powerUp.style.animation = 'none';
+                powerUp.style.transform = 'scale(2)';
+                powerUp.style.opacity = '0';
+                playSound('powerup');
+                
+                setTimeout(() => {
+                    powerUp.style.transform = '';
+                    powerUp.style.opacity = '';
+                    powerUp.style.animation = '';
+                }, 1000);
+            });
+        });
+        
+        // Terminal typing effect
+        const terminalCommands = [
+            'compile_shader_programs()',
+            'optimize_frame_rate()',
+            'initialize_physics_engine()',
+            'load_game_assets()'
+        ];
+        
+        let commandIndex = 0;
+        setInterval(() => {
+            const terminalLines = document.querySelectorAll('.terminal-line');
+            const lastLine = terminalLines[terminalLines.length - 1];
+            const prompt = lastLine.querySelector('.terminal-prompt');
+            
+            if (prompt) {
+                const command = terminalCommands[commandIndex];
+                prompt.nextSibling.textContent = ' ' + command;
+                commandIndex = (commandIndex + 1) % terminalCommands.length;
+            }
+        }, 3000);
+        
+        // Gaming button effects
+        document.querySelectorAll('.gaming-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                playSound('click');
+                
+                button.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    button.style.transform = '';
+                }, 100);
+            });
+        });
+        
+        // Leaderboard animations
+        document.querySelectorAll('.leaderboard-item').forEach((item, index) => {
+            setTimeout(() => {
+                item.style.animation = 'slideInLeft 0.8s ease-out';
+            }, index * 200);
+        });
+        
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes explosion {
+                0% { transform: scale(0); opacity: 1; }
+                100% { transform: scale(2); opacity: 0; }
+            }
+            
+            @keyframes fadeInUp {
+                from { opacity: 0; transform: translateY(50px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            
+            @keyframes slideInLeft {
+                from { opacity: 0; transform: translateX(-100px); }
+                to { opacity: 1; transform: translateX(0); }
+            }
+            
+            @keyframes soundPop {
+                0% { transform: scale(0); opacity: 1; }
+                50% { transform: scale(1.1); opacity: 1; }
+                100% { transform: scale(1); opacity: 0; }
+            }
+            
+            @keyframes blink {
+                0%, 50% { opacity: 1; }
+                51%, 100% { opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Random glitch effects
+        setInterval(() => {
+            const cards = document.querySelectorAll('.achievement-card');
+            const randomCard = cards[Math.floor(Math.random() * cards.length)];
+            
+            randomCard.style.filter = 'hue-rotate(180deg) saturate(2) brightness(1.2)';
+            setTimeout(() => {
+                randomCard.style.filter = '';
+            }, 300);
+        }, 5000);
+    </script>
+</body>
+</html>

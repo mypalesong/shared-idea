@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Code - Monospace Development</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+            background: #0d1117;
+            color: #c9d1d9;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+        
+        .terminal-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .terminal-window {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            margin: 2rem 0;
+            box-shadow: 0 16px 32px rgba(1, 4, 9, 0.85);
+            overflow: hidden;
+        }
+        
+        .terminal-header {
+            background: #21262d;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #30363d;
+        }
+        
+        .terminal-dots {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27ca3f; }
+        
+        .terminal-title {
+            margin-left: auto;
+            font-size: 0.8rem;
+            color: #8b949e;
+            font-weight: 500;
+        }
+        
+        .terminal-content {
+            padding: 20px;
+            font-size: 0.9rem;
+            background: #0d1117;
+            min-height: 400px;
+        }
+        
+        header {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .hero-terminal {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .terminal-line {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            min-height: 20px;
+        }
+        
+        .prompt {
+            color: #7c3aed;
+            margin-right: 8px;
+            font-weight: 600;
+        }
+        
+        .path {
+            color: #10b981;
+            margin-right: 8px;
+        }
+        
+        .command {
+            color: #f59e0b;
+            font-weight: 500;
+        }
+        
+        .output {
+            color: #06b6d4;
+        }
+        
+        .output.success {
+            color: #10b981;
+        }
+        
+        .output.error {
+            color: #ef4444;
+        }
+        
+        .output.info {
+            color: #8b5cf6;
+        }
+        
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 16px;
+            background: #58a6ff;
+            animation: blink 1s infinite;
+            margin-left: 4px;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .ascii-art {
+            color: #58a6ff;
+            font-size: 0.7rem;
+            line-height: 1.2;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .main-content {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            color: #58a6ff;
+            margin-bottom: 3rem;
+            text-align: center;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .project-terminal {
+            background: #0d1117;
+        }
+        
+        .project-content {
+            padding: 20px;
+        }
+        
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .project-name {
+            color: #f0f6fc;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .project-status {
+            color: #238636;
+            font-size: 0.8rem;
+            background: #1a2e05;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #238636;
+        }
+        
+        .project-description {
+            color: #8b949e;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .project-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 4px;
+        }
+        
+        .stat-value {
+            color: #58a6ff;
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: block;
+        }
+        
+        .stat-label {
+            color: #8b949e;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+        
+        .tech-stack {
+            margin-bottom: 1.5rem;
+        }
+        
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .tech-tag {
+            background: #21262d;
+            color: #58a6ff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            border: 1px solid #30363d;
+        }
+        
+        .project-commands {
+            background: #161b22;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #30363d;
+            margin-top: 1rem;
+        }
+        
+        .command-line {
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+        }
+        
+        .skills-section {
+            background: #161b22;
+            padding: 80px 0;
+            margin: 4rem 0;
+            border-top: 1px solid #30363d;
+            border-bottom: 1px solid #30363d;
+        }
+        
+        .skills-terminal {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .skill-category {
+            margin-bottom: 3rem;
+        }
+        
+        .category-header {
+            color: #f0f6fc;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .category-icon {
+            color: #58a6ff;
+        }
+        
+        .skill-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .skill-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: #0d1117;
+            border: 1px solid #21262d;
+            border-radius: 4px;
+        }
+        
+        .skill-name {
+            color: #c9d1d9;
+        }
+        
+        .skill-level {
+            color: #58a6ff;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .contact-section {
+            padding: 80px 0;
+        }
+        
+        .contact-terminal {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            color: #8b949e;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .form-input {
+            width: 100%;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 12px 16px;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.3);
+        }
+        
+        .terminal-button {
+            background: #238636;
+            color: #ffffff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .terminal-button:hover {
+            background: #2ea043;
+            transform: translateY(-1px);
+        }
+        
+        .terminal-button:active {
+            transform: translateY(0);
+        }
+        
+        .activity-graph {
+            background: #0d1117;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #30363d;
+            margin: 3rem 0;
+        }
+        
+        .graph-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .graph-title {
+            color: #f0f6fc;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .graph-stats {
+            color: #8b949e;
+            font-size: 0.8rem;
+        }
+        
+        .graph-grid {
+            display: grid;
+            grid-template-columns: repeat(53, 1fr);
+            gap: 2px;
+            margin-bottom: 1rem;
+        }
+        
+        .graph-cell {
+            width: 12px;
+            height: 12px;
+            background: #161b22;
+            border-radius: 2px;
+        }
+        
+        .graph-cell.level-1 { background: #0e4429; }
+        .graph-cell.level-2 { background: #006d32; }
+        .graph-cell.level-3 { background: #26a641; }
+        .graph-cell.level-4 { background: #39d353; }
+        
+        .graph-legend {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.7rem;
+            color: #8b949e;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .legend-square {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+        }
+        
+        .floating-code {
+            position: fixed;
+            pointer-events: none;
+            font-size: 0.8rem;
+            color: rgba(88, 166, 255, 0.3);
+            z-index: -1;
+            animation: floatCode 15s linear infinite;
+        }
+        
+        @keyframes floatCode {
+            0% { transform: translateY(100vh) translateX(-50px); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100px) translateX(50px); opacity: 0; }
+        }
+        
+        .typing-animation {
+            display: inline;
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background: #161b22;
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #238636, #26a641, #39d353);
+            border-radius: 2px;
+            transition: width 0.5s ease;
+        }
+        
+        .code-snippet {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 1rem 0;
+            position: relative;
+            overflow-x: auto;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #21262d;
+        }
+        
+        .code-filename {
+            color: #8b949e;
+            font-size: 0.8rem;
+        }
+        
+        .code-language {
+            color: #58a6ff;
+            font-size: 0.7rem;
+            background: #21262d;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        
+        .code-content {
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        
+        .code-line-number {
+            color: #6e7681;
+            margin-right: 16px;
+            user-select: none;
+            width: 30px;
+            display: inline-block;
+            text-align: right;
+        }
+        
+        .keyword { color: #ff7b72; }
+        .string { color: #a5d6ff; }
+        .comment { color: #8b949e; }
+        .function { color: #d2a8ff; }
+        .variable { color: #ffa657; }
+        .operator { color: #ff7b72; }
+        .number { color: #79c0ff; }
+        
+        @media (max-width: 768px) {
+            .terminal-content {
+                padding: 16px;
+                font-size: 0.8rem;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .skill-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .graph-grid {
+                grid-template-columns: repeat(26, 1fr);
+            }
+        }
+        
+        .repository-list {
+            margin-top: 2rem;
+        }
+        
+        .repo-item {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .repo-item:hover {
+            border-color: #58a6ff;
+            transform: translateY(-1px);
+        }
+        
+        .repo-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .repo-name {
+            color: #58a6ff;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        .repo-description {
+            color: #8b949e;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+        
+        .repo-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.8rem;
+            color: #8b949e;
+        }
+        
+        .repo-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .language-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="terminal-container">
+            <div class="terminal-window hero-terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                    </div>
+                    <div class="terminal-title">developer@localhost:~</div>
+                </div>
+                <div class="terminal-content">
+                    <div class="ascii-art">
+╔╦╗┌─┐┬─┐┌┬┐┬┌┐┌┌─┐┬    ╔═╗┌─┐┌┬┐┌─┐
+ ║ ├┤ ├┬┘│││││││├─┤│    ║  │ │ ││├┤ 
+ ╩ └─┘┴└─┴ ┴┴┘└┘┴ ┴┴─┘  ╚═╝└─┘─┴┘└─┘
+                    </div>
+                    
+                    <div class="terminal-line">
+                        <span class="prompt">developer@localhost:</span>
+                        <span class="path">~</span>
+                        <span class="command">$ whoami</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output">Full Stack Developer & Terminal Enthusiast</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="prompt">developer@localhost:</span>
+                        <span class="path">~</span>
+                        <span class="command">$ cat skills.txt</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output info">→ Backend: Node.js, Python, Go, Rust</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output info">→ Frontend: React, Vue, TypeScript, WebGL</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output info">→ DevOps: Docker, Kubernetes, AWS, CI/CD</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output info">→ Databases: PostgreSQL, MongoDB, Redis</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="prompt">developer@localhost:</span>
+                        <span class="path">~</span>
+                        <span class="command">$ ls -la projects/</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output">drwxr-xr-x  12 developer staff   384 Mar 15 14:23 .</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output">drwxr-xr-x  28 developer staff   896 Mar 15 14:20 ..</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output">drwxr-xr-x   8 developer staff   256 Mar 15 14:21 terminal-portfolio</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output">drwxr-xr-x  15 developer staff   480 Mar 15 14:22 code-editor-web</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output">drwxr-xr-x  10 developer staff   320 Mar 15 14:23 api-gateway</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="prompt">developer@localhost:</span>
+                        <span class="path">~</span>
+                        <span class="command typing-animation" id="typing-command">$ </span>
+                        <span class="cursor"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating code snippets -->
+        <div class="floating-code" style="top: 20%; left: 10%;">const express = require('express');</div>
+        <div class="floating-code" style="top: 40%; right: 15%; animation-delay: 3s;">function fibonacci(n) {</div>
+        <div class="floating-code" style="top: 60%; left: 5%; animation-delay: 6s;">SELECT * FROM users;</div>
+        <div class="floating-code" style="top: 80%; right: 20%; animation-delay: 9s;">docker run -p 3000:3000</div>
+    </header>
+    
+    <main class="main-content">
+        <div class="terminal-container">
+            <section>
+                <h2 class="section-title">// Active Projects</h2>
+                
+                <div class="projects-grid">
+                    <div class="terminal-window project-terminal">
+                        <div class="terminal-header">
+                            <div class="terminal-dots">
+                                <div class="dot red"></div>
+                                <div class="dot yellow"></div>
+                                <div class="dot green"></div>
+                            </div>
+                            <div class="terminal-title">project-001.sh</div>
+                        </div>
+                        <div class="project-content">
+                            <div class="project-header">
+                                <div class="project-name">terminal-portfolio</div>
+                                <div class="project-status">ACTIVE</div>
+                            </div>
+                            <div class="project-description">
+                                A monospace-themed portfolio website that mimics terminal interface with interactive command-line features and syntax highlighting.
+                            </div>
+                            <div class="project-stats">
+                                <div class="stat-item">
+                                    <span class="stat-value">2.3k</span>
+                                    <span class="stat-label">LOC</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">15</span>
+                                    <span class="stat-label">Commits</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">98%</span>
+                                    <span class="stat-label">Complete</span>
+                                </div>
+                            </div>
+                            <div class="tech-stack">
+                                <strong>Tech Stack:</strong>
+                                <div class="tech-tags">
+                                    <span class="tech-tag">HTML5</span>
+                                    <span class="tech-tag">CSS3</span>
+                                    <span class="tech-tag">JavaScript</span>
+                                    <span class="tech-tag">GSAP</span>
+                                </div>
+                            </div>
+                            <div class="project-commands">
+                                <div class="command-line"><span class="prompt">$</span> npm install</div>
+                                <div class="command-line"><span class="prompt">$</span> npm run dev</div>
+                                <div class="command-line"><span class="prompt">$</span> npm run build</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="terminal-window project-terminal">
+                        <div class="terminal-header">
+                            <div class="terminal-dots">
+                                <div class="dot red"></div>
+                                <div class="dot yellow"></div>
+                                <div class="dot green"></div>
+                            </div>
+                            <div class="terminal-title">project-002.sh</div>
+                        </div>
+                        <div class="project-content">
+                            <div class="project-header">
+                                <div class="project-name">code-editor-web</div>
+                                <div class="project-status">DEVELOPMENT</div>
+                            </div>
+                            <div class="project-description">
+                                Web-based code editor with syntax highlighting, autocomplete, and collaborative editing features. Built with Monaco Editor.
+                            </div>
+                            <div class="project-stats">
+                                <div class="stat-item">
+                                    <span class="stat-value">8.7k</span>
+                                    <span class="stat-label">LOC</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">43</span>
+                                    <span class="stat-label">Commits</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">75%</span>
+                                    <span class="stat-label">Complete</span>
+                                </div>
+                            </div>
+                            <div class="tech-stack">
+                                <strong>Tech Stack:</strong>
+                                <div class="tech-tags">
+                                    <span class="tech-tag">React</span>
+                                    <span class="tech-tag">TypeScript</span>
+                                    <span class="tech-tag">Monaco</span>
+                                    <span class="tech-tag">Socket.io</span>
+                                </div>
+                            </div>
+                            <div class="project-commands">
+                                <div class="command-line"><span class="prompt">$</span> yarn install</div>
+                                <div class="command-line"><span class="prompt">$</span> yarn start</div>
+                                <div class="command-line"><span class="prompt">$</span> yarn test</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="terminal-window project-terminal">
+                        <div class="terminal-header">
+                            <div class="terminal-dots">
+                                <div class="dot red"></div>
+                                <div class="dot yellow"></div>
+                                <div class="dot green"></div>
+                            </div>
+                            <div class="terminal-title">project-003.sh</div>
+                        </div>
+                        <div class="project-content">
+                            <div class="project-header">
+                                <div class="project-name">api-gateway</div>
+                                <div class="project-status">PRODUCTION</div>
+                            </div>
+                            <div class="project-description">
+                                High-performance API gateway built with Go, featuring load balancing, rate limiting, and JWT authentication.
+                            </div>
+                            <div class="project-stats">
+                                <div class="stat-item">
+                                    <span class="stat-value">5.2k</span>
+                                    <span class="stat-label">LOC</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">67</span>
+                                    <span class="stat-label">Commits</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">100%</span>
+                                    <span class="stat-label">Complete</span>
+                                </div>
+                            </div>
+                            <div class="tech-stack">
+                                <strong>Tech Stack:</strong>
+                                <div class="tech-tags">
+                                    <span class="tech-tag">Go</span>
+                                    <span class="tech-tag">Docker</span>
+                                    <span class="tech-tag">Redis</span>
+                                    <span class="tech-tag">PostgreSQL</span>
+                                </div>
+                            </div>
+                            <div class="project-commands">
+                                <div class="command-line"><span class="prompt">$</span> go mod download</div>
+                                <div class="command-line"><span class="prompt">$</span> go run main.go</div>
+                                <div class="command-line"><span class="prompt">$</span> docker-compose up</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="terminal-window project-terminal">
+                        <div class="terminal-header">
+                            <div class="terminal-dots">
+                                <div class="dot red"></div>
+                                <div class="dot yellow"></div>
+                                <div class="dot green"></div>
+                            </div>
+                            <div class="terminal-title">project-004.sh</div>
+                        </div>
+                        <div class="project-content">
+                            <div class="project-header">
+                                <div class="project-name">ml-pipeline</div>
+                                <div class="project-status">RESEARCH</div>
+                            </div>
+                            <div class="project-description">
+                                Machine learning pipeline for real-time data processing and model inference using Python and TensorFlow.
+                            </div>
+                            <div class="project-stats">
+                                <div class="stat-item">
+                                    <span class="stat-value">3.8k</span>
+                                    <span class="stat-label">LOC</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">28</span>
+                                    <span class="stat-label">Commits</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">60%</span>
+                                    <span class="stat-label">Complete</span>
+                                </div>
+                            </div>
+                            <div class="tech-stack">
+                                <strong>Tech Stack:</strong>
+                                <div class="tech-tags">
+                                    <span class="tech-tag">Python</span>
+                                    <span class="tech-tag">TensorFlow</span>
+                                    <span class="tech-tag">Apache Kafka</span>
+                                    <span class="tech-tag">Kubernetes</span>
+                                </div>
+                            </div>
+                            <div class="project-commands">
+                                <div class="command-line"><span class="prompt">$</span> pip install -r requirements.txt</div>
+                                <div class="command-line"><span class="prompt">$</span> python train.py</div>
+                                <div class="command-line"><span class="prompt">$</span> python serve.py</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="activity-graph">
+                    <div class="graph-header">
+                        <div class="graph-title">Development Activity</div>
+                        <div class="graph-stats">1,247 contributions in the last year</div>
+                    </div>
+                    <div class="graph-grid" id="activity-graph"></div>
+                    <div class="graph-legend">
+                        <span>Less</span>
+                        <div class="legend-item">
+                            <div class="legend-square" style="background: #161b22;"></div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-square" style="background: #0e4429;"></div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-square" style="background: #006d32;"></div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-square" style="background: #26a641;"></div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-square" style="background: #39d353;"></div>
+                        </div>
+                        <span>More</span>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="skills-section">
+                <div class="terminal-container">
+                    <h2 class="section-title">// Technical Expertise</h2>
+                    
+                    <div class="terminal-window skills-terminal">
+                        <div class="terminal-header">
+                            <div class="terminal-dots">
+                                <div class="dot red"></div>
+                                <div class="dot yellow"></div>
+                                <div class="dot green"></div>
+                            </div>
+                            <div class="terminal-title">skills.json</div>
+                        </div>
+                        <div class="terminal-content">
+                            <div class="skill-category">
+                                <div class="category-header">
+                                    <span class="category-icon">⚡</span>
+                                    <span>Backend Development</span>
+                                </div>
+                                <div class="skill-list">
+                                    <div class="skill-item">
+                                        <span class="skill-name">Node.js</span>
+                                        <span class="skill-level">Expert</span>
+                                    </div>
+                                    <div class="skill-item">
+                                        <span class="skill-name">Python</span>
+                                        <span class="skill-level">Advanced</span>
+                                    </div>
+                                    <div class="skill-item">
+                                        <span class="skill-name">Go</span>
+                                        <span class="skill-level">Advanced</span>
+                                    </div>
+                                    <div class="skill-item">
+                                        <span class="skill-name">Rust</span>
+                                        <span class="skill-level">Intermediate</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="skill-category">
+                                <div class="category-header">
+                                    <span class="category-icon">🌐</span>
+                                    <span>Frontend Development</span>
+                                </div>
+                                <div class="skill-list">
+                                    <div class="skill-item">
+                                        <span class="skill-name">React</span>
+                                        <span class="skill-level">Expert</span>
+                                    </div>
+                                    <div class="skill-item">
+                                        <span class="skill-name">TypeScript</span>
+                                        <span class="skill-level">Expert</span>
+                                    </div>
+                                    <div class="skill-item">
+                                        <span class="skill-name">Vue.js</span>
+                                        <span class="skill-level">Advanced</span>
+                                    </div>
+                                    <div class="skill-item">
+                                        <span class="skill-name">WebGL</span>
+                                        <span class="skill-level">Intermediate</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="skill-category">
+                                <div class="category-header">
+                                    <span class="category-icon">🔧</span>
+                                    <span>DevOps & Infrastructure</span>
+                                </div>
+                                <div class="skill-list">
+                                    <div class="skill-item">
+                                        <span class="skill-name">Docker</span>
+                                        <span class="skill-level">Expert</span>
+                                    </div>
+                                    <div class="skill-item">
+                                        <span class="skill-name">Kubernetes</span>
+                                        <span class="skill-level">Advanced</span>
+                                    </div>
+                                    <div class="skill-item">
+                                        <span class="skill-name">AWS</span>
+                                        <span class="skill-level">Advanced</span>
+                                    </div>
+                                    <div class="skill-item">
+                                        <span class="skill-name">Terraform</span>
+                                        <span class="skill-level">Intermediate</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="code-snippet">
+                                <div class="code-header">
+                                    <div class="code-filename">example.js</div>
+                                    <div class="code-language">JavaScript</div>
+                                </div>
+                                <div class="code-content">
+                                    <div><span class="code-line-number">1</span><span class="comment">// Sample code demonstrating expertise</span></div>
+                                    <div><span class="code-line-number">2</span><span class="keyword">const</span> <span class="variable">skills</span> <span class="operator">=</span> {</div>
+                                    <div><span class="code-line-number">3</span>  <span class="string">'backend'</span>: [<span class="string">'node'</span>, <span class="string">'python'</span>, <span class="string">'go'</span>],</div>
+                                    <div><span class="code-line-number">4</span>  <span class="string">'frontend'</span>: [<span class="string">'react'</span>, <span class="string">'vue'</span>, <span class="string">'typescript'</span>],</div>
+                                    <div><span class="code-line-number">5</span>  <span class="string">'devops'</span>: [<span class="string">'docker'</span>, <span class="string">'k8s'</span>, <span class="string">'aws'</span>]</div>
+                                    <div><span class="code-line-number">6</span>};</div>
+                                    <div><span class="code-line-number">7</span></div>
+                                    <div><span class="code-line-number">8</span><span class="function">console</span>.<span class="function">log</span>(<span class="string">'Ready to build amazing things!'</span>);</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="contact-section">
+                <h2 class="section-title">// Get In Touch</h2>
+                
+                <div class="terminal-window contact-terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dots">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                        <div class="terminal-title">contact-form.sh</div>
+                    </div>
+                    <div class="terminal-content">
+                        <div class="terminal-line">
+                            <span class="prompt">$</span>
+                            <span class="command">./send_message.sh</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="output">Initializing secure connection...</span>
+                        </div>
+                        <div class="terminal-line">
+                            <span class="output success">✓ Connection established</span>
+                        </div>
+                        
+                        <form id="contact-form">
+                            <div class="form-group">
+                                <label class="form-label">Name:</label>
+                                <input type="text" class="form-input" name="name" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Email:</label>
+                                <input type="email" class="form-input" name="email" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Project Type:</label>
+                                <input type="text" class="form-input" name="project" placeholder="Web App, API, DevOps...">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Message:</label>
+                                <textarea class="form-input" name="message" rows="5" required placeholder="Describe your project or requirements..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="terminal-button">
+                                $ ./deploy_message.sh
+                            </button>
+                        </form>
+                        
+                        <div id="form-output" style="margin-top: 1rem;"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <script>
+        // Typing animation for terminal
+        const commands = [
+            'git status',
+            'npm run build',
+            'docker ps',
+            'kubectl get pods',
+            'python main.py',
+            'go run server.go',
+            'curl -X POST /api/data'
+        ];
+        
+        let commandIndex = 0;
+        let charIndex = 0;
+        const typingElement = document.getElementById('typing-command');
+        
+        function typeCommand() {
+            if (charIndex < commands[commandIndex].length) {
+                typingElement.textContent = '$ ' + commands[commandIndex].substring(0, charIndex + 1);
+                charIndex++;
+                setTimeout(typeCommand, 100);
+            } else {
+                setTimeout(() => {
+                    charIndex = 0;
+                    commandIndex = (commandIndex + 1) % commands.length;
+                    typeCommand();
+                }, 2000);
+            }
+        }
+        
+        // Start typing animation
+        setTimeout(typeCommand, 2000);
+        
+        // Generate activity graph
+        function generateActivityGraph() {
+            const graphContainer = document.getElementById('activity-graph');
+            const totalCells = 371; // ~53 weeks * 7 days
+            
+            for (let i = 0; i < totalCells; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'graph-cell';
+                
+                // Random activity level (0-4)
+                const level = Math.floor(Math.random() * 5);
+                if (level > 0) {
+                    cell.classList.add(`level-${level}`);
+                }
+                
+                graphContainer.appendChild(cell);
+            }
+        }
+        
+        generateActivityGraph();
+        
+        // Form handling
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const outputDiv = document.getElementById('form-output');
+            outputDiv.innerHTML = `
+                <div class="terminal-line">
+                    <span class="output">Processing request...</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="output">Validating input data...</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="output success">✓ Message sent successfully!</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="output">Response time: 127ms</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="output">Status: 200 OK</span>
+                </div>
+            `;
+            
+            // Reset form
+            this.reset();
+        });
+        
+        // Floating code animation
+        function createFloatingCode() {
+            const codeSnippets = [
+                'const api = express();',
+                'SELECT * FROM users;',
+                'docker run -d app:latest',
+                'kubectl apply -f deployment.yaml',
+                'git commit -m "feat: new feature"',
+                'npm install --save package',
+                'python -m pip install requirements.txt',
+                'go mod tidy'
+            ];
+            
+            const snippet = document.createElement('div');
+            snippet.className = 'floating-code';
+            snippet.textContent = codeSnippets[Math.floor(Math.random() * codeSnippets.length)];
+            snippet.style.left = Math.random() * 100 + '%';
+            snippet.style.animationDelay = '0s';
+            
+            document.body.appendChild(snippet);
+            
+            setTimeout(() => {
+                snippet.remove();
+            }, 15000);
+        }
+        
+        // Create floating code snippets periodically
+        setInterval(createFloatingCode, 3000);
+        
+        // Project status animations
+        document.querySelectorAll('.project-status').forEach(status => {
+            const statusText = status.textContent;
+            
+            if (statusText === 'ACTIVE') {
+                setInterval(() => {
+                    status.style.opacity = status.style.opacity === '0.5' ? '1' : '0.5';
+                }, 1000);
+            } else if (statusText === 'DEVELOPMENT') {
+                status.style.background = '#1f2937';
+                status.style.borderColor = '#f59e0b';
+                status.style.color = '#f59e0b';
+            } else if (statusText === 'PRODUCTION') {
+                status.style.background = '#065f46';
+                status.style.borderColor = '#10b981';
+                status.style.color = '#10b981';
+            } else if (statusText === 'RESEARCH') {
+                status.style.background = '#1e1b4b';
+                status.style.borderColor = '#8b5cf6';
+                status.style.color = '#8b5cf6';
+            }
+        });
+        
+        // Terminal window hover effects
+        document.querySelectorAll('.terminal-window').forEach(window => {
+            window.addEventListener('mouseenter', () => {
+                window.style.transform = 'translateY(-2px)';
+                window.style.boxShadow = '0 20px 40px rgba(1, 4, 9, 0.9)';
+            });
+            
+            window.addEventListener('mouseleave', () => {
+                window.style.transform = '';
+                window.style.boxShadow = '';
+            });
+        });
+        
+        // Progress bar animations for project completion
+        document.querySelectorAll('.stat-value').forEach(stat => {
+            if (stat.textContent.includes('%')) {
+                const percentage = parseInt(stat.textContent);
+                const progressBar = document.createElement('div');
+                progressBar.className = 'progress-bar';
+                
+                const progressFill = document.createElement('div');
+                progressFill.className = 'progress-fill';
+                progressFill.style.width = '0%';
+                
+                progressBar.appendChild(progressFill);
+                stat.parentElement.appendChild(progressBar);
+                
+                // Animate progress
+                setTimeout(() => {
+                    progressFill.style.width = percentage + '%';
+                }, 500);
+            }
+        });
+        
+        // Intersection Observer for animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        // Observe all terminal windows
+        document.querySelectorAll('.terminal-window').forEach(window => {
+            window.style.opacity = '0';
+            window.style.transform = 'translateY(20px)';
+            window.style.transition = 'all 0.6s ease';
+            observer.observe(window);
+        });
+        
+        // Add realistic terminal interactions
+        document.querySelectorAll('.terminal-content').forEach(terminal => {
+            terminal.addEventListener('click', () => {
+                const cursor = terminal.querySelector('.cursor');
+                if (cursor) {
+                    cursor.style.background = '#58a6ff';
+                    setTimeout(() => {
+                        cursor.style.background = '';
+                    }, 500);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background Images with CSS Blend Modes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+
+        .blend-section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            text-align: center;
+            color: white;
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .blend-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            mix-blend-mode: multiply;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 60px 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .content h1 {
+            font-size: 4rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .content p {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        .blend-mode-selector {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .blend-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .blend-btn:hover,
+        .blend-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .section1 {
+            background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&w=1920&q=80');
+        }
+
+        .section1 .blend-overlay {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .section2 {
+            background-image: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&w=1920&q=80');
+        }
+
+        .section2 .blend-overlay {
+            background: linear-gradient(45deg, #ff6b6b, #ffa726);
+            mix-blend-mode: overlay;
+        }
+
+        .section3 {
+            background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&w=1920&q=80');
+        }
+
+        .section3 .blend-overlay {
+            background: linear-gradient(90deg, #4ecdc4, #44a08d);
+            mix-blend-mode: screen;
+        }
+
+        .section4 {
+            background-image: url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&w=1920&q=80');
+        }
+
+        .section4 .blend-overlay {
+            background: linear-gradient(270deg, #833ab4, #fd1d1d, #fcb045);
+            mix-blend-mode: color-burn;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .blend-demo {
+            position: relative;
+            height: 250px;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .blend-demo:hover {
+            transform: translateY(-10px);
+        }
+
+        .demo-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .demo-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 30px;
+        }
+
+        .demo-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        }
+
+        .demo-content p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .multiply-demo .demo-bg {
+            background-image: url('https://images.unsplash.com/photo-1520637736862-4d197d17c86a?ixlib=rb-4.0.3&w=400&q=80');
+        }
+        .multiply-demo .demo-overlay {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            mix-blend-mode: multiply;
+        }
+
+        .screen-demo .demo-bg {
+            background-image: url('https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&w=400&q=80');
+        }
+        .screen-demo .demo-overlay {
+            background: linear-gradient(45deg, #ff6b6b, #ffa726);
+            mix-blend-mode: screen;
+        }
+
+        .overlay-demo .demo-bg {
+            background-image: url('https://images.unsplash.com/photo-1502780402662-acc01917ab59?ixlib=rb-4.0.3&w=400&q=80');
+        }
+        .overlay-demo .demo-overlay {
+            background: linear-gradient(90deg, #4ecdc4, #44a08d);
+            mix-blend-mode: overlay;
+        }
+
+        .difference-demo .demo-bg {
+            background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&w=400&q=80');
+        }
+        .difference-demo .demo-overlay {
+            background: linear-gradient(270deg, #833ab4, #fd1d1d);
+            mix-blend-mode: difference;
+        }
+
+        .exclusion-demo .demo-bg {
+            background-image: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&w=400&q=80');
+        }
+        .exclusion-demo .demo-overlay {
+            background: linear-gradient(180deg, #fcb045, #833ab4);
+            mix-blend-mode: exclusion;
+        }
+
+        .hue-demo .demo-bg {
+            background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&w=400&q=80');
+        }
+        .hue-demo .demo-overlay {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            mix-blend-mode: hue;
+        }
+
+        .section-header {
+            text-align: center;
+            padding: 80px 20px 40px;
+            background: white;
+        }
+
+        .section-header h2 {
+            font-size: 3rem;
+            font-weight: 300;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .section-header p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .interactive-section {
+            background: white;
+            padding: 80px 20px;
+        }
+
+        .interactive-demo {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .interactive-image {
+            position: relative;
+            height: 400px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            background-image: url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&w=800&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .interactive-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            mix-blend-mode: multiply;
+            transition: all 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            .content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .content p {
+                font-size: 1.1rem;
+            }
+            
+            .demo-grid {
+                grid-template-columns: 1fr;
+                padding: 40px 20px;
+            }
+            
+            .section-header h2 {
+                font-size: 2rem;
+            }
+            
+            .blend-mode-selector {
+                gap: 8px;
+            }
+            
+            .blend-btn {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+        }
+
+        .color-picker {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .color-option {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .color-option:hover,
+        .color-option.active {
+            border-color: white;
+            transform: scale(1.1);
+        }
+
+        .color1 { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .color2 { background: linear-gradient(45deg, #ff6b6b, #ffa726); }
+        .color3 { background: linear-gradient(90deg, #4ecdc4, #44a08d); }
+        .color4 { background: linear-gradient(270deg, #833ab4, #fd1d1d); }
+        .color5 { background: linear-gradient(180deg, #fcb045, #833ab4); }
+    </style>
+</head>
+<body>
+    <section class="blend-section section1">
+        <div class="blend-overlay"></div>
+        <div class="content">
+            <h1>CSS Blend Modes</h1>
+            <p>Discover the power of CSS blend modes to create stunning visual effects by mixing background images with color overlays</p>
+            <div class="color-picker">
+                <div class="color-option color1 active" data-gradient="linear-gradient(135deg, #667eea, #764ba2)"></div>
+                <div class="color-option color2" data-gradient="linear-gradient(45deg, #ff6b6b, #ffa726)"></div>
+                <div class="color-option color3" data-gradient="linear-gradient(90deg, #4ecdc4, #44a08d)"></div>
+                <div class="color-option color4" data-gradient="linear-gradient(270deg, #833ab4, #fd1d1d)"></div>
+                <div class="color-option color5" data-gradient="linear-gradient(180deg, #fcb045, #833ab4)"></div>
+            </div>
+            <div class="blend-mode-selector">
+                <button class="blend-btn active" data-mode="multiply">Multiply</button>
+                <button class="blend-btn" data-mode="screen">Screen</button>
+                <button class="blend-btn" data-mode="overlay">Overlay</button>
+                <button class="blend-btn" data-mode="difference">Difference</button>
+                <button class="blend-btn" data-mode="exclusion">Exclusion</button>
+                <button class="blend-btn" data-mode="hue">Hue</button>
+                <button class="blend-btn" data-mode="saturation">Saturation</button>
+                <button class="blend-btn" data-mode="color">Color</button>
+                <button class="blend-btn" data-mode="luminosity">Luminosity</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-header">
+        <h2>Blend Mode Examples</h2>
+        <p>Each blend mode creates different visual effects when combining images with color overlays. Hover over the examples to see the blend modes in action.</p>
+    </section>
+
+    <section class="demo-grid">
+        <div class="blend-demo multiply-demo">
+            <div class="demo-bg"></div>
+            <div class="demo-overlay">
+                <div class="demo-content">
+                    <h3>Multiply</h3>
+                    <p>Darkens the image by multiplying colors</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="blend-demo screen-demo">
+            <div class="demo-bg"></div>
+            <div class="demo-overlay">
+                <div class="demo-content">
+                    <h3>Screen</h3>
+                    <p>Lightens the image with inverted multiply</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="blend-demo overlay-demo">
+            <div class="demo-bg"></div>
+            <div class="demo-overlay">
+                <div class="demo-content">
+                    <h3>Overlay</h3>
+                    <p>Combines multiply and screen effects</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="blend-demo difference-demo">
+            <div class="demo-bg"></div>
+            <div class="demo-overlay">
+                <div class="demo-content">
+                    <h3>Difference</h3>
+                    <p>Creates high contrast color effects</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="blend-demo exclusion-demo">
+            <div class="demo-bg"></div>
+            <div class="demo-overlay">
+                <div class="demo-content">
+                    <h3>Exclusion</h3>
+                    <p>Similar to difference but with lower contrast</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="blend-demo hue-demo">
+            <div class="demo-bg"></div>
+            <div class="demo-overlay">
+                <div class="demo-content">
+                    <h3>Hue</h3>
+                    <p>Changes the hue while preserving luminosity</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="interactive-section">
+        <div class="interactive-demo">
+            <h2 style="margin-bottom: 30px; color: #333;">Interactive Blend Mode Demo</h2>
+            <p style="margin-bottom: 40px; color: #666;">Click the buttons above to see different blend modes in real-time</p>
+            <div class="interactive-image">
+                <div class="interactive-overlay" id="interactiveOverlay"></div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const blendButtons = document.querySelectorAll('.blend-btn');
+        const colorOptions = document.querySelectorAll('.color-option');
+        const mainOverlay = document.querySelector('.section1 .blend-overlay');
+        const interactiveOverlay = document.getElementById('interactiveOverlay');
+
+        let currentGradient = 'linear-gradient(135deg, #667eea, #764ba2)';
+
+        blendButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                blendButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                const mode = button.dataset.mode;
+                mainOverlay.style.mixBlendMode = mode;
+                interactiveOverlay.style.mixBlendMode = mode;
+            });
+        });
+
+        colorOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                colorOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                
+                currentGradient = option.dataset.gradient;
+                mainOverlay.style.background = currentGradient;
+                interactiveOverlay.style.background = currentGradient;
+            });
+        });
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.blend-demo').forEach(demo => {
+            demo.style.opacity = '0';
+            demo.style.transform = 'translateY(50px)';
+            demo.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(demo);
+        });
+
+        let currentSection = 0;
+        const sections = document.querySelectorAll('.blend-section');
+        
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.pageYOffset;
+            
+            sections.forEach((section, index) => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                
+                if (scrollPosition >= sectionTop - window.innerHeight / 2 && 
+                    scrollPosition < sectionTop + sectionHeight - window.innerHeight / 2) {
+                    if (currentSection !== index) {
+                        currentSection = index;
+                        section.classList.add('active');
+                    }
+                }
+            });
+        });
+
+        document.querySelectorAll('.blend-demo').forEach(demo => {
+            demo.addEventListener('mouseenter', () => {
+                demo.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            demo.addEventListener('mouseleave', () => {
+                demo.style.transform = 'translateY(-10px) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

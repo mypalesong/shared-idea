@@ -1,0 +1,255 @@
+{
+  "messages": [
+    {
+      "recipient_id": "opus",
+      "text": "sdfsdf"
+    },
+    {
+      "recipient_id": "opus",
+      "text": "Got it. Creating your ticket now."
+    },
+    {
+      "recipient_id": "opus",
+      "text": "Ticket created: TCK-48291. Do you want to submit an application for capacity increase?"
+    }
+  ],
+  "metadata": {
+    "x-genos-workflow-id": null,
+    "sender_ip": "10.0.0.25",
+    "channel": "rest",
+    "received_at": "2025-08-23T03:15:45.120126+00:00"
+  },
+  "conversation_id": "opus",
+  "current_flow": "submit_application",
+  "processed_flows": [
+    "report_incident"
+  ],
+  "flows": [
+    {
+      "name": "report_incident",
+      "status": "completed",
+      "required_slots": [
+        "incident_type",
+        "incident_date",
+        "incident_location",
+        "incident_summary",
+        "severity"
+      ],
+      "filled_slots": {
+        "incident_type": "quality_issue",
+        "incident_date": "2025-08-22",
+        "incident_location": "FAB-A1",
+        "incident_summary": "Anomaly detected on line 3; OLED thickness out of spec.",
+        "severity": "high"
+      },
+      "start_time": "2025-08-23T03:13:45.120126+00:00",
+      "end_time": "2025-08-23T03:14:45.120126+00:00",
+      "steps": [
+        {
+          "type": "user",
+          "text": "I need to report an issue on line 3."
+        },
+        {
+          "type": "bot",
+          "action": "utter_ask_incident_type"
+        },
+        {
+          "type": "user",
+          "text": "quality issue"
+        },
+        {
+          "type": "bot",
+          "action": "utter_ask_incident_date"
+        },
+        {
+          "type": "user",
+          "text": "2025-08-22"
+        },
+        {
+          "type": "bot",
+          "action": "utter_confirm_submit"
+        },
+        {
+          "type": "bot",
+          "action": "action_create_ticket",
+          "result": {
+            "ticket_id": "TCK-48291"
+          }
+        }
+      ]
+    },
+    {
+      "name": "submit_application",
+      "status": "in_progress",
+      "required_slots": [
+        "application",
+        "approver",
+        "due_date"
+      ],
+      "filled_slots": {
+        "application": [
+          "capacity_increase"
+        ],
+        "approver": "Minji Park",
+        "due_date": "2025-08-26"
+      },
+      "start_time": "2025-08-23T03:14:45.120126+00:00",
+      "end_time": null,
+      "steps": [
+        {
+          "type": "bot",
+          "action": "utter_ask_application"
+        },
+        {
+          "type": "user",
+          "text": "capacity increase"
+        },
+        {
+          "type": "bot",
+          "action": "utter_ask_approver"
+        },
+        {
+          "type": "user",
+          "text": "Minji Park"
+        },
+        {
+          "type": "bot",
+          "action": "utter_ask_due_date"
+        },
+        {
+          "type": "user",
+          "text": "2025-08-26"
+        }
+      ]
+    }
+  ],
+  "slots": {
+    "confirm_correction": null,
+    "accident_grade": [],
+    "accident_grade_told": true,
+    "application": [],
+    "application_told": true,
+    "bom_level": "",
+    "bom_level_told": false,
+    "bonus_yn": "",
+    "case_id": "0cb1543d",
+    "category": "",
+    "category_told": "False",
+    "component": [],
+    "component_told": false,
+    "customer_id": "73b12461",
+    "customer_name": "",
+    "deadline_date": "2025-08-30",
+    "deadline_date_told": true,
+    "department": "",
+    "device_model": "",
+    "device_os": "",
+    "email": "alex.lee@example.com",
+    "employee_id": "087541fd",
+    "escalation_level": "",
+    "file_attachment": "",
+    "incident_date": "2025-09-01",
+    "incident_location": "8f79805c",
+    "incident_summary": "185be205",
+    "incident_type": "d9950e60",
+    "language": "",
+    "location": "",
+    "manager_email": "alex.lee@example.com",
+    "manager_name": "",
+    "order_id": "7f66211c",
+    "order_status": "new",
+    "phone_number": "",
+    "priority": "critical",
+    "product_code": "314418e1",
+    "product_name": "",
+    "project_code": "b3fda209",
+    "project_name": "",
+    "quantity": "",
+    "reason": "Routine check",
+    "region": "KR-SEO",
+    "request_id": "31f0b27b",
+    "request_type": "",
+    "resolution": null,
+    "severity": "high",
+    "shipment_tracking": "",
+    "site": "A4",
+    "site_told": "False",
+    "status": "blocked",
+    "subject": "",
+    "ticket_id": "bf148816",
+    "ticket_url": "",
+    "user_confirmed": false,
+    "user_intent": "",
+    "user_language": "",
+    "user_name": "",
+    "user_timezone": "",
+    "verification_code": "57ea4520",
+    "version": "v1.1",
+    "workflow_id": "e71de4d3",
+    "attachment_urls": [],
+    "followup_required": false,
+    "followup_date": "2025-08-14",
+    "sla_hours": "",
+    "sla_breached": true,
+    "approval_needed": false,
+    "approver": "",
+    "approver_email": "alex.lee@example.com",
+    "approver_status": "waiting_approval",
+    "cost_center": "",
+    "budget_code": "e71bba5c",
+    "risk_level": "",
+    "due_date": "2025-08-17",
+    "start_date": "2025-08-29",
+    "end_date": "2025-08-18",
+    "env": "prod",
+    "region_code": "229805a5",
+    "feature_flag": "",
+    "model_name": "",
+    "model_version": "v1.1",
+    "gpu_required": 4,
+    "cpu_required": 2,
+    "memory_required": "8Gi",
+    "namespace": "",
+    "k8s_service": "",
+    "k8s_node": "",
+    "ingress_needed": false,
+    "api_endpoint": "",
+    "auth_type": "",
+    "rbac_role": "",
+    "owner": "",
+    "auditor": "",
+    "tags": [],
+    "notes": "User requested expedited handling.",
+    "meta_json": {
+      "source": "api",
+      "confidence": 0.82
+    },
+    "extra_01": "",
+    "extra_02": "",
+    "extra_03": ""
+  },
+  "tracker": {
+    "sender_id": "opus",
+    "latest_event_time": "2025-08-23T03:15:45.120126+00:00",
+    "events": [
+      {
+        "event": "user",
+        "timestamp": "2025-08-23T03:13:45.120126+00:00",
+        "text": "sdfsdf"
+      },
+      {
+        "event": "action",
+        "timestamp": "2025-08-23T03:13:50.120126+00:00",
+        "name": "action_listen"
+      },
+      {
+        "event": "bot",
+        "timestamp": "2025-08-23T03:14:45.120126+00:00",
+        "metadata": {
+          "action_name": "action_create_ticket"
+        },
+        "text": "Ticket created: TCK-48291"
+      }
+    ]
+  }
+}

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeline Flow Analyzer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/vis-timeline@7.7.0/standalone/umd/vis-timeline-graph2d.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/vis-timeline@7.7.0/styles/vis-timeline-graph2d.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="timeline-container">
+        <!-- Command Timeline Header -->
+        <header class="timeline-header">
+            <div class="brand-zone">
+                <div class="timeline-logo">
+                    <div class="clock-face">
+                        <div class="hour-hand"></div>
+                        <div class="minute-hand"></div>
+                        <div class="second-hand"></div>
+                    </div>
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="brand-info">
+                    <h1>Timeline Flow</h1>
+                    <span class="tagline">Temporal Data Analysis</span>
+                </div>
+            </div>
+
+            <div class="timeline-controls">
+                <div class="control-cluster">
+                    <button id="loadData" class="timeline-btn primary">
+                        <i class="fas fa-upload"></i>
+                        <span>Load Data</span>
+                        <div class="btn-ripple"></div>
+                    </button>
+                    
+                    <button id="analyzeFlow" class="timeline-btn accent">
+                        <i class="fas fa-stream"></i>
+                        <span>Analyze Flow</span>
+                        <div class="btn-ripple"></div>
+                    </button>
+                    
+                    <button id="detectPatterns" class="timeline-btn success">
+                        <i class="fas fa-search"></i>
+                        <span>Detect Patterns</span>
+                        <div class="btn-ripple"></div>
+                    </button>
+
+                    <button id="playTimeline" class="timeline-btn warning">
+                        <i class="fas fa-play"></i>
+                        <span>Play</span>
+                        <div class="btn-ripple"></div>
+                    </button>
+                </div>
+
+                <div class="timeline-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="eventCount">0</div>
+                        <div class="stat-label">Events</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="timeSpan">0d</div>
+                        <div class="stat-label">Duration</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="flowRate">0/h</div>
+                        <div class="stat-label">Flow Rate</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="patternCount">0</div>
+                        <div class="stat-label">Patterns</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="view-modes">
+                <div class="mode-selector">
+                    <button class="mode-btn active" data-mode="timeline">
+                        <i class="fas fa-timeline"></i>
+                        <span>Timeline</span>
+                    </button>
+                    <button class="mode-btn" data-mode="gantt">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Gantt</span>
+                    </button>
+                    <button class="mode-btn" data-mode="flow">
+                        <i class="fas fa-water"></i>
+                        <span>Flow</span>
+                    </button>
+                    <button class="mode-btn" data-mode="calendar">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Calendar</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Timeline Interface -->
+        <main class="timeline-main">
+            <!-- Left Control Panel -->
+            <aside class="left-timeline-panel">
+                <div class="panel-tabs">
+                    <button class="tab-btn active" data-tab="filters">
+                        <i class="fas fa-filter"></i>
+                        Filters
+                    </button>
+                    <button class="tab-btn" data-tab="layers">
+                        <i class="fas fa-layer-group"></i>
+                        Layers
+                    </button>
+                    <button class="tab-btn" data-tab="patterns">
+                        <i class="fas fa-puzzle-piece"></i>
+                        Patterns
+                    </button>
+                </div>
+
+                <div class="tab-content">
+                    <!-- Filters Tab -->
+                    <div id="filtersTab" class="tab-pane active">
+                        <div class="filter-section">
+                            <h3><i class="fas fa-calendar-range"></i> Time Range</h3>
+                            <div class="time-range-selector">
+                                <input type="date" id="startDate" class="date-input">
+                                <span class="range-separator">to</span>
+                                <input type="date" id="endDate" class="date-input">
+                            </div>
+                            
+                            <div class="quick-ranges">
+                                <button class="quick-range-btn" data-range="today">Today</button>
+                                <button class="quick-range-btn" data-range="week">This Week</button>
+                                <button class="quick-range-btn" data-range="month">This Month</button>
+                                <button class="quick-range-btn" data-range="year">This Year</button>
+                                <button class="quick-range-btn active" data-range="all">All Time</button>
+                            </div>
+                        </div>
+
+                        <div class="filter-section">
+                            <h3><i class="fas fa-tags"></i> Event Types</h3>
+                            <div class="event-type-filters" id="eventTypeFilters">
+                                <!-- Event type filters will be populated here -->
+                            </div>
+                        </div>
+
+                        <div class="filter-section">
+                            <h3><i class="fas fa-search"></i> Search Events</h3>
+                            <div class="search-container">
+                                <input type="text" id="eventSearch" placeholder="Search events..." class="search-input">
+                                <button class="search-btn">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Layers Tab -->
+                    <div id="layersTab" class="tab-pane">
+                        <div class="layer-section">
+                            <h3><i class="fas fa-stream"></i> Data Streams</h3>
+                            <div class="data-streams" id="dataStreams">
+                                <!-- Data stream controls will be populated here -->
+                            </div>
+                        </div>
+
+                        <div class="layer-section">
+                            <h3><i class="fas fa-eye"></i> Visibility</h3>
+                            <div class="visibility-controls">
+                                <label class="visibility-control">
+                                    <input type="checkbox" id="showEvents" checked>
+                                    <span class="checkmark"></span>
+                                    <span>Show Events</span>
+                                </label>
+                                <label class="visibility-control">
+                                    <input type="checkbox" id="showConnections" checked>
+                                    <span class="checkmark"></span>
+                                    <span>Show Connections</span>
+                                </label>
+                                <label class="visibility-control">
+                                    <input type="checkbox" id="showPatterns" checked>
+                                    <span class="checkmark"></span>
+                                    <span>Show Patterns</span>
+                                </label>
+                                <label class="visibility-control">
+                                    <input type="checkbox" id="showAnnotations" checked>
+                                    <span class="checkmark"></span>
+                                    <span>Show Annotations</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Patterns Tab -->
+                    <div id="patternsTab" class="tab-pane">
+                        <div class="pattern-section">
+                            <h3><i class="fas fa-brain"></i> Auto Detection</h3>
+                            <div class="pattern-detection">
+                                <button class="detection-btn" onclick="detectSeasonality()">
+                                    <i class="fas fa-calendar-week"></i>
+                                    Detect Seasonality
+                                </button>
+                                <button class="detection-btn" onclick="detectCycles()">
+                                    <i class="fas fa-redo-alt"></i>
+                                    Find Cycles
+                                </button>
+                                <button class="detection-btn" onclick="detectAnomalies()">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    Find Anomalies
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="pattern-section">
+                            <h3><i class="fas fa-list"></i> Detected Patterns</h3>
+                            <div class="pattern-results" id="patternResults">
+                                <div class="no-patterns">
+                                    <i class="fas fa-search"></i>
+                                    <p>No patterns detected yet</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Central Timeline Canvas -->
+            <div class="timeline-canvas">
+                <div class="canvas-controls">
+                    <div class="control-group">
+                        <button id="zoomIn" class="canvas-control">
+                            <i class="fas fa-search-plus"></i>
+                        </button>
+                        <button id="zoomOut" class="canvas-control">
+                            <i class="fas fa-search-minus"></i>
+                        </button>
+                        <button id="fitToWindow" class="canvas-control">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                        </button>
+                    </div>
+
+                    <div class="timeline-info">
+                        <span id="currentTimespan">Select time range</span>
+                        <span class="separator">•</span>
+                        <span id="selectedEvent">No event selected</span>
+                    </div>
+
+                    <div class="control-group">
+                        <button id="exportTimeline" class="canvas-control">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button id="shareTimeline" class="canvas-control">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                        <button id="fullscreenTimeline" class="canvas-control">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="visualization-area" id="visualizationArea">
+                    <!-- Timeline View -->
+                    <div id="timelineView" class="timeline-view active">
+                        <div id="timelineVisualization" class="timeline-vis"></div>
+                        <div class="timeline-scrubber">
+                            <div class="scrubber-track">
+                                <div class="scrubber-handle" id="scrubberHandle"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gantt View -->
+                    <div id="ganttView" class="timeline-view">
+                        <div id="ganttVisualization" class="gantt-vis"></div>
+                    </div>
+
+                    <!-- Flow View -->
+                    <div id="flowView" class="timeline-view">
+                        <div id="flowVisualization" class="flow-vis"></div>
+                        <div class="flow-controls">
+                            <div class="flow-speed">
+                                <label>Flow Speed:</label>
+                                <input type="range" id="flowSpeedControl" min="0.1" max="3" value="1" step="0.1">
+                                <span id="flowSpeedValue">1.0x</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calendar View -->
+                    <div id="calendarView" class="timeline-view">
+                        <div id="calendarVisualization" class="calendar-vis"></div>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div class="timeline-loading" id="timelineLoading">
+                        <div class="loading-clock">
+                            <div class="clock-outer"></div>
+                            <div class="clock-inner"></div>
+                            <div class="clock-hand-1"></div>
+                            <div class="clock-hand-2"></div>
+                        </div>
+                        <p>Processing temporal data...</p>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="timeline-empty" id="timelineEmpty">
+                        <div class="empty-clock">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3>Timeline Ready</h3>
+                        <p>Load JSON data with temporal information to begin analysis</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Analysis Panel -->
+            <aside class="right-timeline-panel">
+                <div class="panel-header">
+                    <h3 id="analysisTitle">
+                        <i class="fas fa-chart-line"></i>
+                        Event Analysis
+                    </h3>
+                    <button id="closeAnalysis" class="close-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="analysis-content" id="analysisContent">
+                    <div class="analysis-empty">
+                        <i class="fas fa-mouse-pointer"></i>
+                        <h4>Select an Event</h4>
+                        <p>Click on any event in the timeline to view detailed analysis</p>
+                    </div>
+                </div>
+
+                <div class="timeline-inspector" id="timelineInspector">
+                    <div class="inspector-tabs">
+                        <button class="inspector-tab active" data-tab="details">
+                            <i class="fas fa-info-circle"></i>
+                            Details
+                        </button>
+                        <button class="inspector-tab" data-tab="context">
+                            <i class="fas fa-sitemap"></i>
+                            Context
+                        </button>
+                        <button class="inspector-tab" data-tab="relations">
+                            <i class="fas fa-link"></i>
+                            Relations
+                        </button>
+                    </div>
+
+                    <div class="inspector-content">
+                        <div id="detailsInspector" class="inspector-pane active">
+                            <!-- Event details content -->
+                        </div>
+                        <div id="contextInspector" class="inspector-pane">
+                            <!-- Context content -->
+                        </div>
+                        <div id="relationsInspector" class="inspector-pane">
+                            <!-- Relations content -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flow Analytics -->
+                <div class="flow-analytics" id="flowAnalytics">
+                    <div class="analytics-section">
+                        <h4><i class="fas fa-chart-area"></i> Flow Metrics</h4>
+                        <div class="flow-metrics">
+                            <div class="metric-card">
+                                <div class="metric-value" id="avgFlowRate">0</div>
+                                <div class="metric-label">Avg Flow Rate</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="peakFlow">0</div>
+                                <div class="metric-label">Peak Flow</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="bottlenecks">0</div>
+                                <div class="metric-label">Bottlenecks</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-section">
+                        <h4><i class="fas fa-history"></i> Temporal Patterns</h4>
+                        <div class="temporal-patterns" id="temporalPatterns">
+                            <!-- Temporal pattern analysis will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Timeline Context Menu -->
+        <div id="timelineContextMenu" class="timeline-context-menu">
+            <button onclick="addAnnotation()">
+                <i class="fas fa-comment"></i>
+                Add Annotation
+            </button>
+            <button onclick="createBookmark()">
+                <i class="fas fa-bookmark"></i>
+                Bookmark Time
+            </button>
+            <button onclick="setStartPoint()">
+                <i class="fas fa-flag"></i>
+                Set Start Point
+            </button>
+            <div class="menu-separator"></div>
+            <button onclick="analyzeTimeRange()">
+                <i class="fas fa-microscope"></i>
+                Analyze Range
+            </button>
+            <button onclick="exportTimeRange()">
+                <i class="fas fa-download"></i>
+                Export Range
+            </button>
+        </div>
+
+        <!-- Flow Analysis Modal -->
+        <div id="flowAnalysisModal" class="timeline-modal">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-stream"></i> Flow Analysis</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="flow-analysis-tabs">
+                        <button class="analysis-tab active" data-tab="overview">Overview</button>
+                        <button class="analysis-tab" data-tab="patterns">Patterns</button>
+                        <button class="analysis-tab" data-tab="anomalies">Anomalies</button>
+                        <button class="analysis-tab" data-tab="predictions">Predictions</button>
+                    </div>
+                    
+                    <div class="analysis-content">
+                        <div id="overviewAnalysis" class="analysis-pane active">
+                            <!-- Overview analysis content -->
+                        </div>
+                        <div id="patternsAnalysis" class="analysis-pane">
+                            <!-- Patterns analysis content -->
+                        </div>
+                        <div id="anomaliesAnalysis" class="analysis-pane">
+                            <!-- Anomalies analysis content -->
+                        </div>
+                        <div id="predictionsAnalysis" class="analysis-pane">
+                            <!-- Predictions analysis content -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="timeline-btn secondary" onclick="exportAnalysis()">Export Report</button>
+                    <button class="timeline-btn primary" onclick="closeFlowAnalysis()">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tooltip -->
+        <div id="timelineTooltip" class="timeline-tooltip">
+            <div class="tooltip-header">
+                <span class="tooltip-title"></span>
+                <span class="tooltip-time"></span>
+            </div>
+            <div class="tooltip-content">
+                <div class="tooltip-description"></div>
+                <div class="tooltip-metadata"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Workspace - Notion Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: white;
+            color: rgb(55, 53, 47);
+            height: 100vh;
+            display: flex;
+        }
+        
+        .sidebar {
+            width: 240px;
+            background: rgb(247, 246, 243);
+            border-right: 1px solid rgb(233, 233, 231);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgb(233, 233, 231);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        
+        .workspace-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .workspace-name {
+            font-size: 14px;
+            color: rgb(55, 53, 47);
+        }
+        
+        .sidebar-section {
+            padding: 4px 0;
+        }
+        
+        .page-item {
+            display: flex;
+            align-items: center;
+            padding: 2px 14px 2px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1.2;
+            min-height: 27px;
+            transition: background-color 20ms ease-in;
+        }
+        
+        .page-item:hover {
+            background: rgba(55, 53, 47, 0.08);
+        }
+        
+        .page-item.active {
+            background: rgba(55, 53, 47, 0.08);
+            color: rgb(55, 53, 47);
+        }
+        
+        .page-toggle {
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 2px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 10px;
+            color: rgba(55, 53, 47, 0.65);
+        }
+        
+        .page-toggle:hover {
+            background: rgba(55, 53, 47, 0.08);
+        }
+        
+        .page-icon {
+            width: 18px;
+            height: 18px;
+            margin-right: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .page-title {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: rgba(55, 53, 47, 0.65);
+        }
+        
+        .page-item.active .page-title {
+            color: rgb(55, 53, 47);
+        }
+        
+        .sub-page {
+            padding-left: 32px;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .content-header {
+            padding: 16px 96px 0;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .page-cover {
+            height: 240px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
+            margin-bottom: 24px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cover-text {
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+        
+        .page-title-section {
+            margin-bottom: 32px;
+        }
+        
+        .page-icon-large {
+            font-size: 48px;
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .page-title-large {
+            font-size: 40px;
+            line-height: 1.2;
+            font-weight: 700;
+            color: rgb(55, 53, 47);
+            margin-bottom: 8px;
+        }
+        
+        .page-description {
+            font-size: 16px;
+            color: rgba(55, 53, 47, 0.65);
+            line-height: 1.5;
+        }
+        
+        .content-area {
+            flex: 1;
+            padding: 0 96px 48px;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            overflow-y: auto;
+        }
+        
+        .block {
+            margin-bottom: 2px;
+            line-height: 1.5;
+            position: relative;
+        }
+        
+        .block-content {
+            padding: 3px 2px;
+            min-height: 28px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .block-handle {
+            width: 18px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            cursor: grab;
+            color: rgba(55, 53, 47, 0.3);
+            font-size: 12px;
+        }
+        
+        .block:hover .block-handle {
+            opacity: 1;
+        }
+        
+        .block-text {
+            flex: 1;
+            outline: none;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            color: rgb(55, 53, 47);
+            font-family: inherit;
+            line-height: 1.5;
+            padding: 0;
+        }
+        
+        .heading-1 {
+            font-size: 30px;
+            font-weight: 700;
+            margin: 24px 0 8px;
+            color: rgb(55, 53, 47);
+        }
+        
+        .heading-2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 20px 0 6px;
+            color: rgb(55, 53, 47);
+        }
+        
+        .heading-3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 16px 0 4px;
+            color: rgb(55, 53, 47);
+        }
+        
+        .bullet-list {
+            padding-left: 24px;
+        }
+        
+        .bullet-item {
+            position: relative;
+            margin-bottom: 2px;
+        }
+        
+        .bullet-item::before {
+            content: '•';
+            position: absolute;
+            left: -16px;
+            color: rgba(55, 53, 47, 0.4);
+        }
+        
+        .callout {
+            background: rgb(241, 240, 237);
+            border: 1px solid rgb(233, 233, 231);
+            border-radius: 3px;
+            padding: 16px;
+            margin: 8px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .callout-icon {
+            font-size: 20px;
+            line-height: 1;
+        }
+        
+        .callout-text {
+            flex: 1;
+            color: rgb(55, 53, 47);
+        }
+        
+        .divider {
+            height: 1px;
+            background: rgb(233, 233, 231);
+            margin: 24px 0;
+        }
+        
+        .table-block {
+            border: 1px solid rgb(233, 233, 231);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+        
+        .table-row {
+            display: flex;
+            border-bottom: 1px solid rgb(233, 233, 231);
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
+        .table-cell {
+            flex: 1;
+            padding: 8px 12px;
+            border-right: 1px solid rgb(233, 233, 231);
+            font-size: 14px;
+        }
+        
+        .table-cell:last-child {
+            border-right: none;
+        }
+        
+        .table-header .table-cell {
+            background: rgb(247, 246, 243);
+            font-weight: 500;
+        }
+        
+        .breadcrumb {
+            padding: 8px 96px;
+            font-size: 12px;
+            color: rgba(55, 53, 47, 0.4);
+            border-bottom: 1px solid rgb(243, 243, 241);
+            background: white;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(55, 53, 47, 0.16);
+            border-radius: 6px;
+            border: 2px solid white;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(55, 53, 47, 0.24);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="workspace-icon">TC</div>
+            <div class="workspace-name">TechCorp Workspace</div>
+        </div>
+        
+        <div class="sidebar-section">
+            <div class="page-item">
+                <div class="page-toggle">▼</div>
+                <div class="page-icon">🏠</div>
+                <div class="page-title">Home</div>
+            </div>
+            
+            <div class="page-item active">
+                <div class="page-toggle">▼</div>
+                <div class="page-icon">📋</div>
+                <div class="page-title">Product Strategy</div>
+            </div>
+            
+            <div class="page-item sub-page">
+                <div class="page-toggle"></div>
+                <div class="page-icon">🎯</div>
+                <div class="page-title">Roadmap 2025</div>
+            </div>
+            
+            <div class="page-item sub-page">
+                <div class="page-toggle"></div>
+                <div class="page-icon">📊</div>
+                <div class="page-title">Market Research</div>
+            </div>
+            
+            <div class="page-item">
+                <div class="page-toggle">▶</div>
+                <div class="page-icon">👥</div>
+                <div class="page-title">Team</div>
+            </div>
+            
+            <div class="page-item">
+                <div class="page-toggle">▼</div>
+                <div class="page-icon">💼</div>
+                <div class="page-title">Projects</div>
+            </div>
+            
+            <div class="page-item sub-page">
+                <div class="page-toggle"></div>
+                <div class="page-icon">🚀</div>
+                <div class="page-title">Mobile App Launch</div>
+            </div>
+            
+            <div class="page-item sub-page">
+                <div class="page-toggle"></div>
+                <div class="page-icon">🔧</div>
+                <div class="page-title">Platform Migration</div>
+            </div>
+            
+            <div class="page-item">
+                <div class="page-toggle"></div>
+                <div class="page-icon">📚</div>
+                <div class="page-title">Documentation</div>
+            </div>
+            
+            <div class="page-item">
+                <div class="page-toggle"></div>
+                <div class="page-icon">⚙️</div>
+                <div class="page-title">Settings</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="breadcrumb">
+            Home > Product Strategy
+        </div>
+        
+        <div class="content-header">
+            <div class="page-cover">
+                <div class="cover-text">Product Strategy 2025</div>
+            </div>
+            
+            <div class="page-title-section">
+                <span class="page-icon-large">📋</span>
+                <h1 class="page-title-large">Product Strategy</h1>
+                <p class="page-description">Our comprehensive strategy for product development and market positioning in 2025</p>
+            </div>
+        </div>
+        
+        <div class="content-area">
+            <div class="block">
+                <h2 class="heading-2">Executive Summary</h2>
+            </div>
+            
+            <div class="block">
+                <div class="block-content">
+                    <div class="block-handle">⋮⋮</div>
+                    <div class="block-text">Our product strategy for 2025 focuses on three key pillars: innovation, user experience, and market expansion. We aim to deliver cutting-edge solutions that meet evolving customer needs while maintaining our competitive edge.</div>
+                </div>
+            </div>
+            
+            <div class="callout">
+                <div class="callout-icon">💡</div>
+                <div class="callout-text">
+                    <strong>Key Insight:</strong> Customer feedback indicates 85% satisfaction with our current offerings, with room for improvement in mobile experience and integration capabilities.
+                </div>
+            </div>
+            
+            <div class="block">
+                <h2 class="heading-2">Strategic Objectives</h2>
+            </div>
+            
+            <div class="bullet-list">
+                <div class="bullet-item">
+                    <div class="block-content">
+                        <div class="block-handle">⋮⋮</div>
+                        <div class="block-text">Increase market share by 25% through targeted expansion</div>
+                    </div>
+                </div>
+                <div class="bullet-item">
+                    <div class="block-content">
+                        <div class="block-handle">⋮⋮</div>
+                        <div class="block-text">Launch 3 major product features based on user research</div>
+                    </div>
+                </div>
+                <div class="bullet-item">
+                    <div class="block-content">
+                        <div class="block-handle">⋮⋮</div>
+                        <div class="block-text">Improve customer satisfaction scores by 15%</div>
+                    </div>
+                </div>
+                <div class="bullet-item">
+                    <div class="block-content">
+                        <div class="block-handle">⋮⋮</div>
+                        <div class="block-text">Achieve 99.9% uptime across all platforms</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="block">
+                <h2 class="heading-2">Market Analysis</h2>
+            </div>
+            
+            <div class="table-block">
+                <div class="table-row table-header">
+                    <div class="table-cell">Market Segment</div>
+                    <div class="table-cell">Current Share</div>
+                    <div class="table-cell">Growth Potential</div>
+                    <div class="table-cell">Priority</div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">Enterprise</div>
+                    <div class="table-cell">35%</div>
+                    <div class="table-cell">High</div>
+                    <div class="table-cell">🔴 Critical</div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">SMB</div>
+                    <div class="table-cell">22%</div>
+                    <div class="table-cell">Medium</div>
+                    <div class="table-cell">🟡 Important</div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell">Startups</div>
+                    <div class="table-cell">18%</div>
+                    <div class="table-cell">Very High</div>
+                    <div class="table-cell">🟢 Monitor</div>
+                </div>
+            </div>
+            
+            <div class="block">
+                <h3 class="heading-3">Key Initiatives</h3>
+            </div>
+            
+            <div class="block">
+                <div class="block-content">
+                    <div class="block-handle">⋮⋮</div>
+                    <div class="block-text">Our roadmap includes several critical initiatives designed to strengthen our market position and deliver exceptional value to our customers. Each initiative has been carefully evaluated for impact, feasibility, and strategic alignment.</div>
+                </div>
+            </div>
+            
+            <div class="callout">
+                <div class="callout-icon">📅</div>
+                <div class="callout-text">
+                    <strong>Timeline:</strong> Implementation will begin Q1 2025 with full rollout expected by Q3 2025.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>보안 감사 보고서</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Malgun Gothic', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a202c;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            color: white;
+            padding: 60px 50px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><g fill="rgba(255,255,255,0.05)"><circle cx="20" cy="20" r="2"/><circle cx="40" cy="30" r="1.5"/><circle cx="60" cy="15" r="2.5"/><circle cx="80" cy="25" r="1"/><circle cx="30" cy="50" r="2"/><circle cx="70" cy="45" r="1.5"/><circle cx="90" cy="60" r="2"/><circle cx="10" cy="70" r="1.5"/><circle cx="50" cy="80" r="2.5"/><circle cx="25" cy="85" r="1"/></g></svg>');
+            animation: sparkle 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes sparkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.7; }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 400% 400%;
+            animation: gradient 4s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .security-badge {
+            background: rgba(255, 107, 107, 0.2);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 107, 107, 0.3);
+            text-align: center;
+        }
+
+        .content {
+            padding: 60px 50px;
+        }
+
+        .toc {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border-radius: 24px;
+            padding: 45px;
+            margin-bottom: 60px;
+            border: 3px solid #ff6b6b;
+            position: relative;
+        }
+
+        .toc::before {
+            content: '🔐';
+            position: absolute;
+            top: -25px;
+            left: 45px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 50%;
+            font-size: 2.5rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .toc h2 {
+            color: #1a202c;
+            margin-bottom: 35px;
+            font-size: 2.2rem;
+            margin-left: 50px;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+        }
+
+        .toc-item {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            border-left: 6px solid #ff6b6b;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .toc-item:hover {
+            transform: translateX(12px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .toc-item a {
+            color: #1a202c;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .section {
+            margin-bottom: 80px;
+            background: #f8f9fa;
+            border-radius: 24px;
+            padding: 60px;
+            border-left: 10px solid #ff6b6b;
+            position: relative;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section::before {
+            content: attr(data-icon);
+            position: absolute;
+            top: -25px;
+            left: 45px;
+            background: #ff6b6b;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 50%;
+            font-size: 2rem;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        .section h2 {
+            color: #1a202c;
+            font-size: 2.8rem;
+            margin-bottom: 45px;
+            margin-left: 50px;
+        }
+
+        .security-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 35px;
+            margin: 45px 0;
+        }
+
+        .security-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+            transition: all 0.3s ease;
+            border-top: 8px solid #667eea;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .security-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(0.9); opacity: 0.7; }
+            50% { transform: scale(1.1); opacity: 0.3; }
+        }
+
+        .security-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+        }
+
+        .security-card:nth-child(2n) { border-top-color: #48bb78; }
+        .security-card:nth-child(3n) { border-top-color: #ed8936; }
+        .security-card:nth-child(4n) { border-top-color: #9f7aea; }
+
+        .risk-level {
+            display: inline-block;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .risk-critical {
+            background: linear-gradient(45deg, #e53e3e, #fc8181);
+            color: white;
+            box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+        }
+
+        .risk-high {
+            background: linear-gradient(45deg, #ed8936, #f6ad55);
+            color: white;
+            box-shadow: 0 4px 15px rgba(237, 137, 54, 0.4);
+        }
+
+        .risk-medium {
+            background: linear-gradient(45deg, #ecc94b, #f6e05e);
+            color: #1a202c;
+            box-shadow: 0 4px 15px rgba(236, 201, 75, 0.4);
+        }
+
+        .risk-low {
+            background: linear-gradient(45deg, #48bb78, #68d391);
+            color: white;
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);
+        }
+
+        .vulnerability-table {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+            margin: 45px 0;
+        }
+
+        .vulnerability-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .vulnerability-table th {
+            background: linear-gradient(135deg, #1a202c, #2d3748);
+            color: white;
+            padding: 25px 20px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .vulnerability-table td {
+            padding: 20px;
+            border-bottom: 2px solid #edf2f7;
+            font-size: 1rem;
+        }
+
+        .vulnerability-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        .vulnerability-table tr:hover {
+            background: #e6fffa;
+            transition: all 0.2s ease;
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-resolved {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .status-pending {
+            background: #fef5e7;
+            color: #744210;
+        }
+
+        .status-inprogress {
+            background: #bee3f8;
+            color: #2c5282;
+        }
+
+        .compliance-matrix {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 50px;
+            border-radius: 24px;
+            margin: 45px 0;
+        }
+
+        .compliance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 35px;
+        }
+
+        .compliance-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 30px;
+            border-radius: 18px;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .compliance-score {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #feca57, #ff9ff3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .recommendations {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            padding: 50px;
+            border-radius: 24px;
+            margin: 45px 0;
+        }
+
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 35px;
+        }
+
+        .recommendation-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 30px;
+            border-radius: 18px;
+            backdrop-filter: blur(15px);
+            border-left: 6px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .priority-urgent {
+            border-left-color: #e53e3e;
+        }
+
+        .priority-high {
+            border-left-color: #ed8936;
+        }
+
+        .priority-medium {
+            border-left-color: #ecc94b;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 45px;
+            border-radius: 20px;
+            margin: 45px 0;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .chart-placeholder {
+            height: 450px;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px dashed #667eea;
+            color: #4a5568;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .footer {
+            background: #1a202c;
+            color: white;
+            padding: 50px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .classification-banner {
+            background: #e53e3e;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 40px 25px;
+            }
+            
+            .header-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: 40px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="classification-banner">
+            🔒 CONFIDENTIAL - 기밀 문서 🔒
+        </div>
+
+        <header class="header">
+            <div class="header-content">
+                <div>
+                    <h1>보안 감사 보고서</h1>
+                    <p style="font-size: 1.3rem; opacity: 0.9; margin-bottom: 10px;">Security Audit Report</p>
+                    <p style="font-size: 1.1rem; opacity: 0.8;">고객관리시스템 v2.0 보안 평가</p>
+                </div>
+                <div class="security-badge">
+                    <h3 style="margin-bottom: 15px; font-size: 1.4rem;">🛡️ 보안 등급</h3>
+                    <div style="font-size: 2.5rem; font-weight: 900; margin-bottom: 10px;">B+</div>
+                    <div style="font-size: 1rem;">위험도: 중간</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 10px;">
+                        감사일: 2025-08-15 ~ 2025-08-20<br>
+                        감사자: 박보안컨설턴트 (CISSP)
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+            <div class="toc">
+                <h2>목차 (Table of Contents)</h2>
+                <div class="toc-grid">
+                    <div class="toc-item">
+                        <a href="#executive-summary">1. 경영진 요약</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#scope-methodology">2. 감사 범위 및 방법론</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#vulnerability-assessment">3. 취약점 평가</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#compliance-review">4. 규정 준수 검토</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#risk-analysis">5. 위험도 분석</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#recommendations">6. 개선 권고사항</a>
+                    </div>
+                </div>
+            </div>
+
+            <section id="executive-summary" class="section" data-icon="📊">
+                <h2>경영진 요약 (Executive Summary)</h2>
+                <div class="security-overview">
+                    <div class="security-card">
+                        <h3>전체 보안 점수</h3>
+                        <div style="font-size: 3.5rem; font-weight: 900; color: #ed8936; margin: 20px 0;">75/100</div>
+                        <div class="risk-level risk-medium">보통 위험</div>
+                        <p style="margin-top: 15px;">기본적인 보안 요소는 잘 구현되어 있으나, 몇 가지 중요한 개선사항이 필요합니다.</p>
+                    </div>
+                    <div class="security-card">
+                        <h3>발견된 취약점</h3>
+                        <div style="font-size: 3.5rem; font-weight: 900; color: #e53e3e; margin: 20px 0;">23</div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
+                            <span class="risk-level risk-critical" style="font-size: 0.8rem;">위험 3</span>
+                            <span class="risk-level risk-high" style="font-size: 0.8rem;">높음 7</span>
+                            <span class="risk-level risk-medium" style="font-size: 0.8rem;">중간 13</span>
+                        </div>
+                    </div>
+                    <div class="security-card">
+                        <h3>규정 준수도</h3>
+                        <div style="font-size: 3.5rem; font-weight: 900; color: #48bb78; margin: 20px 0;">82%</div>
+                        <div class="risk-level risk-low">양호</div>
+                        <p style="margin-top: 15px;">대부분의 보안 규정을 준수하고 있으며, 일부 개선이 필요한 영역이 있습니다.</p>
+                    </div>
+                    <div class="security-card">
+                        <h3>권장 조치기한</h3>
+                        <div style="font-size: 3.5rem; font-weight: 900; color: #667eea; margin: 20px 0;">30일</div>
+                        <div class="risk-level risk-high">긴급</div>
+                        <p style="margin-top: 15px;">위험도가 높은 취약점은 30일 이내 조치가 필요합니다.</p>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 40px; border-radius: 20px; margin: 40px 0; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
+                    <h3 style="margin-bottom: 25px; color: #1a202c;">주요 발견 사항</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                        <div style="border-left: 4px solid #e53e3e; padding-left: 20px;">
+                            <h4 style="color: #e53e3e; margin-bottom: 10px;">긴급 조치 필요</h4>
+                            <ul style="line-height: 2;">
+                                <li>SQL Injection 취약점 (3건)</li>
+                                <li>인증 우회 가능성</li>
+                                <li>민감정보 평문 저장</li>
+                            </ul>
+                        </div>
+                        <div style="border-left: 4px solid #ed8936; padding-left: 20px;">
+                            <h4 style="color: #ed8936; margin-bottom: 10px;">단기 개선 필요</h4>
+                            <ul style="line-height: 2;">
+                                <li>세션 관리 강화</li>
+                                <li>입력 검증 개선</li>
+                                <li>로깅 체계 보완</li>
+                            </ul>
+                        </div>
+                        <div style="border-left: 4px solid #48bb78; padding-left: 20px;">
+                            <h4 style="color: #48bb78; margin-bottom: 10px;">잘 구현된 부분</h4>
+                            <ul style="line-height: 2;">
+                                <li>HTTPS 통신 적용</li>
+                                <li>비밀번호 정책 준수</li>
+                                <li>접근 권한 관리</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="scope-methodology" class="section" data-icon="🔍">
+                <h2>감사 범위 및 방법론 (Scope & Methodology)</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                    <div style="background: white; padding: 35px; border-radius: 18px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
+                        <h3 style="color: #667eea; margin-bottom: 25px;">감사 대상 시스템</h3>
+                        <ul style="line-height: 2.2; font-size: 1.1rem;">
+                            <li><strong>웹 애플리케이션:</strong> 고객관리 포털</li>
+                            <li><strong>데이터베이스:</strong> PostgreSQL 클러스터</li>
+                            <li><strong>API 서비스:</strong> REST API 엔드포인트</li>
+                            <li><strong>인프라:</strong> AWS 클라우드 환경</li>
+                            <li><strong>네트워크:</strong> 방화벽 및 보안 그룹</li>
+                            <li><strong>인증 시스템:</strong> JWT 토큰 기반</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 35px; border-radius: 18px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
+                        <h3 style="color: #48bb78; margin-bottom: 25px;">적용 방법론</h3>
+                        <ul style="line-height: 2.2; font-size: 1.1rem;">
+                            <li><strong>OWASP Top 10:</strong> 웹 보안 취약점</li>
+                            <li><strong>NIST CSF:</strong> 사이버보안 프레임워크</li>
+                            <li><strong>ISO 27001:</strong> 정보보안 관리체계</li>
+                            <li><strong>침투 테스트:</strong> 화이트박스/블랙박스</li>
+                            <li><strong>코드 검토:</strong> 정적/동적 분석</li>
+                            <li><strong>설정 검토:</strong> 보안 구성 검사</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3 style="margin-bottom: 25px;">감사 수행 일정</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        <div style="background: #f7fafc; padding: 20px; border-radius: 12px; border-left: 4px solid #667eea;">
+                            <strong>1일차:</strong> 시스템 스캐닝 및 취약점 탐지
+                        </div>
+                        <div style="background: #f7fafc; padding: 20px; border-radius: 12px; border-left: 4px solid #48bb78;">
+                            <strong>2일차:</strong> 웹 애플리케이션 침투 테스트
+                        </div>
+                        <div style="background: #f7fafc; padding: 20px; border-radius: 12px; border-left: 4px solid #ed8936;">
+                            <strong>3일차:</strong> 데이터베이스 보안 검토
+                        </div>
+                        <div style="background: #f7fafc; padding: 20px; border-radius: 12px; border-left: 4px solid #9f7aea;">
+                            <strong>4일차:</strong> 네트워크 및 인프라 평가
+                        </div>
+                        <div style="background: #f7fafc; padding: 20px; border-radius: 12px; border-left: 4px solid #e53e3e;">
+                            <strong>5일차:</strong> 코드 검토 및 규정 준수 확인
+                        </div>
+                        <div style="background: #f7fafc; padding: 20px; border-radius: 12px; border-left: 4px solid #38b2ac;">
+                            <strong>6일차:</strong> 보고서 작성 및 결과 검증
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="vulnerability-assessment" class="section" data-icon="⚠️">
+                <h2>취약점 평가 (Vulnerability Assessment)</h2>
+                <div class="vulnerability-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>취약점 ID</th>
+                                <th>취약점명</th>
+                                <th>위험도</th>
+                                <th>영향도</th>
+                                <th>발견 위치</th>
+                                <th>상태</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>CRM-2025-001</strong></td>
+                                <td>SQL Injection in User Search</td>
+                                <td><span class="risk-level risk-critical">위험</span></td>
+                                <td>데이터 유출 가능</td>
+                                <td>/api/users/search</td>
+                                <td><span class="status-badge status-pending">대기중</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>CRM-2025-002</strong></td>
+                                <td>Authentication Bypass</td>
+                                <td><span class="risk-level risk-critical">위험</span></td>
+                                <td>권한 상승</td>
+                                <td>/admin/login</td>
+                                <td><span class="status-badge status-inprogress">수정중</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>CRM-2025-003</strong></td>
+                                <td>Sensitive Data in Logs</td>
+                                <td><span class="risk-level risk-critical">위험</span></td>
+                                <td>개인정보 노출</td>
+                                <td>Application Logs</td>
+                                <td><span class="status-badge status-pending">대기중</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>CRM-2025-004</strong></td>
+                                <td>Cross-Site Scripting (XSS)</td>
+                                <td><span class="risk-level risk-high">높음</span></td>
+                                <td>세션 하이재킹</td>
+                                <td>/dashboard/comments</td>
+                                <td><span class="status-badge status-resolved">완료</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>CRM-2025-005</strong></td>
+                                <td>Insecure Direct Object Reference</td>
+                                <td><span class="risk-level risk-high">높음</span></td>
+                                <td>데이터 접근 제어 우회</td>
+                                <td>/api/customers/{id}</td>
+                                <td><span class="status-badge status-inprogress">수정중</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>CRM-2025-006</strong></td>
+                                <td>Weak Session Management</td>
+                                <td><span class="risk-level risk-high">높음</span></td>
+                                <td>세션 고정 공격</td>
+                                <td>Session Handler</td>
+                                <td><span class="status-badge status-pending">대기중</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>CRM-2025-007</strong></td>
+                                <td>Missing Rate Limiting</td>
+                                <td><span class="risk-level risk-medium">중간</span></td>
+                                <td>DDoS 공격 위험</td>
+                                <td>/api/login</td>
+                                <td><span class="status-badge status-pending">대기중</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="chart-container">
+                    <h3 style="margin-bottom: 25px;">취약점 분포 현황</h3>
+                    <div class="chart-placeholder">
+                        [취약점 분포 차트 - 위험도별, 카테고리별 분류]<br>
+                        위험(3) | 높음(7) | 중간(13) | 낮음(0)
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin: 40px 0;">
+                    <div style="background: white; padding: 30px; border-radius: 18px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-top: 6px solid #e53e3e;">
+                        <h4 style="color: #e53e3e; margin-bottom: 20px;">위험도: 위험</h4>
+                        <div style="font-size: 2.5rem; font-weight: 900; color: #e53e3e; margin-bottom: 15px;">3건</div>
+                        <p><strong>즉시 조치 필요</strong><br>시스템 보안에 심각한 위협이 되는 취약점들로, 24시간 이내 조치가 필요합니다.</p>
+                    </div>
+                    <div style="background: white; padding: 30px; border-radius: 18px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-top: 6px solid #ed8936;">
+                        <h4 style="color: #ed8936; margin-bottom: 20px;">위험도: 높음</h4>
+                        <div style="font-size: 2.5rem; font-weight: 900; color: #ed8936; margin-bottom: 15px;">7건</div>
+                        <p><strong>1주일 내 조치</strong><br>보안 침해 가능성이 높은 취약점들로, 우선 순위를 두고 수정해야 합니다.</p>
+                    </div>
+                    <div style="background: white; padding: 30px; border-radius: 18px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-top: 6px solid #ecc94b;">
+                        <h4 style="color: #d69e2e; margin-bottom: 20px;">위험도: 중간</h4>
+                        <div style="font-size: 2.5rem; font-weight: 900; color: #d69e2e; margin-bottom: 15px;">13건</div>
+                        <p><strong>1개월 내 조치</strong><br>보안 강화를 위해 개선이 필요하지만, 즉각적인 위험은 낮은 수준입니다.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="compliance-review" class="section" data-icon="📋">
+                <h2>규정 준수 검토 (Compliance Review)</h2>
+                <div class="compliance-matrix">
+                    <h3 style="margin-bottom: 30px; font-size: 2rem;">보안 규정 준수 현황</h3>
+                    <div class="compliance-grid">
+                        <div class="compliance-item">
+                            <h4>개인정보보호법</h4>
+                            <div class="compliance-score">85%</div>
+                            <p>개인정보 처리 동의 절차와 암호화는 잘 구현되어 있으나, 개인정보 파기 절차 개선이 필요합니다.</p>
+                            <div style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 8px;">
+                                <strong>주요 이슈:</strong> 로그 파일 내 개인정보 보관
+                            </div>
+                        </div>
+                        <div class="compliance-item">
+                            <h4>ISO 27001</h4>
+                            <div class="compliance-score">78%</div>
+                            <p>정보보안 관리 체계는 기본 수준을 만족하나, 보안 사고 대응 절차와 정기 감사 체계가 미흡합니다.</p>
+                            <div style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 8px;">
+                                <strong>주요 이슈:</strong> 보안 정책 문서화 부족
+                            </div>
+                        </div>
+                        <div class="compliance-item">
+                            <h4>OWASP Top 10</h4>
+                            <div class="compliance-score">70%</div>
+                            <p>웹 애플리케이션 보안 기본 사항은 대부분 준수하고 있으나, 인증 및 세션 관리 부분에서 개선이 필요합니다.</p>
+                            <div style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 8px;">
+                                <strong>주요 이슈:</strong> 인증 우회 취약점 존재
+                            </div>
+                        </div>
+                        <div class="compliance-item">
+                            <h4>정보통신망법</h4>
+                            <div class="compliance-score">90%</div>
+                            <p>네트워크 보안 및 접근 제어는 우수한 수준이며, 암호화 통신도 적절히 구현되어 있습니다.</p>
+                            <div style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 8px;">
+                                <strong>주요 이슈:</strong> 로그 보관 기간 검토 필요
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vulnerability-table">
+                    <h3 style="margin-bottom: 25px; padding: 0 20px;">규정별 세부 검토 결과</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>규정 항목</th>
+                                <th>요구사항</th>
+                                <th>현재 상태</th>
+                                <th>준수 여부</th>
+                                <th>개선 필요사항</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>암호화 통신</strong></td>
+                                <td>HTTPS/TLS 1.2 이상</td>
+                                <td>TLS 1.3 적용</td>
+                                <td><span class="status-badge status-resolved">준수</span></td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td><strong>비밀번호 정책</strong></td>
+                                <td>복잡도 + 주기적 변경</td>
+                                <td>복잡도 적용됨</td>
+                                <td><span class="status-badge status-resolved">준수</span></td>
+                                <td>주기적 변경 알림 개선</td>
+                            </tr>
+                            <tr>
+                                <td><strong>접근 로그</strong></td>
+                                <td>사용자 활동 기록</td>
+                                <td>부분적 로깅</td>
+                                <td><span class="status-badge status-pending">부분준수</span></td>
+                                <td>관리자 활동 로깅 추가</td>
+                            </tr>
+                            <tr>
+                                <td><strong>개인정보 암호화</strong></td>
+                                <td>민감정보 암호화 저장</td>
+                                <td>일부 평문 저장</td>
+                                <td><span class="status-badge status-pending">미준수</span></td>
+                                <td>전면 암호화 적용</td>
+                            </tr>
+                            <tr>
+                                <td><strong>권한 관리</strong></td>
+                                <td>최소 권한 원칙</td>
+                                <td>역할 기반 접근제어</td>
+                                <td><span class="status-badge status-resolved">준수</span></td>
+                                <td>정기적 권한 검토</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="risk-analysis" class="section" data-icon="⚡">
+                <h2>위험도 분석 (Risk Analysis)</h2>
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 40px; margin-bottom: 40px;">
+                    <div class="chart-container" style="margin: 0;">
+                        <h3 style="margin-bottom: 25px;">위험도 매트릭스</h3>
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; height: 300px;">
+                            <!-- Risk Matrix visualization would go here -->
+                            <div style="background: #f7fafc; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">낮음/낮음</div>
+                            <div style="background: #fef5e7; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">낮음/중간</div>
+                            <div style="background: #fed7d7; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">낮음/높음</div>
+                            <div style="background: #fed7d7; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">낮음/매우높음</div>
+                            <div style="background: #fed7d7; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;">낮음/극도</div>
+                            <!-- Continue for other combinations -->
+                        </div>
+                    </div>
+                    <div style="background: white; padding: 30px; border-radius: 18px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
+                        <h4 style="margin-bottom: 20px; color: #1a202c;">위험 수준별 분포</h4>
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>극한 위험</span>
+                                <span>0건</span>
+                            </div>
+                            <div style="height: 8px; background: #e2e8f0; border-radius: 4px;">
+                                <div style="width: 0%; height: 100%; background: #742a2a; border-radius: 4px;"></div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>높은 위험</span>
+                                <span>3건</span>
+                            </div>
+                            <div style="height: 8px; background: #e2e8f0; border-radius: 4px;">
+                                <div style="width: 13%; height: 100%; background: #e53e3e; border-radius: 4px;"></div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>중간 위험</span>
+                                <span>15건</span>
+                            </div>
+                            <div style="height: 8px; background: #e2e8f0; border-radius: 4px;">
+                                <div style="width: 65%; height: 100%; background: #ed8936; border-radius: 4px;"></div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>낮은 위험</span>
+                                <span>5건</span>
+                            </div>
+                            <div style="height: 8px; background: #e2e8f0; border-radius: 4px;">
+                                <div style="width: 22%; height: 100%; background: #48bb78; border-radius: 4px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px;">
+                    <div style="background: white; padding: 30px; border-radius: 18px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
+                        <h4 style="color: #e53e3e; margin-bottom: 20px;">🔥 최우선 위험 요소</h4>
+                        <ul style="line-height: 2.2;">
+                            <li><strong>데이터 유출:</strong> SQL Injection으로 인한 고객 정보 노출 위험</li>
+                            <li><strong>무단 접근:</strong> 인증 우회를 통한 관리자 권한 탈취</li>
+                            <li><strong>개인정보 침해:</strong> 로그 파일 내 민감정보 노출</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 30px; border-radius: 18px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
+                        <h4 style="color: #ed8936; margin-bottom: 20px;">⚠️ 비즈니스 영향도</h4>
+                        <ul style="line-height: 2.2;">
+                            <li><strong>법적 위험:</strong> 개인정보 보호법 위반 시 과태료</li>
+                            <li><strong>신뢰도 저하:</strong> 보안 사고 시 고객 신뢰 손실</li>
+                            <li><strong>서비스 중단:</strong> 보안 사고 복구를 위한 서비스 중단</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 30px; border-radius: 18px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
+                        <h4 style="color: #667eea; margin-bottom: 20px;">💡 위험 완화 전략</h4>
+                        <ul style="line-height: 2.2;">
+                            <li><strong>단계적 접근:</strong> 위험도 순으로 우선순위 수정</li>
+                            <li><strong>보안 교육:</strong> 개발팀 대상 보안 교육 강화</li>
+                            <li><strong>지속 감사:</strong> 정기적인 보안 점검 체계 구축</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="recommendations" class="section" data-icon="🎯">
+                <h2>개선 권고사항 (Recommendations)</h2>
+                <div class="recommendations">
+                    <h3 style="margin-bottom: 30px; font-size: 2rem;">우선순위별 개선 계획</h3>
+                    <div class="recommendations-grid">
+                        <div class="recommendation-item priority-urgent">
+                            <h4 style="margin-bottom: 15px;">🚨 긴급 (24시간 이내)</h4>
+                            <ul style="line-height: 2.2;">
+                                <li><strong>SQL Injection 수정:</strong> 매개변수화된 쿼리로 전면 변경</li>
+                                <li><strong>인증 시스템 보강:</strong> 다중 인증 및 세션 관리 강화</li>
+                                <li><strong>민감정보 암호화:</strong> 평문으로 저장된 개인정보 암호화</li>
+                                <li><strong>임시 조치:</strong> 취약한 API 엔드포인트 임시 비활성화</li>
+                            </ul>
+                        </div>
+                        <div class="recommendation-item priority-high">
+                            <h4 style="margin-bottom: 15px;">⚡ 높음 (1주 이내)</h4>
+                            <ul style="line-height: 2.2;">
+                                <li><strong>입력 검증 강화:</strong> 모든 사용자 입력에 대한 검증 로직 추가</li>
+                                <li><strong>세션 보안:</strong> 안전한 세션 타임아웃 및 토큰 갱신</li>
+                                <li><strong>접근 제어:</strong> API 엔드포인트별 권한 검증 강화</li>
+                                <li><strong>보안 헤더:</strong> CSP, HSTS 등 보안 헤더 적용</li>
+                            </ul>
+                        </div>
+                        <div class="recommendation-item priority-medium">
+                            <h4 style="margin-bottom: 15px;">📋 중간 (1개월 이내)</h4>
+                            <ul style="line-height: 2.2;">
+                                <li><strong>보안 모니터링:</strong> 실시간 보안 이벤트 모니터링 구축</li>
+                                <li><strong>로깅 시스템:</strong> 보안 감사 로그 체계 개선</li>
+                                <li><strong>백업 암호화:</strong> 데이터베이스 백업 암호화 적용</li>
+                                <li><strong>보안 테스트:</strong> 자동화된 보안 테스트 도구 도입</li>
+                            </ul>
+                        </div>
+                        <div class="recommendation-item">
+                            <h4 style="margin-bottom: 15px;">🔄 장기 (3개월 이내)</h4>
+                            <ul style="line-height: 2.2;">
+                                <li><strong>보안 정책:</strong> 종합적인 정보보안 정책 수립</li>
+                                <li><strong>직원 교육:</strong> 보안 인식 제고 교육 프로그램</li>
+                                <li><strong>침입 탐지:</strong> IDS/IPS 시스템 구축</li>
+                                <li><strong>재해 복구:</strong> 보안 사고 대응 절차 및 복구 계획</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vulnerability-table">
+                    <h3 style="margin-bottom: 25px; padding: 0 20px;">개선 권고사항 세부 계획</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>개선사항</th>
+                                <th>예상 비용</th>
+                                <th>소요 기간</th>
+                                <th>담당 부서</th>
+                                <th>위험도 감소</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>SQL Injection 취약점 수정</strong></td>
+                                <td>₩15,000,000</td>
+                                <td>1주</td>
+                                <td>개발팀</td>
+                                <td class="risk-level risk-low">85% 감소</td>
+                            </tr>
+                            <tr>
+                                <td><strong>다중 인증 시스템 구축</strong></td>
+                                <td>₩25,000,000</td>
+                                <td>2주</td>
+                                <td>보안팀</td>
+                                <td class="risk-level risk-low">70% 감소</td>
+                            </tr>
+                            <tr>
+                                <td><strong>개인정보 전면 암호화</strong></td>
+                                <td>₩35,000,000</td>
+                                <td>3주</td>
+                                <td>개발팀</td>
+                                <td class="risk-level risk-low">90% 감소</td>
+                            </tr>
+                            <tr>
+                                <td><strong>보안 모니터링 시스템</strong></td>
+                                <td>₩50,000,000</td>
+                                <td>2개월</td>
+                                <td>인프라팀</td>
+                                <td class="risk-level risk-medium">60% 감소</td>
+                            </tr>
+                            <tr>
+                                <td><strong>보안 교육 프로그램</strong></td>
+                                <td>₩8,000,000</td>
+                                <td>1개월</td>
+                                <td>교육팀</td>
+                                <td class="risk-level risk-medium">40% 감소</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="background: #f7fafc; padding: 40px; border-radius: 20px; margin-top: 40px; border: 2px solid #667eea;">
+                    <h4 style="color: #667eea; margin-bottom: 25px; font-size: 1.5rem;">📞 추가 지원 및 문의</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                        <div>
+                            <strong>보안 컨설턴트:</strong><br>
+                            박보안컨설턴트 (CISSP, CISA)<br>
+                            이메일: security@consulting.com<br>
+                            전화: 02-1234-5678
+                        </div>
+                        <div>
+                            <strong>기술 지원:</strong><br>
+                            24시간 보안 핫라인<br>
+                            이메일: support@security.com<br>
+                            전화: 02-9876-5432
+                        </div>
+                        <div>
+                            <strong>후속 감사:</strong><br>
+                            3개월 후 재감사 권고<br>
+                            개선사항 적용 후 검증<br>
+                            지속적인 보안 관리 지원
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer class="footer">
+            <p>본 보안 감사 보고서는 기밀 문서입니다. 무단 복제 및 배포를 금지합니다.</p>
+            <p>보안 컨설팅: SecureTech Solutions | 문의: security@securetech.co.kr | 발행일: 2025-08-23</p>
+        </footer>
+
+        <div class="classification-banner">
+            🔒 CONFIDENTIAL - 열람 후 반드시 안전하게 보관하시기 바랍니다 🔒
+        </div>
+    </div>
+</body>
+</html>

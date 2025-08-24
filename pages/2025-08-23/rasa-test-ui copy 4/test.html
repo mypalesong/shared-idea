@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>API Test Dashboard</title>
+  <style>
+    :root{
+      --bg:#1c1c1c;
+      --panel:#2a2a2a;
+      --panel-2:#3a3a3a;
+      --text:#f5f5f5;
+      --muted:#b0b0b0;
+      --green:#22c55e;
+      --yellow:#facc15;
+      --red:#ef4444;
+      --line:#444;
+      --white:#fff;
+    }
+    *{box-sizing:border-box; margin:0; padding:0}
+    body{
+      background:var(--bg); color:var(--text);
+      font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      font-size:13px;
+    }
+
+    /* ===== Header ===== */
+    header{
+      padding:20px 32px;
+      border-bottom:1px solid var(--line);
+    }
+    header h1{
+      font-size:22px; font-weight:700; margin-bottom:6px;
+    }
+    header .sub{
+      font-size:12px; color:var(--muted);
+    }
+
+    main{padding:20px 32px;}
+
+    /* ===== Input Section ===== */
+    .input-section{
+      display:flex; align-items:stretch; gap:12px; margin-bottom:18px;
+    }
+    textarea{
+      flex:1; resize:vertical; min-height:110px; /* 기본 5줄 정도 */
+      background:var(--panel); border:1px solid var(--panel-2);
+      color:var(--text); border-radius:6px;
+      padding:10px 12px; font-size:13px; line-height:1.4;
+    }
+    textarea:focus{outline:none; border-color:var(--white)}
+    .btn{
+      background:var(--panel-2); color:var(--white);
+      border:none; border-radius:6px;
+      padding:0 16px; font-size:13px; font-weight:600;
+      cursor:pointer; transition:background .2s ease;
+      display:flex; align-items:center; justify-content:center;
+      min-width:120px;
+    }
+    .btn:hover{background:#555}
+    .line-badge{
+      position:absolute; top:-12px; right:10px;
+      background:var(--panel-2); padding:2px 6px;
+      border-radius:10px; font-size:11px; color:var(--muted);
+    }
+    .input-wrap{position:relative; flex:1;}
+
+    /* ===== Dashboard ===== */
+    .dashboard{
+      display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px;
+    }
+    .card{
+      flex:1; min-width:180px;
+      background:var(--panel); border-radius:6px;
+      padding:8px 12px;
+    }
+    .card .label{color:var(--muted); font-size:11px; margin-bottom:2px}
+    .card .value{font-size:14px; font-weight:700}
+
+    /* ===== Filter Bar ===== */
+    .filter-bar{margin-bottom:14px;}
+    .fbtn{
+      background:var(--panel); color:var(--text);
+      border:1px solid var(--panel-2);
+      padding:5px 10px; border-radius:4px;
+      font-size:12px; cursor:pointer; margin-right:6px;
+    }
+    .fbtn.active{background:var(--white); color:var(--bg); font-weight:600}
+
+    /* ===== Table ===== */
+    table{
+      width:100%; border-collapse:collapse;
+      background:var(--panel); border-radius:6px; overflow:hidden;
+    }
+    thead{background:var(--panel-2);}
+    th,td{
+      padding:8px 10px; border-bottom:1px solid var(--line);
+      white-space:nowrap; font-size:12px;
+    }
+    th{text-align:center; font-weight:600; text-transform:capitalize;}
+    td.q{min-width:400px; max-width:500px; text-align:left; word-break:break-word; white-space:normal}
+    tr:hover td{background:#333}
+
+    .st-ready{color:#888; font-weight:600}
+    .st-progress{color:var(--yellow); font-weight:600; animation:bl 1.5s infinite}
+    .st-completed{color:var(--green); font-weight:600}
+    .st-error{color:var(--red); font-weight:600}
+    @keyframes bl{50%{opacity:.5}}
+
+    .res-ok{color:var(--green); font-weight:600}
+    .res-ng{color:var(--red); font-weight:600}
+    .res-none{color:var(--muted)}
+
+    tr.ng-row td{background:rgba(239,68,68,.15)!important}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>API Test Dashboard</h1>
+    <div class="sub">Prototype Enterprise Web • 실시간 Intent 처리 모니터링</div>
+  </header>
+
+  <main>
+    <!-- Input Section -->
+    <div class="input-section">
+      <div class="input-wrap">
+        <textarea id="messageInput" placeholder="Enter one question per line..."></textarea>
+        <div class="line-badge" id="lineCount">0 lines</div>
+      </div>
+      <button class="btn" onclick="sendBatch()">Send All</button>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard">
+      <div class="card"><div class="label">ActiveRequests</div><div class="value" id="activeRequests">0</div></div>
+      <div class="card"><div class="label">QueuedRequests</div><div class="value" id="queuedRequests">0</div></div>
+      <div class="card"><div class="label">TotalProcessed</div><div class="value" id="totalProcessed">0</div></div>
+      <div class="card"><div class="label">Results</div><div class="value" id="resultStats">OK(0) | NG(0) | None(0)</div></div>
+      <div class="card"><div class="label">Performance</div><div class="value" id="perfStats">Avg: 0.000s | Failure: 0%</div></div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <button class="fbtn active" id="flt-all" onclick="filterTable('all')">All</button>
+      <button class="fbtn" id="flt-ok" onclick="filterTable('ok')">OK(0)</button>
+      <button class="fbtn" id="flt-ng" onclick="filterTable('ng')">NG(0)</button>
+      <button class="fbtn" id="flt-none" onclick="filterTable('none')">None(0)</button>
+    </div>
+
+    <!-- Table -->
+    <table id="resultTable">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th class="q">Question</th>
+          <th>IntentGroundtruth</th>
+          <th>IntentAnswer</th>
+          <th>Sender</th>
+          <th>StartTime(s)</th>
+          <th>EndTime(s)</th>
+          <th>ProcessedTime(s)</th>
+          <th>Status</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </main>
+
+  <script>
+    /* === 기존 로직 그대로 (In Progress 초단위 포함) === */
+    const WEBHOOK_URL = "http://localhost:30916/webhooks/myio/webhook";
+    const MAX_CONCURRENT = 10;
+    let counter=1, activeCount=0, processedCount=0, filterState="all";
+    const queue=[], timers=new Map();
+    const stats={ok:0,ng:0,none:0,timeSum:0,timeCount:0};
+
+    const tblBody=document.querySelector("#resultTable tbody");
+    const lineCountEl=document.getElementById("lineCount");
+    const activeEl=document.getElementById("activeRequests");
+    const queuedEl=document.getElementById("queuedRequests");
+    const totalEl=document.getElementById("totalProcessed");
+    const resultEl=document.getElementById("resultStats");
+    const perfEl=document.getElementById("perfStats");
+    const btnAll=document.getElementById("flt-all");
+    const btnOK=document.getElementById("flt-ok");
+    const btnNG=document.getElementById("flt-ng");
+    const btnNone=document.getElementById("flt-none");
+
+    const randSender=()=>Math.random().toString(36).slice(2,8);
+    const parseGT=(msg)=>{const m=msg.match(/--([a-zA-Z0-9_]+)/);return m?m[1]:null};
+    const cleanMsg=(msg)=>msg.replace(/--[a-zA-Z0-9_]+/,'').trim();
+    const nowSec=()=> (performance.now()/1000).toFixed(3);
+
+    function formatStatus(status){
+      switch(status){
+        case "ready":return "Ready";
+        case "progress":return "In Progress";
+        case "completed":return "Completed";
+        case "error":return "Error";
+        default:return "Submitted";
+      }
+    }
+    function resultClass(r){
+      if(r==="OK")return "res-ok";
+      if(r==="NG")return "res-ng";
+      return "res-none";
+    }
+
+    document.getElementById("messageInput").addEventListener("input",()=>{
+      const n=document.getElementById("messageInput").value.split("\n").filter(l=>l.trim()!=="").length;
+      lineCountEl.textContent=n+" lines";
+    });
+
+    document.getElementById("messageInput").addEventListener("keydown",e=>{
+      if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendBatch();}
+    });
+
+    function addRow(item){
+      const tr=document.createElement("tr");
+      tr.dataset.id=item.id;
+      tr.innerHTML=`<td>${item.id}</td><td class="q">${item.message}</td>
+      <td>${item.intent_gt||"-"}</td><td>-</td><td>${item.sender}</td>
+      <td>-</td><td>-</td><td>-</td>
+      <td class="st-${item.status}">${formatStatus(item.status)}</td>
+      <td class="res-none">-</td>`;
+      tblBody.appendChild(tr);
+    }
+    function updateRow(id,patch){
+      const tr=tblBody.querySelector(`tr[data-id="${id}"]`); if(!tr)return;
+      const td=tr.children;
+      if("intent_gt"in patch) td[2].textContent=patch.intent_gt??td[2].textContent;
+      if("intent_ans"in patch) td[3].textContent=patch.intent_ans??td[3].textContent;
+      if("start"in patch) td[5].textContent=patch.start??td[5].textContent;
+      if("end"in patch) td[6].textContent=patch.end??td[6].textContent;
+      if("elapsed"in patch) td[7].textContent=patch.elapsed??td[7].textContent;
+      if("status"in patch){td[8].textContent=formatStatus(patch.status);td[8].className="st-"+patch.status;}
+      if("result"in patch){td[9].textContent=patch.result;td[9].className=resultClass(patch.result);if(patch.result==="NG")tr.classList.add("ng-row");}
+      applyFilter();updateDashboard();
+    }
+
+    function updateDashboard(){
+      activeEl.textContent=activeCount;
+      queuedEl.textContent=queue.length;
+      totalEl.textContent=processedCount;
+      resultEl.textContent=`OK(${stats.ok}) | NG(${stats.ng}) | None(${stats.none})`;
+      const avg=stats.timeCount>0?(stats.timeSum/stats.timeCount).toFixed(3):"0.000";
+      const totalJudged=stats.ok+stats.ng;
+      const fail=totalJudged>0?((stats.ng/totalJudged)*100).toFixed(1):"0.0";
+      perfEl.textContent=`Avg: ${avg}s | Failure: ${fail}%`;
+      btnOK.textContent=`OK(${stats.ok})`;btnNG.textContent=`NG(${stats.ng})`;btnNone.textContent=`None(${stats.none})`;
+    }
+
+    function filterTable(state){
+      filterState=state;document.querySelectorAll(".fbtn").forEach(b=>b.classList.remove("active"));
+      if(state==="ok")btnOK.classList.add("active");else if(state==="ng")btnNG.classList.add("active");
+      else if(state==="none")btnNone.classList.add("active");else btnAll.classList.add("active");
+      applyFilter();
+    }
+    function applyFilter(){
+      document.querySelectorAll("#resultTable tbody tr").forEach(tr=>{
+        const res=tr.children[9].textContent;
+        if(filterState==="all")tr.style.display="";
+        else if(filterState==="ok"&&res==="OK")tr.style.display="";
+        else if(filterState==="ng"&&res==="NG")tr.style.display="";
+        else if(filterState==="none"&&(res==="-"||res==="None"||res==="Error"))tr.style.display="";
+        else tr.style.display="none";
+      });
+    }
+
+    function processQueue(){while(activeCount<MAX_CONCURRENT&&queue.length>0){const job=queue.shift();sendRequest(job);}updateDashboard();}
+
+    function sendBatch(){
+      const lines=document.getElementById("messageInput").value.split("\n").map(s=>s.trim()).filter(Boolean);
+      if(lines.length===0)return;
+      for(const line of lines){
+        const gt=parseGT(line);const msg=cleanMsg(line);
+        const id=counter++;const sender=randSender();
+        addRow({id,message:msg,intent_gt:gt,sender,status:"ready"});
+        queue.push({id,message:msg,intentGT:gt,sender});
+      }
+      document.getElementById("messageInput").value="";lineCountEl.textContent="0 lines";
+      processQueue();
+    }
+
+    async function sendRequest(job){
+      activeCount++;updateDashboard();
+      const id=job.id;const start=nowSec();
+      updateRow(id,{status:"progress",start});
+      startProgressTimer(id,parseFloat(start));
+      const payload={sender:job.sender,message:job.message,metadata:{}};
+      try{
+        const resp=await fetch(WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+        const data=await resp.json();
+        const flows=Array.isArray(data?.flows)?data.flows:[];
+        const current=flows.find(f=>typeof f?.set_slot==="string"&&f.set_slot.startsWith("current_flow="));
+        const intentAns=current?current.set_slot.split("=",2)[1]:"N/A";
+        const end=nowSec();const elapsed=(parseFloat(end)-parseFloat(start)).toFixed(3);
+        let result="-";if(job.intentGT){result=(job.intentGT===intentAns)?"OK":"NG";}else result="None";
+        processedCount++;if(result==="OK")stats.ok++;else if(result==="NG")stats.ng++;else stats.none++;
+        stats.timeSum+=parseFloat(elapsed);stats.timeCount++;
+        stopProgressTimer(id);
+        updateRow(id,{intent_ans:intentAns,end,elapsed,status:"completed",result});
+      }catch(err){console.error(err);processedCount++;stats.ng++;stopProgressTimer(id);updateRow(id,{intent_ans:"Error",end:nowSec(),elapsed:"0.000",status:"error",result:"NG"});}
+      finally{activeCount--;processQueue();updateDashboard();}
+    }
+
+    function startProgressTimer(rowId,startSec){
+      stopProgressTimer(rowId);
+      const intId=setInterval(()=>{
+        const tr=tblBody.querySelector(`tr[data-id="${rowId}"]`);if(!tr)return;
+        const stCell=tr.children[8];
+        if(!stCell.className.includes("st-progress")){clearInterval(intId);return;}
+        const now=performance.now()/1000;const elapsed=Math.max(0,now-startSec);
+        stCell.textContent=`In Progress (${elapsed.toFixed(0)}s)`;
+      },1000);
+      timers.set(rowId,intId);
+    }
+    function stopProgressTimer(rowId){const intId=timers.get(rowId);if(intId){clearInterval(intId);timers.delete(rowId);}}
+    updateDashboard();
+  </script>
+</body>
+</html>

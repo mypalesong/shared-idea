@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Hub - HubSpot Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Avenir Next', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #f5f8fa;
+            color: #33475b;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: #2d5be3;
+            color: white;
+            padding: 0 24px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+        
+        .logo {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        
+        .nav-link {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .nav-link.active {
+            background: #ff5c35;
+            color: white;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .search-bar {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 6px;
+            padding: 8px 16px;
+            color: white;
+            font-size: 14px;
+            width: 240px;
+        }
+        
+        .search-bar::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #ff5c35;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .main-container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #eaf0f6;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .sidebar-section {
+            padding: 24px 20px;
+            border-bottom: 1px solid #eaf0f6;
+        }
+        
+        .section-title {
+            font-size: 12px;
+            color: #7c98b6;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+        
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #33475b;
+            transition: all 0.2s;
+        }
+        
+        .sidebar-item:hover {
+            background: #f5f8fa;
+        }
+        
+        .sidebar-item.active {
+            background: #ff5c35;
+            color: white;
+        }
+        
+        .sidebar-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .sidebar-badge {
+            background: #00a4bd;
+            color: white;
+            border-radius: 10px;
+            padding: 2px 8px;
+            font-size: 11px;
+            margin-left: auto;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+        
+        .page-header {
+            margin-bottom: 32px;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #33475b;
+            margin-bottom: 8px;
+        }
+        
+        .page-subtitle {
+            font-size: 16px;
+            color: #7c98b6;
+        }
+        
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .metric-card {
+            background: white;
+            border: 1px solid #eaf0f6;
+            border-radius: 8px;
+            padding: 24px;
+            position: relative;
+            transition: all 0.2s;
+        }
+        
+        .metric-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transform: translateY(-1px);
+        }
+        
+        .metric-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .metric-title {
+            font-size: 14px;
+            color: #7c98b6;
+            font-weight: 600;
+        }
+        
+        .metric-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .icon-leads { background: #e8f4fd; color: #0091ae; }
+        .icon-contacts { background: #fff0e6; color: #ff5c35; }
+        .icon-deals { background: #e8f5e8; color: #00a4bd; }
+        .icon-revenue { background: #f3e8ff; color: #7c98b6; }
+        
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #33475b;
+            margin-bottom: 8px;
+        }
+        
+        .metric-change {
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .change-positive {
+            color: #00a4bd;
+        }
+        
+        .change-negative {
+            color: #ff5c35;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+        }
+        
+        .dashboard-card {
+            background: white;
+            border: 1px solid #eaf0f6;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 24px;
+            border-bottom: 1px solid #eaf0f6;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #33475b;
+        }
+        
+        .card-action {
+            background: none;
+            border: none;
+            color: #ff5c35;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        
+        .card-action:hover {
+            background: #f5f8fa;
+        }
+        
+        .pipeline-stage {
+            display: flex;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid #f5f8fa;
+        }
+        
+        .pipeline-stage:last-child {
+            border-bottom: none;
+        }
+        
+        .stage-info {
+            flex: 1;
+        }
+        
+        .stage-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #33475b;
+            margin-bottom: 4px;
+        }
+        
+        .stage-count {
+            font-size: 12px;
+            color: #7c98b6;
+        }
+        
+        .stage-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #33475b;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #f5f8fa;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff5c35 0%, #ff8f73 100%);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        
+        .contact-list {
+            padding: 0;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 24px;
+            border-bottom: 1px solid #f5f8fa;
+            transition: background 0.2s;
+        }
+        
+        .contact-item:hover {
+            background: #f5f8fa;
+        }
+        
+        .contact-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff5c35 0%, #ff8f73 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .contact-info {
+            flex: 1;
+        }
+        
+        .contact-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #33475b;
+            margin-bottom: 4px;
+        }
+        
+        .contact-company {
+            font-size: 12px;
+            color: #7c98b6;
+        }
+        
+        .contact-score {
+            background: #e8f4fd;
+            color: #0091ae;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .activity-feed {
+            padding: 24px;
+        }
+        
+        .activity-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .activity-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .activity-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #ff5c35;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-text {
+            font-size: 14px;
+            color: #33475b;
+            margin-bottom: 6px;
+        }
+        
+        .activity-meta {
+            font-size: 12px;
+            color: #7c98b6;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f5f8fa;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #cbd6e2;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7c98b6;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">🧡 HubSpot</div>
+            <nav class="main-nav">
+                <a href="#" class="nav-link">Contacts</a>
+                <a href="#" class="nav-link active">Marketing</a>
+                <a href="#" class="nav-link">Sales</a>
+                <a href="#" class="nav-link">Service</a>
+                <a href="#" class="nav-link">Automation</a>
+                <a href="#" class="nav-link">Reports</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <input class="search-bar" placeholder="Search contacts, companies, deals...">
+            <span>🔔</span>
+            <div class="user-avatar">JM</div>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="section-title">Marketing</div>
+                <div class="sidebar-item active">
+                    <div class="sidebar-icon">📊</div>
+                    <span>Dashboard</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">👥</div>
+                    <span>Contacts</span>
+                    <span class="sidebar-badge">1.2k</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">📧</div>
+                    <span>Email</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">📱</div>
+                    <span>Social</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">🎯</div>
+                    <span>Ads</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="section-title">Tools</div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">🌐</div>
+                    <span>Landing Pages</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">📝</div>
+                    <span>Forms</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">⚡</div>
+                    <span>Workflows</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">📈</div>
+                    <span>Analytics</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="section-title">Configuration</div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">⚙️</div>
+                    <span>Settings</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">🔧</div>
+                    <span>Integrations</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="page-header">
+                <h1 class="page-title">Marketing Dashboard</h1>
+                <p class="page-subtitle">Track your marketing performance and lead generation</p>
+            </div>
+            
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-title">New Leads</div>
+                        <div class="metric-icon icon-leads">👥</div>
+                    </div>
+                    <div class="metric-value">347</div>
+                    <div class="metric-change change-positive">
+                        ↗️ +23% from last month
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-title">Total Contacts</div>
+                        <div class="metric-icon icon-contacts">📇</div>
+                    </div>
+                    <div class="metric-value">12,450</div>
+                    <div class="metric-change change-positive">
+                        ↗️ +8% from last month
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-title">Qualified Leads</div>
+                        <div class="metric-icon icon-deals">✅</div>
+                    </div>
+                    <div class="metric-value">89</div>
+                    <div class="metric-change change-negative">
+                        ↘️ -5% from last month
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-title">Revenue</div>
+                        <div class="metric-icon icon-revenue">💰</div>
+                    </div>
+                    <div class="metric-value">$156K</div>
+                    <div class="metric-change change-positive">
+                        ↗️ +15% from last month
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-title">Lead Pipeline</div>
+                        <button class="card-action">View Details</button>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 68%;"></div>
+                    </div>
+                    <div class="pipeline-stage">
+                        <div class="stage-info">
+                            <div class="stage-name">Marketing Qualified Lead</div>
+                            <div class="stage-count">347 contacts</div>
+                        </div>
+                        <div class="stage-value">$892K</div>
+                    </div>
+                    <div class="pipeline-stage">
+                        <div class="stage-info">
+                            <div class="stage-name">Sales Qualified Lead</div>
+                            <div class="stage-count">156 contacts</div>
+                        </div>
+                        <div class="stage-value">$567K</div>
+                    </div>
+                    <div class="pipeline-stage">
+                        <div class="stage-info">
+                            <div class="stage-name">Opportunity</div>
+                            <div class="stage-count">78 contacts</div>
+                        </div>
+                        <div class="stage-value">$234K</div>
+                    </div>
+                    <div class="pipeline-stage">
+                        <div class="stage-info">
+                            <div class="stage-name">Customer</div>
+                            <div class="stage-count">42 contacts</div>
+                        </div>
+                        <div class="stage-value">$156K</div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 24px;">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <div class="card-title">Recent Activity</div>
+                        </div>
+                        <div class="activity-feed">
+                            <div class="activity-item">
+                                <div class="activity-icon">📧</div>
+                                <div class="activity-content">
+                                    <div class="activity-text">Email campaign "Summer Sale" sent to 2,450 contacts</div>
+                                    <div class="activity-meta">2 hours ago • Marketing Team</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">🎯</div>
+                                <div class="activity-content">
+                                    <div class="activity-text">New lead qualified: Sarah Johnson from TechCorp</div>
+                                    <div class="activity-meta">4 hours ago • Lead Scoring</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">📱</div>
+                                <div class="activity-content">
+                                    <div class="activity-text">Social media campaign reached 15K impressions</div>
+                                    <div class="activity-meta">6 hours ago • Social Media</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <div class="card-title">Top Contacts</div>
+                            <button class="card-action">View All</button>
+                        </div>
+                        <div class="contact-list">
+                            <div class="contact-item">
+                                <div class="contact-avatar">SJ</div>
+                                <div class="contact-info">
+                                    <div class="contact-name">Sarah Johnson</div>
+                                    <div class="contact-company">TechCorp Inc.</div>
+                                </div>
+                                <div class="contact-score">95</div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-avatar">MK</div>
+                                <div class="contact-info">
+                                    <div class="contact-name">Mike Kim</div>
+                                    <div class="contact-company">StartupXYZ</div>
+                                </div>
+                                <div class="contact-score">87</div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-avatar">ED</div>
+                                <div class="contact-info">
+                                    <div class="contact-name">Emma Davis</div>
+                                    <div class="contact-company">GlobalTech</div>
+                                </div>
+                                <div class="contact-score">82</div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-avatar">JD</div>
+                                <div class="contact-info">
+                                    <div class="contact-name">John Doe</div>
+                                    <div class="contact-company">Enterprise Ltd.</div>
+                                </div>
+                                <div class="contact-score">76</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

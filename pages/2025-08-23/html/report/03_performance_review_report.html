@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Review Report - The Developer Times</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            line-height: 1.8;
+            color: #000;
+            background: #fff;
+            padding: 0;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border: 3px solid #000;
+        }
+
+        /* NY Times Style Masthead */
+        .masthead {
+            text-align: center;
+            border-bottom: 3px solid #000;
+            padding: 20px 0;
+            background: #fff;
+        }
+
+        .masthead h1 {
+            font-family: 'Old English Text MT', Georgia, serif;
+            font-size: 48px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+        }
+
+        .masthead .tagline {
+            font-style: italic;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .masthead .date {
+            font-size: 11px;
+            color: #000;
+            font-weight: bold;
+        }
+
+        /* Academic Paper Header */
+        .paper-header {
+            text-align: center;
+            padding: 30px 40px 20px 40px;
+            border-bottom: 1px solid #000;
+        }
+
+        .paper-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .byline {
+            font-size: 12px;
+            color: #000;
+            margin-bottom: 15px;
+        }
+
+        .byline strong {
+            font-weight: bold;
+        }
+
+        .employee-info {
+            border: 1px solid #000;
+            padding: 15px;
+            margin-bottom: 20px;
+            background: #f8f8f8;
+        }
+
+        .employee-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            font-size: 11px;
+        }
+
+        .content {
+            padding: 30px 40px;
+            column-count: 2;
+            column-gap: 30px;
+            column-rule: 1px solid #ccc;
+        }
+
+        /* Abstract Section */
+        .abstract {
+            column-span: all;
+            border: 2px solid #000;
+            padding: 20px;
+            margin-bottom: 25px;
+            background: #f8f8f8;
+        }
+
+        .abstract h2 {
+            font-size: 14px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .abstract p {
+            font-size: 12px;
+            text-align: justify;
+        }
+
+        /* Table of Contents */
+        .toc {
+            column-span: all;
+            border: 1px solid #000;
+            padding: 20px;
+            margin-bottom: 25px;
+            background: #fff;
+        }
+
+        .toc h2 {
+            color: #000;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 1px solid #000;
+            padding-bottom: 5px;
+        }
+
+        .toc ul {
+            list-style: none;
+            columns: 2;
+            column-gap: 20px;
+        }
+
+        .toc li {
+            padding: 3px 0;
+            break-inside: avoid;
+        }
+
+        .toc a {
+            color: #000;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        /* Academic Sections */
+        .section {
+            column-span: all;
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .section h2 {
+            color: #000;
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 5px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .section-content {
+            column-count: 2;
+            column-gap: 20px;
+            column-rule: 1px solid #ccc;
+        }
+
+        /* Quote Box for Key Insights */
+        .quote-box {
+            column-span: all;
+            border: 2px solid #000;
+            padding: 15px;
+            margin: 15px 0;
+            background: #f0f0f0;
+            font-style: italic;
+            text-align: center;
+        }
+
+        .quote-box h3 {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #000;
+        }
+
+        /* Performance Cards as Academic Lists */
+        .rating-container {
+            margin: 15px 0;
+        }
+
+        .rating-card {
+            background: #f8f8f8;
+            padding: 12px;
+            border: 1px solid #000;
+            margin-bottom: 10px;
+            break-inside: avoid;
+        }
+
+        .rating-card h3 {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #000;
+        }
+
+        .rating-score {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .rating-evaluation {
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        /* Achievement Items */
+        .achievements {
+            margin: 15px 0;
+        }
+
+        .achievement-item {
+            background: #f8f8f8;
+            padding: 12px;
+            border: 1px solid #000;
+            margin-bottom: 10px;
+            break-inside: avoid;
+        }
+
+        .achievement-item h4 {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #000;
+        }
+
+        .achievement-item p {
+            font-size: 11px;
+        }
+
+        /* Academic style tables */
+        table {
+            column-span: all;
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border: 2px solid #000;
+        }
+
+        th, td {
+            padding: 8px 12px;
+            text-align: left;
+            border: 1px solid #000;
+            font-size: 11px;
+        }
+
+        th {
+            background: #000;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f8f8;
+        }
+
+        /* Goal tracking */
+        .goal-tracker {
+            column-span: all;
+            background: #f0f0f0;
+            color: #000;
+            padding: 15px;
+            border: 2px solid #000;
+            margin: 15px 0;
+        }
+
+        .goal-tracker h3 {
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .goal-item {
+            background: #fff;
+            padding: 12px;
+            border: 1px solid #000;
+            margin-bottom: 10px;
+        }
+
+        .goal-item strong {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .goal-progress {
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        /* Feedback sections */
+        .feedback-section {
+            column-span: all;
+            padding: 15px;
+            border: 2px solid #000;
+            margin: 15px 0;
+            background: #f8f8f8;
+        }
+
+        .feedback-box {
+            background: #fff;
+            padding: 15px;
+            border: 1px solid #000;
+            margin: 10px 0;
+            font-size: 11px;
+        }
+
+        .feedback-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .feedback-column {
+            background: #fff;
+            padding: 12px;
+            border: 1px solid #000;
+        }
+
+        .feedback-column h4 {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #000;
+        }
+
+        .feedback-column ul {
+            font-size: 11px;
+            margin-left: 15px;
+        }
+
+        /* Development plan */
+        .development-plan {
+            column-span: all;
+            background: #f0f0f0;
+            color: #000;
+            padding: 15px;
+            border: 2px solid #000;
+            margin: 15px 0;
+        }
+
+        .plan-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .plan-item {
+            background: #fff;
+            padding: 12px;
+            border: 1px solid #000;
+        }
+
+        .plan-item h4 {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #000;
+        }
+
+        .plan-item ul {
+            font-size: 11px;
+            margin-left: 15px;
+        }
+
+        /* Signature section */
+        .signature-section {
+            column-span: all;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+            border-top: 2px solid #000;
+            padding-top: 20px;
+        }
+
+        .signature-box {
+            text-align: center;
+            padding: 20px;
+            border: 2px solid #000;
+            background: #f8f8f8;
+        }
+
+        .signature-box h3 {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        /* Academic footer with citations */
+        .footer {
+            column-span: all;
+            background: #000;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-top: 3px solid #000;
+            font-size: 10px;
+        }
+
+        /* Citation section */
+        .citations {
+            column-span: all;
+            border-top: 2px solid #000;
+            padding: 20px 0;
+            margin-top: 30px;
+        }
+
+        .citations h2 {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .citations ol {
+            font-size: 10px;
+            padding-left: 20px;
+        }
+
+        .citations li {
+            margin-bottom: 5px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .content {
+                column-count: 1;
+                padding: 20px;
+            }
+            
+            .section-content {
+                column-count: 1;
+            }
+
+            .signature-section {
+                grid-template-columns: 1fr;
+            }
+
+            .feedback-grid, .plan-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- New York Times Style Masthead -->
+        <header class="masthead">
+            <h1>The Developer Times</h1>
+            <div class="tagline">"All the Code That's Fit to Print"</div>
+            <div class="date">Friday, August 23, 2025</div>
+        </header>
+
+        <!-- Academic Paper Header -->
+        <div class="paper-header">
+            <h1 class="paper-title">개인 성과 평가 보고서<br/>Individual Performance Review Analysis</h1>
+            <div class="byline">
+                <strong>평가 대상 (Subject):</strong> 이개발자 (Sr. Software Developer)<br/>
+                <strong>평가자 (Evaluator):</strong> 김팀장 (Team Lead)<br/>
+                <strong>발행일 (Date):</strong> August 23, 2025<br/>
+                <strong>부서 (Division):</strong> Software Development Team<br/>
+                <strong>보고서 ID (Report ID):</strong> PERF-2025-003
+            </div>
+            
+            <div class="employee-info">
+                <div class="employee-grid">
+                    <div><strong>성명:</strong> 이개발자</div>
+                    <div><strong>직급:</strong> 선임 개발자</div>
+                    <div><strong>부서:</strong> 소프트웨어개발팀</div>
+                    <div><strong>평가기간:</strong> 2025년 1월 ~ 6월</div>
+                    <div><strong>입사일:</strong> 2020년 3월 15일</div>
+                    <div><strong>평가일:</strong> 2025년 8월 23일</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Abstract -->
+            <div class="abstract">
+                <h2>EXECUTIVE SUMMARY / 요약</h2>
+                <p>본 성과 평가 보고서는 이개발자의 2025년 상반기 업무 성과를 종합적으로 분석한 결과를 제시한다. 평가 대상자는 마이크로서비스 아키텍처 전환, 성능 최적화, CI/CD 파이프라인 구축 등 핵심 프로젝트에서 탁월한 성과를 보였다. 종합 평가 점수 4.3/5.0으로 '우수' 등급을 달성하였으며, 특히 기술적 성장(4.5/5.0)과 문제 해결 능력에서 뛰어난 역량을 입증했다. 향후 리더십 개발과 프로젝트 관리 능력 향상을 통해 시니어 개발자로의 성장 가능성이 매우 높은 것으로 평가된다.</p>
+            </div>
+
+            <!-- Table of Contents -->
+            <div class="toc">
+                <h2>TABLE OF CONTENTS / 목차</h2>
+                <ul>
+                    <li><a href="#performance-summary">I. 성과 요약 (Performance Summary)</a></li>
+                    <li><a href="#core-competencies">II. 핵심 역량 평가 (Core Competencies)</a></li>
+                    <li><a href="#achievements">III. 주요 성취 (Key Achievements)</a></li>
+                    <li><a href="#goal-analysis">IV. 목표 달성 분석 (Goal Achievement)</a></li>
+                    <li><a href="#feedback">V. 피드백 및 개선사항 (Feedback & Improvements)</a></li>
+                    <li><a href="#development-plan">VI. 향후 발전 계획 (Development Plan)</a></li>
+                </ul>
+            </div>
+
+            <section id="performance-summary" class="section">
+                <h2>I. 성과 요약 (Performance Summary)</h2>
+                <div class="quote-box">
+                    <h3>핵심 평가 결과 (Key Evaluation Results)</h3>
+                    "뛰어난 기술적 역량과 지속적인 성장 의지를 바탕으로 팀의 핵심 구성원으로서 탁월한 성과를 달성하였으며, 향후 리더십 개발을 통한 시니어 개발자로의 성장이 기대됨"
+                </div>
+                <div class="section-content">
+                    <div class="rating-container">
+                        <div class="rating-card">
+                            <h3>종합 평가</h3>
+                            <div class="rating-score">4.3/5.0</div>
+                            <div class="rating-evaluation">
+                                <strong>평가:</strong> 우수 (Excellent)<br/>
+                                전반적으로 뛰어난 성과를 보여주었으며, 팀의 핵심 구성원으로서 역할을 충실히 수행하였습니다.
+                            </div>
+                        </div>
+                        <div class="rating-card">
+                            <h3>기술적 성장</h3>
+                            <div class="rating-score">4.5/5.0</div>
+                            <div class="rating-evaluation">
+                                <strong>평가:</strong> 탁월 (Outstanding)<br/>
+                                새로운 기술 스택 도입과 아키텍처 개선에 주도적으로 참여하였습니다.
+                            </div>
+                        </div>
+                        <div class="rating-card">
+                            <h3>프로젝트 기여도</h3>
+                            <div class="rating-score">4.2/5.0</div>
+                            <div class="rating-evaluation">
+                                <strong>평가:</strong> 우수 (Excellent)<br/>
+                                3개의 주요 프로젝트에서 핵심 개발자로 참여하여 성공적인 결과를 도출하였습니다.
+                            </div>
+                        </div>
+                        <div class="rating-card">
+                            <h3>팀워크 & 협업</h3>
+                            <div class="rating-score">4.0/5.0</div>
+                            <div class="rating-evaluation">
+                                <strong>평가:</strong> 우수 (Excellent)<br/>
+                                동료들과의 원활한 소통과 지식 공유를 통해 팀 전체의 역량 향상에 기여하였습니다.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="core-competencies" class="section">
+                <h2>II. 핵심 역량 평가 (Core Competencies)</h2>
+                <div class="section-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>역량 항목</th>
+                                <th>자기평가</th>
+                                <th>상사평가</th>
+                                <th>동료평가</th>
+                                <th>최종평가</th>
+                                <th>비고</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>프로그래밍 스킬</strong></td>
+                                <td>4.5</td>
+                                <td>4.3</td>
+                                <td>4.4</td>
+                                <td style="font-weight: bold;">4.4</td>
+                                <td>React, Node.js 전문성 우수</td>
+                            </tr>
+                            <tr>
+                                <td><strong>문제 해결 능력</strong></td>
+                                <td>4.2</td>
+                                <td>4.5</td>
+                                <td>4.3</td>
+                                <td style="font-weight: bold;">4.3</td>
+                                <td>복잡한 버그 해결에서 탁월함</td>
+                            </tr>
+                            <tr>
+                                <td><strong>코드 품질</strong></td>
+                                <td>4.0</td>
+                                <td>4.2</td>
+                                <td>4.1</td>
+                                <td style="font-weight: bold;">4.1</td>
+                                <td>리팩토링 및 최적화 역량</td>
+                            </tr>
+                            <tr>
+                                <td><strong>학습 능력</strong></td>
+                                <td>4.7</td>
+                                <td>4.6</td>
+                                <td>4.5</td>
+                                <td style="font-weight: bold;">4.6</td>
+                                <td>신기술 적응력 매우 우수</td>
+                            </tr>
+                            <tr>
+                                <td><strong>커뮤니케이션</strong></td>
+                                <td>3.8</td>
+                                <td>4.0</td>
+                                <td>3.9</td>
+                                <td style="font-weight: bold;">3.9</td>
+                                <td>기술 문서화 능력 개선 필요</td>
+                            </tr>
+                            <tr>
+                                <td><strong>리더십</strong></td>
+                                <td>3.5</td>
+                                <td>3.8</td>
+                                <td>3.7</td>
+                                <td style="font-weight: bold;">3.7</td>
+                                <td>멘토링 역할 확대 필요</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="achievements" class="section">
+                <h2>III. 주요 성취 (Key Achievements)</h2>
+                <div class="section-content">
+                    <div class="achievements">
+                        <div class="achievement-item">
+                            <h4>마이크로서비스 아키텍처 전환</h4>
+                            <p>레거시 모놀리식 시스템을 마이크로서비스로 성공적으로 전환하여 시스템 안정성 30% 향상</p>
+                        </div>
+                        <div class="achievement-item">
+                            <h4>성능 최적화</h4>
+                            <p>주요 API 응답시간 평균 40% 단축 및 데이터베이스 쿼리 최적화로 처리량 2배 증가</p>
+                        </div>
+                        <div class="achievement-item">
+                            <h4>개발 도구 도입</h4>
+                            <p>ESLint, Prettier, Husky 등 코드 품질 도구 도입으로 팀 생산성 25% 향상</p>
+                        </div>
+                        <div class="achievement-item">
+                            <h4>기술 교육</h4>
+                            <p>팀 내 TypeScript 교육 진행 및 Best Practice 가이드 작성으로 팀 역량 강화</p>
+                        </div>
+                        <div class="achievement-item">
+                            <h4>자동화 구축</h4>
+                            <p>CI/CD 파이프라인 구축으로 배포 시간 70% 단축 및 장애 발생률 50% 감소</p>
+                        </div>
+                        <div class="achievement-item">
+                            <h4>혁신 제안</h4>
+                            <p>GraphQL API 도입 제안 채택 및 POC 성공적 완료로 회사 기술 로드맵에 반영</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="goal-analysis" class="section">
+                <h2>IV. 목표 달성 분석 (Goal Achievement Analysis)</h2>
+                <div class="goal-tracker">
+                    <h3>2025년 상반기 목표 달성 현황</h3>
+                    <div class="goal-item">
+                        <strong>목표 1: 새로운 고객 포털 시스템 개발</strong>
+                        <div class="goal-progress">
+                            <strong>진행률:</strong> 100% 완료 ✓<br/>
+                            예정보다 1주 앞서 완료하여 고객 만족도 95% 달성
+                        </div>
+                    </div>
+                    <div class="goal-item">
+                        <strong>목표 2: 코드 리뷰 프로세스 개선</strong>
+                        <div class="goal-progress">
+                            <strong>진행률:</strong> 85% 완료 ✓<br/>
+                            자동화된 코드 리뷰 도구 도입 완료, 팀 적용률 85%
+                        </div>
+                    </div>
+                    <div class="goal-item">
+                        <strong>목표 3: 기술 역량 강화 (AWS 자격증)</strong>
+                        <div class="goal-progress">
+                            <strong>진행률:</strong> 70% 진행중 ⟲<br/>
+                            AWS Solutions Architect 자격증 준비 중, 9월 응시 예정
+                        </div>
+                    </div>
+                    <div class="goal-item">
+                        <strong>목표 4: 팀 멘토링 활동</strong>
+                        <div class="goal-progress">
+                            <strong>진행률:</strong> 95% 완료 ✓<br/>
+                            주니어 개발자 2명 멘토링 진행, 역량 향상에 크게 기여
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="feedback" class="section">
+                <h2>V. 피드백 및 개선사항 (Feedback & Improvements)</h2>
+                <div class="feedback-section">
+                    <h3>상급자 피드백</h3>
+                    <div class="feedback-box">
+                        <strong>김팀장:</strong> "뛰어난 기술적 역량과 문제 해결 능력을 보여주고 있으며, 특히 복잡한 시스템 아키텍처 설계에서 탁월한 성과를 보였습니다. 앞으로 리더십 역량 개발에 더 집중한다면 시니어 개발자로 성장할 수 있을 것입니다."
+                    </div>
+                    
+                    <h3>동료 피드백</h3>
+                    <div class="feedback-box">
+                        <strong>박개발자:</strong> "항상 배울 점이 많은 동료입니다. 특히 코드 리뷰 시 건설적인 피드백과 대안 제시 능력이 뛰어납니다. 다만 때로는 완벽을 추구하다 일정이 지연되는 경우가 있어 우선순위 설정 개선이 필요해 보입니다."
+                    </div>
+                    
+                    <h3>개선 권고사항</h3>
+                    <div class="feedback-grid">
+                        <div class="feedback-column">
+                            <h4>강점 유지</h4>
+                            <ul>
+                                <li>높은 기술적 역량</li>
+                                <li>적극적인 학습 태도</li>
+                                <li>품질에 대한 책임감</li>
+                            </ul>
+                        </div>
+                        <div class="feedback-column">
+                            <h4>개선 필요</h4>
+                            <ul>
+                                <li>일정 관리 능력 향상</li>
+                                <li>문서화 습관 개선</li>
+                                <li>리더십 스킬 개발</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="development-plan" class="section">
+                <h2>VI. 향후 발전 계획 (Development Plan)</h2>
+                <div class="development-plan">
+                    <h3>하반기 개발 목표 및 계획</h3>
+                    <div class="plan-grid">
+                        <div class="plan-item">
+                            <h4>단기 목표 (3개월)</h4>
+                            <ul>
+                                <li>AWS Solutions Architect 자격증 취득</li>
+                                <li>프로젝트 매니지먼트 교육 수강</li>
+                                <li>기술 블로그 월 2회 이상 포스팅</li>
+                                <li>코드 리뷰 품질 가이드라인 완성</li>
+                            </ul>
+                        </div>
+                        <div class="plan-item">
+                            <h4>중기 목표 (6개월)</h4>
+                            <ul>
+                                <li>팀 테크 리드 역할 수행</li>
+                                <li>신입 개발자 온보딩 프로세스 개선</li>
+                                <li>컨퍼런스 발표 경험 쌓기</li>
+                                <li>오픈소스 프로젝트 기여 활동</li>
+                            </ul>
+                        </div>
+                        <div class="plan-item">
+                            <h4>장기 목표 (1년)</h4>
+                            <ul>
+                                <li>시니어 개발자로 승진</li>
+                                <li>아키텍처 설계 전문성 확보</li>
+                                <li>사내 기술 교육 프로그램 기획/운영</li>
+                                <li>개인 브랜딩 구축 (기술 블로거)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>영역</th>
+                            <th>현재 수준</th>
+                            <th>목표 수준</th>
+                            <th>개발 계획</th>
+                            <th>완료 예정일</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>클라우드 아키텍처</td>
+                            <td>중급</td>
+                            <td>고급</td>
+                            <td>AWS 자격증 취득 + 실무 프로젝트</td>
+                            <td>2025-11-30</td>
+                        </tr>
+                        <tr>
+                            <td>팀 리더십</td>
+                            <td>초급</td>
+                            <td>중급</td>
+                            <td>리더십 교육 + 멘토링 확대</td>
+                            <td>2025-12-31</td>
+                        </tr>
+                        <tr>
+                            <td>프로젝트 관리</td>
+                            <td>초급</td>
+                            <td>중급</td>
+                            <td>PMP 교육 + 실무 경험</td>
+                            <td>2026-03-31</td>
+                        </tr>
+                        <tr>
+                            <td>기술 커뮤니케이션</td>
+                            <td>중급</td>
+                            <td>고급</td>
+                            <td>발표 교육 + 컨퍼런스 발표</td>
+                            <td>2025-10-31</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <div class="signature-section">
+                <div class="signature-box">
+                    <h3>직원 서명</h3>
+                    <p style="margin: 30px 0; font-weight: bold;">이개발자</p>
+                    <p style="font-size: 11px;">서명일: 2025년 8월 23일</p>
+                </div>
+                <div class="signature-box">
+                    <h3>평가자 서명</h3>
+                    <p style="margin: 30px 0; font-weight: bold;">김팀장</p>
+                    <p style="font-size: 11px;">서명일: 2025년 8월 23일</p>
+                </div>
+            </div>
+
+            <!-- Academic Citations -->
+            <div class="citations">
+                <h2>REFERENCES / 참고문헌</h2>
+                <ol>
+                    <li>Society for Human Resource Management. (2025). "Performance Review Best Practices". SHRM Guidelines.</li>
+                    <li>Harvard Business Review. (2025). "Effective Performance Management Systems". HBR Publications.</li>
+                    <li>Gallup Inc. (2025). "State of the Global Workplace: Employee Engagement Insights". Gallup Press.</li>
+                    <li>McKinsey & Company. (2025). "The Future of Work in Technology: Performance and Development". McKinsey Global Institute.</li>
+                    <li>Deloitte. (2025). "Human Capital Trends: Performance Management Transformation". Deloitte Insights.</li>
+                </ol>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p><strong>© 2025 The Developer Times</strong> | Performance Review Report | Confidential Document<br/>
+            Evaluator: 김팀장 (Team Lead) | HR Reviewer: 인사팀 | Approved: August 23, 2025<br/>
+            Report Classification: Internal Use Only | Document ID: PERF-2025-003</p>
+        </footer>
+    </div>
+</body>
+</html>

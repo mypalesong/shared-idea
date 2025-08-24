@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glassmorphism - Modern Development</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="30" r="3" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="70" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="80" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        
+        header {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .hero {
+            text-align: center;
+            color: white;
+        }
+        
+        .hero h1 {
+            font-size: 5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, rgba(255,255,255,0.9), rgba(255,255,255,0.6));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: titleFloat 3s ease-in-out infinite;
+        }
+        
+        .hero p {
+            font-size: 1.4rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+        
+        .glass-card {
+            padding: 3rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            transition: all 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(31, 38, 135, 0.5);
+        }
+        
+        .glass-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        .features {
+            padding: 100px 0;
+            position: relative;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 3rem;
+            background: linear-gradient(45deg, rgba(255,255,255,0.9), rgba(255,255,255,0.6));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .feature-glass {
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-glass::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: all 0.5s ease;
+            transform: rotate(45deg) translateX(-100%);
+        }
+        
+        .feature-glass:hover::before {
+            transform: rotate(45deg) translateX(100%);
+        }
+        
+        .feature-glass:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(31, 38, 135, 0.4);
+        }
+        
+        .feature-glass h3 {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .feature-glass p {
+            color: rgba(255,255,255,0.8);
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        .tech-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-glass:hover .tech-icon {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .code-showcase {
+            margin: 3rem 0;
+        }
+        
+        .code-glass {
+            padding: 2rem;
+            font-family: 'Courier New', monospace;
+            color: rgba(255,255,255,0.9);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            position: relative;
+        }
+        
+        .code-glass::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #ff6b6b, #4ecdc4, #45b7d1);
+            border-radius: 2px;
+        }
+        
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .floating-bubble {
+            position: absolute;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.2);
+            animation: bubbleFloat 8s ease-in-out infinite;
+        }
+        
+        .bubble-1 { width: 60px; height: 60px; top: 20%; left: 10%; animation-delay: 0s; }
+        .bubble-2 { width: 40px; height: 40px; top: 50%; right: 15%; animation-delay: 2s; }
+        .bubble-3 { width: 80px; height: 80px; bottom: 30%; left: 20%; animation-delay: 4s; }
+        .bubble-4 { width: 30px; height: 30px; top: 80%; right: 25%; animation-delay: 6s; }
+        
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+        
+        @keyframes bubbleFloat {
+            0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.3; }
+            33% { transform: translateY(-40px) translateX(20px); opacity: 0.6; }
+            66% { transform: translateY(20px) translateX(-15px); opacity: 0.4; }
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+        
+        .stat-glass {
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-glass:hover {
+            transform: scale(1.05);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: rgba(255,255,255,0.8);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .morphing-bg {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: morph 10s ease-in-out infinite;
+        }
+        
+        .morph-1 { top: 10%; left: -150px; animation-delay: 0s; }
+        .morph-2 { bottom: 20%; right: -150px; animation-delay: 5s; }
+        
+        @keyframes morph {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.5) rotate(180deg); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="hero">
+                <div class="glass-card">
+                    <h1>Glass Dev</h1>
+                    <p>Transparent. Modern. Beautiful.</p>
+                    <a href="#" class="glass-button">Explore Design</a>
+                    
+                    <div class="code-showcase">
+                        <div class="code-glass glass">
+                            <div style="color: #ff6b6b;">const modernDesign = {</div>
+                            <div style="margin-left: 20px; color: #4ecdc4;">transparency: 0.1,</div>
+                            <div style="margin-left: 20px; color: #4ecdc4;">blur: '20px',</div>
+                            <div style="margin-left: 20px; color: #4ecdc4;">elegance: 'maximum'</div>
+                            <div style="color: #ff6b6b;">};</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="floating-elements">
+            <div class="floating-bubble bubble-1"></div>
+            <div class="floating-bubble bubble-2"></div>
+            <div class="floating-bubble bubble-3"></div>
+            <div class="floating-bubble bubble-4"></div>
+        </div>
+        
+        <div class="morphing-bg morph-1"></div>
+        <div class="morphing-bg morph-2"></div>
+    </header>
+    
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Development Stack</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-glass glass">
+                    <div class="stat-number">99%</div>
+                    <div class="stat-label">Performance</div>
+                </div>
+                <div class="stat-glass glass">
+                    <div class="stat-number">100+</div>
+                    <div class="stat-label">Projects</div>
+                </div>
+                <div class="stat-glass glass">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Support</div>
+                </div>
+                <div class="stat-glass glass">
+                    <div class="stat-number">5★</div>
+                    <div class="stat-label">Rating</div>
+                </div>
+            </div>
+            
+            <div class="feature-grid">
+                <div class="feature-glass glass">
+                    <div class="tech-icon">⚛</div>
+                    <h3>React Ecosystem</h3>
+                    <p>Modern component architecture with hooks, context, and state management for scalable applications.</p>
+                </div>
+                
+                <div class="feature-glass glass">
+                    <div class="tech-icon">🎨</div>
+                    <h3>UI/UX Design</h3>
+                    <p>Beautiful interfaces with glassmorphism effects, smooth animations, and intuitive user experiences.</p>
+                </div>
+                
+                <div class="feature-glass glass">
+                    <div class="tech-icon">⚡</div>
+                    <h3>Performance</h3>
+                    <p>Optimized code with lazy loading, code splitting, and efficient rendering for lightning-fast apps.</p>
+                </div>
+                
+                <div class="feature-glass glass">
+                    <div class="tech-icon">🔒</div>
+                    <h3>Security</h3>
+                    <p>Enterprise-grade security with authentication, authorization, and data protection protocols.</p>
+                </div>
+                
+                <div class="feature-glass glass">
+                    <div class="tech-icon">📱</div>
+                    <h3>Responsive</h3>
+                    <p>Cross-platform compatibility with mobile-first design approach for all device types.</p>
+                </div>
+                
+                <div class="feature-glass glass">
+                    <div class="tech-icon">☁</div>
+                    <h3>Cloud Native</h3>
+                    <p>Scalable cloud infrastructure with microservices architecture and serverless deployment.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <script>
+        // Parallax effect for floating elements
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.5;
+            
+            document.querySelectorAll('.floating-bubble').forEach((bubble, index) => {
+                bubble.style.transform = `translateY(${rate * (index + 1) * 0.1}px)`;
+            });
+        });
+        
+        // Interactive glass effect on mouse move
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            document.querySelectorAll('.glass').forEach((glass, index) => {
+                const speed = (index + 1) * 0.02;
+                const x = (mouseX - 0.5) * 20 * speed;
+                const y = (mouseY - 0.5) * 20 * speed;
+                
+                glass.style.transform += ` translate(${x}px, ${y}px)`;
+            });
+        });
+        
+        // Animate stats on scroll
+        const observerOptions = {
+            threshold: 0.7,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = entry.target;
+                    const number = target.querySelector('.stat-number');
+                    const finalValue = number.textContent;
+                    
+                    // Extract numeric value
+                    const numericValue = parseInt(finalValue.replace(/\D/g, ''));
+                    
+                    if (numericValue) {
+                        animateCounter(number, 0, numericValue, finalValue);
+                    }
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.stat-glass').forEach(stat => {
+            statsObserver.observe(stat);
+        });
+        
+        function animateCounter(element, start, end, finalText) {
+            const duration = 2000;
+            const increment = (end - start) / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= end) {
+                    element.textContent = finalText;
+                    clearInterval(timer);
+                } else {
+                    const suffix = finalText.replace(/\d/g, '');
+                    element.textContent = Math.floor(current) + suffix;
+                }
+            }, 16);
+        }
+        
+        // Add ripple effect to glass buttons
+        document.querySelectorAll('.glass-button, .feature-glass').forEach(element => {
+            element.addEventListener('click', function(e) {
+                const ripple = document.createElement('div');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: rgba(255, 255, 255, 0.3);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s ease-out;
+                    pointer-events: none;
+                `;
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+        
+        // Add ripple animation CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(2);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Smooth scroll for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

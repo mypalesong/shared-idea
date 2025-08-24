@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asymmetric Community - 비대칭 레이아웃 커뮤니티</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .asymmetric-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: shapeFloat 8s ease-in-out infinite;
+        }
+
+        .shape:nth-child(1) {
+            width: 80px;
+            height: 120px;
+            background: #ff6b6b;
+            top: 10%;
+            left: 5%;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 100px;
+            height: 100px;
+            background: #4ecdc4;
+            top: 30%;
+            right: 10%;
+            border-radius: 50%;
+            animation-delay: 2s;
+        }
+
+        .shape:nth-child(3) {
+            width: 60px;
+            height: 140px;
+            background: #45b7d1;
+            bottom: 20%;
+            left: 15%;
+            clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%);
+            animation-delay: 4s;
+        }
+
+        .shape:nth-child(4) {
+            width: 90px;
+            height: 90px;
+            background: #f7dc6f;
+            bottom: 40%;
+            right: 20%;
+            transform: rotate(45deg);
+            animation-delay: 6s;
+        }
+
+        @keyframes shapeFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .header-section {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 80px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            align-items: end;
+        }
+
+        .header-content {
+            transform: translateY(-20px);
+        }
+
+        .header-content h1 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            line-height: 0.9;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            letter-spacing: -2px;
+        }
+
+        .header-content .highlight {
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-content p {
+            font-size: 1.3rem;
+            color: #7f8c8d;
+            line-height: 1.6;
+            max-width: 500px;
+        }
+
+        .header-stats {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transform: translateY(20px) rotate(2deg);
+        }
+
+        .stat-item {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .stat-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: #2c3e50;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #95a5a6;
+            margin-top: 5px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .community-post {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .community-post:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .post-large {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            min-height: 280px;
+        }
+
+        .post-medium {
+            padding: 30px;
+            transform: rotate(-1deg);
+            margin: 20px 0;
+        }
+
+        .post-small {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            padding: 20px;
+            align-items: center;
+            transform: rotate(1deg);
+        }
+
+        .post-content {
+            padding: 35px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .post-category {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+        }
+
+        .post-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .post-large .post-title {
+            font-size: 2.2rem;
+        }
+
+        .post-small .post-title {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+
+        .post-excerpt {
+            font-size: 1rem;
+            color: #7f8c8d;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.9rem;
+            color: #95a5a6;
+        }
+
+        .post-meta .author {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .author-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .post-image {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .post-image::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .post-large .post-image::before {
+            content: '🎨';
+        }
+
+        .post-small .post-image::before {
+            content: '📸';
+            font-size: 2rem;
+        }
+
+        .post-small .post-image {
+            border-radius: 12px;
+            height: 80px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .sidebar-widget {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .sidebar-widget:nth-child(odd) {
+            transform: rotate(1deg);
+        }
+
+        .sidebar-widget:nth-child(even) {
+            transform: rotate(-1deg);
+        }
+
+        .widget-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .widget-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            border-radius: 2px;
+        }
+
+        .trending-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #ecf0f1;
+            transition: all 0.3s ease;
+        }
+
+        .trending-item:hover {
+            transform: translateX(5px);
+            background: #f8f9fa;
+            margin: 0 -15px;
+            padding: 15px 15px;
+            border-radius: 8px;
+        }
+
+        .trending-item:last-child {
+            border-bottom: none;
+        }
+
+        .trending-number {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .trending-content h4 {
+            font-size: 1rem;
+            color: #2c3e50;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .trending-content p {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+        }
+
+        .member-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .member-card {
+            text-align: center;
+            padding: 15px 10px;
+            border-radius: 12px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .member-card:hover {
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .member-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #45b7d1, #f7dc6f);
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .member-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .member-role {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #2c3e50;
+            border: 2px solid #ecf0f1;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .asymmetric-feature {
+            position: absolute;
+            right: -50px;
+            top: 50%;
+            transform: translateY(-50%) rotate(45deg);
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            border-radius: 20px;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .sidebar {
+                grid-row: 1;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-section {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .header-content h1 {
+                font-size: 3rem;
+            }
+            
+            .post-large {
+                grid-template-columns: 1fr;
+                min-height: auto;
+            }
+            
+            .post-small {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .post-small .post-image {
+                width: 100px;
+                height: 100px;
+                margin: 0 auto 15px;
+            }
+            
+            .member-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .sidebar {
+                grid-template-columns: 1fr;
+            }
+            
+            .member-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <div class="asymmetric-container">
+        <div class="header-section">
+            <div class="header-content">
+                <h1>
+                    <span class="highlight">비대칭</span><br>
+                    커뮤니티 공간
+                </h1>
+                <p>독특한 레이아웃과 창의적인 디자인으로 구성된 커뮤니티에서 새로운 영감을 찾고 다양한 사람들과 연결되세요.</p>
+            </div>
+            
+            <div class="header-stats">
+                <div class="stat-item">
+                    <span class="stat-number">1,247</span>
+                    <div class="stat-label">활성 멤버</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">89</span>
+                    <div class="stat-label">일일 게시물</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">4.8</span>
+                    <div class="stat-label">커뮤니티 점수</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="content-area">
+                <article class="community-post post-large">
+                    <div class="post-content">
+                        <span class="post-category">Featured</span>
+                        <h2 class="post-title">비대칭 디자인의 새로운 가능성</h2>
+                        <p class="post-excerpt">전통적인 그리드 시스템을 벗어나 창의적이고 독특한 레이아웃으로 사용자 경험을 혁신하는 방법들을 탐구해봅니다.</p>
+                        <div class="post-meta">
+                            <div class="author">
+                                <div class="author-avatar">김</div>
+                                <span>김창의</span>
+                            </div>
+                            <span>•</span>
+                            <span>3시간 전</span>
+                            <span>•</span>
+                            <span>156 views</span>
+                        </div>
+                    </div>
+                    <div class="post-image"></div>
+                </article>
+
+                <article class="community-post post-medium">
+                    <span class="post-category">Discussion</span>
+                    <h2 class="post-title">모던 웹 디자인 트렌드 분석</h2>
+                    <p class="post-excerpt">2024년 가장 주목받는 웹 디자인 트렌드들을 분석하고 실제 프로젝트에 어떻게 적용할 수 있는지 논의합니다.</p>
+                    <div class="post-meta">
+                        <div class="author">
+                            <div class="author-avatar">이</div>
+                            <span>이디자인</span>
+                        </div>
+                        <span>•</span>
+                        <span>5시간 전</span>
+                        <span>•</span>
+                        <span>89 views</span>
+                    </div>
+                </article>
+
+                <article class="community-post post-small">
+                    <div class="post-image"></div>
+                    <div>
+                        <span class="post-category">Gallery</span>
+                        <h3 class="post-title">사용자 작품 갤러리</h3>
+                        <div class="post-meta">
+                            <div class="author">
+                                <div class="author-avatar">박</div>
+                                <span>박아티스트</span>
+                            </div>
+                            <span>•</span>
+                            <span>8시간 전</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="community-post post-medium">
+                    <span class="post-category">Tutorial</span>
+                    <h2 class="post-title">CSS Grid와 Flexbox 마스터하기</h2>
+                    <p class="post-excerpt">복잡한 레이아웃도 쉽게 구현할 수 있는 CSS Grid와 Flexbox의 고급 기법들을 단계별로 배워봅시다.</p>
+                    <div class="post-meta">
+                        <div class="author">
+                            <div class="author-avatar">최</div>
+                            <span>최개발</span>
+                        </div>
+                        <span>•</span>
+                        <span>12시간 전</span>
+                        <span>•</span>
+                        <span>203 views</span>
+                    </div>
+                </article>
+            </div>
+
+            <aside class="sidebar">
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">인기 토픽</h3>
+                    <div class="trending-item">
+                        <div class="trending-number">1</div>
+                        <div class="trending-content">
+                            <h4>비대칭 레이아웃</h4>
+                            <p>342개 게시물</p>
+                        </div>
+                    </div>
+                    <div class="trending-item">
+                        <div class="trending-number">2</div>
+                        <div class="trending-content">
+                            <h4>CSS Grid 마스터</h4>
+                            <p>287개 게시물</p>
+                        </div>
+                    </div>
+                    <div class="trending-item">
+                        <div class="trending-number">3</div>
+                        <div class="trending-content">
+                            <h4>모던 디자인</h4>
+                            <p>194개 게시물</p>
+                        </div>
+                    </div>
+                    <div class="trending-item">
+                        <div class="trending-number">4</div>
+                        <div class="trending-content">
+                            <h4>사용자 경험</h4>
+                            <p>156개 게시물</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">활성 멤버</h3>
+                    <div class="member-grid">
+                        <div class="member-card">
+                            <div class="member-avatar">정</div>
+                            <div class="member-name">정크리에이터</div>
+                            <div class="member-role">디자이너</div>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-avatar">한</div>
+                            <div class="member-name">한인스파이어</div>
+                            <div class="member-role">개발자</div>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-avatar">윤</div>
+                            <div class="member-name">윤이노베이터</div>
+                            <div class="member-role">기획자</div>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-avatar">조</div>
+                            <div class="member-name">조아티스트</div>
+                            <div class="member-role">아티스트</div>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-avatar">강</div>
+                            <div class="member-name">강혁신가</div>
+                            <div class="member-role">컨설턴트</div>
+                        </div>
+                        <div class="member-card">
+                            <div class="member-avatar">신</div>
+                            <div class="member-name">신트렌드</div>
+                            <div class="member-role">마케터</div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary">커뮤니티 참여</button>
+                        <button class="btn btn-secondary">더보기</button>
+                    </div>
+                </div>
+
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">이번 주 이벤트</h3>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 3rem; margin-bottom: 15px;">🎨</div>
+                        <h4 style="color: #2c3e50; margin-bottom: 10px;">크리에이티브 워크샵</h4>
+                        <p style="color: #7f8c8d; margin-bottom: 15px; font-size: 0.9rem;">8월 26일 오후 2시</p>
+                        <button class="btn btn-primary">참가 신청</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <div class="asymmetric-feature"></div>
+    </div>
+</body>
+</html>

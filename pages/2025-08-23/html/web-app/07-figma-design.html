@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Studio - Figma Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #1e1e1e;
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #2c2c2c;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #3c3c3c;
+            height: 48px;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .logo {
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .file-name {
+            font-size: 14px;
+            color: #fff;
+            background: none;
+            border: none;
+            outline: none;
+        }
+        
+        .save-status {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .header-center {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .zoom-btn {
+            background: #3c3c3c;
+            border: 1px solid #4c4c4c;
+            color: #fff;
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .share-btn {
+            background: #0d99ff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .collaborator {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            border: 2px solid #2c2c2c;
+            margin-left: -8px;
+        }
+        
+        .main-container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        .tools-panel {
+            width: 48px;
+            background: #2c2c2c;
+            border-right: 1px solid #3c3c3c;
+            display: flex;
+            flex-direction: column;
+            padding: 12px 0;
+        }
+        
+        .tool-item {
+            width: 32px;
+            height: 32px;
+            margin: 4px auto;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #999;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        
+        .tool-item:hover {
+            background: #3c3c3c;
+            color: #fff;
+        }
+        
+        .tool-item.active {
+            background: #0d99ff;
+            color: white;
+        }
+        
+        .canvas-area {
+            flex: 1;
+            background: #1e1e1e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .canvas {
+            width: 800px;
+            height: 600px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .artboard {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .design-element {
+            position: absolute;
+        }
+        
+        .header-element {
+            top: 40px;
+            left: 40px;
+            right: 40px;
+            height: 60px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .logo-element {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .nav-element {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-item {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .hero-element {
+            top: 140px;
+            left: 40px;
+            right: 40px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            border: 2px dashed rgba(255,255,255,0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+        
+        .hero-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        
+        .hero-subtitle {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+        
+        .card-element {
+            bottom: 40px;
+            left: 40px;
+            width: 200px;
+            height: 120px;
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .card-text {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .selection-outline {
+            position: absolute;
+            border: 2px solid #0d99ff;
+            border-radius: 4px;
+            pointer-events: none;
+        }
+        
+        .selection-handle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #0d99ff;
+            border: 1px solid #fff;
+            border-radius: 50%;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: #2c2c2c;
+            border-left: 1px solid #3c3c3c;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-tabs {
+            display: flex;
+            background: #2c2c2c;
+            border-bottom: 1px solid #3c3c3c;
+        }
+        
+        .sidebar-tab {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .sidebar-tab:hover {
+            color: #fff;
+        }
+        
+        .sidebar-tab.active {
+            color: #fff;
+            border-bottom-color: #0d99ff;
+        }
+        
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+        
+        .section {
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+        
+        .layers-list {
+            list-style: none;
+        }
+        
+        .layer-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-bottom: 2px;
+            transition: background 0.2s;
+        }
+        
+        .layer-item:hover {
+            background: #3c3c3c;
+        }
+        
+        .layer-item.selected {
+            background: #0d99ff;
+        }
+        
+        .layer-icon {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .layer-name {
+            flex: 1;
+            color: #fff;
+        }
+        
+        .layer-visibility {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .property-group {
+            margin-bottom: 16px;
+        }
+        
+        .property-label {
+            font-size: 11px;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        
+        .property-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .property-input {
+            background: #3c3c3c;
+            border: 1px solid #4c4c4c;
+            border-radius: 4px;
+            padding: 6px 8px;
+            color: #fff;
+            font-size: 12px;
+            width: 100%;
+        }
+        
+        .color-swatch {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 1px solid #4c4c4c;
+            cursor: pointer;
+        }
+        
+        .comments-indicator {
+            position: absolute;
+            top: 60px;
+            right: 60px;
+            width: 24px;
+            height: 24px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #2c2c2c;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #4c4c4c;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">🎨 Figma</div>
+            <div class="file-info">
+                <input class="file-name" value="Mobile App Design v2.3" />
+                <span class="save-status">• Saved</span>
+            </div>
+        </div>
+        <div class="header-center">
+            <div class="zoom-controls">
+                <button class="zoom-btn">-</button>
+                <span>75%</span>
+                <button class="zoom-btn">+</button>
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="share-btn">Share</button>
+            <div class="collaborator">SJ</div>
+            <div class="collaborator">MK</div>
+            <div class="collaborator">+3</div>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="tools-panel">
+            <div class="tool-item active" title="Select">↖️</div>
+            <div class="tool-item" title="Frame">⬜</div>
+            <div class="tool-item" title="Rectangle">▭</div>
+            <div class="tool-item" title="Ellipse">⭕</div>
+            <div class="tool-item" title="Line">📏</div>
+            <div class="tool-item" title="Arrow">↗️</div>
+            <div class="tool-item" title="Text">T</div>
+            <div class="tool-item" title="Image">🖼️</div>
+            <div class="tool-item" title="Component">📦</div>
+            <div class="tool-item" title="Pen">✏️</div>
+        </div>
+        
+        <div class="canvas-area">
+            <div class="canvas">
+                <div class="artboard">
+                    <div class="design-element header-element">
+                        <div class="logo-element">AppLogo</div>
+                        <div class="nav-element">
+                            <div class="nav-item">Home</div>
+                            <div class="nav-item">Features</div>
+                            <div class="nav-item">About</div>
+                            <div class="nav-item">Contact</div>
+                        </div>
+                    </div>
+                    
+                    <div class="design-element hero-element">
+                        <div class="hero-title">Welcome to Our App</div>
+                        <div class="hero-subtitle">The future of mobile productivity</div>
+                        <div class="selection-outline" style="top: -2px; left: -2px; right: -2px; bottom: -2px;">
+                            <div class="selection-handle" style="top: -4px; left: -4px;"></div>
+                            <div class="selection-handle" style="top: -4px; right: -4px;"></div>
+                            <div class="selection-handle" style="bottom: -4px; left: -4px;"></div>
+                            <div class="selection-handle" style="bottom: -4px; right: -4px;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="design-element card-element">
+                        <div class="card-title">Feature Card</div>
+                        <div class="card-text">This is a sample feature card that showcases the app's capabilities.</div>
+                    </div>
+                    
+                    <div class="comments-indicator">3</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <div class="sidebar-tabs">
+                <button class="sidebar-tab">Design</button>
+                <button class="sidebar-tab active">Layers</button>
+                <button class="sidebar-tab">Assets</button>
+            </div>
+            
+            <div class="sidebar-content">
+                <div class="section">
+                    <div class="section-title">Layers</div>
+                    <ul class="layers-list">
+                        <li class="layer-item">
+                            <div class="layer-icon">📱</div>
+                            <div class="layer-name">iPhone 14 Pro</div>
+                            <div class="layer-visibility">👁️</div>
+                        </li>
+                        <li class="layer-item">
+                            <div class="layer-icon">▭</div>
+                            <div class="layer-name">Header</div>
+                            <div class="layer-visibility">👁️</div>
+                        </li>
+                        <li class="layer-item selected">
+                            <div class="layer-icon">📝</div>
+                            <div class="layer-name">Hero Section</div>
+                            <div class="layer-visibility">👁️</div>
+                        </li>
+                        <li class="layer-item" style="padding-left: 24px;">
+                            <div class="layer-icon">T</div>
+                            <div class="layer-name">Title</div>
+                            <div class="layer-visibility">👁️</div>
+                        </li>
+                        <li class="layer-item" style="padding-left: 24px;">
+                            <div class="layer-icon">T</div>
+                            <div class="layer-name">Subtitle</div>
+                            <div class="layer-visibility">👁️</div>
+                        </li>
+                        <li class="layer-item">
+                            <div class="layer-icon">▭</div>
+                            <div class="layer-name">Feature Card</div>
+                            <div class="layer-visibility">👁️</div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">Properties</div>
+                    
+                    <div class="property-group">
+                        <div class="property-label">Position</div>
+                        <div class="property-row">
+                            <input class="property-input" value="40" placeholder="X">
+                            <input class="property-input" value="140" placeholder="Y">
+                        </div>
+                    </div>
+                    
+                    <div class="property-group">
+                        <div class="property-label">Size</div>
+                        <div class="property-row">
+                            <input class="property-input" value="720" placeholder="W">
+                            <input class="property-input" value="200" placeholder="H">
+                        </div>
+                    </div>
+                    
+                    <div class="property-group">
+                        <div class="property-label">Fill</div>
+                        <div class="property-row">
+                            <div class="color-swatch"></div>
+                            <input class="property-input" value="Linear Gradient" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="property-group">
+                        <div class="property-label">Border Radius</div>
+                        <div class="property-row">
+                            <input class="property-input" value="12" placeholder="Radius">
+                        </div>
+                    </div>
+                    
+                    <div class="property-group">
+                        <div class="property-label">Opacity</div>
+                        <div class="property-row">
+                            <input class="property-input" value="100%" placeholder="Opacity">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">Typography</div>
+                    
+                    <div class="property-group">
+                        <div class="property-label">Font Family</div>
+                        <div class="property-row">
+                            <input class="property-input" value="Inter" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="property-group">
+                        <div class="property-label">Font Size</div>
+                        <div class="property-row">
+                            <input class="property-input" value="32" placeholder="Size">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

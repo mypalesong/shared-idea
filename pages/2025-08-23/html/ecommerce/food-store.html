@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshMart - 신선식품 온라인 마트</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #4caf50, #8bc34a);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo::before {
+            content: '🥬';
+            font-size: 2rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+        
+        nav a:hover {
+            color: #c8e6c9;
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(76,175,80,0.85), rgba(139,195,74,0.85)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23f1f8e9" width="1200" height="600"/><text x="600" y="280" text-anchor="middle" font-size="48" fill="%234caf50">🥕 Fresh Market 🥬</text><text x="600" y="340" text-anchor="middle" font-size="24" fill="%238bc34a">Farm to Table</text></svg>');
+            height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+        
+        .hero-content h1 {
+            font-size: 3.8rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            line-height: 1.8;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #ff9800;
+            color: white;
+            padding: 18px 35px;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.3s;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+        }
+        
+        .btn:hover {
+            background: #f57c00;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255,152,0,0.3);
+        }
+        
+        .delivery-notice {
+            background: #fff3e0;
+            padding: 15px 0;
+            text-align: center;
+            color: #e65100;
+            font-weight: bold;
+            border-bottom: 2px solid #ffcc02;
+        }
+        
+        .categories {
+            padding: 80px 0;
+            background: #fafafa;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 3rem;
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minMax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+            border-top: 4px solid #4caf50;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-8px);
+        }
+        
+        .category-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .category-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .category-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .featured-products {
+            padding: 80px 0;
+        }
+        
+        .product-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .product-tab {
+            padding: 12px 25px;
+            background: white;
+            border: 2px solid #4caf50;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            color: #4caf50;
+        }
+        
+        .product-tab.active {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minMax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+        }
+        
+        .product-img {
+            height: 250px;
+            background: linear-gradient(45deg, #f1f8e9, #e8f5e8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4caf50;
+            font-size: 1.2rem;
+            position: relative;
+        }
+        
+        .fresh-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #4caf50;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .discount-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #f44336;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+        }
+        
+        .product-origin {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .product-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .product-weight {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .product-price {
+            font-size: 1.6rem;
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        .unit-price {
+            color: #999;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+        
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 1.1rem;
+            margin-right: 0.5rem;
+        }
+        
+        .benefits {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #4caf50, #8bc34a);
+            color: white;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minMax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+        
+        .benefit {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .benefit-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .benefit h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+        }
+        
+        .benefit p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .recipe-section {
+            padding: 80px 0;
+            background: #f8fdf8;
+        }
+        
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minMax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .recipe-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .recipe-img {
+            height: 200px;
+            background: linear-gradient(45deg, #ffeb3b, #fff9c4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #f57f17;
+        }
+        
+        .recipe-info {
+            padding: 2rem;
+        }
+        
+        .recipe-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #4caf50;
+        }
+        
+        .recipe-info p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .recipe-time {
+            color: #ff9800;
+            font-weight: bold;
+        }
+        
+        footer {
+            background: #2e7d32;
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minMax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #c8e6c9;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: #c8e6c9;
+        }
+        
+        .footer-contact {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.8rem;
+            }
+            
+            .product-tabs {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="delivery-notice">
+        🚛 오늘 주문시 내일 새벽배송! 신선한 식재료를 집까지 배달해드려요 📞 고객센터: 1588-0000
+    </div>
+
+    <header>
+        <nav class="container">
+            <div class="logo">FreshMart</div>
+            <ul>
+                <li><a href="#home">홈</a></li>
+                <li><a href="#categories">카테고리</a></li>
+                <li><a href="#products">상품</a></li>
+                <li><a href="#recipes">레시피</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>농장에서 식탁까지</h1>
+            <p>매일 새벽 공급받는 신선한 채소와 과일, 엄선된 식자재를 만나보세요</p>
+            <a href="#products" class="btn">신선식품 둘러보기</a>
+        </div>
+    </section>
+
+    <section id="categories" class="categories">
+        <div class="container">
+            <h2 class="section-title">카테고리</h2>
+            <div class="category-grid">
+                <div class="category-card">
+                    <div class="category-icon">🥬</div>
+                    <h3>채소</h3>
+                    <p>농장에서 바로 온 신선한 채소류<br>유기농, 친환경 채소 다양하게</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🍎</div>
+                    <h3>과일</h3>
+                    <p>달콤하고 싱싱한 제철 과일<br>국산 및 수입 프리미엄 과일</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🥩</div>
+                    <h3>정육 · 계란</h3>
+                    <p>신선한 축산물과 방목 달걀<br>1등급 한우, 국산 돼지고기</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🐟</div>
+                    <h3>수산물</h3>
+                    <p>오늘 잡은 활어와 선어<br>냉동 수산물, 건어물 다양하게</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🍞</div>
+                    <h3>베이커리 · 유제품</h3>
+                    <p>갓 구운 빵과 신선한 유제품<br>유기농 우유, 수제 치즈</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🍚</div>
+                    <h3>쌀 · 잡곡</h3>
+                    <p>햅쌀과 건강한 잡곡류<br>현미, 귀리, 퀴노아 등</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="products" class="featured-products">
+        <div class="container">
+            <h2 class="section-title">오늘의 특가</h2>
+            <div class="product-tabs">
+                <div class="product-tab active">🔥 타임세일</div>
+                <div class="product-tab">🥬 채소</div>
+                <div class="product-tab">🍎 과일</div>
+                <div class="product-tab">🥩 정육</div>
+                <div class="product-tab">🐟 수산</div>
+            </div>
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-img">
+                        <div class="fresh-badge">오늘수확</div>
+                        <div class="discount-badge">40% 할인</div>
+                        🥬 유기농 상추
+                    </div>
+                    <div class="product-info">
+                        <div class="product-origin">국산 • 유기농</div>
+                        <h3>친환경 청상추</h3>
+                        <div class="product-weight">150g 1포</div>
+                        <div class="product-price">
+                            <span class="original-price">3,500원</span>
+                            2,100원 <span class="unit-price">(100g당 1,400원)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">
+                        <div class="fresh-badge">당일수확</div>
+                        🍎 사과
+                    </div>
+                    <div class="product-info">
+                        <div class="product-origin">경북 안동산</div>
+                        <h3>꿀맛 부사사과</h3>
+                        <div class="product-weight">3kg (8-10개)</div>
+                        <div class="product-price">14,900원 <span class="unit-price">(개당 1,490원)</span></div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">
+                        <div class="discount-badge">30% 할인</div>
+                        🥩 소고기
+                    </div>
+                    <div class="product-info">
+                        <div class="product-origin">국산 1등급 한우</div>
+                        <h3>한우 불고기용</h3>
+                        <div class="product-weight">500g</div>
+                        <div class="product-price">
+                            <span class="original-price">35,000원</span>
+                            24,500원 <span class="unit-price">(100g당 4,900원)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">
+                        <div class="fresh-badge">활어</div>
+                        🐟 광어
+                    </div>
+                    <div class="product-info">
+                        <div class="product-origin">남해산 활어</div>
+                        <h3>자연산 광어</h3>
+                        <div class="product-weight">1마리 (약 1.5kg)</div>
+                        <div class="product-price">28,000원</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">
+                        <div class="fresh-badge">금일제조</div>
+                        🥛 우유
+                    </div>
+                    <div class="product-info">
+                        <div class="product-origin">국산 • 무항생제</div>
+                        <h3>목장 직송 신선우유</h3>
+                        <div class="product-weight">1L</div>
+                        <div class="product-price">3,200원</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">
+                        <div class="discount-badge">25% 할인</div>
+                        🍞 빵
+                    </div>
+                    <div class="product-info">
+                        <div class="product-origin">당일 제조</div>
+                        <h3>수제 식빵</h3>
+                        <div class="product-weight">1개 (약 400g)</div>
+                        <div class="product-price">
+                            <span class="original-price">4,000원</span>
+                            3,000원
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="benefits">
+        <div class="container">
+            <h2 class="section-title">FreshMart만의 특별함</h2>
+            <div class="benefits-grid">
+                <div class="benefit">
+                    <div class="benefit-icon">🌱</div>
+                    <h3>신선도 보장</h3>
+                    <p>매일 새벽 농장에서 직접 공급받는 신선한 식자료를 당일 배송으로 전달해드립니다.</p>
+                </div>
+                <div class="benefit">
+                    <div class="benefit-icon">🚛</div>
+                    <h3>콜드체인 배송</h3>
+                    <p>수확부터 배송까지 저온유통시스템으로 신선도를 유지하여 최상의 상태로 배송합니다.</p>
+                </div>
+                <div class="benefit">
+                    <div class="benefit-icon">🏆</div>
+                    <h3>엄선된 품질</h3>
+                    <p>전문 바이어가 직접 선별한 프리미엄 식자재만을 고객님께 제공합니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="recipes" class="recipe-section">
+        <div class="container">
+            <h2 class="section-title">오늘의 레시피</h2>
+            <div class="recipe-grid">
+                <div class="recipe-card">
+                    <div class="recipe-img">🥗 신선한 샐러드</div>
+                    <div class="recipe-info">
+                        <h3>농장 샐러드</h3>
+                        <p>신선한 채소로 만드는 건강한 샐러드. 유기농 채소의 아삭한 식감과 달콤한 드레싱의 조화</p>
+                        <div class="recipe-time">⏱️ 조리시간: 10분</div>
+                    </div>
+                </div>
+                <div class="recipe-card">
+                    <div class="recipe-img">🍲 따뜻한 스프</div>
+                    <div class="recipe-info">
+                        <h3>계절 야채 스프</h3>
+                        <p>제철 채소로 끓인 진한 야채 스프. 영양가득하고 몸을 따뜻하게 해주는 건강 요리</p>
+                        <div class="recipe-time">⏱️ 조리시간: 30분</div>
+                    </div>
+                </div>
+                <div class="recipe-card">
+                    <div class="recipe-img">🥘 볶음 요리</div>
+                    <div class="recipe-info">
+                        <h3>제철 야채 볶음</h3>
+                        <p>신선한 제철 야채로 만든 간단하고 맛있는 볶음 요리. 아이들도 좋아하는 건강식</p>
+                        <div class="recipe-time">⏱️ 조리시간: 15분</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>고객센터</h3>
+                    <ul>
+                        <li><a href="#">주문/배송 조회</a></li>
+                        <li><a href="#">교환/반품</a></li>
+                        <li><a href="#">1:1 문의</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">배송 지역</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>신선정보</h3>
+                    <ul>
+                        <li><a href="#">제철 식재료</a></li>
+                        <li><a href="#">보관법 가이드</a></li>
+                        <li><a href="#">영양 정보</a></li>
+                        <li><a href="#">레시피</a></li>
+                        <li><a href="#">산지 직송</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>회사 정보</h3>
+                    <ul>
+                        <li><a href="#">회사 소개</a></li>
+                        <li><a href="#">채용 정보</a></li>
+                        <li><a href="#">제휴 문의</a></li>
+                        <li><a href="#">언론 보도</a></li>
+                        <li><a href="#">개인정보처리방침</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <div class="footer-contact">
+                        <h3>📞 고객센터</h3>
+                        <p><strong>1588-0000</strong></p>
+                        <p>평일 오전 7시 - 밤 12시</p>
+                        <p>주말 오전 8시 - 밤 10시</p>
+                        <br>
+                        <h3>🚛 배송문의</h3>
+                        <p><strong>1588-1111</strong></p>
+                        <p>새벽배송: 밤 11시까지 주문</p>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; padding-top: 2rem; border-top: 1px solid #388e3c; color: #a5d6a7;">
+                <p>&copy; 2025 FreshMart. All rights reserved. 사업자등록번호: 123-45-67890 | 통신판매업신고: 2025-서울강남-5678</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

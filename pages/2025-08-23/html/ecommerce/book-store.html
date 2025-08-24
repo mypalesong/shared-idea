@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookHaven - 온라인 서점</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: #8b4513;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #daa520;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 1.1rem;
+        }
+        
+        nav a:hover {
+            color: #daa520;
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(139,69,19,0.8), rgba(139,69,19,0.8)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23f5deb3" width="1200" height="600"/><text x="600" y="300" text-anchor="middle" font-size="48" fill="%23654321">Classic Library</text></svg>');
+            height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+        
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            line-height: 1.8;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #daa520;
+            color: #8b4513;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .btn:hover {
+            background: #ffd700;
+            transform: translateY(-2px);
+        }
+        
+        .categories {
+            padding: 80px 0;
+            background: #faf5f0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 3rem;
+            color: #8b4513;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(139,69,19,0.1);
+            transition: transform 0.3s;
+            border-left: 5px solid #daa520;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-8px);
+        }
+        
+        .category-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: #8b4513;
+        }
+        
+        .category-card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            color: #8b4513;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        .category-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .featured {
+            padding: 80px 0;
+        }
+        
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .book-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .book-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .book-cover {
+            height: 300px;
+            background: linear-gradient(45deg, #f4f4f4, #e8e8e8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8b4513;
+            font-size: 1.1rem;
+            position: relative;
+            font-style: italic;
+        }
+        
+        .bestseller-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #dc143c;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .book-info {
+            padding: 1.5rem;
+        }
+        
+        .book-genre {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+        
+        .book-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        .book-author {
+            color: #8b4513;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        
+        .book-rating {
+            color: #ffc107;
+            margin-bottom: 1rem;
+        }
+        
+        .book-price {
+            font-size: 1.6rem;
+            color: #8b4513;
+            font-weight: bold;
+        }
+        
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 1.1rem;
+            margin-right: 0.5rem;
+        }
+        
+        .reading-benefits {
+            padding: 80px 0;
+            background: #8b4513;
+            color: white;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+        
+        .benefit {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .benefit-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: #daa520;
+        }
+        
+        .benefit h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        .benefit p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .author-spotlight {
+            padding: 80px 0;
+            background: #f9f9f9;
+        }
+        
+        .author-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .author-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .author-photo {
+            width: 120px;
+            height: 120px;
+            background: #ddd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: #666;
+        }
+        
+        .author-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #8b4513;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        .author-genre {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        
+        footer {
+            background: #654321;
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #daa520;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: #daa520;
+        }
+        
+        .newsletter {
+            background: rgba(218,165,32,0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+        
+        .newsletter h4 {
+            margin-bottom: 1rem;
+            color: #8b4513;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .newsletter-form input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .newsletter-form button {
+            background: #8b4513;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">BookHaven</div>
+            <ul>
+                <li><a href="#home">홈</a></li>
+                <li><a href="#categories">카테고리</a></li>
+                <li><a href="#featured">추천도서</a></li>
+                <li><a href="#authors">작가소개</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>책 속에서 찾는 무한한 세상</h1>
+            <p>지식과 상상력의 보고, BookHaven에서 당신만의 특별한 책을 발견하세요</p>
+            <a href="#featured" class="btn">베스트셀러 보기</a>
+        </div>
+    </section>
+
+    <section id="categories" class="categories">
+        <div class="container">
+            <h2 class="section-title">도서 카테고리</h2>
+            <div class="category-grid">
+                <div class="category-card">
+                    <div class="category-icon">📚</div>
+                    <h3>문학 & 소설</h3>
+                    <p>한국문학, 세계문학, 추리소설, 로맨스, SF/판타지 등 다양한 장르의 소설과 문학 작품</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🧠</div>
+                    <h3>자기계발</h3>
+                    <p>성공학, 리더십, 습관, 심리학 등 더 나은 자신을 만들어가는 실용적인 지식</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">💼</div>
+                    <h3>경제 & 경영</h3>
+                    <p>투자, 재테크, 마케팅, 창업 등 비즈니스와 경제에 관한 전문 서적</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🏛️</div>
+                    <h3>역사 & 인문</h3>
+                    <p>세계사, 한국사, 철학, 종교, 문화 등 인문학적 소양을 기를 수 있는 도서</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🔬</div>
+                    <h3>과학 & 기술</h3>
+                    <p>물리학, 생물학, IT, 공학 등 과학기술 분야의 전문서와 교양서</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">👨‍👩‍👧‍👦</div>
+                    <h3>가정 & 육아</h3>
+                    <p>요리, 인테리어, 육아, 교육 등 가족과 생활에 도움이 되는 실용서</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="featured" class="featured">
+        <div class="container">
+            <h2 class="section-title">이달의 추천 도서</h2>
+            <div class="book-grid">
+                <div class="book-card">
+                    <div class="book-cover">
+                        <div class="bestseller-badge">베스트셀러</div>
+                        "미드나잇 라이브러리" 표지
+                    </div>
+                    <div class="book-info">
+                        <div class="book-genre">소설</div>
+                        <h3>미드나잇 라이브러리</h3>
+                        <div class="book-author">매트 헤이그 지음</div>
+                        <div class="book-rating">★★★★★ (4.8)</div>
+                        <div class="book-price">14,400원</div>
+                    </div>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover">
+                        <div class="bestseller-badge">화제의 책</div>
+                        "아토믹 해빗" 표지
+                    </div>
+                    <div class="book-info">
+                        <div class="book-genre">자기계발</div>
+                        <h3>아토믹 해빗</h3>
+                        <div class="book-author">제임스 클리어 지음</div>
+                        <div class="book-rating">★★★★★ (4.9)</div>
+                        <div class="book-price">
+                            <span class="original-price">16,000원</span>
+                            14,400원
+                        </div>
+                    </div>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover">"부의 추월차선" 표지</div>
+                    <div class="book-info">
+                        <div class="book-genre">경제/경영</div>
+                        <h3>부의 추월차선</h3>
+                        <div class="book-author">엠제이 드마코 지음</div>
+                        <div class="book-rating">★★★★☆ (4.6)</div>
+                        <div class="book-price">16,200원</div>
+                    </div>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover">"사피엔스" 표지</div>
+                    <div class="book-info">
+                        <div class="book-genre">역사/인문</div>
+                        <h3>사피엔스</h3>
+                        <div class="book-author">유발 하라리 지음</div>
+                        <div class="book-rating">★★★★★ (4.7)</div>
+                        <div class="book-price">19,800원</div>
+                    </div>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover">"코스모스" 표지</div>
+                    <div class="book-info">
+                        <div class="book-genre">과학</div>
+                        <h3>코스모스</h3>
+                        <div class="book-author">칼 세이건 지음</div>
+                        <div class="book-rating">★★★★★ (4.8)</div>
+                        <div class="book-price">17,100원</div>
+                    </div>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover">"82년생 김지영" 표지</div>
+                    <div class="book-info">
+                        <div class="book-genre">소설</div>
+                        <h3>82년생 김지영</h3>
+                        <div class="book-author">조남주 지음</div>
+                        <div class="book-rating">★★★★☆ (4.5)</div>
+                        <div class="book-price">13,320원</div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <a href="#" class="btn">더 많은 도서 보기</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="reading-benefits">
+        <div class="container">
+            <h2 class="section-title">독서의 힘</h2>
+            <div class="benefits-grid">
+                <div class="benefit">
+                    <div class="benefit-icon">🧠</div>
+                    <h3>지식 확장</h3>
+                    <p>다양한 분야의 지식을 습득하고 시야를 넓혀 보다 풍부한 사고력을 기를 수 있습니다.</p>
+                </div>
+                <div class="benefit">
+                    <div class="benefit-icon">💭</div>
+                    <h3>창의력 증진</h3>
+                    <p>상상력을 자극하는 이야기와 새로운 아이디어를 통해 창의적 사고를 발달시킬 수 있습니다.</p>
+                </div>
+                <div class="benefit">
+                    <div class="benefit-icon">❤️</div>
+                    <h3>감정 치유</h3>
+                    <p>책 속 인물들의 이야기를 통해 공감하고 위로받으며 감정적 안정감을 얻을 수 있습니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="authors" class="author-spotlight">
+        <div class="container">
+            <h2 class="section-title">주목받는 작가</h2>
+            <div class="author-grid">
+                <div class="author-card">
+                    <div class="author-photo">작가 사진</div>
+                    <h3>김영하</h3>
+                    <div class="author-genre">한국 현대문학</div>
+                    <p>「살인자의 기억법」, 「빛의 제국」 등으로 유명한 대한민국 대표 소설가</p>
+                </div>
+                <div class="author-card">
+                    <div class="author-photo">작가 사진</div>
+                    <h3>정유정</h3>
+                    <div class="author-genre">추리/스릴러</div>
+                    <p>「7년의 밤」, 「28」 등의 베스트셀러로 한국 추리소설의 새 지평을 연 작가</p>
+                </div>
+                <div class="author-card">
+                    <div class="author-photo">작가 사진</div>
+                    <h3>조남주</h3>
+                    <div class="author-genre">사회문제 소설</div>
+                    <p>「82년생 김지영」으로 사회적 화제를 불러일으킨 대표적인 페미니즘 문학 작가</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>고객서비스</h3>
+                    <ul>
+                        <li><a href="#">주문/배송 조회</a></li>
+                        <li><a href="#">교환/반품/취소</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">1:1 문의</a></li>
+                        <li><a href="#">적립금/쿠폰</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>도서 정보</h3>
+                    <ul>
+                        <li><a href="#">신간 도서</a></li>
+                        <li><a href="#">베스트셀러</a></li>
+                        <li><a href="#">추천 도서</a></li>
+                        <li><a href="#">이벤트/기획전</a></li>
+                        <li><a href="#">작가 인터뷰</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>회사 소개</h3>
+                    <ul>
+                        <li><a href="#">회사 개요</a></li>
+                        <li><a href="#">인재 채용</a></li>
+                        <li><a href="#">제휴 문의</a></li>
+                        <li><a href="#">광고 문의</a></li>
+                        <li><a href="#">개인정보처리방침</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <div class="newsletter">
+                        <h4>📖 북 뉴스레터</h4>
+                        <p style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">신간 소식과 특별 할인 정보를 받아보세요</p>
+                        <form class="newsletter-form">
+                            <input type="email" placeholder="이메일 주소">
+                            <button type="submit">구독</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; padding-top: 2rem; border-top: 1px solid #555; color: #999;">
+                <p>&copy; 2025 BookHaven. All rights reserved. 사업자등록번호: 123-45-67890</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

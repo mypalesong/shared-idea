@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vintage Code - Classic Development</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Code+Pro:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            background: #f4f1e8;
+            color: #2c1810;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .vintage-texture {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(160, 82, 45, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(210, 180, 140, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .vintage-border {
+            border: 4px solid #8b4513;
+            border-radius: 15px;
+            position: relative;
+        }
+        
+        .vintage-border::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            border: 2px solid #d2b48c;
+            border-radius: 20px;
+            z-index: -1;
+        }
+        
+        header {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            background: linear-gradient(135deg, #f4f1e8 0%, #e6ddd4 100%);
+        }
+        
+        .hero {
+            text-align: center;
+            z-index: 2;
+        }
+        
+        .vintage-logo {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 2rem;
+            background: #8b4513;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 
+                0 0 0 8px #d2b48c,
+                0 0 0 16px #f4f1e8,
+                inset 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .vintage-logo::before {
+            content: '<>';
+            font-size: 3rem;
+            color: #f4f1e8;
+            font-family: 'Source Code Pro', monospace;
+            font-weight: 700;
+        }
+        
+        .vintage-logo::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border: 3px solid #a0522d;
+            border-radius: 50%;
+            border-style: dashed;
+            animation: vintageRotate 20s linear infinite;
+        }
+        
+        .hero h1 {
+            font-size: 5rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            color: #8b4513;
+            text-shadow: 3px 3px 0px #d2b48c, 6px 6px 10px rgba(139, 69, 19, 0.3);
+            position: relative;
+        }
+        
+        .hero h1::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #8b4513, transparent);
+        }
+        
+        .hero h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #8b4513, transparent);
+        }
+        
+        .hero p {
+            font-size: 1.4rem;
+            margin-bottom: 3rem;
+            color: #654321;
+            font-style: italic;
+        }
+        
+        .vintage-button {
+            display: inline-block;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, #d2b48c, #deb887);
+            color: #8b4513;
+            text-decoration: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 3px solid #8b4513;
+            border-radius: 0;
+            box-shadow: 
+                0 6px 0 #a0522d,
+                0 12px 20px rgba(139, 69, 19, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .vintage-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 8px 0 #a0522d,
+                0 16px 25px rgba(139, 69, 19, 0.5);
+        }
+        
+        .vintage-button:active {
+            transform: translateY(4px);
+            box-shadow: 
+                0 2px 0 #a0522d,
+                0 4px 8px rgba(139, 69, 19, 0.3);
+        }
+        
+        .vintage-ornament {
+            position: absolute;
+            font-size: 4rem;
+            color: rgba(139, 69, 19, 0.2);
+            animation: vintageFloat 8s ease-in-out infinite;
+        }
+        
+        .ornament-1 {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .ornament-2 {
+            top: 30%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+        
+        .ornament-3 {
+            bottom: 30%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+        
+        .ornament-4 {
+            bottom: 20%;
+            right: 10%;
+            animation-delay: 6s;
+        }
+        
+        .main-content {
+            padding: 100px 0;
+            background: #f9f6f0;
+        }
+        
+        .section-title {
+            font-size: 3.5rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            color: #8b4513;
+            font-weight: 900;
+            position: relative;
+        }
+        
+        .section-title::before,
+        .section-title::after {
+            content: '❦';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: #d2b48c;
+        }
+        
+        .section-title::before {
+            left: -60px;
+        }
+        
+        .section-title::after {
+            right: -60px;
+        }
+        
+        .vintage-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+        
+        .vintage-card {
+            background: #f4f1e8;
+            padding: 3rem;
+            position: relative;
+            box-shadow: 
+                0 10px 30px rgba(139, 69, 19, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            transition: all 0.4s ease;
+        }
+        
+        .vintage-card::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 2px solid #d2b48c;
+            border-radius: 5px;
+            pointer-events: none;
+        }
+        
+        .vintage-card::after {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            right: 25px;
+            bottom: 25px;
+            border: 1px solid #deb887;
+            border-radius: 3px;
+            pointer-events: none;
+        }
+        
+        .vintage-card:hover {
+            transform: translateY(-10px) rotate(1deg);
+            box-shadow: 
+                0 20px 40px rgba(139, 69, 19, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+        
+        .card-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #8b4513, #a0522d);
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #f4f1e8;
+            box-shadow: 
+                0 0 0 4px #d2b48c,
+                0 0 0 8px #f4f1e8,
+                0 4px 12px rgba(139, 69, 19, 0.3);
+        }
+        
+        .vintage-card h3 {
+            font-size: 1.8rem;
+            color: #8b4513;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .vintage-card h3::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: #d2b48c;
+        }
+        
+        .vintage-card p {
+            color: #654321;
+            line-height: 1.8;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .typewriter-section {
+            background: #8b4513;
+            color: #f4f1e8;
+            padding: 100px 0;
+            margin: 6rem 0;
+            position: relative;
+        }
+        
+        .typewriter-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(244, 241, 232, 0.1) 2px,
+                    rgba(244, 241, 232, 0.1) 4px
+                );
+            opacity: 0.3;
+        }
+        
+        .typewriter {
+            background: #654321;
+            padding: 3rem;
+            border-radius: 10px;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.5),
+                inset 0 4px 8px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .typewriter::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            border: 2px solid #d2b48c;
+            border-radius: 5px;
+            pointer-events: none;
+        }
+        
+        .typewriter-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .typewriter-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #f4f1e8;
+        }
+        
+        .typewriter-subtitle {
+            font-style: italic;
+            color: #d2b48c;
+        }
+        
+        .typewriter-content {
+            font-family: 'Source Code Pro', monospace;
+            background: #2c1810;
+            padding: 2rem;
+            border-radius: 5px;
+            position: relative;
+            z-index: 2;
+            border: 2px solid #8b4513;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .code-line {
+            margin-bottom: 0.8rem;
+            color: #d2b48c;
+            display: flex;
+            align-items: center;
+        }
+        
+        .line-number {
+            color: #a0522d;
+            margin-right: 1rem;
+            font-size: 0.9rem;
+            min-width: 30px;
+        }
+        
+        .keyword {
+            color: #daa520;
+            font-weight: 600;
+        }
+        
+        .string {
+            color: #90ee90;
+        }
+        
+        .comment {
+            color: #a0522d;
+            font-style: italic;
+        }
+        
+        .typing-cursor {
+            display: inline-block;
+            background: #f4f1e8;
+            width: 8px;
+            height: 16px;
+            animation: vintageTypewriter 1s infinite;
+            margin-left: 4px;
+        }
+        
+        .vintage-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+        
+        .gallery-item {
+            background: #f4f1e8;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .gallery-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(45deg, transparent 40%, rgba(139, 69, 19, 0.1) 50%, transparent 60%),
+                linear-gradient(-45deg, transparent 40%, rgba(160, 82, 45, 0.1) 50%, transparent 60%);
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.03) rotate(-1deg);
+            box-shadow: 0 15px 30px rgba(139, 69, 19, 0.3);
+        }
+        
+        .gallery-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: #8b4513;
+            display: block;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .gallery-title {
+            font-size: 1.5rem;
+            color: #8b4513;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .gallery-description {
+            color: #654321;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .testimonial-section {
+            background: #deb887;
+            padding: 100px 0;
+            margin: 6rem 0;
+        }
+        
+        .testimonial {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            background: #f4f1e8;
+            padding: 4rem;
+            border-radius: 15px;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(139, 69, 19, 0.2);
+        }
+        
+        .testimonial::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: 30px;
+            font-size: 8rem;
+            color: #d2b48c;
+            font-family: 'Playfair Display', serif;
+            line-height: 1;
+        }
+        
+        .testimonial-text {
+            font-size: 1.3rem;
+            color: #654321;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+        
+        .testimonial-author {
+            font-size: 1.1rem;
+            color: #8b4513;
+            font-weight: 700;
+        }
+        
+        .testimonial-role {
+            color: #a0522d;
+            font-style: italic;
+            margin-top: 0.5rem;
+        }
+        
+        .contact-section {
+            background: #f4f1e8;
+            padding: 100px 0;
+        }
+        
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #f9f6f0;
+            padding: 4rem;
+            box-shadow: 
+                0 0 0 4px #d2b48c,
+                0 0 0 8px #f4f1e8,
+                0 20px 40px rgba(139, 69, 19, 0.2);
+            position: relative;
+        }
+        
+        .contact-form::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            border: 2px solid #deb887;
+            border-radius: 5px;
+            pointer-events: none;
+        }
+        
+        .form-group {
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #8b4513;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            background: #f4f1e8;
+            border: 2px solid #d2b48c;
+            color: #654321;
+            font-size: 1rem;
+            font-family: 'Playfair Display', serif;
+            border-radius: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #8b4513;
+            box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.2);
+        }
+        
+        @keyframes vintageRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes vintageFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(10deg); }
+            66% { transform: translateY(10px) rotate(-5deg); }
+        }
+        
+        @keyframes vintageTypewriter {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .vintage-divider {
+            text-align: center;
+            margin: 4rem 0;
+            position: relative;
+        }
+        
+        .vintage-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #d2b48c, transparent);
+        }
+        
+        .vintage-divider-content {
+            display: inline-block;
+            background: #f4f1e8;
+            padding: 0 2rem;
+            color: #8b4513;
+            font-size: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            .section-title::before,
+            .section-title::after {
+                display: none;
+            }
+            
+            .vintage-cards,
+            .vintage-gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-form {
+                margin: 1rem;
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="vintage-texture"></div>
+    
+    <header>
+        <div class="container">
+            <div class="hero">
+                <div class="vintage-logo"></div>
+                <h1>Vintage Code</h1>
+                <p>Crafted with timeless elegance & old-world charm</p>
+                <a href="#" class="vintage-button">Discover Heritage</a>
+            </div>
+        </div>
+        
+        <div class="vintage-ornament ornament-1">❦</div>
+        <div class="vintage-ornament ornament-2">❧</div>
+        <div class="vintage-ornament ornament-3">❦</div>
+        <div class="vintage-ornament ornament-4">❧</div>
+    </header>
+    
+    <main class="main-content">
+        <div class="container">
+            <h2 class="section-title">Artisan Services</h2>
+            
+            <div class="vintage-cards">
+                <div class="vintage-card vintage-border">
+                    <div class="card-header">
+                        <div class="card-icon">🏛</div>
+                        <h3>Classic Architecture</h3>
+                    </div>
+                    <p>Timeless software architecture patterns inspired by the masters of yesteryear. We build applications that stand the test of time, just like the great cathedrals of old.</p>
+                </div>
+                
+                <div class="vintage-card vintage-border">
+                    <div class="card-header">
+                        <div class="card-icon">📜</div>
+                        <h3>Manuscript Development</h3>
+                    </div>
+                    <p>Handcrafted code written with the precision of medieval scribes. Every line is carefully considered, beautifully formatted, and thoroughly documented.</p>
+                </div>
+                
+                <div class="vintage-card vintage-border">
+                    <div class="card-header">
+                        <div class="card-icon">⚒</div>
+                        <h3>Artisan Craftsmanship</h3>
+                    </div>
+                    <p>Traditional development methods combined with modern techniques. We take pride in creating bespoke solutions that reflect the highest standards of quality.</p>
+                </div>
+                
+                <div class="vintage-card vintage-border">
+                    <div class="card-header">
+                        <div class="card-icon">🔍</div>
+                        <h3>Heritage Research</h3>
+                    </div>
+                    <p>Deep analysis of legacy systems and historical code patterns. We specialize in understanding and modernizing vintage software while preserving its essence.</p>
+                </div>
+            </div>
+            
+            <div class="vintage-divider">
+                <div class="vintage-divider-content">❦ ❧ ❦</div>
+            </div>
+            
+            <div class="vintage-gallery">
+                <div class="gallery-item vintage-border">
+                    <div class="gallery-icon">📚</div>
+                    <h4 class="gallery-title">Documentation</h4>
+                    <p class="gallery-description">Comprehensive guides written in classic style</p>
+                </div>
+                
+                <div class="gallery-item vintage-border">
+                    <div class="gallery-icon">🎨</div>
+                    <h4 class="gallery-title">Design Patterns</h4>
+                    <p class="gallery-description">Time-tested architectural solutions</p>
+                </div>
+                
+                <div class="gallery-item vintage-border">
+                    <div class="gallery-icon">⚙</div>
+                    <h4 class="gallery-title">Legacy Systems</h4>
+                    <p class="gallery-description">Restoration and modernization services</p>
+                </div>
+                
+                <div class="gallery-item vintage-border">
+                    <div class="gallery-icon">🏺</div>
+                    <h4 class="gallery-title">Code Archaeology</h4>
+                    <p class="gallery-description">Discovering and preserving software history</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <section class="typewriter-section">
+        <div class="typewriter-bg"></div>
+        <div class="container">
+            <div class="typewriter vintage-border">
+                <div class="typewriter-header">
+                    <h3 class="typewriter-title">Classic Development</h3>
+                    <p class="typewriter-subtitle">Written with care, one character at a time</p>
+                </div>
+                
+                <div class="typewriter-content">
+                    <div class="code-line">
+                        <span class="line-number">01</span>
+                        <span class="comment">/* A timeless approach to software development */</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">02</span>
+                        <span class="keyword">const</span> <span style="color: #f4f1e8;">vintageCode</span> = {
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">03</span>
+                        <span style="margin-left: 2rem; color: #f4f1e8;">craftsmanship: </span><span class="string">'meticulous'</span>,
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">04</span>
+                        <span style="margin-left: 2rem; color: #f4f1e8;">quality: </span><span class="string">'exceptional'</span>,
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">05</span>
+                        <span style="margin-left: 2rem; color: #f4f1e8;">style: </span><span class="string">'classic'</span>,
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">06</span>
+                        <span style="margin-left: 2rem; color: #f4f1e8;">durability: </span><span class="string">'eternal'</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">07</span>
+                        };
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">08</span>
+                        <span class="comment">// Building software that ages like fine wine</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">09</span>
+                        <span style="color: #f4f1e8;" id="typing-line">console.log('Crafting digital masterpieces...')</span>
+                        <span class="typing-cursor"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="testimonial-section">
+        <div class="container">
+            <div class="testimonial vintage-border">
+                <p class="testimonial-text">Their approach to software development reminds me of the great master craftsmen. Every detail is considered, every line of code is purposeful, and the end result is a work of art that will endure for generations.</p>
+                <div class="testimonial-author">Professor Edmund Blackwood</div>
+                <div class="testimonial-role">Digital Historian, Oxford University</div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="contact-section">
+        <div class="container">
+            <h2 class="section-title">Commission a Project</h2>
+            
+            <form class="contact-form">
+                <div class="form-group">
+                    <label class="form-label">Your Name</label>
+                    <input type="text" class="form-input" placeholder="Lord/Lady..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Electronic Post</label>
+                    <input type="email" class="form-input" placeholder="your.correspondence@manor.estate" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Project Type</label>
+                    <input type="text" class="form-input" placeholder="Web Application, Legacy System, Digital Archive...">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Your Vision</label>
+                    <textarea class="form-input" rows="5" placeholder="Describe your project with the detail of a Renaissance manuscript..." required></textarea>
+                </div>
+                
+                <button type="submit" class="vintage-button">Submit Commission</button>
+            </form>
+        </div>
+    </section>
+    
+    <script>
+        // Vintage typing animation
+        const typingLines = [
+            'console.log("Handcrafted with love...");',
+            'const elegance = tradition + innovation;',
+            'function createMasterpiece() { /* magic */ }',
+            'return timelessDesign.withModernFunctionality();'
+        ];
+        
+        let currentLine = 0;
+        let currentChar = 0;
+        const typingElement = document.getElementById('typing-line');
+        
+        function typeVintageText() {
+            if (currentChar < typingLines[currentLine].length) {
+                typingElement.textContent = typingLines[currentLine].substring(0, currentChar + 1);
+                currentChar++;
+                setTimeout(typeVintageText, 100);
+            } else {
+                setTimeout(() => {
+                    currentChar = 0;
+                    currentLine = (currentLine + 1) % typingLines.length;
+                    typeVintageText();
+                }, 3000);
+            }
+        }
+        
+        // Start typing animation after page load
+        setTimeout(typeVintageText, 2000);
+        
+        // Vintage card hover effects with sound simulation
+        document.querySelectorAll('.vintage-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.filter = 'sepia(0.3) contrast(1.1)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.filter = '';
+            });
+        });
+        
+        // Intersection Observer for vintage animations
+        const vintageObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0) rotate(0deg)';
+                    }, index * 200);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        // Animate vintage cards with old-fashioned entrance
+        document.querySelectorAll('.vintage-card, .gallery-item').forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(50px) rotate(-2deg)';
+            item.style.transition = 'all 1s ease';
+            vintageObserver.observe(item);
+        });
+        
+        // Vintage form submission with quill pen effect
+        document.querySelector('.contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const button = this.querySelector('.vintage-button');
+            const originalText = button.textContent;
+            
+            // Vintage ink spreading effect
+            button.style.background = 'linear-gradient(135deg, #654321, #8b4513)';
+            button.textContent = 'Preparing Quill...';
+            
+            setTimeout(() => {
+                button.textContent = 'Dipping in Ink...';
+                button.style.color = '#f4f1e8';
+            }, 1000);
+            
+            setTimeout(() => {
+                button.textContent = 'Writing with Care...';
+                button.style.transform = 'scale(0.98)';
+            }, 2000);
+            
+            setTimeout(() => {
+                button.textContent = 'Commission Received!';
+                button.style.background = 'linear-gradient(135deg, #228b22, #32cd32)';
+                button.style.transform = '';
+                
+                // Reset form with vintage fade
+                setTimeout(() => {
+                    this.reset();
+                    button.textContent = originalText;
+                    button.style.background = '';
+                    button.style.color = '';
+                }, 3000);
+            }, 3000);
+        });
+        
+        // Vintage ornament animations
+        document.querySelectorAll('.vintage-ornament').forEach(ornament => {
+            ornament.addEventListener('click', () => {
+                ornament.style.transform = 'scale(1.5) rotate(180deg)';
+                ornament.style.color = '#daa520';
+                
+                setTimeout(() => {
+                    ornament.style.transform = '';
+                    ornament.style.color = '';
+                }, 500);
+            });
+        });
+        
+        // Vintage scroll effects
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const ornaments = document.querySelectorAll('.vintage-ornament');
+            
+            ornaments.forEach((ornament, index) => {
+                const speed = (index + 1) * 0.3;
+                ornament.style.transform = `translateY(${scrolled * speed}px) rotate(${scrolled * 0.1}deg)`;
+            });
+            
+            // Vintage texture parallax
+            const texture = document.querySelector('.vintage-texture');
+            texture.style.transform = `translateY(${scrolled * 0.5}px)`;
+        });
+        
+        // Antique button click effect
+        document.querySelectorAll('.vintage-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                if (!e.target.closest('form')) {
+                    e.preventDefault();
+                }
+                
+                // Create vintage ink blot effect
+                const inkBlot = document.createElement('div');
+                inkBlot.style.cssText = `
+                    position: absolute;
+                    width: 20px;
+                    height: 20px;
+                    background: radial-gradient(circle, #654321 0%, transparent 70%);
+                    border-radius: 50%;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%) scale(0);
+                    pointer-events: none;
+                    animation: vintageInkBlot 1s ease-out forwards;
+                `;
+                
+                button.style.position = 'relative';
+                button.appendChild(inkBlot);
+                
+                setTimeout(() => {
+                    inkBlot.remove();
+                }, 1000);
+            });
+        });
+        
+        // Add vintage ink blot animation
+        const vintageStyle = document.createElement('style');
+        vintageStyle.textContent = `
+            @keyframes vintageInkBlot {
+                0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+                50% { transform: translate(-50%, -50%) scale(3); opacity: 0.6; }
+                100% { transform: translate(-50%, -50%) scale(5); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(vintageStyle);
+        
+        // Vintage typewriter sound effect simulation
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('input', () => {
+                input.style.background = '#f9f6f0';
+                setTimeout(() => {
+                    input.style.background = '';
+                }, 100);
+            });
+        });
+        
+        // Heritage book opening effect
+        document.querySelector('.vintage-logo').addEventListener('click', () => {
+            const logo = document.querySelector('.vintage-logo');
+            logo.style.transform = 'perspective(1000px) rotateY(180deg)';
+            
+            setTimeout(() => {
+                logo.style.transform = '';
+            }, 1000);
+        });
+        
+        // Smooth vintage scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Add vintage page aging effect
+        setTimeout(() => {
+            document.body.style.filter = 'sepia(0.1) contrast(1.05)';
+        }, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Office 365 - Document Editor</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f3f2f1;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: #2b579a;
+            color: white;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+        }
+        
+        .app-launcher {
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-right: 16px;
+        }
+        
+        .app-launcher:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .app-title {
+            font-size: 20px;
+            font-weight: 400;
+            margin-right: auto;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .share-btn {
+            background: #0078d4;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .share-btn:hover {
+            background: #106ebe;
+        }
+        
+        .title-bar {
+            background: white;
+            padding: 8px 16px;
+            border-bottom: 1px solid #d1d1d1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .doc-title {
+            font-size: 16px;
+            border: none;
+            outline: none;
+            min-width: 200px;
+        }
+        
+        .ribbon {
+            background: #f8f9fa;
+            border-bottom: 1px solid #d1d1d1;
+        }
+        
+        .ribbon-tabs {
+            display: flex;
+            background: white;
+            border-bottom: 1px solid #d1d1d1;
+        }
+        
+        .ribbon-tab {
+            padding: 8px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .ribbon-tab:hover {
+            background: #f3f2f1;
+        }
+        
+        .ribbon-tab.active {
+            border-bottom-color: #0078d4;
+            color: #0078d4;
+        }
+        
+        .ribbon-content {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        
+        .ribbon-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px;
+            border-radius: 2px;
+            cursor: pointer;
+            min-width: 60px;
+        }
+        
+        .ribbon-group:hover {
+            background: rgba(0,120,212,0.1);
+        }
+        
+        .ribbon-icon {
+            width: 32px;
+            height: 32px;
+            background: #0078d4;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .ribbon-label {
+            font-size: 11px;
+            color: #323130;
+            text-align: center;
+        }
+        
+        .main-area {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .document-area {
+            flex: 1;
+            background: #f3f2f1;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            overflow-y: auto;
+        }
+        
+        .document {
+            width: 816px;
+            min-height: 1056px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            padding: 96px;
+            position: relative;
+        }
+        
+        .document-content {
+            line-height: 1.6;
+            color: #323130;
+        }
+        
+        .doc-header {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #323130;
+        }
+        
+        .doc-paragraph {
+            margin-bottom: 16px;
+            text-align: justify;
+        }
+        
+        .sidebar {
+            width: 320px;
+            background: white;
+            border-left: 1px solid #d1d1d1;
+            padding: 16px;
+            overflow-y: auto;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 24px;
+        }
+        
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #323130;
+        }
+        
+        .comment-box {
+            background: #fff4ce;
+            border: 1px solid #ffb900;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .comment-author {
+            font-size: 12px;
+            font-weight: 600;
+            color: #8a8886;
+            margin-bottom: 4px;
+        }
+        
+        .comment-text {
+            font-size: 14px;
+            color: #323130;
+        }
+        
+        .properties-list {
+            list-style: none;
+        }
+        
+        .property-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f3f2f1;
+            font-size: 14px;
+        }
+        
+        .property-label {
+            color: #8a8886;
+        }
+        
+        .property-value {
+            color: #323130;
+            font-weight: 500;
+        }
+        
+        .status-bar {
+            background: #f8f9fa;
+            padding: 4px 16px;
+            border-top: 1px solid #d1d1d1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #8a8886;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="app-launcher">⋮⋮⋮</div>
+        <div class="app-title">📝 Word</div>
+        <div class="header-actions">
+            <span>💾</span>
+            <button class="share-btn">Share</button>
+            <span>👤</span>
+        </div>
+    </div>
+    
+    <div class="title-bar">
+        <input class="doc-title" value="Project Proposal - Q4 2025" />
+        <span>•</span>
+        <span style="font-size: 12px; color: #8a8886;">Saved 2 minutes ago</span>
+    </div>
+    
+    <div class="ribbon">
+        <div class="ribbon-tabs">
+            <div class="ribbon-tab active">Home</div>
+            <div class="ribbon-tab">Insert</div>
+            <div class="ribbon-tab">Design</div>
+            <div class="ribbon-tab">Layout</div>
+            <div class="ribbon-tab">References</div>
+            <div class="ribbon-tab">Review</div>
+            <div class="ribbon-tab">View</div>
+        </div>
+        <div class="ribbon-content">
+            <div class="ribbon-group">
+                <div class="ribbon-icon">B</div>
+                <div class="ribbon-label">Bold</div>
+            </div>
+            <div class="ribbon-group">
+                <div class="ribbon-icon">I</div>
+                <div class="ribbon-label">Italic</div>
+            </div>
+            <div class="ribbon-group">
+                <div class="ribbon-icon">U</div>
+                <div class="ribbon-label">Underline</div>
+            </div>
+            <div style="border-left: 1px solid #d1d1d1; margin: 0 8px; height: 40px;"></div>
+            <div class="ribbon-group">
+                <div class="ribbon-icon">🎨</div>
+                <div class="ribbon-label">Font Color</div>
+            </div>
+            <div class="ribbon-group">
+                <div class="ribbon-icon">📋</div>
+                <div class="ribbon-label">Paste</div>
+            </div>
+            <div class="ribbon-group">
+                <div class="ribbon-icon">📊</div>
+                <div class="ribbon-label">Table</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-area">
+        <div class="document-area">
+            <div class="document">
+                <div class="document-content">
+                    <div class="doc-header">Project Proposal: Digital Transformation Initiative</div>
+                    <div class="doc-paragraph">
+                        <strong>Executive Summary</strong><br>
+                        This document outlines our comprehensive digital transformation strategy for Q4 2025, focusing on modernizing our core business processes and improving operational efficiency.
+                    </div>
+                    <div class="doc-paragraph">
+                        Our proposed solution encompasses cloud migration, process automation, and enhanced data analytics capabilities. The initiative will span across three key departments: Operations, Customer Service, and Finance.
+                    </div>
+                    <div class="doc-paragraph">
+                        <strong>Project Scope</strong><br>
+                        The transformation will include:
+                        <ul style="margin-left: 20px; margin-top: 8px;">
+                            <li>Migration of legacy systems to cloud infrastructure</li>
+                            <li>Implementation of automated workflow systems</li>
+                            <li>Integration of AI-powered analytics tools</li>
+                            <li>Staff training and change management programs</li>
+                        </ul>
+                    </div>
+                    <div class="doc-paragraph">
+                        <strong>Expected Outcomes</strong><br>
+                        We anticipate a 35% improvement in operational efficiency, 25% reduction in processing time, and enhanced customer satisfaction scores within the first six months of implementation.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Comments</div>
+                <div class="comment-box">
+                    <div class="comment-author">Sarah Johnson</div>
+                    <div class="comment-text">Great overview! Can we add more details about the budget allocation?</div>
+                </div>
+                <div class="comment-box">
+                    <div class="comment-author">Mike Chen</div>
+                    <div class="comment-text">The timeline looks aggressive. Should we consider a phased approach?</div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Document Properties</div>
+                <ul class="properties-list">
+                    <li class="property-item">
+                        <span class="property-label">Author</span>
+                        <span class="property-value">John Doe</span>
+                    </li>
+                    <li class="property-item">
+                        <span class="property-label">Created</span>
+                        <span class="property-value">Aug 20, 2025</span>
+                    </li>
+                    <li class="property-item">
+                        <span class="property-label">Modified</span>
+                        <span class="property-value">Aug 23, 2025</span>
+                    </li>
+                    <li class="property-item">
+                        <span class="property-label">Words</span>
+                        <span class="property-value">247</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="status-bar">
+        <div>Page 1 of 1 • 247 words</div>
+        <div>100% • English (US) • Web Layout</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimalist Code - Software Development</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background: #f8f8f8;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .hero {
+            text-align: center;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+        }
+        
+        .code-snippet {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: left;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .code-snippet::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: #34495e;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .code-snippet .dots {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            display: flex;
+            gap: 5px;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        
+        .dot.red { background: #e74c3c; }
+        .dot.yellow { background: #f39c12; }
+        .dot.green { background: #27ae60; }
+        
+        .code-text {
+            margin-top: 30px;
+            font-size: 0.9rem;
+        }
+        
+        .typing-animation {
+            display: inline-block;
+            border-right: 2px solid #ecf0f1;
+            animation: blink 1s infinite;
+        }
+        
+        .features {
+            padding: 100px 0;
+            background: white;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .feature-card {
+            padding: 2rem;
+            border: 1px solid #ecf0f1;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+        
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .floating-element {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes blink {
+            0%, 50% { border-color: #ecf0f1; }
+            51%, 100% { border-color: transparent; }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(10deg); }
+            66% { transform: translateY(10px) rotate(-5deg); }
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="hero">
+                <h1>Clean Code</h1>
+                <p>Simple. Elegant. Functional.</p>
+                <div class="code-snippet">
+                    <div class="dots">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                    </div>
+                    <div class="code-text">
+                        <span class="typing-animation" id="typewriter"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="floating-elements">
+            <div class="floating-element" style="top: 10%; left: 10%; font-size: 2rem;">&lt;/&gt;</div>
+            <div class="floating-element" style="top: 20%; right: 15%; font-size: 1.5rem;">{ }</div>
+            <div class="floating-element" style="bottom: 30%; left: 5%; font-size: 1.8rem;">[ ]</div>
+            <div class="floating-element" style="bottom: 20%; right: 10%; font-size: 1.3rem;">=&gt;</div>
+        </div>
+    </header>
+    
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Development Philosophy</h2>
+            <p class="section-subtitle">Building software with purpose and precision</p>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>Minimal Design</h3>
+                    <p>Focus on what matters most. Clean interfaces that enhance user experience without unnecessary complexity.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Performance First</h3>
+                    <p>Optimized code that runs efficiently. Every line serves a purpose, every function has meaning.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Scalable Architecture</h3>
+                    <p>Build systems that grow with your needs. Modular, maintainable, and future-ready solutions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <script>
+        // Typewriter effect
+        const text = `function cleanCode() {
+    return {
+        readable: true,
+        maintainable: true,
+        elegant: true
+    };
+}`;
+        
+        let i = 0;
+        const typewriter = document.getElementById('typewriter');
+        
+        function typeEffect() {
+            if (i < text.length) {
+                typewriter.innerHTML += text.charAt(i);
+                i++;
+                setTimeout(typeEffect, 50);
+            }
+        }
+        
+        // Start typing animation after page load
+        window.addEventListener('load', () => {
+            setTimeout(typeEffect, 1000);
+        });
+        
+        // Add scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.8s ease-out';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.feature-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>

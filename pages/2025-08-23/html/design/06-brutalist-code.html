@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brutalist Code - Raw Development</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial Black', 'Helvetica', sans-serif;
+            background: #ffffff;
+            color: #000000;
+            overflow-x: hidden;
+            line-height: 1.2;
+        }
+        
+        .container {
+            max-width: none;
+            padding: 0;
+        }
+        
+        header {
+            height: 100vh;
+            background: #000000;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .hero {
+            text-align: center;
+            transform: rotate(-2deg);
+        }
+        
+        .hero h1 {
+            font-size: 8rem;
+            font-weight: 900;
+            letter-spacing: -5px;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            text-shadow: 8px 8px 0px #ff0000;
+            animation: brutalistShake 3s ease-in-out infinite;
+        }
+        
+        .hero p {
+            font-size: 2rem;
+            font-weight: 900;
+            background: #ff0000;
+            color: #ffffff;
+            padding: 1rem 2rem;
+            transform: rotate(1deg);
+            display: inline-block;
+            margin-bottom: 3rem;
+        }
+        
+        .brutal-button {
+            display: inline-block;
+            padding: 20px 40px;
+            background: #ffff00;
+            color: #000000;
+            font-weight: 900;
+            font-size: 1.5rem;
+            text-decoration: none;
+            text-transform: uppercase;
+            border: 5px solid #000000;
+            transform: rotate(-1deg);
+            box-shadow: 10px 10px 0px #ff0000;
+            transition: all 0.1s ease;
+        }
+        
+        .brutal-button:hover {
+            transform: rotate(1deg) translate(-5px, -5px);
+            box-shadow: 15px 15px 0px #ff0000;
+        }
+        
+        .diagonal-sections {
+            position: relative;
+        }
+        
+        .diagonal-section {
+            padding: 100px 50px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section-white {
+            background: #ffffff;
+            color: #000000;
+            transform: skewY(-3deg);
+            margin: -50px 0;
+        }
+        
+        .section-black {
+            background: #000000;
+            color: #ffffff;
+            transform: skewY(2deg);
+            margin: -50px 0;
+        }
+        
+        .section-red {
+            background: #ff0000;
+            color: #ffffff;
+            transform: skewY(-1deg);
+            margin: -50px 0;
+        }
+        
+        .section-yellow {
+            background: #ffff00;
+            color: #000000;
+            transform: skewY(3deg);
+            margin: -50px 0;
+        }
+        
+        .section-content {
+            transform: skewY(0deg);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .brutal-title {
+            font-size: 5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -3px;
+            margin-bottom: 2rem;
+            transform: rotate(-1deg);
+            text-shadow: 5px 5px 0px currentColor;
+        }
+        
+        .section-white .brutal-title {
+            text-shadow: 5px 5px 0px #000000;
+        }
+        
+        .section-black .brutal-title {
+            text-shadow: 5px 5px 0px #ffffff;
+        }
+        
+        .section-red .brutal-title {
+            text-shadow: 5px 5px 0px #ffffff;
+        }
+        
+        .section-yellow .brutal-title {
+            text-shadow: 5px 5px 0px #000000;
+        }
+        
+        .tech-blocks {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+        
+        .tech-block {
+            padding: 2rem;
+            border: 8px solid;
+            transform: rotate(-1deg);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .tech-block:nth-child(odd) {
+            transform: rotate(2deg);
+        }
+        
+        .tech-block:hover {
+            transform: rotate(0deg) scale(1.05);
+        }
+        
+        .block-white {
+            background: #ffffff;
+            color: #000000;
+            border-color: #000000;
+            box-shadow: 15px 15px 0px #ff0000;
+        }
+        
+        .block-black {
+            background: #000000;
+            color: #ffffff;
+            border-color: #ffffff;
+            box-shadow: 15px 15px 0px #ffff00;
+        }
+        
+        .block-red {
+            background: #ff0000;
+            color: #ffffff;
+            border-color: #ffffff;
+            box-shadow: 15px 15px 0px #000000;
+        }
+        
+        .block-yellow {
+            background: #ffff00;
+            color: #000000;
+            border-color: #000000;
+            box-shadow: 15px 15px 0px #ff0000;
+        }
+        
+        .tech-block h3 {
+            font-size: 2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+        
+        .tech-block p {
+            font-size: 1.1rem;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+        
+        .code-brutal {
+            background: #000000;
+            color: #00ff00;
+            border: 5px solid #ffffff;
+            padding: 2rem;
+            margin: 2rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transform: rotate(-1deg);
+            box-shadow: 10px 10px 0px #ff0000;
+        }
+        
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .brutal-shape {
+            position: absolute;
+            border: 5px solid;
+            animation: brutalistFloat 8s ease-in-out infinite;
+        }
+        
+        .shape-square {
+            width: 100px;
+            height: 100px;
+            background: #ff0000;
+            border-color: #000000;
+            top: 20%;
+            left: 10%;
+            transform: rotate(45deg);
+        }
+        
+        .shape-circle {
+            width: 80px;
+            height: 80px;
+            background: #ffff00;
+            border-color: #000000;
+            border-radius: 50%;
+            top: 60%;
+            right: 15%;
+        }
+        
+        .shape-triangle {
+            width: 0;
+            height: 0;
+            border-left: 40px solid transparent;
+            border-right: 40px solid transparent;
+            border-bottom: 80px solid #ff0000;
+            bottom: 30%;
+            left: 20%;
+        }
+        
+        .collision-text {
+            position: absolute;
+            font-size: 3rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            opacity: 0.1;
+            animation: collision 5s linear infinite;
+        }
+        
+        .collision-1 {
+            top: 15%;
+            left: 5%;
+            color: #ff0000;
+            animation-delay: 0s;
+        }
+        
+        .collision-2 {
+            top: 45%;
+            right: 10%;
+            color: #ffff00;
+            animation-delay: 2s;
+        }
+        
+        .collision-3 {
+            bottom: 25%;
+            left: 15%;
+            color: #ff0000;
+            animation-delay: 4s;
+        }
+        
+        @keyframes brutalistShake {
+            0%, 100% { transform: rotate(-2deg); }
+            25% { transform: rotate(-3deg); }
+            50% { transform: rotate(-1deg); }
+            75% { transform: rotate(-2.5deg); }
+        }
+        
+        @keyframes brutalistFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-30px) rotate(90deg); }
+            50% { transform: translateY(0px) rotate(180deg); }
+            75% { transform: translateY(30px) rotate(270deg); }
+        }
+        
+        @keyframes collision {
+            0% { transform: translateX(-100px) rotate(0deg); opacity: 0; }
+            50% { opacity: 0.3; }
+            100% { transform: translateX(calc(100vw + 100px)) rotate(360deg); opacity: 0; }
+        }
+        
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(#ff0000 2px, transparent 2px),
+                linear-gradient(90deg, #ff0000 2px, transparent 2px);
+            background-size: 100px 100px;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+        
+        .impact-text {
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            background: #000000;
+            color: #ffffff;
+            padding: 0.5rem 1rem;
+            transform: rotate(-2deg);
+            display: inline-block;
+            margin: 1rem 0;
+            border: 3px solid #ff0000;
+        }
+        
+        .brutalist-list {
+            list-style: none;
+            margin: 2rem 0;
+        }
+        
+        .brutalist-list li {
+            font-size: 1.3rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            background: #ffff00;
+            color: #000000;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 3px solid #000000;
+            transform: rotate(-1deg);
+            box-shadow: 5px 5px 0px #ff0000;
+        }
+        
+        .brutalist-list li:nth-child(even) {
+            background: #ff0000;
+            color: #ffffff;
+            transform: rotate(1deg);
+            box-shadow: 5px 5px 0px #ffff00;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-overlay"></div>
+    
+    <header>
+        <div class="hero">
+            <h1>CODE BRUTAL</h1>
+            <p>RAW DEVELOPMENT</p>
+            <a href="#" class="brutal-button">CRASH INTO CODE</a>
+            
+            <div class="code-brutal">
+                <div>#!/bin/bash</div>
+                <div>BRUTAL_MODE=true</div>
+                <div>./deploy --no-mercy</div>
+                <div>echo "CODE OR DIE"</div>
+            </div>
+        </div>
+        
+        <div class="floating-shapes">
+            <div class="brutal-shape shape-square"></div>
+            <div class="brutal-shape shape-circle"></div>
+            <div class="brutal-shape shape-triangle"></div>
+        </div>
+        
+        <div class="collision-text collision-1">CRASH</div>
+        <div class="collision-text collision-2">BANG</div>
+        <div class="collision-text collision-3">SLAM</div>
+    </header>
+    
+    <div class="diagonal-sections">
+        <section class="diagonal-section section-white">
+            <div class="section-content">
+                <h2 class="brutal-title">STACK SMASH</h2>
+                <div class="impact-text">NO COMPROMISES</div>
+                <div class="tech-blocks">
+                    <div class="tech-block block-black">
+                        <h3>REACT HEAVY</h3>
+                        <p>COMPONENTS THAT HIT HARD. NO FANCY STUFF. JUST PURE FUNCTIONAL POWER.</p>
+                    </div>
+                    
+                    <div class="tech-block block-red">
+                        <h3>NODE HAMMER</h3>
+                        <p>SERVER SIDE DESTRUCTION. FAST. RELIABLE. BRUTAL EFFICIENCY.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="diagonal-section section-black">
+            <div class="section-content">
+                <h2 class="brutal-title">TOOLS CRASH</h2>
+                <div class="impact-text">MAXIMUM IMPACT</div>
+                
+                <ul class="brutalist-list">
+                    <li>WEBPACK SMASH</li>
+                    <li>TYPESCRIPT CRUSH</li>
+                    <li>DOCKER SLAM</li>
+                    <li>KUBERNETES DESTROY</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section class="diagonal-section section-red">
+            <div class="section-content">
+                <h2 class="brutal-title">CODE VIOLENCE</h2>
+                <div class="impact-text">PURE AGGRESSION</div>
+                <div class="tech-blocks">
+                    <div class="tech-block block-white">
+                        <h3>GIT BRUTAL</h3>
+                        <p>VERSION CONTROL WITH MAXIMUM FORCE. COMMIT OR GET DESTROYED.</p>
+                    </div>
+                    
+                    <div class="tech-block block-yellow">
+                        <h3>TEST ANNIHILATION</h3>
+                        <p>UNIT TESTS THAT CRUSH BUGS. NO MERCY FOR FAILING CODE.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="diagonal-section section-yellow">
+            <div class="section-content">
+                <h2 class="brutal-title">DEPLOY SMASH</h2>
+                <div class="impact-text">ZERO TOLERANCE</div>
+                
+                <div class="code-brutal">
+                    <div style="color: #ff0000;">function deployBrutal() {</div>
+                    <div style="color: #ffffff; margin-left: 20px;">if (bugs.length > 0) {</div>
+                    <div style="color: #ffff00; margin-left: 40px;">DESTROY_EVERYTHING();</div>
+                    <div style="color: #ffffff; margin-left: 20px;">}</div>
+                    <div style="color: #ff0000;">}</div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <script>
+        // Brutal shake animation on scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const elements = document.querySelectorAll('.tech-block');
+            
+            elements.forEach((element, index) => {
+                const speed = (index + 1) * 0.1;
+                const shake = Math.sin(scrolled * speed) * 2;
+                element.style.transform += ` translateX(${shake}px)`;
+            });
+        });
+        
+        // Random brutal animations
+        setInterval(() => {
+            const blocks = document.querySelectorAll('.tech-block');
+            const randomBlock = blocks[Math.floor(Math.random() * blocks.length)];
+            
+            randomBlock.style.transform = 'rotate(0deg) scale(1.1)';
+            randomBlock.style.filter = 'contrast(200%)';
+            
+            setTimeout(() => {
+                randomBlock.style.transform = '';
+                randomBlock.style.filter = '';
+            }, 200);
+        }, 2000);
+        
+        // Collision detection simulation
+        function createCollision() {
+            const collision = document.createElement('div');
+            collision.textContent = ['CRASH', 'BANG', 'SLAM', 'HIT'][Math.floor(Math.random() * 4)];
+            collision.style.cssText = `
+                position: fixed;
+                font-size: 4rem;
+                font-weight: 900;
+                color: #ff0000;
+                text-shadow: 3px 3px 0px #000000;
+                top: ${Math.random() * 100}vh;
+                left: -200px;
+                z-index: 9999;
+                pointer-events: none;
+                animation: collision 3s linear forwards;
+            `;
+            
+            document.body.appendChild(collision);
+            
+            setTimeout(() => {
+                collision.remove();
+            }, 3000);
+        }
+        
+        // Create random collisions
+        setInterval(createCollision, 5000);
+        
+        // Brutal click effects
+        document.addEventListener('click', (e) => {
+            const impact = document.createElement('div');
+            impact.style.cssText = `
+                position: fixed;
+                width: 20px;
+                height: 20px;
+                background: #ff0000;
+                border: 3px solid #000000;
+                left: ${e.clientX - 10}px;
+                top: ${e.clientY - 10}px;
+                z-index: 9999;
+                pointer-events: none;
+                animation: brutalImpact 0.5s ease-out forwards;
+            `;
+            
+            document.body.appendChild(impact);
+            
+            setTimeout(() => {
+                impact.remove();
+            }, 500);
+        });
+        
+        // Add brutal impact animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes brutalImpact {
+                0% { transform: scale(1) rotate(0deg); opacity: 1; }
+                100% { transform: scale(3) rotate(180deg); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Brutal hover effects
+        document.querySelectorAll('.tech-block').forEach(block => {
+            block.addEventListener('mouseenter', () => {
+                block.style.filter = 'invert(1)';
+                block.style.transform = 'rotate(0deg) scale(1.1)';
+            });
+            
+            block.addEventListener('mouseleave', () => {
+                block.style.filter = '';
+                block.style.transform = '';
+            });
+        });
+    </script>
+</body>
+</html>

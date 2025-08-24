@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkPlace - Kanban Board</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js">
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #0dcaf0;
+            --dark-color: #212529;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            z-index: 1000;
+            transition: all 0.3s;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.1);
+            border-left: 4px solid #fff;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .top-navbar {
+            background: white;
+            padding: 15px 30px;
+            margin: -20px -20px 30px -20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 0 0 10px 10px;
+        }
+
+        .kanban-container {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 20px;
+            min-height: calc(100vh - 200px);
+        }
+
+        .kanban-column {
+            min-width: 300px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .column-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .column-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .task-count {
+            background: #e9ecef;
+            color: #495057;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-left: auto;
+        }
+
+        .column-body {
+            padding: 15px;
+            min-height: 200px;
+        }
+
+        .task-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 12px;
+            cursor: move;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .task-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        .task-card.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+
+        .task-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #212529;
+        }
+
+        .task-description {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .task-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+
+        .task-labels {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .task-label {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .label-bug {
+            background: #ffeaea;
+            color: #dc3545;
+        }
+
+        .label-feature {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .label-enhancement {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .label-docs {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .task-priority {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .priority-high {
+            background: #dc3545;
+        }
+
+        .priority-medium {
+            background: #ffc107;
+        }
+
+        .priority-low {
+            background: #198754;
+        }
+
+        .task-assignee {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .task-due-date {
+            color: #6c757d;
+            font-size: 0.75rem;
+        }
+
+        .task-due-date.overdue {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .task-due-date.today {
+            color: #ffc107;
+            font-weight: 600;
+        }
+
+        .add-task-btn {
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed #dee2e6;
+            background: transparent;
+            border-radius: 8px;
+            color: #6c757d;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .add-task-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background: rgba(13, 110, 253, 0.05);
+        }
+
+        .task-progress {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        .progress-bar-small {
+            flex: 1;
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--success-color);
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            font-size: 0.7rem;
+            color: #6c757d;
+            white-space: nowrap;
+        }
+
+        .column-todo {
+            border-top: 3px solid #6c757d;
+        }
+
+        .column-progress {
+            border-top: 3px solid #0d6efd;
+        }
+
+        .column-review {
+            border-top: 3px solid #ffc107;
+        }
+
+        .column-done {
+            border-top: 3px solid #198754;
+        }
+
+        .filter-section {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 6px 12px;
+            border: 1px solid #dee2e6;
+            background: white;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .task-attachments {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.75rem;
+            color: #6c757d;
+            margin-top: 8px;
+        }
+
+        .task-comments {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+
+        .column-stats {
+            display: flex;
+            gap: 15px;
+            padding: 0 20px 15px;
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-briefcase me-2"></i>WorkPlace</h3>
+            <small>Enterprise Solution</small>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-item">
+                <i class="fas fa-tachometer-alt me-3"></i>Dashboard
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-tasks me-3"></i>Projects
+            </div>
+            <div class="nav-item active">
+                <i class="fas fa-kanban me-3"></i>Task Board
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-users me-3"></i>Team
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-chart-line me-3"></i>Analytics
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-calendar me-3"></i>Calendar
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-file-alt me-3"></i>Documents
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-headset me-3"></i>Support
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-cog me-3"></i>Settings
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navbar -->
+        <div class="top-navbar">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-0">작업 보드 - 모바일 앱 개발</h4>
+                    <small class="text-muted">Sprint 3 (2024.02.15 - 2024.03.01)</small>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="fas fa-filter me-2"></i>필터
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>담당자별</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-exclamation me-2"></i>우선순위별</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-tag me-2"></i>라벨별</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-times me-2"></i>필터 초기화</a></li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus me-2"></i>새 작업
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-columns me-2"></i>컬럼 관리</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>내보내기</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-copy me-2"></i>보드 복사</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-group">
+                <span class="fw-semibold me-3">빠른 필터:</span>
+                <span class="filter-btn active">전체</span>
+                <span class="filter-btn">내 작업</span>
+                <span class="filter-btn">오늘 마감</span>
+                <span class="filter-btn">지연</span>
+                <span class="filter-btn">높은 우선순위</span>
+            </div>
+        </div>
+
+        <!-- Kanban Board -->
+        <div class="kanban-container">
+            <!-- To Do Column -->
+            <div class="kanban-column column-todo">
+                <div class="column-header">
+                    <div class="column-title">
+                        <i class="fas fa-list"></i>
+                        할 일
+                    </div>
+                    <span class="task-count">6</span>
+                </div>
+                <div class="column-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-exclamation text-danger"></i>
+                        <span>3개 높음</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-clock text-warning"></i>
+                        <span>2개 급함</span>
+                    </div>
+                </div>
+                <div class="column-body" id="todo-column">
+                    <div class="task-card">
+                        <div class="task-priority priority-high"></div>
+                        <div class="task-title">사용자 인증 API 개발</div>
+                        <div class="task-description">
+                            JWT 기반 사용자 인증 시스템 구현 및 보안 강화
+                        </div>
+                        <div class="task-labels">
+                            <span class="task-label label-feature">기능</span>
+                            <span class="task-label label-bug">보안</span>
+                        </div>
+                        <div class="task-progress">
+                            <div class="progress-bar-small">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-text">0/5</span>
+                        </div>
+                        <div class="task-meta">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="task-assignee" style="background: #007bff;">김</div>
+                                <div class="task-comments">
+                                    <i class="fas fa-comment"></i>
+                                    <span>3</span>
+                                </div>
+                                <div class="task-attachments">
+                                    <i class="fas fa-paperclip"></i>
+                                    <span>2</span>
+                                </div>
+                            </div>
+                            <div class="task-due-date overdue">2024.02.20</div>
+                        </div>
+                    </div>
+
+                    <div class="task-card">
+                        <div class="task-priority priority-medium"></div>
+                        <div class="task-title">데이터베이스 스키마 설계</div>
+                        <div class="task-description">
+                            사용자, 제품, 주문 테이블 구조 설계 및 관계 정의
+                        </div>
+                        <div class="task-labels">
+                            <span class="task-label label-docs">문서화</span>
+                        </div>
+                        <div class="task-progress">
+                            <div class="progress-bar-small">
+                                <div class="progress-fill" style="width: 25%"></div>
+                            </div>
+                            <span class="progress-text">1/4</span>
+                        </div>
+                        <div class="task-meta">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="task-assignee" style="background: #28a745;">이</div>
+                                <div class="task-comments">
+                                    <i class="fas fa-comment"></i>
+                                    <span>1</span>
+                                </div>
+                            </div>
+                            <div class="task-due-date">2024.02.25</div>
+                        </div>
+                    </div>
+
+                    <div class="task-card">
+                        <div class="task-priority priority-high"></div>
+                        <div class="task-title">결제 시스템 통합</div>
+                        <div class="task-description">
+                            PG사 연동 및 결제 프로세스 구현
+                        </div>
+                        <div class="task-labels">
+                            <span class="task-label label-feature">기능</span>
+                            <span class="task-label label-enhancement">개선</span>
+                        </div>
+                        <div class="task-meta">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="task-assignee" style="background: #dc3545;">박</div>
+                                <div class="task-attachments">
+                                    <i class="fas fa-paperclip"></i>
+                                    <span>1</span>
+                                </div>
+                            </div>
+                            <div class="task-due-date today">2024.02.23</div>
+                        </div>
+                    </div>
+
+                    <button class="add-task-btn">
+                        <i class="fas fa-plus me-2"></i>작업 추가
+                    </button>
+                </div>
+            </div>
+
+            <!-- In Progress Column -->
+            <div class="kanban-column column-progress">
+                <div class="column-header">
+                    <div class="column-title">
+                        <i class="fas fa-spinner"></i>
+                        진행 중
+                    </div>
+                    <span class="task-count">4</span>
+                </div>
+                <div class="column-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-clock text-info"></i>
+                        <span>평균 2일</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-user text-primary"></i>
+                        <span>4명 작업중</span>
+                    </div>
+                </div>
+                <div class="column-body" id="progress-column">
+                    <div class="task-card">
+                        <div class="task-priority priority-high"></div>
+                        <div class="task-title">UI 컴포넌트 개발</div>
+                        <div class="task-description">
+                            재사용 가능한 React 컴포넌트 라이브러리 구축
+                        </div>
+                        <div class="task-labels">
+                            <span class="task-label label-feature">기능</span>
+                        </div>
+                        <div class="task-progress">
+                            <div class="progress-bar-small">
+                                <div class="progress-fill" style="width: 60%"></div>
+                            </div>
+                            <span class="progress-text">6/10</span>
+                        </div>
+                        <div class="task-meta">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="task-assignee" style="background: #6f42c1;">최</div>
+                                <div class="task-comments">
+                                    <i class="fas fa-comment"></i>
+                                    <span>5</span>
+                                </div>
+                                <div class="task-attachments">
+                                    <i class="fas fa-paperclip"></i>
+                                    <span>4</span>
+                                </div>
+                            </div>
+                            <div class="task-due-date">2024.02.28</div>
+                        </div>
+                    </div>
+
+                    <div class="task-card">
+                        <div class="task-priority priority-medium"></div>
+                        <div class="task-title">API 문서화</div>
+                        <div class="task-description">
+                            Swagger를 이용한 REST API 문서 작성
+                        </div>
+                        <div class="task-labels">
+                            <span class="task-label label-docs">문서화</span>
+                        </div>
+                        <div class="task-progress">
+                            <div class="progress-bar-small">
+                                <div class="progress-fill" style="width: 80%"></div>
+                            </div>
+                            <span class="progress-text">4/5</span>
+                        </div>
+                        <div class="task-meta">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="task-assignee" style="background: #fd7e14;">정</div>
+                                <div class="task-comments">
+                                    <i class="fas fa-comment"></i>
+                                    <span>2</span>
+                                </div>
+                            </div>
+                            <div class="task-due-date">2024.03.05</div>
+                        </div>
+                    </div>
+
+                    <div class="task-card">
+                        <div class="task-priority priority-low"></div>
+                        <div class="task-title">성능 최적화</div>
+                        <div class="task-description">
+                            이미지 압축 및 코드 스플리팅 적용
+                        </div>
+                        <div class="task-labels">
+                            <span class="task-label label-enhancement">개선</span>
+                        </div>
+                        <div class="task-progress">
+                            <div class="progress-bar-small">
+                                <div class="progress-fill" style="width: 40%"></div>
+                            </div>
+                            <span class="progress-text">2/5</span>
+                        </div>
+                        <div class="task-meta">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="task-assignee" style="background: #20c997;">한</div>
+                            </div>
+                            <div class="task-due-date">2024.03.10</div>
+                        </div>
+                    </div>
+
+                    <button class="add-task-btn">
+                        <i class="fas fa-plus me-2"></i>작업 추가
+                    </button>
+                </div>
+            </div>
+
+            <!-- Review Column -->
+            <div class="kanban-column column-review">
+                <div class="column-header">
+                    <div class="column-title">
+                        <i class="fas fa-eye"></i>
+                        검토
+                    </div>
+                    <span class="task-count">3</span>
+                </div>
+                <div class="column-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-hourglass-half text-warning"></i>
+                        <span>평균 1일</span>
+                    </div>
+                </div>
+                <div class="column-body" id="review-column">
+                    <div class="task-card">
+                        <div class="task-priority priority-medium"></div>
+                        <div class="task-title">회원가입 플로우</div>
+                        <div class="task-description">
+                            이메일 인증 및 프로필 설정 화면 구현 완료
+                        </div>
+                        <div class="task-labels">
+                            <span class="task-label label-feature">기능</span>
+                        </div>
+                        <div class="task-progress">
+                            <div class="progress-bar-small">
+                                <div class="progress-fill" style="width: 90%"></div>
+                            </div>
+                            <span class="progress-text">9/10</span>
+                        </div>
+                        <div class="task-meta">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="task-assignee" style="background: #e83e8c;">서</div>
+                                <div class="task-comments">
+                                    <i class="fas fa-comment"></i>
+                                    <span>7</span>
+                                </div>
+                            </div>
+                            <div class="task-due-date">2024.02.22</div>
+                        </div>
+                    </div>
+
+                    <div class="task-card">
+                        <div class="task-priority priority-high"></div>
+                        <div class="task-title">단위 테스트 작성</div>
+                        <div class="task-description">
+                            핵심 기능에 대한 Jest 테스트 코드 작성
+                        </div>
+                        <div class="task-labels">
+                            <span class="task-label label-bug">테스트</span>
+                        </div>
+                        <div class="task-progress">
+                            <div class="progress-bar-small">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                            <span class="progress-text">8/8</span>
+                        </div>
+                        <div class="task-meta">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="task-assignee" style="background: #6610f2;">오</div>
+                                <div class="task-attachments">
+                                    <i class="fas fa-paperclip"></i>
+                                    <span>3</span>
+                                </div>
+                            </div>
+                            <div class="task-due-date">2024.02.24</div>
+                        </div>
+                    </div>
+
+                    <button class="add-task-btn">
+                        <i class="fas fa-plus me-2"></i>작업 추가
+                    </button>
+                </div>
+            </div>
+
+            <!-- Done Column -->
+            <div class="kanban-column column-done">
+                <div class="column-header">
+                    <div class="column-title">
+                        <i class="fas fa-check"></i>
+                        완료
+                    </div>
+                    <span class="task-count">8</span>
+                </div>
+                <div class="column-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-trophy text-success"></i>
+                        <span>이번 주 8개</span>
+                    </div>
+                </div>
+                <div class="column-body" id="done-column">
+                    <div class="task-card">
+                        <div class="task-title">로그인 화면 구현</div>
+                        <div class="task-description">
+                            사용자 로그인/로그아웃 기능 완료
+                        </div>
+                        <div class="task-labels">
+                            <span class="task-label label-feature">기능</span>
+                        </div>
+                        <div class="task-progress">
+                            <div class="progress-bar-small">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                            <span class="progress-text">완료</span>
+                        </div>
+                        <div class="task-meta">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="task-assignee" style="background: #198754;">임</div>
+                                <div class="task-comments">
+                                    <i class="fas fa-comment"></i>
+                                    <span>4</span>
+                                </div>
+                            </div>
+                            <div class="task-due-date">2024.02.18</div>
+                        </div>
+                    </div>
+
+                    <div class="task-card">
+                        <div class="task-title">데이터베이스 설정</div>
+                        <div class="task-description">
+                            MySQL 설정 및 초기 데이터 구성
+                        </div>
+                        <div class="task-labels">
+                            <span class="task-label label-docs">설정</span>
+                        </div>
+                        <div class="task-progress">
+                            <div class="progress-bar-small">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                            <span class="progress-text">완료</span>
+                        </div>
+                        <div class="task-meta">
+                            <div class="task-assignee" style="background: #ffc107;">윤</div>
+                            <div class="task-due-date">2024.02.16</div>
+                        </div>
+                    </div>
+
+                    <div class="task-card">
+                        <div class="task-title">프로젝트 초기 설정</div>
+                        <div class="task-description">
+                            개발 환경 구축 및 패키지 설치
+                        </div>
+                        <div class="task-labels">
+                            <span class="task-label label-docs">설정</span>
+                        </div>
+                        <div class="task-progress">
+                            <div class="progress-bar-small">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                            <span class="progress-text">완료</span>
+                        </div>
+                        <div class="task-meta">
+                            <div class="task-assignee" style="background: #0dcaf0;">강</div>
+                            <div class="task-due-date">2024.02.15</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script>
+        // Initialize Sortable for each column
+        const columns = ['todo-column', 'progress-column', 'review-column', 'done-column'];
+        
+        columns.forEach(columnId => {
+            const column = document.getElementById(columnId);
+            if (column) {
+                new Sortable(column, {
+                    group: 'kanban',
+                    animation: 200,
+                    ghostClass: 'dragging',
+                    onStart: function(evt) {
+                        evt.item.classList.add('dragging');
+                    },
+                    onEnd: function(evt) {
+                        evt.item.classList.remove('dragging');
+                        // Update task count
+                        updateTaskCounts();
+                    }
+                });
+            }
+        });
+
+        // Update task counts for each column
+        function updateTaskCounts() {
+            columns.forEach(columnId => {
+                const column = document.getElementById(columnId);
+                const taskCards = column.querySelectorAll('.task-card');
+                const countElement = column.parentElement.querySelector('.task-count');
+                countElement.textContent = taskCards.length;
+            });
+        }
+
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from siblings
+                this.parentElement.querySelectorAll('.filter-btn').forEach(sibling => {
+                    sibling.classList.remove('active');
+                });
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Filter logic would go here
+                console.log('Filter:', this.textContent);
+            });
+        });
+
+        // Add task button functionality
+        document.querySelectorAll('.add-task-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Create new task modal or form would go here
+                console.log('Add new task to:', this.parentElement.id);
+            });
+        });
+
+        // Task card click functionality
+        document.querySelectorAll('.task-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (e.target.closest('.task-card') && !e.target.closest('button')) {
+                    // Open task details modal would go here
+                    console.log('Open task:', this.querySelector('.task-title').textContent);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

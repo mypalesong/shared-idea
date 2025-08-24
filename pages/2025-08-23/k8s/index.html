@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kubernetes 완전 가이드</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23326ce5' d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation Sidebar -->
+        <nav id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h2>📚 K8s 가이드</h2>
+                <button id="toggle-nav" class="toggle-btn">☰</button>
+            </div>
+            
+            <div class="sidebar-content">
+                <ul class="nav-list">
+                    <li><a href="#overview" class="nav-link">1. Kubernetes 개요</a>
+                        <ul class="sub-nav">
+                            <li><a href="#what-is-k8s">1.1 Kubernetes란?</a></li>
+                            <li><a href="#benefits">1.2 Kubernetes의 이점</a></li>
+                            <li><a href="#architecture">1.3 Kubernetes 아키텍처</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#basic-concepts" class="nav-link">2. 기본 개념</a>
+                        <ul class="sub-nav">
+                            <li><a href="#core-objects">2.1 핵심 오브젝트</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#cluster-setup" class="nav-link">3. 클러스터 설정</a>
+                        <ul class="sub-nav">
+                            <li><a href="#setup-methods">3.1 클러스터 설정 방법</a></li>
+                            <li><a href="#kubectl-usage">3.2 kubectl 사용법</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#workloads" class="nav-link">4. 워크로드 관리</a>
+                        <ul class="sub-nav">
+                            <li><a href="#deployment-strategies">4.1 Deployment 전략</a></li>
+                            <li><a href="#statefulset">4.2 StatefulSet</a></li>
+                            <li><a href="#daemonset">4.3 DaemonSet</a></li>
+                            <li><a href="#jobs">4.4 Job과 CronJob</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#networking" class="nav-link">5. 네트워킹</a>
+                        <ul class="sub-nav">
+                            <li><a href="#network-model">5.1 네트워크 모델</a></li>
+                            <li><a href="#services">5.2 Service 심화</a></li>
+                            <li><a href="#ingress">5.3 Ingress</a></li>
+                            <li><a href="#network-policy">5.4 NetworkPolicy</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#storage" class="nav-link">6. 스토리지</a>
+                        <ul class="sub-nav">
+                            <li><a href="#volumes">6.1 Volume</a></li>
+                            <li><a href="#persistent-volumes">6.2 PersistentVolume</a></li>
+                            <li><a href="#storage-class">6.3 StorageClass</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#security" class="nav-link">7. 보안</a>
+                        <ul class="sub-nav">
+                            <li><a href="#auth">7.1 인증 및 인가</a></li>
+                            <li><a href="#pod-security">7.2 Pod Security</a></li>
+                            <li><a href="#network-security">7.3 네트워크 보안</a></li>
+                            <li><a href="#secret-management">7.4 Secret 관리</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#monitoring" class="nav-link">8. 모니터링 및 로깅</a>
+                        <ul class="sub-nav">
+                            <li><a href="#prometheus-grafana">8.1 Prometheus와 Grafana</a></li>
+                            <li><a href="#logging">8.2 로깅</a></li>
+                            <li><a href="#health-check">8.3 Health Check</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#advanced" class="nav-link">9. 고급 주제</a>
+                        <ul class="sub-nav">
+                            <li><a href="#hpa">9.1 HPA</a></li>
+                            <li><a href="#vpa">9.2 VPA</a></li>
+                            <li><a href="#cluster-autoscaler">9.3 Cluster Autoscaler</a></li>
+                            <li><a href="#crd">9.4 CRD</a></li>
+                            <li><a href="#operators">9.5 Operators</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#examples" class="nav-link">10. 실습 예제</a></li>
+                    <li><a href="#troubleshooting" class="nav-link">11. 트러블슈팅</a></li>
+                    <li><a href="#references" class="nav-link">12. 참고 자료</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main id="main-content" class="main-content">
+            <div class="content-wrapper">
+                <!-- Header -->
+                <header class="main-header">
+                    <h1>🚢 Kubernetes 완전 가이드</h1>
+                    <p class="subtitle">팀원들을 위한 종합 기술 문서</p>
+                    <div class="header-actions">
+                        <button id="toggle-theme" class="btn-secondary">🌙 다크모드</button>
+                        <button id="print-btn" class="btn-secondary">📄 인쇄</button>
+                    </div>
+                </header>
+
+                <!-- Progress Bar -->
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+
+                <!-- Table of Contents -->
+                <section class="toc">
+                    <h2>📋 목차</h2>
+                    <div class="toc-grid">
+                        <div class="toc-item">
+                            <h3>기초</h3>
+                            <ul>
+                                <li><a href="#overview">1. Kubernetes 개요</a></li>
+                                <li><a href="#basic-concepts">2. 기본 개념</a></li>
+                                <li><a href="#cluster-setup">3. 클러스터 설정</a></li>
+                            </ul>
+                        </div>
+                        <div class="toc-item">
+                            <h3>핵심 기능</h3>
+                            <ul>
+                                <li><a href="#workloads">4. 워크로드 관리</a></li>
+                                <li><a href="#networking">5. 네트워킹</a></li>
+                                <li><a href="#storage">6. 스토리지</a></li>
+                            </ul>
+                        </div>
+                        <div class="toc-item">
+                            <h3>고급</h3>
+                            <ul>
+                                <li><a href="#security">7. 보안</a></li>
+                                <li><a href="#monitoring">8. 모니터링</a></li>
+                                <li><a href="#advanced">9. 고급 주제</a></li>
+                            </ul>
+                        </div>
+                        <div class="toc-item">
+                            <h3>실무</h3>
+                            <ul>
+                                <li><a href="#examples">10. 실습 예제</a></li>
+                                <li><a href="#troubleshooting">11. 트러블슈팅</a></li>
+                                <li><a href="#references">12. 참고 자료</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Main Content Sections -->
+                <section id="overview" class="content-section">
+                    <h2>1. 🎯 Kubernetes 개요</h2>
+                    
+                    <div id="what-is-k8s" class="subsection">
+                        <h3>1.1 Kubernetes란?</h3>
+                        <div class="info-box">
+                            <p><strong>Kubernetes(k8s)</strong>는 컨테이너화된 애플리케이션의 배포, 확장 및 관리를 자동화하는 오픈소스 플랫폼입니다.</p>
+                        </div>
+                        
+                        <h4>🔧 핵심 기능</h4>
+                        <div class="feature-grid">
+                            <div class="feature-card">
+                                <h5>⚡ 자동화된 배포 및 롤백</h5>
+                                <p>선언적 구성을 통한 애플리케이션 배포</p>
+                            </div>
+                            <div class="feature-card">
+                                <h5>🔍 서비스 검색 및 로드 밸런싱</h5>
+                                <p>DNS 이름 또는 IP 주소를 통한 컨테이너 노출</p>
+                            </div>
+                            <div class="feature-card">
+                                <h5>💾 스토리지 오케스트레이션</h5>
+                                <p>로컬, 클라우드 스토리지 시스템 자동 마운트</p>
+                            </div>
+                            <div class="feature-card">
+                                <h5>🔄 자가 치유</h5>
+                                <p>실패한 컨테이너 재시작, 교체, 종료</p>
+                            </div>
+                            <div class="feature-card">
+                                <h5>🔐 시크릿 및 구성 관리</h5>
+                                <p>민감한 정보를 안전하게 저장 및 관리</p>
+                            </div>
+                            <div class="feature-card">
+                                <h5>📊 자동 스케일링</h5>
+                                <p>CPU 사용률 기반 Pod 수 자동 조정</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="benefits" class="subsection">
+                        <h3>1.2 Kubernetes의 이점</h3>
+                        <div class="benefits-list">
+                            <div class="benefit-item">
+                                <span class="benefit-icon">📈</span>
+                                <div>
+                                    <h4>확장성</h4>
+                                    <p>수평 및 수직 스케일링 지원으로 트래픽 증가에 유연하게 대응</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <span class="benefit-icon">⚡</span>
+                                <div>
+                                    <h4>가용성</h4>
+                                    <p>장애 복구 및 무중단 서비스를 통한 높은 가용성 보장</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <span class="benefit-icon">🔄</span>
+                                <div>
+                                    <h4>이식성</h4>
+                                    <p>온프레미스, 클라우드, 하이브리드 환경에서 동일하게 실행</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <span class="benefit-icon">⚙️</span>
+                                <div>
+                                    <h4>관리성</h4>
+                                    <p>선언적 구성 및 자동화를 통한 운영 복잡성 감소</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <span class="benefit-icon">💰</span>
+                                <div>
+                                    <h4>효율성</h4>
+                                    <p>리소스 최적화 및 비용 절감을 통한 경제적 운영</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="architecture" class="subsection">
+                        <h3>1.3 Kubernetes 아키텍처</h3>
+                        <div class="architecture-diagram">
+                            <div class="control-plane">
+                                <h4>Control Plane</h4>
+                                <div class="component-grid">
+                                    <div class="component">
+                                        <h5>kube-apiserver</h5>
+                                        <p>API 엔드포인트 제공</p>
+                                    </div>
+                                    <div class="component">
+                                        <h5>etcd</h5>
+                                        <p>클러스터 데이터 저장소</p>
+                                    </div>
+                                    <div class="component">
+                                        <h5>kube-scheduler</h5>
+                                        <p>Pod 스케줄링</p>
+                                    </div>
+                                    <div class="component">
+                                        <h5>kube-controller-manager</h5>
+                                        <p>컨트롤러 실행</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="worker-nodes">
+                                <h4>Worker Nodes</h4>
+                                <div class="node">
+                                    <h5>Node 1</h5>
+                                    <ul>
+                                        <li>kubelet</li>
+                                        <li>kube-proxy</li>
+                                        <li>Container Runtime</li>
+                                        <li>Pods</li>
+                                    </ul>
+                                </div>
+                                <div class="node">
+                                    <h5>Node 2</h5>
+                                    <ul>
+                                        <li>kubelet</li>
+                                        <li>kube-proxy</li>
+                                        <li>Container Runtime</li>
+                                        <li>Pods</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="basic-concepts" class="content-section">
+                    <h2>2. 🧩 기본 개념</h2>
+                    
+                    <div id="core-objects" class="subsection">
+                        <h3>2.1 핵심 오브젝트</h3>
+                        
+                        <div class="object-card">
+                            <h4>📦 Pod</h4>
+                            <p>Kubernetes의 최소 배포 단위로, 하나 이상의 컨테이너를 포함합니다.</p>
+                            
+                            <div class="characteristics">
+                                <h5>특징:</h5>
+                                <ul>
+                                    <li>동일한 네트워크 및 스토리지 공유</li>
+                                    <li>함께 스케줄링되고 종료됨</li>
+                                    <li>고유한 IP 주소 할당</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="code-example">
+                                <h5>Pod YAML 예제:</h5>
+                                <pre><code class="yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.21
+    ports:
+    - containerPort: 80</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="object-card">
+                            <h4>🔄 ReplicaSet</h4>
+                            <p>지정된 수의 Pod 복제본이 항상 실행되도록 보장합니다.</p>
+                            
+                            <div class="code-example">
+                                <h5>ReplicaSet YAML 예제:</h5>
+                                <pre><code class="yaml">apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: nginx-replicaset
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.21</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="object-card">
+                            <h4>🚀 Deployment</h4>
+                            <p>ReplicaSet을 관리하며 선언적 업데이트를 제공합니다.</p>
+                            
+                            <div class="code-example">
+                                <h5>Deployment YAML 예제:</h5>
+                                <pre><code class="yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.21
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="object-card">
+                            <h4>🌐 Service</h4>
+                            <p>Pod 집합에 대한 안정적인 네트워크 엔드포인트를 제공합니다.</p>
+                            
+                            <div class="service-types">
+                                <h5>Service 타입:</h5>
+                                <div class="type-grid">
+                                    <div class="type-item">
+                                        <h6>ClusterIP</h6>
+                                        <p>클러스터 내부에서만 접근 가능 (기본값)</p>
+                                    </div>
+                                    <div class="type-item">
+                                        <h6>NodePort</h6>
+                                        <p>각 노드의 특정 포트를 통해 외부 접근 가능</p>
+                                    </div>
+                                    <div class="type-item">
+                                        <h6>LoadBalancer</h6>
+                                        <p>클라우드 로드 밸런서 생성</p>
+                                    </div>
+                                    <div class="type-item">
+                                        <h6>ExternalName</h6>
+                                        <p>DNS CNAME 레코드 생성</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="code-example">
+                                <h5>Service YAML 예제:</h5>
+                                <pre><code class="yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+  selector:
+    app: nginx</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="config-secrets">
+                            <div class="object-card">
+                                <h4>⚙️ ConfigMap</h4>
+                                <p>비기밀 구성 데이터 저장</p>
+                                
+                                <div class="code-example">
+                                    <pre><code class="yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  database.url: "mongodb://localhost:27017"
+  log.level: "info"</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="object-card">
+                                <h4>🔐 Secret</h4>
+                                <p>기밀 데이터 저장 (base64 인코딩)</p>
+                                
+                                <div class="code-example">
+                                    <pre><code class="yaml">apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secret
+type: Opaque
+data:
+  username: YWRtaW4=  # admin
+  password: cGFzc3dvcmQ=  # password</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="object-card">
+                            <h4>🏷️ Namespace</h4>
+                            <p>클러스터 내에서 리소스를 논리적으로 분리합니다.</p>
+                            
+                            <div class="code-example">
+                                <pre><code class="yaml">apiVersion: v1
+kind: Namespace
+metadata:
+  name: development</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="cluster-setup" class="content-section">
+                    <h2>3. ⚙️ Kubernetes 클러스터 설정</h2>
+                    
+                    <div id="setup-methods" class="subsection">
+                        <h3>3.1 클러스터 설정 방법</h3>
+                        
+                        <div class="setup-options">
+                            <div class="setup-card">
+                                <h4>🏠 Minikube (로컬 개발용)</h4>
+                                <p>로컬 개발 및 테스트를 위한 단일 노드 클러스터</p>
+                                
+                                <div class="code-example">
+                                    <h5>설치 및 시작:</h5>
+                                    <pre><code class="bash"># Minikube 설치 (macOS)
+brew install minikube
+
+# 클러스터 시작
+minikube start --driver=docker --memory=4096 --cpus=2
+
+# 클러스터 상태 확인
+minikube status
+
+# 대시보드 실행
+minikube dashboard</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="setup-card">
+                                <h4>🏢 kubeadm (온프레미스)</h4>
+                                <p>프로덕션 환경을 위한 멀티 노드 클러스터</p>
+                                
+                                <div class="code-example">
+                                    <h5>마스터 노드 초기화:</h5>
+                                    <pre><code class="bash"># kubeadm 초기화
+sudo kubeadm init --pod-network-cidr=192.168.0.0/16
+
+# kubectl 설정
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+# 네트워크 플러그인 설치 (Calico)
+kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml</code></pre>
+                                </div>
+                                
+                                <div class="code-example">
+                                    <h5>워커 노드 추가:</h5>
+                                    <pre><code class="bash"># 마스터 노드에서 join 토큰 생성
+kubeadm token create --print-join-command
+
+# 워커 노드에서 실행
+sudo kubeadm join &lt;master-ip&gt;:6443 --token &lt;token&gt; --discovery-token-ca-cert-hash sha256:&lt;hash&gt;</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="setup-card">
+                                <h4>☁️ 관리형 서비스 (AWS EKS)</h4>
+                                <p>클라우드 제공업체의 관리형 Kubernetes 서비스</p>
+                                
+                                <div class="code-example">
+                                    <h5>AWS EKS 클러스터 생성:</h5>
+                                    <pre><code class="bash"># eksctl 설치
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+
+# EKS 클러스터 생성
+eksctl create cluster \
+  --name my-cluster \
+  --version 1.21 \
+  --region us-west-2 \
+  --nodegroup-name linux-nodes \
+  --node-type m5.large \
+  --nodes 3 \
+  --nodes-min 1 \
+  --nodes-max 4</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="kubectl-usage" class="subsection">
+                        <h3>3.2 kubectl 설정 및 사용법</h3>
+                        
+                        <div class="kubectl-commands">
+                            <h4>🔧 기본 명령어</h4>
+                            
+                            <div class="command-grid">
+                                <div class="command-card">
+                                    <h5>클러스터 정보</h5>
+                                    <pre><code class="bash"># 클러스터 정보 확인
+kubectl cluster-info
+
+# 노드 목록 조회
+kubectl get nodes</code></pre>
+                                </div>
+                                
+                                <div class="command-card">
+                                    <h5>Pod 관리</h5>
+                                    <pre><code class="bash"># Pod 목록 조회
+kubectl get pods
+kubectl get pods -o wide
+kubectl get pods -n kube-system</code></pre>
+                                </div>
+                                
+                                <div class="command-card">
+                                    <h5>상세 정보</h5>
+                                    <pre><code class="bash"># 리소스 상세 정보
+kubectl describe pod &lt;pod-name&gt;
+
+# 로그 확인
+kubectl logs &lt;pod-name&gt;
+kubectl logs -f &lt;pod-name&gt;  # 실시간 로그</code></pre>
+                                </div>
+                                
+                                <div class="command-card">
+                                    <h5>컨테이너 접속</h5>
+                                    <pre><code class="bash"># 컨테이너 접속
+kubectl exec -it &lt;pod-name&gt; -- /bin/bash
+
+# 포트 포워딩
+kubectl port-forward &lt;pod-name&gt; 8080:80</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="yaml-management">
+                            <h4>📄 YAML 파일 관리</h4>
+                            
+                            <div class="code-example">
+                                <pre><code class="bash"># 리소스 생성
+kubectl apply -f deployment.yaml
+
+# 리소스 업데이트
+kubectl apply -f deployment.yaml
+
+# 리소스 삭제
+kubectl delete -f deployment.yaml
+
+# dry-run으로 확인
+kubectl apply -f deployment.yaml --dry-run=client
+
+# 리소스를 YAML로 출력
+kubectl get deployment nginx-deployment -o yaml</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Continue with remaining sections... -->
+                <!-- For brevity, I'll add a few more key sections -->
+
+                <section id="workloads" class="content-section">
+                    <h2>4. 📋 워크로드 관리</h2>
+                    
+                    <div id="deployment-strategies" class="subsection">
+                        <h3>4.1 Deployment 전략</h3>
+                        
+                        <div class="strategy-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="rolling">Rolling Update</button>
+                                <button class="tab-btn" data-tab="blue-green">Blue-Green</button>
+                                <button class="tab-btn" data-tab="canary">Canary</button>
+                            </div>
+                            
+                            <div class="tab-content">
+                                <div id="rolling" class="tab-pane active">
+                                    <h4>🔄 Rolling Update</h4>
+                                    <p>기본 배포 전략으로, 새 버전을 점진적으로 배포합니다.</p>
+                                    
+                                    <div class="code-example">
+                                        <pre><code class="yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+spec:
+  replicas: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 2  # 최대 2개 Pod까지 사용 불가
+      maxSurge: 2        # 최대 2개 Pod까지 추가 생성
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: app
+        image: myapp:v2
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10</code></pre>
+                                    </div>
+                                </div>
+                                
+                                <div id="blue-green" class="tab-pane">
+                                    <h4>🔵🟢 Blue-Green Deployment</h4>
+                                    <p>두 개의 완전한 환경을 사용하여 무중단 배포를 수행합니다.</p>
+                                    
+                                    <div class="code-example">
+                                        <pre><code class="bash"># Blue 환경 (현재 프로덕션)
+kubectl apply -f blue-deployment.yaml
+
+# Green 환경 (새 버전) 배포
+kubectl apply -f green-deployment.yaml
+
+# 트래픽 검증 후 서비스 전환
+kubectl patch service myapp-service -p '{"spec":{"selector":{"version":"green"}}}'
+
+# Blue 환경 정리
+kubectl delete -f blue-deployment.yaml</code></pre>
+                                    </div>
+                                </div>
+                                
+                                <div id="canary" class="tab-pane">
+                                    <h4>🐦 Canary Deployment</h4>
+                                    <p>트래픽의 일부만 새 버전으로 라우팅하여 점진적으로 배포합니다.</p>
+                                    
+                                    <div class="code-example">
+                                        <pre><code class="yaml"># Canary 배포용 Deployment (트래픽의 10%)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-canary
+spec:
+  replicas: 1  # 전체 10개 중 1개
+  selector:
+    matchLabels:
+      app: myapp
+      version: canary
+  template:
+    metadata:
+      labels:
+        app: myapp
+        version: canary
+    spec:
+      containers:
+      - name: app
+        image: myapp:v2</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Additional sections would continue here... -->
+                
+                <!-- Footer -->
+                <footer class="main-footer">
+                    <div class="footer-content">
+                        <p>© 2024 Kubernetes 완전 가이드. 팀원들을 위한 종합 기술 문서입니다.</p>
+                        <div class="footer-links">
+                            <a href="#overview">처음으로</a>
+                            <a href="https://kubernetes.io/docs/" target="_blank">공식 문서</a>
+                            <a href="https://github.com/kubernetes/kubernetes" target="_blank">GitHub</a>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

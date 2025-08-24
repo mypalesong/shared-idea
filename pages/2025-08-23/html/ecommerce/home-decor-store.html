@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeStyle - 홈 인테리어 스토어</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: #2c5530;
+            color: white;
+            padding: 1rem 0;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #8fbc8f;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: #8fbc8f;
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(44,85,48,0.7), rgba(44,85,48,0.7)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23f5f5dc" width="1200" height="600"/><text x="600" y="300" text-anchor="middle" font-size="48" fill="%23654321">Cozy Home</text></svg>');
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+        
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #8fbc8f;
+            color: #2c5530;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .btn:hover {
+            background: #90ee90;
+            transform: translateY(-2px);
+        }
+        
+        .categories {
+            padding: 80px 0;
+            background: #fafafa;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #2c5530;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .category-img {
+            height: 200px;
+            background: #e8f5e8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+        
+        .category-info {
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .category-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #2c5530;
+        }
+        
+        .products {
+            padding: 80px 0;
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .product-img {
+            height: 250px;
+            background: #f0f8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2c5530;
+            font-size: 1.2rem;
+            position: relative;
+        }
+        
+        .new-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #8fbc8f;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+        }
+        
+        .product-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .product-desc {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .product-price {
+            font-size: 1.5rem;
+            color: #8fbc8f;
+            font-weight: bold;
+        }
+        
+        .inspiration {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #2c5530, #8fbc8f);
+            color: white;
+        }
+        
+        .inspiration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .inspiration-card {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .inspiration-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .inspiration-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .room-showcase {
+            padding: 80px 0;
+            background: #f8f8f8;
+        }
+        
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .room-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .room-img {
+            height: 300px;
+            background: #e8f5e8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #2c5530;
+        }
+        
+        .room-info {
+            padding: 2rem;
+        }
+        
+        .room-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #2c5530;
+        }
+        
+        .room-info p {
+            color: #666;
+            line-height: 1.8;
+        }
+        
+        footer {
+            background: #1a3a1a;
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #8fbc8f;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: #8fbc8f;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid #444;
+            padding-top: 1rem;
+            text-align: center;
+            color: #999;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .room-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">HomeStyle</div>
+            <ul>
+                <li><a href="#home">홈</a></li>
+                <li><a href="#categories">카테고리</a></li>
+                <li><a href="#products">상품</a></li>
+                <li><a href="#inspiration">인테리어 팁</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>당신의 집을 특별하게</h1>
+            <p>세련된 인테리어 소품으로 완성하는 나만의 공간</p>
+            <a href="#products" class="btn">쇼핑 시작하기</a>
+        </div>
+    </section>
+
+    <section id="categories" class="categories">
+        <div class="container">
+            <h2 class="section-title">카테고리</h2>
+            <div class="category-grid">
+                <div class="category-card">
+                    <div class="category-img">🛋️</div>
+                    <div class="category-info">
+                        <h3>거실 인테리어</h3>
+                        <p>소파, 테이블, 러그, 쿠션 등 거실을 꾸미는 모든 것</p>
+                    </div>
+                </div>
+                <div class="category-card">
+                    <div class="category-img">🛏️</div>
+                    <div class="category-info">
+                        <h3>침실 인테리어</h3>
+                        <p>베딩, 조명, 수납용품으로 편안한 침실 만들기</p>
+                    </div>
+                </div>
+                <div class="category-card">
+                    <div class="category-img">🍽️</div>
+                    <div class="category-info">
+                        <h3>주방 & 다이닝</h3>
+                        <p>식탁, 의자, 주방용품으로 멋진 다이닝 공간</p>
+                    </div>
+                </div>
+                <div class="category-card">
+                    <div class="category-img">🪴</div>
+                    <div class="category-info">
+                        <h3>식물 & 화분</h3>
+                        <p>공기정화 식물과 예쁜 화분으로 자연스러운 공간</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="products" class="products">
+        <div class="container">
+            <h2 class="section-title">인기 상품</h2>
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-img">
+                        <div class="new-badge">NEW</div>
+                        모던 소파 이미지
+                    </div>
+                    <div class="product-info">
+                        <h3>모던 3인 소파</h3>
+                        <div class="product-desc">심플하고 세련된 디자인의 패브릭 소파</div>
+                        <div class="product-price">599,000원</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">우드 다이닝 테이블 이미지</div>
+                    <div class="product-info">
+                        <h3>오크 원목 다이닝 테이블</h3>
+                        <div class="product-desc">천연 오크원목으로 제작된 4인용 식탁</div>
+                        <div class="product-price">890,000원</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">
+                        <div class="new-badge">NEW</div>
+                        북유럽 러그 이미지
+                    </div>
+                    <div class="product-info">
+                        <h3>북유럽 스타일 러그</h3>
+                        <div class="product-desc">부드러운 터치감의 대형 러그 200x150</div>
+                        <div class="product-price">189,000원</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">펜던트 조명 이미지</div>
+                    <div class="product-info">
+                        <h3>미니멀 펜던트 조명</h3>
+                        <div class="product-desc">식탁 위 포인트 조명, LED 전구 포함</div>
+                        <div class="product-price">125,000원</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">몬스테라 화분 이미지</div>
+                    <div class="product-info">
+                        <h3>몬스테라 + 세라믹 화분</h3>
+                        <div class="product-desc">공기정화 식물과 화이트 세라믹 화분 세트</div>
+                        <div class="product-price">85,000원</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">벨벳 쿠션 이미지</div>
+                    <div class="product-info">
+                        <h3>벨벳 쿠션커버 세트</h3>
+                        <div class="product-desc">부드러운 벨벳 소재 45x45 쿠션커버 4개</div>
+                        <div class="product-price">59,000원</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="room-showcase">
+        <div class="container">
+            <h2 class="section-title">룸 스타일링</h2>
+            <div class="room-grid">
+                <div class="room-card">
+                    <div class="room-img">스칸디나비아 거실</div>
+                    <div class="room-info">
+                        <h3>스칸디나비아 스타일</h3>
+                        <p>화이트와 우드 톤을 기조로 한 깔끔하고 따뜻한 북유럽 스타일 거실입니다. 미니멀한 가구와 자연 소재로 편안하고 아늑한 공간을 연출했습니다.</p>
+                    </div>
+                </div>
+                <div class="room-card">
+                    <div class="room-img">모던 침실</div>
+                    <div class="room-info">
+                        <h3>모던 미니멀 침실</h3>
+                        <p>군더더기 없는 깔끔한 라인과 중성적인 컬러로 완성한 모던 침실입니다. 간접조명과 질감 있는 패브릭이 포인트가 되어 세련된 분위기를 만들어냅니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="inspiration" class="inspiration">
+        <div class="container">
+            <h2 class="section-title">인테리어 팁</h2>
+            <div class="inspiration-grid">
+                <div class="inspiration-card">
+                    <div class="inspiration-icon">💡</div>
+                    <h3>조명 활용법</h3>
+                    <p>간접조명과 포인트 조명을 적절히 활용하여 공간의 분위기를 바꿔보세요. 따뜻한 빛으로 아늑함을 연출할 수 있습니다.</p>
+                </div>
+                <div class="inspiration-card">
+                    <div class="inspiration-icon">🎨</div>
+                    <h3>컬러 매칭</h3>
+                    <p>기본 컬러 2-3가지를 정하고 포인트 컬러 하나를 추가하면 조화로운 공간을 만들 수 있습니다.</p>
+                </div>
+                <div class="inspiration-card">
+                    <div class="inspiration-icon">📐</div>
+                    <h3>공간 활용</h3>
+                    <p>수직 공간을 활용한 수납과 가구 배치로 좁은 공간도 넓고 깔끔하게 사용할 수 있습니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>고객서비스</h3>
+                    <ul>
+                        <li><a href="#">주문/배송</a></li>
+                        <li><a href="#">교환/반품</a></li>
+                        <li><a href="#">설치서비스</a></li>
+                        <li><a href="#">A/S 신청</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>쇼핑 가이드</h3>
+                    <ul>
+                        <li><a href="#">인테리어 가이드</a></li>
+                        <li><a href="#">사이즈 가이드</a></li>
+                        <li><a href="#">색상 매치</a></li>
+                        <li><a href="#">케어 방법</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>회사정보</h3>
+                    <ul>
+                        <li><a href="#">회사소개</a></li>
+                        <li><a href="#">매장안내</a></li>
+                        <li><a href="#">채용정보</a></li>
+                        <li><a href="#">제휴문의</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>소셜</h3>
+                    <ul>
+                        <li><a href="#">인스타그램</a></li>
+                        <li><a href="#">페이스북</a></li>
+                        <li><a href="#">유튜브</a></li>
+                        <li><a href="#">핀터레스트</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 HomeStyle. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geometric Code - Abstract Development</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background: #000000;
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .geometric-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .geo-shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: geometricFloat 20s ease-in-out infinite;
+        }
+        
+        .triangle {
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
+        
+        .triangle-1 {
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 87px solid #ff6b6b;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .triangle-2 {
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-bottom: 52px solid #4ecdc4;
+            top: 60%;
+            right: 20%;
+            animation-delay: 5s;
+        }
+        
+        .square {
+            background: #ffd93d;
+            transform: rotate(45deg);
+        }
+        
+        .square-1 {
+            width: 60px;
+            height: 60px;
+            top: 30%;
+            left: 20%;
+            animation-delay: 2s;
+        }
+        
+        .square-2 {
+            width: 40px;
+            height: 40px;
+            top: 80%;
+            left: 60%;
+            animation-delay: 7s;
+        }
+        
+        .circle {
+            border-radius: 50%;
+        }
+        
+        .circle-1 {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            top: 20%;
+            right: 30%;
+            animation-delay: 3s;
+        }
+        
+        .circle-2 {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            bottom: 20%;
+            left: 30%;
+            animation-delay: 8s;
+        }
+        
+        .hexagon {
+            width: 60px;
+            height: 34.64px;
+            background: #6c5ce7;
+            position: relative;
+            top: 40%;
+            right: 10%;
+            animation-delay: 4s;
+        }
+        
+        .hexagon:before,
+        .hexagon:after {
+            content: "";
+            position: absolute;
+            width: 0;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+        }
+        
+        .hexagon:before {
+            bottom: 100%;
+            border-bottom: 17.32px solid #6c5ce7;
+        }
+        
+        .hexagon:after {
+            top: 100%;
+            border-top: 17.32px solid #6c5ce7;
+        }
+        
+        header {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .hero {
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero h1 {
+            font-size: 6rem;
+            font-weight: 900;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #ffd93d, #667eea);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: colorShift 4s ease-in-out infinite;
+            position: relative;
+        }
+        
+        .hero h1::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: linear-gradient(45deg, transparent, rgba(255, 107, 107, 0.2), transparent);
+            animation: geometricSweep 6s linear infinite;
+            z-index: -1;
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            color: #cccccc;
+        }
+        
+        .geometric-button {
+            display: inline-block;
+            padding: 20px 40px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: #000000;
+            text-decoration: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            clip-path: polygon(25px 0%, 100% 0%, calc(100% - 25px) 100%, 0% 100%);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .geometric-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: all 0.4s ease;
+        }
+        
+        .geometric-button:hover {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+        }
+        
+        .geometric-button:hover::before {
+            left: 100%;
+        }
+        
+        .main-content {
+            padding: 100px 0;
+        }
+        
+        .section-title {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #ffd93d);
+            clip-path: polygon(0 0, 80% 0, 100% 100%, 20% 100%);
+        }
+        
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+        
+        .project-card {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(76, 201, 196, 0.1));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem;
+            position: relative;
+            transition: all 0.4s ease;
+            clip-path: polygon(0 0, calc(100% - 30px) 0, 100% 30px, 100% 100%, 30px 100%, 0 calc(100% - 30px));
+            overflow: hidden;
+        }
+        
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 107, 107, 0.2), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-10px) rotate(1deg);
+            border-color: #ff6b6b;
+            box-shadow: 0 20px 40px rgba(255, 107, 107, 0.3);
+        }
+        
+        .project-card:hover::before {
+            opacity: 1;
+            animation: geometricSweep 2s linear infinite;
+        }
+        
+        .project-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #000000;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            position: relative;
+        }
+        
+        .project-card:nth-child(2n) .project-icon {
+            clip-path: polygon(25px 0%, 100% 0%, calc(100% - 25px) 100%, 0% 100%);
+        }
+        
+        .project-card:nth-child(3n) .project-icon {
+            border-radius: 50% 0;
+        }
+        
+        .project-card h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+            font-weight: 700;
+        }
+        
+        .project-card p {
+            color: #cccccc;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+        
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .tech-tag {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .skills-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            margin: 6rem 0;
+            position: relative;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+        
+        .skill-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.4s ease;
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+        }
+        
+        .skill-item:hover {
+            transform: scale(1.05) rotate(-1deg);
+            background: rgba(255, 107, 107, 0.2);
+        }
+        
+        .skill-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            animation: skillRotate 4s ease-in-out infinite;
+        }
+        
+        .skill-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+        
+        .skill-level {
+            color: #4ecdc4;
+            font-weight: 600;
+        }
+        
+        .contact-section {
+            padding: 100px 0;
+            text-align: center;
+        }
+        
+        .contact-form {
+            max-width: 600px;
+            margin: 4rem auto 0;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(76, 201, 196, 0.1));
+            padding: 4rem;
+            clip-path: polygon(30px 0%, 100% 0%, calc(100% - 30px) 100%, 0% 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .form-group {
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            font-size: 1rem;
+            clip-path: polygon(15px 0%, 100% 0%, calc(100% - 15px) 100%, 0% 100%);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #4ecdc4;
+            box-shadow: 0 0 0 2px rgba(76, 201, 196, 0.3);
+        }
+        
+        .form-input::placeholder {
+            color: #888888;
+        }
+        
+        .geometric-patterns {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .pattern {
+            position: absolute;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            animation: patternMove 15s linear infinite;
+        }
+        
+        .pattern-1 {
+            width: 200px;
+            height: 200px;
+            top: 20%;
+            left: -100px;
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        }
+        
+        .pattern-2 {
+            width: 150px;
+            height: 150px;
+            bottom: 30%;
+            right: -75px;
+            transform: rotate(45deg);
+        }
+        
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 6rem 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, rgba(255, 215, 61, 0.1), rgba(108, 92, 231, 0.1));
+            position: relative;
+            clip-path: polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%);
+        }
+        
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ffd93d, #6c5ce7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-label {
+            color: #cccccc;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+        
+        @keyframes geometricFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-50px) rotate(90deg); }
+            50% { transform: translateY(0px) rotate(180deg); }
+            75% { transform: translateY(50px) rotate(270deg); }
+        }
+        
+        @keyframes colorShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes geometricSweep {
+            0% { transform: translateX(-100%) skewX(-45deg); }
+            100% { transform: translateX(200%) skewX(-45deg); }
+        }
+        
+        @keyframes skillRotate {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+        }
+        
+        @keyframes patternMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(100vw); }
+        }
+        
+        .interactive-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .mouse-trail {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 107, 107, 0.6), transparent);
+            pointer-events: none;
+            animation: trailFade 1s ease-out forwards;
+        }
+        
+        @keyframes trailFade {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            .projects-grid,
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-form {
+                margin: 2rem;
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="geometric-bg">
+        <div class="geo-shape triangle triangle-1"></div>
+        <div class="geo-shape triangle triangle-2"></div>
+        <div class="geo-shape square square-1"></div>
+        <div class="geo-shape square square-2"></div>
+        <div class="geo-shape circle circle-1"></div>
+        <div class="geo-shape circle circle-2"></div>
+        <div class="geo-shape hexagon"></div>
+    </div>
+    
+    <div class="interactive-canvas" id="canvas"></div>
+    
+    <header>
+        <div class="container">
+            <div class="hero">
+                <h1>GEOMETRIC</h1>
+                <p>Abstract development through mathematical precision</p>
+                <a href="#" class="geometric-button">Explore Projects</a>
+            </div>
+        </div>
+        
+        <div class="geometric-patterns">
+            <div class="pattern pattern-1"></div>
+            <div class="pattern pattern-2"></div>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <div class="container">
+            <section>
+                <h2 class="section-title">Projects</h2>
+                
+                <div class="stats-section">
+                    <div class="stat-item">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Projects</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">99%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Support</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">∞</div>
+                        <div class="stat-label">Possibilities</div>
+                    </div>
+                </div>
+                
+                <div class="projects-grid">
+                    <div class="project-card">
+                        <div class="project-icon">◆</div>
+                        <h3>Geometric UI Framework</h3>
+                        <p>A revolutionary UI framework based on geometric principles, creating harmonious and mathematically perfect interfaces with dynamic shape morphing.</p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">React</span>
+                            <span class="tech-tag">WebGL</span>
+                            <span class="tech-tag">CSS Grid</span>
+                            <span class="tech-tag">SVG</span>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-icon">▲</div>
+                        <h3>Abstract Data Visualization</h3>
+                        <p>Transform complex datasets into beautiful geometric visualizations using advanced algorithms and interactive polygon-based charts.</p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">D3.js</span>
+                            <span class="tech-tag">WebGL</span>
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">Three.js</span>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-icon">●</div>
+                        <h3>Algorithmic Art Generator</h3>
+                        <p>Generate unique abstract art pieces using mathematical algorithms, fractals, and geometric pattern recognition systems.</p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">Canvas API</span>
+                            <span class="tech-tag">WebAssembly</span>
+                            <span class="tech-tag">Rust</span>
+                            <span class="tech-tag">Machine Learning</span>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-icon">⬟</div>
+                        <h3>3D Geometric Engine</h3>
+                        <p>High-performance 3D rendering engine specialized in geometric transformations, procedural modeling, and real-time polygon manipulation.</p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">WebGL 2.0</span>
+                            <span class="tech-tag">GLSL</span>
+                            <span class="tech-tag">TypeScript</span>
+                            <span class="tech-tag">WebWorkers</span>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-icon">◈</div>
+                        <h3>Parametric Design Tool</h3>
+                        <p>Professional tool for creating parametric designs with real-time geometric constraints, mathematical modeling, and CAD integration.</p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">Electron</span>
+                            <span class="tech-tag">OpenCascade</span>
+                            <span class="tech-tag">C++</span>
+                            <span class="tech-tag">WebGL</span>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-icon">⬢</div>
+                        <h3>Geometric Animation Library</h3>
+                        <p>Lightweight animation library focused on geometric transformations, shape morphing, and mathematical easing functions.</p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">JavaScript</span>
+                            <span class="tech-tag">CSS Houdini</span>
+                            <span class="tech-tag">Web Animations</span>
+                            <span class="tech-tag">SVG</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="skills-section">
+                <div class="container">
+                    <h2 class="section-title">Expertise</h2>
+                    
+                    <div class="skills-grid">
+                        <div class="skill-item">
+                            <div class="skill-icon">◆</div>
+                            <div class="skill-name">Geometric Algorithms</div>
+                            <div class="skill-level">Expert Level</div>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <div class="skill-icon">▲</div>
+                            <div class="skill-name">WebGL Programming</div>
+                            <div class="skill-level">Advanced</div>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <div class="skill-icon">●</div>
+                            <div class="skill-name">Mathematical Modeling</div>
+                            <div class="skill-level">Expert Level</div>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <div class="skill-icon">⬟</div>
+                            <div class="skill-name">3D Graphics</div>
+                            <div class="skill-level">Advanced</div>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <div class="skill-icon">◈</div>
+                            <div class="skill-name">Procedural Generation</div>
+                            <div class="skill-level">Expert Level</div>
+                        </div>
+                        
+                        <div class="skill-item">
+                            <div class="skill-icon">⬢</div>
+                            <div class="skill-name">Abstract Design</div>
+                            <div class="skill-level">Master Level</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="contact-section">
+                <h2 class="section-title">Connect</h2>
+                
+                <div class="contact-form">
+                    <form>
+                        <div class="form-group">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-input" placeholder="Enter your name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" placeholder="your@email.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Project Type</label>
+                            <input type="text" class="form-input" placeholder="Geometric design, 3D visualization...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Message</label>
+                            <textarea class="form-input" rows="4" placeholder="Describe your geometric vision..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="geometric-button">Send Message</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <script>
+        // Interactive mouse trail
+        document.addEventListener('mousemove', (e) => {
+            const trail = document.createElement('div');
+            trail.className = 'mouse-trail';
+            trail.style.left = (e.clientX - 10) + 'px';
+            trail.style.top = (e.clientY - 10) + 'px';
+            
+            // Random geometric shapes for trail
+            const shapes = ['◆', '▲', '●', '⬟', '◈', '⬢'];
+            const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+            trail.textContent = randomShape;
+            trail.style.display = 'flex';
+            trail.style.alignItems = 'center';
+            trail.style.justifyContent = 'center';
+            trail.style.color = '#ff6b6b';
+            trail.style.fontSize = '12px';
+            trail.style.background = 'none';
+            
+            document.getElementById('canvas').appendChild(trail);
+            
+            setTimeout(() => {
+                trail.remove();
+            }, 1000);
+        });
+        
+        // Geometric shape morphing animation
+        function morphGeometricShapes() {
+            const shapes = document.querySelectorAll('.geo-shape');
+            shapes.forEach(shape => {
+                const randomDelay = Math.random() * 2000;
+                setTimeout(() => {
+                    shape.style.transform += ' scale(' + (0.8 + Math.random() * 0.4) + ')';
+                    shape.style.filter = 'hue-rotate(' + Math.random() * 360 + 'deg)';
+                    
+                    setTimeout(() => {
+                        shape.style.transform = '';
+                        shape.style.filter = '';
+                    }, 1000);
+                }, randomDelay);
+            });
+        }
+        
+        setInterval(morphGeometricShapes, 5000);
+        
+        // Project card intersection observer
+        const projectObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0) rotate(0deg)';
+                    }, index * 200);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(50px) rotate(-5deg)';
+            card.style.transition = 'all 0.8s ease';
+            projectObserver.observe(card);
+        });
+        
+        // Skill items animation
+        document.querySelectorAll('.skill-item').forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(30px)';
+            item.style.transition = 'all 0.6s ease';
+            item.style.transitionDelay = index * 0.1 + 's';
+            
+            const skillObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+            
+            skillObserver.observe(item);
+        });
+        
+        // Form submission with geometric effect
+        document.querySelector('.contact-form form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const button = this.querySelector('.geometric-button');
+            const originalText = button.textContent;
+            
+            button.textContent = 'Processing...';
+            button.style.background = 'linear-gradient(45deg, #4ecdc4, #ffd93d)';
+            
+            // Create geometric explosion effect
+            for (let i = 0; i < 12; i++) {
+                setTimeout(() => {
+                    const explosion = document.createElement('div');
+                    explosion.style.cssText = `
+                        position: absolute;
+                        width: 20px;
+                        height: 20px;
+                        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+                        animation: explode${i} 2s ease-out forwards;
+                        pointer-events: none;
+                    `;
+                    
+                    button.parentElement.style.position = 'relative';
+                    button.parentElement.appendChild(explosion);
+                    
+                    const angle = (360 / 12) * i;
+                    const distance = 100;
+                    const x = Math.cos(angle * Math.PI / 180) * distance;
+                    const y = Math.sin(angle * Math.PI / 180) * distance;
+                    
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        @keyframes explode${i} {
+                            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+                            100% { transform: translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(0); opacity: 0; }
+                        }
+                    `;
+                    document.head.appendChild(style);
+                    
+                    setTimeout(() => {
+                        explosion.remove();
+                        style.remove();
+                    }, 2000);
+                }, i * 50);
+            }
+            
+            setTimeout(() => {
+                button.textContent = 'Message Sent!';
+                button.style.background = 'linear-gradient(45deg, #27ae60, #2ecc71)';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '';
+                    this.reset();
+                }, 2000);
+            }, 2000);
+        });
+        
+        // Geometric button hover effects
+        document.querySelectorAll('.geometric-button').forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                button.style.filter = 'drop-shadow(0 0 20px rgba(255, 107, 107, 0.6))';
+            });
+            
+            button.addEventListener('mouseleave', () => {
+                button.style.filter = '';
+            });
+        });
+        
+        // Stats counter animation
+        function animateStats() {
+            document.querySelectorAll('.stat-number').forEach(stat => {
+                const finalValue = stat.textContent;
+                const isInfinity = finalValue === '∞';
+                const isPercentage = finalValue.includes('%');
+                const hasSlash = finalValue.includes('/');
+                
+                if (!isInfinity) {
+                    const numericValue = parseInt(finalValue);
+                    let current = 0;
+                    const increment = numericValue / 50;
+                    
+                    const counter = setInterval(() => {
+                        current += increment;
+                        if (current >= numericValue) {
+                            stat.textContent = finalValue;
+                            clearInterval(counter);
+                        } else {
+                            if (isPercentage) {
+                                stat.textContent = Math.floor(current) + '%';
+                            } else if (hasSlash) {
+                                stat.textContent = Math.floor(current) + '/7';
+                            } else {
+                                stat.textContent = Math.floor(current) + '+';
+                            }
+                        }
+                    }, 30);
+                }
+            });
+        }
+        
+        // Trigger stats animation
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateStats();
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        statsObserver.observe(document.querySelector('.stats-section'));
+        
+        // Parallax effect for geometric shapes
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const shapes = document.querySelectorAll('.geo-shape');
+            
+            shapes.forEach((shape, index) => {
+                const speed = (index + 1) * 0.5;
+                const yPos = -(scrolled * speed);
+                shape.style.transform += ` translateY(${yPos}px)`;
+            });
+        });
+        
+        // Dynamic geometric pattern generation
+        function createGeometricPattern() {
+            const patterns = ['◆', '▲', '●', '⬟', '◈', '⬢', '■', '▼'];
+            const pattern = document.createElement('div');
+            pattern.textContent = patterns[Math.floor(Math.random() * patterns.length)];
+            pattern.style.cssText = `
+                position: fixed;
+                color: rgba(255, 107, 107, 0.1);
+                font-size: ${20 + Math.random() * 40}px;
+                left: ${Math.random() * 100}vw;
+                top: ${Math.random() * 100}vh;
+                pointer-events: none;
+                z-index: -1;
+                animation: patternFade 4s ease-out forwards;
+            `;
+            
+            document.body.appendChild(pattern);
+            
+            setTimeout(() => {
+                pattern.remove();
+            }, 4000);
+        }
+        
+        // Add pattern fade animation
+        const patternStyle = document.createElement('style');
+        patternStyle.textContent = `
+            @keyframes patternFade {
+                0% { opacity: 0.3; transform: scale(0) rotate(0deg); }
+                50% { opacity: 0.1; transform: scale(1) rotate(180deg); }
+                100% { opacity: 0; transform: scale(1.5) rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(patternStyle);
+        
+        setInterval(createGeometricPattern, 2000);
+        
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

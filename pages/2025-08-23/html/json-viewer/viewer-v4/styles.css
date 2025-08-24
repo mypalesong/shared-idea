@@ -1,0 +1,1167 @@
+/* Neural Network Theme Variables */
+:root {
+    --neural-primary: #00ff88;
+    --neural-secondary: #0088ff;
+    --neural-accent: #ff0088;
+    --neural-success: #00ffaa;
+    --neural-warning: #ffaa00;
+    --neural-danger: #ff4444;
+    
+    --neural-bg: #0a0a0f;
+    --neural-surface: #141420;
+    --neural-panel: #1a1a2e;
+    --neural-card: #16213e;
+    --neural-glass: rgba(20, 20, 32, 0.8);
+    
+    --neural-text: #ffffff;
+    --neural-text-dim: #a0a0b0;
+    --neural-text-muted: #707080;
+    
+    --neural-glow: 0 0 20px;
+    --neural-glow-strong: 0 0 40px;
+    --neural-shadow: 0 8px 32px rgba(0, 255, 136, 0.1);
+    --neural-shadow-strong: 0 16px 64px rgba(0, 255, 136, 0.2);
+    
+    --neural-gradient: linear-gradient(135deg, var(--neural-primary) 0%, var(--neural-secondary) 100%);
+    --neural-gradient-accent: linear-gradient(135deg, var(--neural-accent) 0%, var(--neural-primary) 100%);
+    --neural-gradient-dark: linear-gradient(135deg, var(--neural-bg) 0%, var(--neural-surface) 100%);
+    
+    --neural-radius: 12px;
+    --neural-radius-lg: 20px;
+    --neural-radius-full: 9999px;
+    
+    --neural-transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    --neural-transition-fast: all 0.15s ease-out;
+    
+    --neural-blur: blur(20px);
+    --neural-backdrop: blur(10px) saturate(1.5);
+}
+
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    background: var(--neural-bg);
+    color: var(--neural-text);
+    overflow: hidden;
+    line-height: 1.6;
+    font-size: 14px;
+    background-image: 
+        radial-gradient(circle at 20% 50%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 136, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(255, 0, 136, 0.05) 0%, transparent 50%);
+    background-attachment: fixed;
+}
+
+/* Layout */
+.neural-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Header */
+.neural-header {
+    height: 80px;
+    background: var(--neural-glass);
+    backdrop-filter: var(--neural-backdrop);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 100;
+    box-shadow: var(--neural-shadow);
+}
+
+.brand-zone {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.neural-logo {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-pulse {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--neural-gradient);
+    opacity: 0.3;
+    animation: logoPulse 2s ease-in-out infinite;
+}
+
+.neural-logo i {
+    font-size: 2rem;
+    background: var(--neural-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    z-index: 1;
+    position: relative;
+}
+
+@keyframes logoPulse {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.2); opacity: 0.6; }
+}
+
+.brand-info h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: var(--neural-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.25rem;
+}
+
+.tagline {
+    font-size: 0.875rem;
+    color: var(--neural-text-dim);
+    letter-spacing: 0.5px;
+}
+
+.neural-controls {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.control-cluster {
+    display: flex;
+    gap: 1rem;
+}
+
+.neural-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1.5rem;
+    border: none;
+    border-radius: var(--neural-radius);
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--neural-transition);
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.8125rem;
+    backdrop-filter: var(--neural-backdrop);
+}
+
+.neural-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.neural-btn:hover::before {
+    left: 100%;
+}
+
+.neural-btn.primary {
+    background: var(--neural-gradient);
+    color: var(--neural-bg);
+    box-shadow: var(--neural-glow) var(--neural-primary);
+}
+
+.neural-btn.accent {
+    background: var(--neural-gradient-accent);
+    color: white;
+    box-shadow: var(--neural-glow) var(--neural-accent);
+}
+
+.neural-btn.success {
+    background: linear-gradient(135deg, var(--neural-success) 0%, var(--neural-primary) 100%);
+    color: var(--neural-bg);
+    box-shadow: var(--neural-glow) var(--neural-success);
+}
+
+.neural-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: var(--neural-glow-strong) currentColor;
+}
+
+.btn-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    background: inherit;
+    opacity: 0;
+    filter: blur(8px);
+    z-index: -1;
+    transition: var(--neural-transition);
+}
+
+.neural-btn:hover .btn-glow {
+    opacity: 0.6;
+}
+
+.network-stats {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.stat-node, .stat-connection, .stat-layer, .stat-accuracy {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: var(--neural-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--neural-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 0.25rem;
+}
+
+.visualization-modes {
+    display: flex;
+    align-items: center;
+}
+
+.mode-selector {
+    display: flex;
+    background: var(--neural-panel);
+    border-radius: var(--neural-radius-lg);
+    padding: 0.5rem;
+    gap: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mode-btn {
+    padding: 0.75rem 1rem;
+    border: none;
+    background: none;
+    color: var(--neural-text-dim);
+    cursor: pointer;
+    border-radius: var(--neural-radius);
+    transition: var(--neural-transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 80px;
+}
+
+.mode-btn i {
+    font-size: 1.25rem;
+}
+
+.mode-btn.active {
+    background: var(--neural-gradient);
+    color: var(--neural-bg);
+    box-shadow: var(--neural-shadow);
+}
+
+.mode-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--neural-primary);
+}
+
+/* Main Content */
+.neural-main {
+    flex: 1;
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    min-height: 0;
+}
+
+/* Panels */
+.left-neural-panel, .right-neural-panel {
+    width: 320px;
+    background: var(--neural-glass);
+    backdrop-filter: var(--neural-backdrop);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--neural-radius-lg);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: var(--neural-shadow);
+}
+
+.panel-tabs {
+    display: flex;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--neural-surface);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 1rem;
+    border: none;
+    background: none;
+    color: var(--neural-text-dim);
+    cursor: pointer;
+    transition: var(--neural-transition);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-bottom: 2px solid transparent;
+}
+
+.tab-btn.active {
+    color: var(--neural-primary);
+    background: var(--neural-panel);
+    border-bottom-color: var(--neural-primary);
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+}
+
+.tab-btn:hover:not(.active) {
+    color: var(--neural-text);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.tab-content {
+    flex: 1;
+    overflow: hidden;
+}
+
+.tab-pane {
+    height: 100%;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+/* Structure Analyzer */
+.analyzer-section {
+    margin-bottom: 2rem;
+}
+
+.analyzer-section h3 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: var(--neural-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dna-strand {
+    background: var(--neural-card);
+    border-radius: var(--neural-radius);
+    padding: 1.5rem;
+    min-height: 120px;
+    position: relative;
+    overflow: hidden;
+}
+
+.empty-dna {
+    text-align: center;
+    color: var(--neural-text-muted);
+}
+
+.empty-dna i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.neural-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.filter-control {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    padding: 0.75rem;
+    border-radius: var(--neural-radius);
+    transition: var(--neural-transition);
+}
+
+.filter-control:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.filter-control input[type="checkbox"] {
+    display: none;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--neural-text-dim);
+    border-radius: 4px;
+    position: relative;
+    transition: var(--neural-transition);
+}
+
+.filter-control input[type="checkbox"]:checked + .checkmark {
+    background: var(--neural-gradient);
+    border-color: var(--neural-primary);
+    box-shadow: var(--neural-glow) var(--neural-primary);
+}
+
+.filter-control input[type="checkbox"]:checked + .checkmark::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--neural-bg);
+    font-weight: bold;
+}
+
+/* Neural Canvas */
+.neural-canvas {
+    flex: 1;
+    background: var(--neural-glass);
+    backdrop-filter: var(--neural-backdrop);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--neural-radius-lg);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: var(--neural-shadow);
+    position: relative;
+}
+
+.canvas-controls {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--neural-surface);
+}
+
+.control-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.canvas-control {
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--neural-panel);
+    color: var(--neural-text-dim);
+    border-radius: var(--neural-radius);
+    cursor: pointer;
+    transition: var(--neural-transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.canvas-control:hover {
+    background: var(--neural-primary);
+    color: var(--neural-bg);
+    border-color: var(--neural-primary);
+    box-shadow: var(--neural-glow) var(--neural-primary);
+}
+
+.neural-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: var(--neural-text-dim);
+}
+
+.separator {
+    color: var(--neural-text-muted);
+}
+
+.visualization-area {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.neural-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+}
+
+.neural-view.active {
+    display: block;
+}
+
+.neural-svg {
+    width: 100%;
+    height: 100%;
+    background: var(--neural-bg);
+}
+
+/* Neural Particles */
+.neural-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--neural-primary);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--neural-primary);
+    animation: particleFlow 3s linear infinite;
+}
+
+@keyframes particleFlow {
+    0% { opacity: 0; transform: scale(0); }
+    10% { opacity: 1; transform: scale(1); }
+    90% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0); }
+}
+
+/* Loading States */
+.neural-loading, .neural-empty {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--neural-text-dim);
+    text-align: center;
+}
+
+.loading-brain {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin-bottom: 2rem;
+}
+
+.brain-core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    background: var(--neural-primary);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: var(--neural-glow) var(--neural-primary);
+    animation: brainPulse 1s ease-in-out infinite;
+}
+
+.brain-wave {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 2px solid var(--neural-primary);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: brainWave 2s ease-out infinite;
+}
+
+.wave-1 { animation-delay: 0s; }
+.wave-2 { animation-delay: 0.5s; }
+.wave-3 { animation-delay: 1s; }
+
+@keyframes brainPulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.2); }
+}
+
+@keyframes brainWave {
+    0% {
+        width: 20px;
+        height: 20px;
+        opacity: 1;
+    }
+    100% {
+        width: 100px;
+        height: 100px;
+        opacity: 0;
+    }
+}
+
+.empty-brain i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    background: var(--neural-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0.5;
+}
+
+/* Analysis Panel */
+.panel-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--neural-surface);
+}
+
+.panel-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--neural-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.close-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: none;
+    color: var(--neural-text-muted);
+    cursor: pointer;
+    border-radius: var(--neural-radius);
+    transition: var(--neural-transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn:hover {
+    background: var(--neural-danger);
+    color: white;
+}
+
+.analysis-content {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+.analysis-empty {
+    text-align: center;
+    color: var(--neural-text-muted);
+    padding: 2rem;
+}
+
+.analysis-empty i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* Inspector */
+.neural-inspector {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.inspector-tabs {
+    display: flex;
+    background: var(--neural-surface);
+}
+
+.inspector-tab {
+    flex: 1;
+    padding: 0.75rem;
+    border: none;
+    background: none;
+    color: var(--neural-text-dim);
+    cursor: pointer;
+    transition: var(--neural-transition);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-bottom: 2px solid transparent;
+}
+
+.inspector-tab.active {
+    color: var(--neural-primary);
+    background: var(--neural-panel);
+    border-bottom-color: var(--neural-primary);
+}
+
+.inspector-content {
+    padding: 1rem 1.5rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.inspector-pane {
+    display: none;
+}
+
+.inspector-pane.active {
+    display: block;
+}
+
+/* Context Menu */
+.neural-context-menu {
+    position: fixed;
+    background: var(--neural-glass);
+    backdrop-filter: var(--neural-backdrop);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--neural-radius);
+    box-shadow: var(--neural-shadow-strong);
+    padding: 0.5rem 0;
+    min-width: 200px;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.9);
+    transition: var(--neural-transition);
+}
+
+.neural-context-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+.neural-context-menu button {
+    width: 100%;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: none;
+    color: var(--neural-text);
+    cursor: pointer;
+    transition: var(--neural-transition);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+}
+
+.neural-context-menu button:hover {
+    background: rgba(0, 255, 136, 0.1);
+    color: var(--neural-primary);
+}
+
+.menu-separator {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0.5rem 0;
+}
+
+/* Modal */
+.neural-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.neural-modal.show {
+    display: flex;
+}
+
+.modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 10, 15, 0.9);
+    backdrop-filter: var(--neural-blur);
+}
+
+.modal-content {
+    background: var(--neural-glass);
+    backdrop-filter: var(--neural-backdrop);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--neural-radius-lg);
+    box-shadow: var(--neural-shadow-strong);
+    max-width: 600px;
+    width: 100%;
+    max-height: 80vh;
+    overflow: hidden;
+    position: relative;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--neural-surface);
+}
+
+.modal-header h3 {
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--neural-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.modal-close {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: none;
+    color: var(--neural-text-muted);
+    cursor: pointer;
+    border-radius: var(--neural-radius);
+    transition: var(--neural-transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.modal-close:hover {
+    background: var(--neural-danger);
+    color: white;
+}
+
+.modal-body {
+    padding: 2rem;
+    overflow-y: auto;
+    max-height: 60vh;
+}
+
+.modal-footer {
+    padding: 1.5rem 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    gap: 1rem;
+    justify-content: end;
+    background: var(--neural-surface);
+}
+
+/* Training Visualization */
+.training-visualization {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.progress-ring {
+    position: relative;
+    width: 120px;
+    height: 120px;
+}
+
+.progress-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.progress-circle {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.1);
+    stroke-width: 8;
+}
+
+.progress-bar {
+    fill: none;
+    stroke: url(#neuralGradient);
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 251.2;
+    stroke-dashoffset: 251.2;
+    transition: stroke-dashoffset 0.3s ease;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--neural-primary);
+}
+
+.training-metrics {
+    display: grid;
+    gap: 1rem;
+}
+
+.metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: var(--neural-card);
+    border-radius: var(--neural-radius);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.metric-label {
+    color: var(--neural-text-dim);
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+}
+
+.training-log {
+    background: var(--neural-card);
+    border-radius: var(--neural-radius);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.log-header {
+    padding: 1rem;
+    background: var(--neural-surface);
+    font-weight: 600;
+    color: var(--neural-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.log-content {
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+}
+
+/* Tooltip */
+.neural-tooltip {
+    position: fixed;
+    background: var(--neural-glass);
+    backdrop-filter: var(--neural-backdrop);
+    color: var(--neural-text);
+    padding: 1rem;
+    border-radius: var(--neural-radius);
+    font-size: 0.875rem;
+    z-index: 4000;
+    max-width: 300px;
+    box-shadow: var(--neural-shadow-strong);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--neural-transition);
+}
+
+.neural-tooltip.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.tooltip-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tooltip-title {
+    font-weight: 600;
+    color: var(--neural-primary);
+}
+
+.tooltip-type {
+    font-size: 0.75rem;
+    color: var(--neural-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tooltip-content {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8125rem;
+}
+
+.tooltip-value {
+    margin-bottom: 0.5rem;
+    word-break: break-all;
+}
+
+.tooltip-connections {
+    color: var(--neural-text-dim);
+    font-size: 0.75rem;
+}
+
+/* SVG Styles */
+.neuron {
+    cursor: pointer;
+    transition: var(--neural-transition);
+}
+
+.neuron:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 8px var(--neural-primary));
+}
+
+.neuron.selected {
+    stroke: var(--neural-primary);
+    stroke-width: 3px;
+    filter: drop-shadow(0 0 12px var(--neural-primary));
+}
+
+.synapse {
+    stroke: rgba(0, 255, 136, 0.3);
+    stroke-width: 1px;
+    transition: var(--neural-transition);
+}
+
+.synapse.active {
+    stroke: var(--neural-primary);
+    stroke-width: 2px;
+    filter: drop-shadow(0 0 4px var(--neural-primary));
+}
+
+/* Responsive Design */
+@media (max-width: 1400px) {
+    .left-neural-panel, .right-neural-panel {
+        width: 280px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .neural-main {
+        flex-direction: column;
+    }
+    
+    .left-neural-panel, .right-neural-panel {
+        width: 100%;
+        max-height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .neural-header {
+        flex-direction: column;
+        height: auto;
+        padding: 1rem;
+        gap: 1rem;
+    }
+    
+    .neural-controls {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .mode-selector {
+        flex-wrap: wrap;
+    }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--neural-surface);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--neural-primary);
+    border-radius: 4px;
+    box-shadow: var(--neural-glow) var(--neural-primary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--neural-secondary);
+}
+
+/* Animations */
+.neural-pulse {
+    animation: neuralPulse 2s ease-in-out infinite;
+}
+
+@keyframes neuralPulse {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+}
+
+/* SVG Gradients */
+svg defs {
+    display: none;
+}
+
+.neural-svg defs {
+    display: block;
+}

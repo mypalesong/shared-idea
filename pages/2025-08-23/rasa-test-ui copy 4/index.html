@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat API Test Dashboard - Enterprise Edition</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked@14.1.2/marked.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header Section -->
+    <header class="header">
+      <div class="header-content">
+        <div class="header-left">
+          <div class="header-main">
+            <h1 class="header-title">Chat API Test Dashboard</h1>
+            <span class="header-version">v2.0.0 Enterprise</span>
+          </div>
+          <div class="header-subtitle">Real-time Intent Processing Monitor</div>
+        </div>
+        <div class="header-controls">
+          <div class="controls-block">
+            <div class="control-item">
+              <label class="control-label">ConcurrentLimit:</label>
+              <div class="queue-limit-input">
+                <input type="range" id="queueLimitSlider" min="1" max="10" value="3" class="slider">
+                <span class="limit-display" id="limitDisplay">3</span>
+              </div>
+            </div>
+            <div class="control-separator"></div>
+            <div class="control-item">
+              <label class="control-label">Sender:</label>
+              <div class="sender-toggle-group" id="senderToggleGroup">
+                <button class="sender-btn active" data-mode="random" id="randomBtn">Random(Single)</button>
+                <button class="sender-btn" data-mode="fixed" id="fixedBtn">Fixed(Multi)</button>
+              </div>
+            </div>
+            <div class="control-separator"></div>
+            <div class="control-item">
+              <label class="control-label">Theme:</label>
+              <div class="theme-selector">
+                <select id="themeSelector" class="theme-dropdown">
+                  <option value="dark">GitHubDark</option>
+                  <option value="light">MinimalLight</option>
+                  <option value="blue">AzureProfessional</option>
+                  <option value="crimson">CorporateRed</option>
+                  <option value="purple">RoyalPurple</option>
+                </select>
+              </div>
+            </div>
+            <div class="control-separator"></div>
+            <div class="control-item">
+              <label class="control-label">Font:</label>
+              <div class="font-size-buttons">
+                <button class="font-btn" data-size="11">S</button>
+                <button class="font-btn active" data-size="12">M</button>
+                <button class="font-btn" data-size="13">L</button>
+              </div>
+            </div>
+            <div class="control-separator"></div>
+            <div class="control-item reset-container">
+              <button class="restart-btn" id="restartBtn">Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Dashboard Section -->
+      <section class="dashboard-section">
+        <h2 class="section-title">PerformanceMetrics</h2>
+        <div class="metrics-grid">
+          <!-- Active Requests Card -->
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-label">ActiveRequests</span>
+            </div>
+            <div class="metric-value" id="activeRequests">0</div>
+          </div>
+
+          <!-- Queued Requests Card -->
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-label">QueuedRequests</span>
+            </div>
+            <div class="metric-value" id="queuedRequests">0</div>
+          </div>
+
+          <!-- Total Processed Card -->
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-label">TotalProcessed</span>
+              <span class="metric-icon check-icon"></span>
+            </div>
+            <div class="metric-value" id="totalProcessed">0</div>
+          </div>
+
+          <!-- Success Rate Card -->
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-label">SuccessRate</span>
+            </div>
+            <div class="metric-value" id="successRate">0%</div>
+          </div>
+
+          <!-- Average Response Time -->
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-label">AvgResponseTime</span>
+            </div>
+            <div class="metric-value" id="avgTime">0.000s</div>
+          </div>
+
+          <!-- Results Distribution -->
+          <div class="metric-card wide">
+            <div class="metric-header">
+              <span class="metric-label">ResultsDistribution</span>
+            </div>
+            <div class="result-distribution-inline">
+              <span class="result-item success">Success <span id="okCount">0</span></span>
+              <span class="result-item failure">Failure <span id="ngCount">0</span></span>
+              <span class="result-item none">Unvalidated <span id="noneCount">0</span></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Input Section -->
+      <section class="input-section">
+        <h2 class="section-title">BatchInput <span class="line-counter" id="lineCount">(0 lines)</span></h2>
+        <div class="input-container">
+          <div class="input-wrapper">
+            <textarea 
+              id="messageInput" 
+              class="message-input" 
+              placeholder="EnterOneQuestionPerLine. Use --intent_name ForGroundTruthValidation..."
+              rows="5"
+            ></textarea>
+          </div>
+          <div class="input-actions">
+            <button class="btn btn-primary" id="sendBtn">
+              <span class="btn-text">SendBatch</span>
+              <span class="btn-icon">→</span>
+            </button>
+            <button class="btn btn-secondary" id="clearBtn">Clear</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Filter and Table Section -->
+      <section class="table-section">
+        <div class="table-header">
+          <h2 class="section-title">RequestResult</h2>
+          <div class="filter-controls">
+            <button class="filter-btn active" data-filter="all">
+              All <span class="filter-count" id="allCount">0</span>
+            </button>
+            <button class="filter-btn" data-filter="ok">
+              Success <span class="filter-count" id="okFilterCount">0</span>
+            </button>
+            <button class="filter-btn" data-filter="ng">
+              Failed <span class="filter-count" id="ngFilterCount">0</span>
+            </button>
+            <button class="filter-btn" data-filter="none">
+              Unvalidated <span class="filter-count" id="noneFilterCount">0</span>
+            </button>
+            <button class="filter-btn" data-filter="progress">
+              InProgress <span class="filter-count" id="progressCount">0</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table" id="resultTable">
+            <thead>
+              <tr>
+                <th class="col-id">ID</th>
+                <th class="col-question">Question</th>
+                <th class="col-ground-truth">GroundTruth</th>
+                <th class="col-actual-intent">ActualIntent</th>
+                <th class="col-answer">Answer</th>
+                <th class="col-sender">Sender</th>
+                <th class="col-start-time">StartTime</th>
+                <th class="col-end-time">EndTime</th>
+                <th class="col-duration">Duration</th>
+                <th class="col-status">Status</th>
+                <th class="col-result">Result</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+          <div class="table-empty" id="emptyState">
+            <p>NoRequestsYet. EnterQuestionsAboveToBeginTesting.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Reset Confirm Popup -->
+  <div class="reset-confirm-popup" id="resetConfirmPopup">
+    <div class="reset-confirm-content">
+      <div class="reset-confirm-message">
+        Reset session? This will clear all data and restart the application.
+      </div>
+      <div class="reset-confirm-buttons">
+        <button class="reset-confirm-btn confirm" id="confirmReset">Reset</button>
+        <button class="reset-confirm-btn cancel" id="cancelReset">Cancel</button>
+      </div>
+    </div>
+    <div class="reset-confirm-arrow"></div>
+  </div>
+
+  <!-- Answer Popup -->
+  <div class="answer-popup" id="answerPopup">
+    <div class="answer-card">
+      <div class="answer-header">
+        <h3 class="answer-title">AnswerContents</h3>
+        <button class="answer-close" id="closeAnswerPopup">&times;</button>
+      </div>
+      <div class="answer-content">
+        <div class="answer-text" id="answerText"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

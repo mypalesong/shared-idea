@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Kanban Board</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Loading Project Board...</p>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app" class="app hidden">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <div class="nav-left">
+                <div class="logo">
+                    <i class="fas fa-project-diagram"></i>
+                    <h1>ProjectFlow</h1>
+                </div>
+                <div class="project-selector">
+                    <select id="project-select">
+                        <option value="default">Default Project</option>
+                        <option value="web-app">Web Application</option>
+                        <option value="mobile-app">Mobile App</option>
+                        <option value="api-service">API Service</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nav-center">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="global-search" placeholder="Search tasks, assignees, or labels...">
+                    <div id="search-results" class="search-results"></div>
+                </div>
+            </div>
+            <div class="nav-right">
+                <button id="filter-btn" class="nav-btn" title="Filter Tasks">
+                    <i class="fas fa-filter"></i>
+                </button>
+                <button id="analytics-btn" class="nav-btn" title="Analytics">
+                    <i class="fas fa-chart-line"></i>
+                </button>
+                <button id="settings-btn" class="nav-btn" title="Settings">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <div class="user-profile">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiM2NjdlZWEiLz4KPHRleHQgeD0iMTYiIHk9IjIxIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkludGVyIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iNjAwIj5KRDwvdGV4dD4KPHN2Zz4K" alt="User Avatar">
+                    <span class="user-name">John Doe</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <button id="add-task-btn" class="btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Add Task
+                </button>
+                <button id="add-column-btn" class="btn-secondary">
+                    <i class="fas fa-columns"></i>
+                    Add Column
+                </button>
+                <button id="bulk-actions-btn" class="btn-secondary">
+                    <i class="fas fa-tasks"></i>
+                    Bulk Actions
+                </button>
+            </div>
+            <div class="toolbar-right">
+                <div class="view-controls">
+                    <button id="board-view" class="view-btn active">
+                        <i class="fas fa-columns"></i>
+                        Board
+                    </button>
+                    <button id="list-view" class="view-btn">
+                        <i class="fas fa-list"></i>
+                        List
+                    </button>
+                    <button id="timeline-view" class="view-btn">
+                        <i class="fas fa-calendar-alt"></i>
+                        Timeline
+                    </button>
+                </div>
+                <div class="board-actions">
+                    <button id="export-btn" class="action-btn" title="Export Data">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button id="fullscreen-btn" class="action-btn" title="Fullscreen">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters Panel -->
+        <div id="filters-panel" class="filters-panel">
+            <div class="filter-section">
+                <label>Assignee:</label>
+                <select id="filter-assignee" multiple>
+                    <option value="">All Assignees</option>
+                </select>
+            </div>
+            <div class="filter-section">
+                <label>Priority:</label>
+                <select id="filter-priority" multiple>
+                    <option value="">All Priorities</option>
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+            <div class="filter-section">
+                <label>Labels:</label>
+                <select id="filter-labels" multiple>
+                    <option value="">All Labels</option>
+                </select>
+            </div>
+            <div class="filter-section">
+                <label>Due Date:</label>
+                <select id="filter-due-date">
+                    <option value="">Any Time</option>
+                    <option value="overdue">Overdue</option>
+                    <option value="today">Due Today</option>
+                    <option value="this-week">This Week</option>
+                    <option value="next-week">Next Week</option>
+                </select>
+            </div>
+            <div class="filter-actions">
+                <button id="clear-filters" class="btn-secondary">Clear All</button>
+                <button id="apply-filters" class="btn-primary">Apply Filters</button>
+            </div>
+        </div>
+
+        <!-- Main Board Container -->
+        <div class="board-container">
+            <div id="board" class="board">
+                <!-- Columns will be dynamically generated -->
+            </div>
+            <button id="add-column-placeholder" class="add-column-placeholder">
+                <i class="fas fa-plus"></i>
+                Add Column
+            </button>
+        </div>
+
+        <!-- WIP Limits Warning -->
+        <div id="wip-warning" class="wip-warning hidden">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>WIP limit exceeded in one or more columns</span>
+            <button class="close-warning">×</button>
+        </div>
+    </div>
+
+    <!-- Task Modal -->
+    <div id="task-modal" class="modal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3 id="modal-title">Create New Task</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-grid">
+                    <div class="form-section">
+                        <label for="task-title">Title *</label>
+                        <input type="text" id="task-title" placeholder="Enter task title..." maxlength="200" required>
+                        
+                        <label for="task-description">Description</label>
+                        <textarea id="task-description" placeholder="Describe the task in detail..." rows="4"></textarea>
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label for="task-priority">Priority</label>
+                                <select id="task-priority">
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                    <option value="critical">Critical</option>
+                                </select>
+                            </div>
+                            <div class="form-col">
+                                <label for="task-size">Story Points</label>
+                                <select id="task-size">
+                                    <option value="">Not Estimated</option>
+                                    <option value="1">1 Point</option>
+                                    <option value="2">2 Points</option>
+                                    <option value="3">3 Points</option>
+                                    <option value="5">5 Points</option>
+                                    <option value="8">8 Points</option>
+                                    <option value="13">13 Points</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label for="task-assignee">Assignee</label>
+                                <select id="task-assignee">
+                                    <option value="">Unassigned</option>
+                                    <option value="john.doe">John Doe</option>
+                                    <option value="jane.smith">Jane Smith</option>
+                                    <option value="bob.wilson">Bob Wilson</option>
+                                    <option value="alice.brown">Alice Brown</option>
+                                </select>
+                            </div>
+                            <div class="form-col">
+                                <label for="task-due-date">Due Date</label>
+                                <input type="date" id="task-due-date">
+                            </div>
+                        </div>
+                        
+                        <label for="task-labels">Labels</label>
+                        <div class="labels-input">
+                            <input type="text" id="task-labels" placeholder="Add labels (press Enter)">
+                            <div id="selected-labels" class="selected-labels"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <label>Attachments</label>
+                        <div class="file-upload">
+                            <input type="file" id="task-attachments" multiple accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.txt">
+                            <label for="task-attachments" class="file-upload-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                Drop files here or click to upload
+                            </label>
+                            <div id="attachment-list" class="attachment-list"></div>
+                        </div>
+                        
+                        <label>Subtasks</label>
+                        <div class="subtasks-container">
+                            <div id="subtasks-list"></div>
+                            <button type="button" id="add-subtask-btn" class="btn-link">
+                                <i class="fas fa-plus"></i> Add Subtask
+                            </button>
+                        </div>
+                        
+                        <label>Comments</label>
+                        <div class="comments-container">
+                            <div id="comments-list"></div>
+                            <div class="comment-input">
+                                <textarea id="new-comment" placeholder="Add a comment..." rows="2"></textarea>
+                                <button type="button" id="add-comment-btn" class="btn-secondary">Add Comment</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="modal-footer-left">
+                    <button id="delete-task-btn" class="btn-danger">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+                <div class="modal-footer-right">
+                    <button id="cancel-btn" class="btn-secondary">Cancel</button>
+                    <button id="save-task-btn" class="btn-primary">Save Task</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Column Settings Modal -->
+    <div id="column-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="column-modal-title">Column Settings</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label for="column-name">Column Name</label>
+                <input type="text" id="column-name" placeholder="Enter column name...">
+                
+                <label for="column-wip-limit">WIP Limit</label>
+                <input type="number" id="column-wip-limit" min="0" placeholder="No limit">
+                
+                <label for="column-color">Column Color</label>
+                <div class="color-picker">
+                    <input type="color" id="column-color" value="#667eea">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel-column-btn" class="btn-secondary">Cancel</button>
+                <button id="save-column-btn" class="btn-primary">Save Column</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Modal -->
+    <div id="analytics-modal" class="modal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3>Project Analytics</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h4>Task Distribution</h4>
+                        <div id="task-distribution-chart" class="chart-container"></div>
+                    </div>
+                    <div class="analytics-card">
+                        <h4>Completion Rate</h4>
+                        <div id="completion-rate-chart" class="chart-container"></div>
+                    </div>
+                    <div class="analytics-card">
+                        <h4>Team Performance</h4>
+                        <div id="team-performance-chart" class="chart-container"></div>
+                    </div>
+                    <div class="analytics-card">
+                        <h4>Cycle Time</h4>
+                        <div id="cycle-time-chart" class="chart-container"></div>
+                    </div>
+                </div>
+                <div class="analytics-summary">
+                    <div class="summary-stats">
+                        <div class="stat-item">
+                            <span class="stat-value" id="total-tasks">0</span>
+                            <span class="stat-label">Total Tasks</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="completed-tasks">0</span>
+                            <span class="stat-label">Completed</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="avg-cycle-time">0</span>
+                            <span class="stat-label">Avg Cycle Time (days)</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="overdue-tasks">0</span>
+                            <span class="stat-label">Overdue</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div id="context-menu" class="context-menu">
+        <div class="context-menu-item" data-action="edit">
+            <i class="fas fa-edit"></i> Edit Task
+        </div>
+        <div class="context-menu-item" data-action="clone">
+            <i class="fas fa-copy"></i> Clone Task
+        </div>
+        <div class="context-menu-item" data-action="move">
+            <i class="fas fa-arrows-alt"></i> Move To...
+        </div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item" data-action="archive">
+            <i class="fas fa-archive"></i> Archive
+        </div>
+        <div class="context-menu-item danger" data-action="delete">
+            <i class="fas fa-trash"></i> Delete
+        </div>
+    </div>
+
+    <!-- Notifications Container -->
+    <div id="notifications" class="notifications-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

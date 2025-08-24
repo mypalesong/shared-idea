@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToyWonderland - 장난감 왕국</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53, #ff6b9d);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 15px rgba(255,107,107,0.3);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .logo::before {
+            content: '🧸';
+            font-size: 2.5rem;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        nav a:hover {
+            color: #ffeb3b;
+            transform: translateY(-2px);
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(255,107,107,0.9), rgba(255,142,83,0.9)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23fff9c4" width="1200" height="600"/><text x="600" y="250" text-anchor="middle" font-size="60" fill="%23ff6b6b">🎪 TOY LAND 🎪</text><text x="600" y="320" text-anchor="middle" font-size="32" fill="%23ff8e53">Where Dreams Come True!</text><text x="300" y="500" font-size="48" fill="%23ff6b9d">🎮</text><text x="900" y="150" font-size="48" fill="%23ff6b9d">🪀</text><text x="150" y="180" font-size="48" fill="%23ffeb3b">🎲</text><text x="1050" y="480" font-size="48" fill="%23ffeb3b">🧩</text></svg>');
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            animation: slideInDown 1s ease-out;
+        }
+        
+        .hero-content p {
+            font-size: 1.4rem;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            line-height: 1.8;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: slideInUp 1s ease-out;
+        }
+        
+        @keyframes slideInDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes slideInUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #ffeb3b, #ffc107);
+            color: #ff6b6b;
+            padding: 20px 40px;
+            text-decoration: none;
+            border-radius: 35px;
+            transition: all 0.3s;
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            box-shadow: 0 8px 25px rgba(255,235,59,0.4);
+            border: 3px solid white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(255,235,59,0.6);
+            background: linear-gradient(45deg, #ffc107, #ffeb3b);
+        }
+        
+        .age-categories {
+            padding: 100px 0;
+            background: #fff9e6;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 3.2rem;
+            margin-bottom: 4rem;
+            color: #ff6b6b;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '⭐';
+            position: absolute;
+            right: -50px;
+            top: 0;
+            font-size: 2rem;
+            animation: sparkle 2s infinite;
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        .age-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minMax(300px, 1fr));
+            gap: 3rem;
+        }
+        
+        .age-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(255,107,107,0.15);
+            transition: transform 0.3s;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .age-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,235,59,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .age-card:hover::before {
+            left: 100%;
+        }
+        
+        .age-card:hover {
+            transform: translateY(-15px) rotate(2deg);
+            border-color: #ff6b6b;
+        }
+        
+        .age-icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            display: block;
+        }
+        
+        .age-card h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #ff6b6b;
+        }
+        
+        .age-range {
+            color: #ff8e53;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .age-card p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        .featured-toys {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #ff8e53, #ff6b9d);
+            color: white;
+        }
+        
+        .toy-filter {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 4rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 15px 25px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+        
+        .filter-btn.active {
+            background: white;
+            color: #ff6b6b;
+        }
+        
+        .toy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minMax(300px, 1fr));
+            gap: 2.5rem;
+        }
+        
+        .toy-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+            color: #333;
+        }
+        
+        .toy-card:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+        
+        .toy-img {
+            height: 280px;
+            background: linear-gradient(45deg, #fff3e0, #ffecb3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #ff8e53;
+            position: relative;
+        }
+        
+        .hot-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #ff4444;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .new-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #4caf50;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .toy-info {
+            padding: 2rem;
+        }
+        
+        .toy-brand {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        
+        .toy-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .toy-age {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+        
+        .toy-rating {
+            color: #ffc107;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .toy-price {
+            font-size: 1.8rem;
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 1.2rem;
+            margin-right: 0.5rem;
+        }
+        
+        .safety-info {
+            padding: 100px 0;
+            background: #f0f8ff;
+        }
+        
+        .safety-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minMax(350px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+        
+        .safety-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-left: 6px solid #4caf50;
+        }
+        
+        .safety-icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            color: #4caf50;
+        }
+        
+        .safety-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+        
+        .safety-card p {
+            color: #666;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+        
+        .newsletter {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            color: white;
+            text-align: center;
+        }
+        
+        .newsletter h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .newsletter p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .newsletter-form {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .newsletter-form input {
+            flex: 1;
+            padding: 18px 25px;
+            border: none;
+            border-radius: 30px;
+            outline: none;
+            font-size: 1.1rem;
+        }
+        
+        .newsletter-form button {
+            background: #ffeb3b;
+            color: #ff6b6b;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        .newsletter-form button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255,235,59,0.4);
+        }
+        
+        footer {
+            background: #2d3748;
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minMax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1.5rem;
+            color: #ff8e53;
+            font-size: 1.3rem;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: #ff8e53;
+        }
+        
+        .social-toys {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .social-toy {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+        
+        .social-toy:hover {
+            transform: scale(1.1) rotate(10deg);
+        }
+        
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.8rem;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .toy-filter {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">ToyWonderland</div>
+            <ul>
+                <li><a href="#home">홈</a></li>
+                <li><a href="#ages">연령별</a></li>
+                <li><a href="#toys">장난감</a></li>
+                <li><a href="#safety">안전정보</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>모든 아이들의 꿈이 이루어지는 곳</h1>
+            <p>상상력을 키우고 창의력을 자극하는 특별한 장난감들이 기다리고 있어요!</p>
+            <a href="#toys" class="btn">장난감 구경하기</a>
+        </div>
+    </section>
+
+    <section id="ages" class="age-categories">
+        <div class="container">
+            <h2 class="section-title">연령별 추천 장난감</h2>
+            <div class="age-grid">
+                <div class="age-card">
+                    <div class="age-icon">👶</div>
+                    <h3>영유아</h3>
+                    <div class="age-range">0-3세</div>
+                    <p>안전하고 부드러운 소재로 만든 오감 발달 장난감. 딸랑이, 치발기, 블록 등으로 첫 놀이를 시작해보세요!</p>
+                </div>
+                <div class="age-card">
+                    <div class="age-icon">🧒</div>
+                    <h3>유아</h3>
+                    <div class="age-range">3-6세</div>
+                    <p>창의력과 상상력을 키우는 역할놀이 장난감. 소꿉놀이, 블록, 퍼즐로 사고력을 길러보세요!</p>
+                </div>
+                <div class="age-card">
+                    <div class="age-icon">👦</div>
+                    <h3>아동</h3>
+                    <div class="age-range">6-10세</div>
+                    <p>학습과 놀이를 동시에! 과학실험키트, 보드게임, 조립장난감으로 논리적 사고력을 발달시켜보세요!</p>
+                </div>
+                <div class="age-card">
+                    <div class="age-icon">🧑‍🎓</div>
+                    <h3>초등학생</h3>
+                    <div class="age-range">10세 이상</div>
+                    <p>도전적이고 복잡한 장난감으로 성취감을 느껴보세요. 코딩로봇, 고급 레고, 전략게임 등!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="toys" class="featured-toys">
+        <div class="container">
+            <h2 class="section-title">인기 장난감</h2>
+            <div class="toy-filter">
+                <div class="filter-btn active">🔥 인기상품</div>
+                <div class="filter-btn">🧸 인형</div>
+                <div class="filter-btn">🧩 퍼즐</div>
+                <div class="filter-btn">🚗 미니카</div>
+                <div class="filter-btn">🎨 만들기</div>
+            </div>
+            <div class="toy-grid">
+                <div class="toy-card">
+                    <div class="toy-img">
+                        <div class="hot-badge">HOT</div>
+                        🧸 테디베어
+                    </div>
+                    <div class="toy-info">
+                        <div class="toy-brand">JELLYCAT</div>
+                        <h3>말랑말랑 곰돌이</h3>
+                        <div class="toy-age">👶 0세 이상</div>
+                        <div class="toy-rating">★★★★★ (4.9) 1,234개 리뷰</div>
+                        <div class="toy-price">29,900원</div>
+                    </div>
+                </div>
+                <div class="toy-card">
+                    <div class="toy-img">
+                        <div class="new-badge">NEW</div>
+                        🧩 공룡 퍼즐
+                    </div>
+                    <div class="toy-info">
+                        <div class="toy-brand">MELISSA & DOUG</div>
+                        <h3>공룡 나무퍼즐 48조각</h3>
+                        <div class="toy-age">👦 4세 이상</div>
+                        <div class="toy-rating">★★★★☆ (4.6) 892개 리뷰</div>
+                        <div class="toy-price">24,500원</div>
+                    </div>
+                </div>
+                <div class="toy-card">
+                    <div class="toy-img">
+                        <div class="hot-badge">HOT</div>
+                        🏗️ 레고 세트
+                    </div>
+                    <div class="toy-info">
+                        <div class="toy-brand">LEGO</div>
+                        <h3>시티 소방서 세트</h3>
+                        <div class="toy-age">🧒 6세 이상</div>
+                        <div class="toy-rating">★★★★★ (4.8) 567개 리뷰</div>
+                        <div class="toy-price">
+                            <span class="original-price">89,900원</span>
+                            69,900원
+                        </div>
+                    </div>
+                </div>
+                <div class="toy-card">
+                    <div class="toy-img">🎨 크레용 세트</div>
+                    <div class="toy-info">
+                        <div class="toy-brand">CRAYOLA</div>
+                        <h3>울트라 크레용 64색</h3>
+                        <div class="toy-age">🧒 3세 이상</div>
+                        <div class="toy-rating">★★★★☆ (4.5) 324개 리뷰</div>
+                        <div class="toy-price">18,900원</div>
+                    </div>
+                </div>
+                <div class="toy-card">
+                    <div class="toy-img">🚗 전동차</div>
+                    <div class="toy-info">
+                        <div class="toy-brand">LITTLE TIKES</div>
+                        <h3>전동 킥보드</h3>
+                        <div class="toy-age">👦 5세 이상</div>
+                        <div class="toy-rating">★★★★★ (4.7) 445개 리뷰</div>
+                        <div class="toy-price">159,000원</div>
+                    </div>
+                </div>
+                <div class="toy-card">
+                    <div class="toy-img">
+                        <div class="new-badge">NEW</div>
+                        🔬 과학실험키트
+                    </div>
+                    <div class="toy-info">
+                        <div class="toy-brand">NATIONAL GEOGRAPHIC</div>
+                        <h3>화산 실험 키트</h3>
+                        <div class="toy-age">🧑‍🎓 8세 이상</div>
+                        <div class="toy-rating">★★★★☆ (4.4) 678개 리뷰</div>
+                        <div class="toy-price">35,900원</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="safety" class="safety-info">
+        <div class="container">
+            <h2 class="section-title">안전한 장난감, 행복한 아이들</h2>
+            <div class="safety-grid">
+                <div class="safety-card">
+                    <div class="safety-icon">🛡️</div>
+                    <h3>KC 안전인증</h3>
+                    <p>모든 장난감은 국가 안전 기준을 통과한 KC인증 제품만을 판매합니다. 아이들이 안심하고 놀 수 있어요.</p>
+                </div>
+                <div class="safety-card">
+                    <div class="safety-icon">🌿</div>
+                    <h3>친환경 소재</h3>
+                    <p>무독성 친환경 소재를 사용한 장난감으로 아이들의 건강을 최우선으로 생각합니다.</p>
+                </div>
+                <div class="safety-card">
+                    <div class="safety-icon">👨‍⚕️</div>
+                    <h3>전문가 검수</h3>
+                    <p>아동 발달 전문가와 안전 전문가가 직접 검수한 장난감만을 선별하여 제공합니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="newsletter">
+        <div class="container">
+            <h2>🎪 재미있는 소식 받기</h2>
+            <p>신상품 출시와 특가 할인 소식을 가장 먼저 받아보세요!</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="이메일 주소를 입력하세요">
+                <button type="submit">구독하기 🎉</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>고객지원</h3>
+                    <ul>
+                        <li><a href="#">주문/배송 조회</a></li>
+                        <li><a href="#">교환/반품/A/S</a></li>
+                        <li><a href="#">1:1 문의</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">이용약관</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>쇼핑 가이드</h3>
+                    <ul>
+                        <li><a href="#">연령별 추천</a></li>
+                        <li><a href="#">장난감 안전수칙</a></li>
+                        <li><a href="#">놀이법 가이드</a></li>
+                        <li><a href="#">브랜드 소개</a></li>
+                        <li><a href="#">이벤트/기획전</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>회사 정보</h3>
+                    <ul>
+                        <li><a href="#">회사 소개</a></li>
+                        <li><a href="#">매장 안내</a></li>
+                        <li><a href="#">채용 정보</a></li>
+                        <li><a href="#">제휴 문의</a></li>
+                        <li><a href="#">개인정보처리방침</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>소셜 미디어</h3>
+                    <div class="social-toys">
+                        <a href="#" class="social-toy">🎪</a>
+                        <a href="#" class="social-toy">🎯</a>
+                        <a href="#" class="social-toy">🎨</a>
+                        <a href="#" class="social-toy">🎮</a>
+                    </div>
+                    <ul style="margin-top: 2rem;">
+                        <li><strong>📞 고객센터: 1588-1234</strong></li>
+                        <li>평일 09:00-18:00</li>
+                        <li>주말/공휴일 휴무</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align: center; padding-top: 2rem; border-top: 2px solid #4a5568; color: #a0aec0;">
+                <p>🎪 &copy; 2025 ToyWonderland. All rights reserved. 사업자등록번호: 123-45-67890 🎪</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

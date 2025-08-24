@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetLove - 반려동물 용품 전문점</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo::before {
+            content: '🐾';
+            font-size: 2rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+        
+        nav a:hover {
+            color: #fff3cd;
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(255,107,53,0.8), rgba(247,147,30,0.8)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23fff8dc" width="1200" height="600"/><text x="600" y="280" text-anchor="middle" font-size="48" fill="%23ff6b35">🐕 Happy Pets 🐱</text><text x="600" y="340" text-anchor="middle" font-size="24" fill="%23f7931e">Everything for your furry friends</text></svg>');
+            height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+        
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            line-height: 1.8;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 18px 35px;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.3s;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+        }
+        
+        .btn:hover {
+            background: #218838;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(40,167,69,0.3);
+        }
+        
+        .categories {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 3rem;
+            color: #ff6b35;
+            font-weight: bold;
+        }
+        
+        .pet-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .pet-tab {
+            padding: 12px 25px;
+            background: white;
+            border: 2px solid #ff6b35;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+        
+        .pet-tab.active {
+            background: #ff6b35;
+            color: white;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minMax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            border-top: 4px solid #ff6b35;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-8px);
+        }
+        
+        .category-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .category-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .category-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .products {
+            padding: 80px 0;
+        }
+        
+        .product-filter {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 10px 20px;
+            background: #e9ecef;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .filter-btn.active {
+            background: #ff6b35;
+            color: white;
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minMax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+        }
+        
+        .product-img {
+            height: 250px;
+            background: linear-gradient(45deg, #fff8dc, #fffacd);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff6b35;
+            font-size: 1.2rem;
+            position: relative;
+        }
+        
+        .sale-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #dc3545;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+        }
+        
+        .product-brand {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+        
+        .product-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .product-rating {
+            color: #ffc107;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .product-price {
+            font-size: 1.6rem;
+            color: #ff6b35;
+            font-weight: bold;
+        }
+        
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 1.1rem;
+            margin-right: 0.5rem;
+        }
+        
+        .pet-care-tips {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+        }
+        
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minMax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+        
+        .tip-card {
+            background: rgba(255,255,255,0.1);
+            padding: 2.5rem;
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .tip-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tip-card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+        }
+        
+        .tip-card p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .newsletter {
+            padding: 60px 0;
+            background: #28a745;
+            color: white;
+            text-align: center;
+        }
+        
+        .newsletter h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .newsletter p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .newsletter-form {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .newsletter-form input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 25px;
+            outline: none;
+            font-size: 1rem;
+        }
+        
+        .newsletter-form button {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .newsletter-form button:hover {
+            background: #e55a2b;
+        }
+        
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minMax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #ff6b35;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: #ff6b35;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: #ff6b35;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        
+        .social-link:hover {
+            background: #f7931e;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.8rem;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .pet-tabs {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">PetLove</div>
+            <ul>
+                <li><a href="#home">홈</a></li>
+                <li><a href="#categories">카테고리</a></li>
+                <li><a href="#products">상품</a></li>
+                <li><a href="#tips">펫케어 팁</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>반려동물과 함께하는 행복</h1>
+            <p>소중한 반려동물을 위한 모든 것을 한곳에서 만나보세요</p>
+            <a href="#products" class="btn">쇼핑하러 가기</a>
+        </div>
+    </section>
+
+    <section id="categories" class="categories">
+        <div class="container">
+            <h2 class="section-title">반려동물별 카테고리</h2>
+            <div class="pet-tabs">
+                <div class="pet-tab active">🐕 강아지</div>
+                <div class="pet-tab">🐱 고양이</div>
+                <div class="pet-tab">🐰 소동물</div>
+                <div class="pet-tab">🐠 물고기</div>
+                <div class="pet-tab">🐦 조류</div>
+            </div>
+            <div class="category-grid">
+                <div class="category-card">
+                    <div class="category-icon">🥘</div>
+                    <h3>사료 & 간식</h3>
+                    <p>프리미엄 사료부터 건강한 간식까지 영양만점 먹거리</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🏠</div>
+                    <h3>하우스 & 방석</h3>
+                    <p>편안한 휴식공간을 위한 집, 방석, 침대</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🧸</div>
+                    <h3>장난감</h3>
+                    <p>스트레스 해소와 놀이를 위한 다양한 장난감</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🧽</div>
+                    <h3>미용 & 위생</h3>
+                    <p>샴푸, 칫솔, 빗 등 깔끔한 관리용품</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🦮</div>
+                    <h3>목줄 & 하네스</h3>
+                    <p>안전한 산책을 위한 목줄, 하네스, 인식표</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">💊</div>
+                    <h3>건강용품</h3>
+                    <p>영양제, 의료용품 등 건강관리 필수품</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="products" class="products">
+        <div class="container">
+            <h2 class="section-title">인기 상품</h2>
+            <div class="product-filter">
+                <button class="filter-btn active">전체</button>
+                <button class="filter-btn">사료</button>
+                <button class="filter-btn">장난감</button>
+                <button class="filter-btn">용품</button>
+                <button class="filter-btn">건강관리</button>
+            </div>
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-img">
+                        <div class="sale-badge">30% OFF</div>
+                        🥘 프리미엄 강아지 사료
+                    </div>
+                    <div class="product-info">
+                        <div class="product-brand">ROYAL CANIN</div>
+                        <h3>로얄캐닌 미니 어덜트</h3>
+                        <div class="product-rating">★★★★★ (4.8) 1,234개 리뷰</div>
+                        <div class="product-price">
+                            <span class="original-price">45,000원</span>
+                            31,500원
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">🧸 강아지 로프 장난감</div>
+                    <div class="product-info">
+                        <div class="product-brand">KONG</div>
+                        <h3>콩 클래식 장난감</h3>
+                        <div class="product-rating">★★★★☆ (4.6) 892개 리뷰</div>
+                        <div class="product-price">18,900원</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">
+                        <div class="sale-badge">25% OFF</div>
+                        🥫 고양이 캔 사료
+                    </div>
+                    <div class="product-info">
+                        <div class="product-brand">HILLS</div>
+                        <h3>힐스 사이언스 캔 12개</h3>
+                        <div class="product-rating">★★★★★ (4.9) 567개 리뷰</div>
+                        <div class="product-price">
+                            <span class="original-price">32,000원</span>
+                            24,000원
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">🏠 애완용 하우스</div>
+                    <div class="product-info">
+                        <div class="product-brand">PETMATE</div>
+                        <h3>폴딩 펫 하우스 M</h3>
+                        <div class="product-rating">★★★★☆ (4.5) 324개 리뷰</div>
+                        <div class="product-price">75,000원</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">🦮 강아지 하네스</div>
+                    <div class="product-info">
+                        <div class="product-brand">RUFFWEAR</div>
+                        <h3>프론트 레인지 하네스</h3>
+                        <div class="product-rating">★★★★★ (4.7) 445개 리뷰</div>
+                        <div class="product-price">89,000원</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">
+                        <div class="sale-badge">20% OFF</div>
+                        🧽 펫 샴푸
+                    </div>
+                    <div class="product-info">
+                        <div class="product-brand">EARTHBATH</div>
+                        <h3>올내추럴 펫 샴푸</h3>
+                        <div class="product-rating">★★★★☆ (4.4) 678개 리뷰</div>
+                        <div class="product-price">
+                            <span class="original-price">25,000원</span>
+                            20,000원
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tips" class="pet-care-tips">
+        <div class="container">
+            <h2 class="section-title">펫케어 꿀팁</h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <div class="tip-icon">🥘</div>
+                    <h3>올바른 급식 방법</h3>
+                    <p>반려동물의 나이, 체중, 활동량에 맞는 적정량의 사료를 규칙적으로 급여하세요. 항상 신선한 물을 제공하는 것도 중요합니다.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">🚿</div>
+                    <h3>정기적인 목욕</h3>
+                    <p>강아지는 월 1-2회, 고양이는 필요시에만 목욕시키세요. 전용 샴푸를 사용하고 미지근한 물로 깔끔하게 헹궈주세요.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">🏃‍♂️</div>
+                    <h3>충분한 운동</h3>
+                    <p>견종에 따라 필요한 운동량이 다릅니다. 매일 규칙적인 산책과 놀이시간을 가져 스트레스를 해소시켜 주세요.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="newsletter">
+        <div class="container">
+            <h2>🐾 펫케어 뉴스레터</h2>
+            <p>반려동물 건강 정보와 특가 소식을 이메일로 받아보세요</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="이메일 주소를 입력하세요">
+                <button type="submit">구독하기</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>고객지원</h3>
+                    <ul>
+                        <li><a href="#">주문/배송 조회</a></li>
+                        <li><a href="#">교환/반품</a></li>
+                        <li><a href="#">1:1 문의</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">적립금 안내</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>펫케어 정보</h3>
+                    <ul>
+                        <li><a href="#">사료 가이드</a></li>
+                        <li><a href="#">건강 관리법</a></li>
+                        <li><a href="#">품종별 특성</a></li>
+                        <li><a href="#">응급처치</a></li>
+                        <li><a href="#">수의사 상담</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>브랜드</h3>
+                    <ul>
+                        <li><a href="#">로얄캐닌</a></li>
+                        <li><a href="#">힐스</a></li>
+                        <li><a href="#">콩</a></li>
+                        <li><a href="#">러프웨어</a></li>
+                        <li><a href="#">전체 브랜드</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>소셜 미디어</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-link">f</a>
+                        <a href="#" class="social-link">i</a>
+                        <a href="#" class="social-link">y</a>
+                        <a href="#" class="social-link">b</a>
+                    </div>
+                    <ul style="margin-top: 1rem;">
+                        <li><a href="#">회사소개</a></li>
+                        <li><a href="#">채용정보</a></li>
+                        <li><a href="#">제휴문의</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align: center; padding-top: 2rem; border-top: 1px solid #34495e; color: #95a5a6;">
+                <p>&copy; 2025 PetLove. All rights reserved. 사업자등록번호: 123-45-67890</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

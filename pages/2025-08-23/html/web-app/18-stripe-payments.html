@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Dashboard - Stripe Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f6f9fc;
+            color: #32325d;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-size: 14px;
+        }
+        
+        .header {
+            background: #fff;
+            border-bottom: 1px solid #e6ebf1;
+            padding: 0 24px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(50, 50, 93, 0.15);
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        
+        .logo {
+            color: #635bff;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #8898aa;
+            font-size: 14px;
+        }
+        
+        .breadcrumb-item {
+            color: #32325d;
+            text-decoration: none;
+        }
+        
+        .breadcrumb-item:hover {
+            color: #635bff;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .header-btn {
+            background: #fff;
+            border: 1px solid #d1d5db;
+            color: #374151;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .header-btn:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        
+        .toggle-input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #d1d5db;
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        
+        .toggle-input:checked + .toggle-slider {
+            background: #635bff;
+        }
+        
+        .toggle-input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+        }
+        
+        .user-menu {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #635bff 0%, #4f46e5 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .main-container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid #e6ebf1;
+            padding: 24px 0;
+            overflow-y: auto;
+        }
+        
+        .nav-section {
+            margin-bottom: 32px;
+            padding: 0 24px;
+        }
+        
+        .nav-title {
+            font-size: 11px;
+            color: #8898aa;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 2px;
+            font-size: 14px;
+            color: #32325d;
+            transition: all 0.2s;
+        }
+        
+        .nav-item:hover {
+            background: #f6f9fc;
+        }
+        
+        .nav-item.active {
+            background: #635bff;
+            color: white;
+        }
+        
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        .page-header {
+            margin-bottom: 32px;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #32325d;
+            margin-bottom: 8px;
+        }
+        
+        .page-subtitle {
+            font-size: 16px;
+            color: #8898aa;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .metric-card {
+            background: white;
+            border: 1px solid #e6ebf1;
+            border-radius: 8px;
+            padding: 24px;
+            transition: all 0.2s;
+        }
+        
+        .metric-card:hover {
+            box-shadow: 0 4px 12px rgba(50, 50, 93, 0.15);
+        }
+        
+        .metric-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            margin-bottom: 16px;
+        }
+        
+        .metric-title {
+            font-size: 14px;
+            color: #8898aa;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex: 1;
+        }
+        
+        .metric-change {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        
+        .change-positive {
+            background: #e6f7ed;
+            color: #0f7b0f;
+        }
+        
+        .change-negative {
+            background: #fceaea;
+            color: #e25950;
+        }
+        
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #32325d;
+            margin-bottom: 8px;
+        }
+        
+        .metric-description {
+            font-size: 14px;
+            color: #8898aa;
+        }
+        
+        .chart-container {
+            background: white;
+            border: 1px solid #e6ebf1;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #32325d;
+        }
+        
+        .chart-controls {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .chart-btn {
+            background: #f6f9fc;
+            border: 1px solid #e6ebf1;
+            color: #8898aa;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .chart-btn.active {
+            background: #635bff;
+            color: white;
+            border-color: #635bff;
+        }
+        
+        .chart-area {
+            height: 200px;
+            background: linear-gradient(to bottom, rgba(99, 91, 255, 0.1) 0%, transparent 100%);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chart-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(90deg, #635bff 0%, #4f46e5 100%);
+            border-radius: 4px 4px 0 0;
+            animation: chartAnimation 1s ease-out;
+        }
+        
+        @keyframes chartAnimation {
+            0% { height: 0%; }
+            100% { height: 60%; }
+        }
+        
+        .data-table-container {
+            background: white;
+            border: 1px solid #e6ebf1;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .table-header {
+            background: #f6f9fc;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e6ebf1;
+            display: flex;
+            align-items: center;
+            justify-content: between;
+        }
+        
+        .table-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #32325d;
+            flex: 1;
+        }
+        
+        .table-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .data-table {
+            width: 100%;
+            font-size: 14px;
+        }
+        
+        .data-table th {
+            text-align: left;
+            padding: 16px 24px;
+            font-weight: 600;
+            color: #8898aa;
+            background: #fafbfc;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .data-table td {
+            padding: 16px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #32325d;
+        }
+        
+        .data-table tr:hover {
+            background: #fafbfc;
+        }
+        
+        .payment-id {
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 13px;
+            color: #635bff;
+            font-weight: 500;
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-succeeded {
+            background: #e6f7ed;
+            color: #0f7b0f;
+        }
+        
+        .status-pending {
+            background: #fff4e6;
+            color: #b25000;
+        }
+        
+        .status-failed {
+            background: #fceaea;
+            color: #e25950;
+        }
+        
+        .amount {
+            font-weight: 600;
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+        
+        .customer-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .customer-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        
+        .filter-bar {
+            background: white;
+            border: 1px solid #e6ebf1;
+            border-radius: 8px;
+            padding: 16px 24px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-label {
+            font-size: 14px;
+            color: #8898aa;
+            font-weight: 500;
+        }
+        
+        .filter-select {
+            background: #f6f9fc;
+            border: 1px solid #e6ebf1;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 13px;
+            color: #32325d;
+            outline: none;
+        }
+        
+        .filter-input {
+            background: #f6f9fc;
+            border: 1px solid #e6ebf1;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 13px;
+            color: #32325d;
+            outline: none;
+            width: 200px;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f6f9fc;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #e6ebf1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d1d5db;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">stripe</div>
+            <div class="breadcrumb">
+                <a href="#" class="breadcrumb-item">Dashboard</a>
+                <span>/</span>
+                <span>Payments</span>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <button class="header-btn">📊 Export</button>
+            <button class="header-btn">⚙️ Settings</button>
+            <label class="toggle-switch">
+                <input type="checkbox" class="toggle-input" onchange="toggleMode(this)">
+                <span class="toggle-slider"></span>
+            </label>
+            <span style="font-size: 12px; color: #8898aa;">Test mode</span>
+            <div class="user-menu">JD</div>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="nav-section">
+                <div class="nav-title">Payments</div>
+                <div class="nav-item active">
+                    <div class="nav-icon">💳</div>
+                    <span>Overview</span>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-icon">📋</div>
+                    <span>Transactions</span>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-icon">🔄</div>
+                    <span>Subscriptions</span>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-icon">⚡</div>
+                    <span>Disputes</span>
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-title">Business</div>
+                <div class="nav-item">
+                    <div class="nav-icon">👥</div>
+                    <span>Customers</span>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-icon">🛍️</div>
+                    <span>Products</span>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-icon">💰</div>
+                    <span>Invoices</span>
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-title">Platform</div>
+                <div class="nav-item">
+                    <div class="nav-icon">🔧</div>
+                    <span>Developers</span>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-icon">📊</div>
+                    <span>Reports</span>
+                </div>
+                <div class="nav-item">
+                    <div class="nav-icon">🔐</div>
+                    <span>Connect</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="page-header">
+                <h1 class="page-title">Payments</h1>
+                <p class="page-subtitle">Accept and manage payments from customers worldwide</p>
+            </div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-title">Total Volume</div>
+                        <div class="metric-change change-positive">+12.5%</div>
+                    </div>
+                    <div class="metric-value">$847,293</div>
+                    <div class="metric-description">Last 30 days</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-title">Successful Payments</div>
+                        <div class="metric-change change-positive">+8.3%</div>
+                    </div>
+                    <div class="metric-value">2,847</div>
+                    <div class="metric-description">Last 30 days</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-title">Success Rate</div>
+                        <div class="metric-change change-negative">-0.8%</div>
+                    </div>
+                    <div class="metric-value">97.2%</div>
+                    <div class="metric-description">Last 30 days</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <div class="metric-title">Average Order</div>
+                        <div class="metric-change change-positive">+5.1%</div>
+                    </div>
+                    <div class="metric-value">$298</div>
+                    <div class="metric-description">Last 30 days</div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">Payment Volume</div>
+                    <div class="chart-controls">
+                        <button class="chart-btn">7d</button>
+                        <button class="chart-btn active" onclick="selectPeriod(this)">30d</button>
+                        <button class="chart-btn" onclick="selectPeriod(this)">3m</button>
+                        <button class="chart-btn" onclick="selectPeriod(this)">1y</button>
+                    </div>
+                </div>
+                <div class="chart-area">
+                    <div class="chart-line"></div>
+                </div>
+            </div>
+            
+            <div class="filter-bar">
+                <div class="filter-item">
+                    <div class="filter-label">Status:</div>
+                    <select class="filter-select" onchange="filterPayments(this)">
+                        <option value="all">All payments</option>
+                        <option value="succeeded">Succeeded</option>
+                        <option value="pending">Pending</option>
+                        <option value="failed">Failed</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <div class="filter-label">Method:</div>
+                    <select class="filter-select">
+                        <option value="all">All methods</option>
+                        <option value="card">Card</option>
+                        <option value="ach">ACH</option>
+                        <option value="wire">Wire</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <div class="filter-label">Search:</div>
+                    <input class="filter-input" placeholder="Customer, payment ID, or amount" />
+                </div>
+            </div>
+            
+            <div class="data-table-container">
+                <div class="table-header">
+                    <div class="table-title">Recent Payments</div>
+                    <div class="table-actions">
+                        <button class="header-btn">📥 Export</button>
+                        <button class="header-btn">🔄 Refresh</button>
+                    </div>
+                </div>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Payment ID</th>
+                            <th>Customer</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Method</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentsTable">
+                        <tr onclick="selectPayment(this)">
+                            <td><span class="payment-id">py_1KjH7N2eZvKYlo2CYjZvKm8B</span></td>
+                            <td>
+                                <div class="customer-info">
+                                    <div class="customer-avatar">SM</div>
+                                    <span>Sarah Miller</span>
+                                </div>
+                            </td>
+                            <td><span class="amount">$2,450.00</span></td>
+                            <td><span class="status-badge status-succeeded">Succeeded</span></td>
+                            <td>•••• 4242</td>
+                            <td>Dec 23, 2:45 PM</td>
+                            <td><button class="header-btn">View</button></td>
+                        </tr>
+                        
+                        <tr onclick="selectPayment(this)">
+                            <td><span class="payment-id">py_1KjG8M2eZvKYlo2CXyWvJn7A</span></td>
+                            <td>
+                                <div class="customer-info">
+                                    <div class="customer-avatar">JK</div>
+                                    <span>John Kim</span>
+                                </div>
+                            </td>
+                            <td><span class="amount">$189.99</span></td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td>•••• 5555</td>
+                            <td>Dec 23, 1:20 PM</td>
+                            <td><button class="header-btn">View</button></td>
+                        </tr>
+                        
+                        <tr onclick="selectPayment(this)">
+                            <td><span class="payment-id">py_1KjF9L2eZvKYlo2CWxUvIn6Z</span></td>
+                            <td>
+                                <div class="customer-info">
+                                    <div class="customer-avatar">AL</div>
+                                    <span>Alex Lee</span>
+                                </div>
+                            </td>
+                            <td><span class="amount">$99.00</span></td>
+                            <td><span class="status-badge status-succeeded">Succeeded</span></td>
+                            <td>•••• 1234</td>
+                            <td>Dec 22, 11:30 AM</td>
+                            <td><button class="header-btn">View</button></td>
+                        </tr>
+                        
+                        <tr onclick="selectPayment(this)">
+                            <td><span class="payment-id">py_1KjE0K2eZvKYlo2CVwTuHn5Y</span></td>
+                            <td>
+                                <div class="customer-info">
+                                    <div class="customer-avatar">MR</div>
+                                    <span>Mike Rodriguez</span>
+                                </div>
+                            </td>
+                            <td><span class="amount">$549.95</span></td>
+                            <td><span class="status-badge status-failed">Failed</span></td>
+                            <td>•••• 9876</td>
+                            <td>Dec 22, 9:15 AM</td>
+                            <td><button class="header-btn">Retry</button></td>
+                        </tr>
+                        
+                        <tr onclick="selectPayment(this)">
+                            <td><span class="payment-id">py_1KjD1J2eZvKYlo2CUvSrGm4X</span></td>
+                            <td>
+                                <div class="customer-info">
+                                    <div class="customer-avatar">ED</div>
+                                    <span>Emma Davis</span>
+                                </div>
+                            </td>
+                            <td><span class="amount">$1,299.00</span></td>
+                            <td><span class="status-badge status-succeeded">Succeeded</span></td>
+                            <td>•••• 6789</td>
+                            <td>Dec 21, 4:22 PM</td>
+                            <td><button class="header-btn">Refund</button></td>
+                        </tr>
+                        
+                        <tr onclick="selectPayment(this)">
+                            <td><span class="payment-id">py_1KjC2I2eZvKYlo2CTuRqFl3W</span></td>
+                            <td>
+                                <div class="customer-info">
+                                    <div class="customer-avatar">TH</div>
+                                    <span>Tom Harris</span>
+                                </div>
+                            </td>
+                            <td><span class="amount">$79.99</span></td>
+                            <td><span class="status-badge status-succeeded">Succeeded</span></td>
+                            <td>•••• 3456</td>
+                            <td>Dec 21, 2:10 PM</td>
+                            <td><button class="header-btn">View</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function toggleMode(toggle) {
+            const isTest = toggle.checked;
+            const modeText = document.querySelector('span:last-of-type');
+            modeText.textContent = isTest ? 'Live mode' : 'Test mode';
+            
+            // Update UI colors based on mode
+            const logo = document.querySelector('.logo');
+            if (isTest) {
+                logo.style.color = '#00d924';
+                document.body.style.background = '#f0fdf4';
+            } else {
+                logo.style.color = '#635bff';
+                document.body.style.background = '#f6f9fc';
+            }
+        }
+        
+        function selectPeriod(btn) {
+            document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Animate chart update
+            const chartLine = document.querySelector('.chart-line');
+            chartLine.style.animation = 'none';
+            chartLine.offsetHeight; // Trigger reflow
+            chartLine.style.animation = 'chartAnimation 0.5s ease-out';
+        }
+        
+        function filterPayments(select) {
+            const filterValue = select.value;
+            const rows = document.querySelectorAll('#paymentsTable tr');
+            
+            rows.forEach(row => {
+                const statusCell = row.querySelector('.status-badge');
+                if (!statusCell) return;
+                
+                const status = statusCell.textContent.toLowerCase();
+                if (filterValue === 'all' || status === filterValue) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        function selectPayment(row) {
+            document.querySelectorAll('#paymentsTable tr').forEach(r => {
+                r.style.background = '';
+            });
+            row.style.background = '#f6f9fc';
+            
+            const paymentId = row.querySelector('.payment-id').textContent;
+            console.log('Selected payment:', paymentId);
+        }
+        
+        // Simulate real-time updates
+        function updateMetrics() {
+            const volumeElement = document.querySelector('.metric-value');
+            const currentVolume = parseInt(volumeElement.textContent.replace(/[$,]/g, ''));
+            const newVolume = currentVolume + Math.floor(Math.random() * 1000);
+            volumeElement.textContent = '$' + newVolume.toLocaleString();
+        }
+        
+        // Update metrics every 30 seconds
+        setInterval(updateMetrics, 30000);
+        
+        // Add hover effects to metric cards
+        document.querySelectorAll('.metric-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

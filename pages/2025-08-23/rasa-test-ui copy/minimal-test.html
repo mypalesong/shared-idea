@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .test-table {
+      border-collapse: collapse;
+      border: 2px solid red;
+    }
+    .test-table th, .test-table td {
+      border: 1px solid blue;
+      padding: 8px;
+      text-align: center;
+    }
+    .col-id { 
+      background: yellow; 
+      width: 60px;
+      min-width: 60px;
+    }
+  </style>
+</head>
+<body>
+  <h2>최소 테스트 테이블</h2>
+  <table class="test-table">
+    <thead>
+      <tr>
+        <th class="col-id">ID</th>
+        <th>Question</th>
+        <th>Answer</th>
+      </tr>
+    </thead>
+    <tbody id="testBody">
+      <tr>
+        <td class="col-id">1</td>
+        <td>Test question</td>
+        <td>Test answer</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button onclick="addRow()">행 추가</button>
+
+  <script>
+    function addRow() {
+      const tbody = document.getElementById('testBody');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td class="col-id">2</td>
+        <td>Dynamic question</td>
+        <td>Dynamic answer</td>
+      `;
+      tbody.appendChild(row);
+    }
+  </script>
+</body>
+</html>

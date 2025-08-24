@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Chat - Slack Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #1a1d29;
+            color: white;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        .workspace-sidebar {
+            width: 68px;
+            background: #3f0f40;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 0;
+            border-right: 1px solid #522653;
+        }
+        
+        .workspace-item {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: #611f69;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+        
+        .workspace-item.active {
+            background: #4a154b;
+        }
+        
+        .workspace-item:hover {
+            background: #4a154b;
+        }
+        
+        .workspace-item.active::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            width: 3px;
+            height: 18px;
+            background: white;
+            border-radius: 0 2px 2px 0;
+        }
+        
+        .channels-sidebar {
+            width: 260px;
+            background: #19171d;
+            border-right: 1px solid #2c2d33;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .workspace-header {
+            padding: 20px 16px 12px;
+            border-bottom: 1px solid #2c2d33;
+        }
+        
+        .workspace-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .workspace-status {
+            font-size: 13px;
+            color: #b9bbbe;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #23b55a;
+        }
+        
+        .search-section {
+            padding: 16px;
+            border-bottom: 1px solid #2c2d33;
+        }
+        
+        .search-box {
+            width: 100%;
+            background: #2c2d33;
+            border: 1px solid #404040;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: white;
+            font-size: 13px;
+        }
+        
+        .search-box::placeholder {
+            color: #b9bbbe;
+        }
+        
+        .channels-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+        
+        .channel-section {
+            margin-bottom: 16px;
+        }
+        
+        .section-header {
+            padding: 8px 16px 4px;
+            font-size: 13px;
+            color: #b9bbbe;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .section-toggle {
+            margin-right: 8px;
+            font-size: 10px;
+        }
+        
+        .channel-item {
+            padding: 4px 16px 4px 32px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            color: #b9bbbe;
+            font-size: 15px;
+            transition: all 0.1s;
+        }
+        
+        .channel-item:hover {
+            background: #2c2d33;
+        }
+        
+        .channel-item.active {
+            background: #1264a3;
+            color: white;
+        }
+        
+        .channel-prefix {
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+        
+        .unread-badge {
+            background: #e01e5a;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+        
+        .main-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #1a1d29;
+        }
+        
+        .chat-header {
+            background: #1a1d29;
+            padding: 12px 20px;
+            border-bottom: 1px solid #2c2d33;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .channel-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .channel-name {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .member-count {
+            color: #b9bbbe;
+            font-size: 13px;
+        }
+        
+        .chat-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .action-btn {
+            background: none;
+            border: 1px solid #666;
+            color: #b9bbbe;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        
+        .action-btn:hover {
+            background: #2c2d33;
+        }
+        
+        .messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            gap: 12px;
+        }
+        
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .message-content {
+            flex: 1;
+        }
+        
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        
+        .message-author {
+            font-weight: 700;
+            font-size: 15px;
+        }
+        
+        .message-time {
+            color: #b9bbbe;
+            font-size: 12px;
+        }
+        
+        .message-text {
+            color: #dcddde;
+            line-height: 1.46;
+            font-size: 15px;
+        }
+        
+        .message-reactions {
+            margin-top: 8px;
+            display: flex;
+            gap: 4px;
+        }
+        
+        .reaction {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid #404040;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+        
+        .reaction:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .message-input-area {
+            padding: 20px;
+            border-top: 1px solid #2c2d33;
+        }
+        
+        .message-input {
+            width: 100%;
+            background: #40414f;
+            border: 1px solid #565856;
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: white;
+            font-size: 14px;
+            min-height: 44px;
+            resize: none;
+        }
+        
+        .message-input::placeholder {
+            color: #b9bbbe;
+        }
+        
+        .thread-badge {
+            background: #1264a3;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #666;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="workspace-sidebar">
+        <div class="workspace-item active">TC</div>
+        <div class="workspace-item">DV</div>
+        <div class="workspace-item">MK</div>
+        <div class="workspace-item">+</div>
+    </div>
+    
+    <div class="channels-sidebar">
+        <div class="workspace-header">
+            <div class="workspace-name">TechCorp</div>
+            <div class="workspace-status">
+                <span class="status-indicator"></span>
+                Sarah Johnson
+            </div>
+        </div>
+        
+        <div class="search-section">
+            <input class="search-box" placeholder="Search TechCorp" />
+        </div>
+        
+        <div class="channels-list">
+            <div class="channel-section">
+                <div class="section-header">
+                    <span class="section-toggle">▼</span>
+                    CHANNELS
+                </div>
+                <div class="channel-item active">
+                    <span class="channel-prefix">#</span>
+                    general
+                </div>
+                <div class="channel-item">
+                    <span class="channel-prefix">#</span>
+                    development
+                    <span class="unread-badge">3</span>
+                </div>
+                <div class="channel-item">
+                    <span class="channel-prefix">#</span>
+                    design
+                </div>
+                <div class="channel-item">
+                    <span class="channel-prefix">#</span>
+                    product-updates
+                    <span class="unread-badge">12</span>
+                </div>
+                <div class="channel-item">
+                    <span class="channel-prefix">#</span>
+                    random
+                </div>
+            </div>
+            
+            <div class="channel-section">
+                <div class="section-header">
+                    <span class="section-toggle">▼</span>
+                    DIRECT MESSAGES
+                </div>
+                <div class="channel-item">
+                    <span class="status-indicator" style="width: 8px; height: 8px; margin-right: 8px;"></span>
+                    Mike Chen
+                    <span class="unread-badge">1</span>
+                </div>
+                <div class="channel-item">
+                    <span style="width: 8px; height: 8px; background: #f04747; border-radius: 50%; margin-right: 8px;"></span>
+                    Alex Rodriguez
+                </div>
+                <div class="channel-item">
+                    <span class="status-indicator" style="width: 8px; height: 8px; margin-right: 8px;"></span>
+                    Emma Davis
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-chat">
+        <div class="chat-header">
+            <div class="channel-info">
+                <span class="channel-name"># general</span>
+                <span class="member-count">24 members</span>
+            </div>
+            <div class="chat-actions">
+                <button class="action-btn">📞</button>
+                <button class="action-btn">📹</button>
+                <button class="action-btn">ℹ️</button>
+            </div>
+        </div>
+        
+        <div class="messages-area">
+            <div class="message">
+                <div class="message-avatar">MR</div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="message-author">Mike Rodriguez</span>
+                        <span class="message-time">Today at 2:15 PM</span>
+                    </div>
+                    <div class="message-text">
+                        Hey team! Just deployed the new feature to staging. Would love to get feedback before we push to production tomorrow. 🚀
+                    </div>
+                    <div class="message-reactions">
+                        <div class="reaction">👍 4</div>
+                        <div class="reaction">🎉 2</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="message">
+                <div class="message-avatar">ED</div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="message-author">Emma Davis</span>
+                        <span class="message-time">Today at 2:18 PM</span>
+                    </div>
+                    <div class="message-text">
+                        Looks great! I tested the user flow and everything seems smooth. One minor UI suggestion though - could we make the CTA button a bit more prominent?
+                    </div>
+                    <span class="thread-badge">3 replies</span>
+                </div>
+            </div>
+            
+            <div class="message">
+                <div class="message-avatar">JD</div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="message-author">John Doe</span>
+                        <span class="message-time">Today at 2:22 PM</span>
+                    </div>
+                    <div class="message-text">
+                        @Mike Rodriguez Great work! Performance looks good on my end. Load times improved by about 15% compared to the previous version.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="message">
+                <div class="message-avatar">AR</div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="message-author">Alex Rodriguez</span>
+                        <span class="message-time">Today at 2:25 PM</span>
+                    </div>
+                    <div class="message-text">
+                        Quick question - did we update the analytics tracking for the new feature? Want to make sure we're capturing all the right events.
+                    </div>
+                    <div class="message-reactions">
+                        <div class="reaction">🤔 1</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="message">
+                <div class="message-avatar">SJ</div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="message-author">Sarah Johnson</span>
+                        <span class="message-time">Today at 2:28 PM</span>
+                    </div>
+                    <div class="message-text">
+                        @Alex Rodriguez Yes, all tracking is in place! I've set up the dashboard in our analytics tool. Will share the link in #product-updates shortly.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="message-input-area">
+            <textarea class="message-input" placeholder="Message #general" rows="1"></textarea>
+        </div>
+    </div>
+</body>
+</html>

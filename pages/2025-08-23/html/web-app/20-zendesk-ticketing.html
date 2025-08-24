@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zendesk Support - Ticketing System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 200px;
+            background: #2f3941;
+            color: white;
+            padding: 12px;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 8px 0;
+            border-bottom: 1px solid #3a4148;
+        }
+
+        .logo {
+            width: 24px;
+            height: 24px;
+            background: #03363d;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 4px;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 6px 8px;
+            color: #b8c5c9;
+            text-decoration: none;
+            border-radius: 3px;
+            transition: background 0.2s;
+            font-size: 12px;
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: #3a4148;
+            color: white;
+        }
+
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 6px;
+            background: currentColor;
+            mask-size: contain;
+            display: inline-block;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #ddd;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 44px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2f3941;
+        }
+
+        .view-selector {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .view-selector button {
+            padding: 4px 12px;
+            background: none;
+            border: none;
+            font-size: 11px;
+            cursor: pointer;
+            color: #666;
+            border-radius: 3px;
+        }
+
+        .view-selector button.active {
+            background: white;
+            color: #333;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 4px 8px;
+            width: 240px;
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            flex: 1;
+            font-size: 12px;
+            padding: 2px;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #17494d;
+            color: white;
+            border-color: #17494d;
+        }
+
+        .btn:hover {
+            background: #f5f5f5;
+        }
+
+        .btn-primary:hover {
+            background: #1a5257;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            display: flex;
+            background: white;
+        }
+
+        .tickets-panel {
+            width: 320px;
+            border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tickets-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #ddd;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .tickets-count {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .filter-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            background: #f8f9fa;
+        }
+
+        .filter-tab {
+            flex: 1;
+            padding: 8px 12px;
+            background: none;
+            border: none;
+            font-size: 11px;
+            cursor: pointer;
+            color: #666;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .filter-tab.active {
+            color: #17494d;
+            border-bottom-color: #17494d;
+            background: white;
+        }
+
+        .tickets-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .ticket-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative;
+        }
+
+        .ticket-item:hover {
+            background: #f8f9fa;
+        }
+
+        .ticket-item.active {
+            background: #e8f4f8;
+            border-left: 3px solid #17494d;
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 6px;
+            gap: 8px;
+        }
+
+        .ticket-id {
+            font-size: 11px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .ticket-status {
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 500;
+            margin-left: auto;
+        }
+
+        .status-open {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-pending {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-solved {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .ticket-subject {
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .ticket-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .ticket-priority {
+            padding: 1px 4px;
+            border-radius: 2px;
+            font-size: 9px;
+            font-weight: 500;
+        }
+
+        .priority-high {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .priority-normal {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .priority-low {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        /* Ticket Detail */
+        .ticket-detail {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #ddd;
+            background: #f8f9fa;
+        }
+
+        .detail-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2f3941;
+        }
+
+        .detail-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .detail-content {
+            flex: 1;
+            display: flex;
+        }
+
+        .conversation {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .conversation-item {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .conversation-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 16px;
+            background: #17494d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .conversation-content {
+            flex: 1;
+        }
+
+        .conversation-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 12px;
+        }
+
+        .conversation-author {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .conversation-time {
+            color: #666;
+        }
+
+        .conversation-message {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .conversation-internal {
+            background: #fff3cd;
+            border-left: 3px solid #ffc107;
+        }
+
+        .detail-sidebar {
+            width: 260px;
+            border-left: 1px solid #ddd;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .sidebar-section {
+            margin-bottom: 24px;
+        }
+
+        .sidebar-section h3 {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .field-group {
+            margin-bottom: 12px;
+        }
+
+        .field-label {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .field-value {
+            font-size: 12px;
+            color: #333;
+            padding: 4px 0;
+        }
+
+        .field-select {
+            width: 100%;
+            padding: 4px 6px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 11px;
+            background: white;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .tag {
+            background: #e9ecef;
+            color: #495057;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+        }
+
+        /* Reply Box */
+        .reply-box {
+            border-top: 1px solid #ddd;
+            padding: 16px 20px;
+            background: white;
+        }
+
+        .reply-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .reply-tab {
+            padding: 4px 8px;
+            background: none;
+            border: none;
+            font-size: 11px;
+            cursor: pointer;
+            color: #666;
+            border-radius: 3px;
+        }
+
+        .reply-tab.active {
+            background: #17494d;
+            color: white;
+        }
+
+        .reply-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 12px;
+            resize: vertical;
+            margin-bottom: 8px;
+        }
+
+        .reply-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reply-options {
+            display: flex;
+            gap: 12px;
+            font-size: 11px;
+        }
+
+        .reply-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">Z</div>
+                <span>Support Center</span>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="#" class="active"><span class="nav-icon"></span>All Tickets</a></li>
+                <li><a href="#"><span class="nav-icon"></span>Unassigned</a></li>
+                <li><a href="#"><span class="nav-icon"></span>My Tickets</a></li>
+                <li><a href="#"><span class="nav-icon"></span>Recently Updated</a></li>
+                <li><a href="#"><span class="nav-icon"></span>Pending</a></li>
+                <li><a href="#"><span class="nav-icon"></span>Solved</a></li>
+                <li><a href="#"><span class="nav-icon"></span>Suspended</a></li>
+                <li><a href="#"><span class="nav-icon"></span>Deleted</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-left">
+                    <h1 class="header-title">Tickets</h1>
+                    <div class="view-selector">
+                        <button class="active">List</button>
+                        <button>Table</button>
+                        <button>Insights</button>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <input type="text" placeholder="Search tickets...">
+                        <span>🔍</span>
+                    </div>
+                    <button class="btn">Filter</button>
+                    <button class="btn">Export</button>
+                    <button class="btn btn-primary">New Ticket</button>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Tickets Panel -->
+                <div class="tickets-panel">
+                    <div class="tickets-header">
+                        <span class="tickets-count">247 tickets</span>
+                        <button class="btn" style="padding: 4px 8px; font-size: 10px;">⚙️</button>
+                    </div>
+                    <div class="filter-tabs">
+                        <button class="filter-tab active">Open (23)</button>
+                        <button class="filter-tab">Pending (15)</button>
+                        <button class="filter-tab">Solved (209)</button>
+                    </div>
+                    <div class="tickets-list">
+                        <div class="ticket-item active" onclick="selectTicket(this, 'T-4821')">
+                            <div class="ticket-header">
+                                <span class="ticket-id">#4821</span>
+                                <span class="ticket-status status-open">Open</span>
+                            </div>
+                            <div class="ticket-subject">Login issues after recent update</div>
+                            <div class="ticket-meta">
+                                <span>Sarah Chen</span>
+                                <span class="ticket-priority priority-high">High</span>
+                                <span>2h ago</span>
+                            </div>
+                        </div>
+                        <div class="ticket-item" onclick="selectTicket(this, 'T-4820')">
+                            <div class="ticket-header">
+                                <span class="ticket-id">#4820</span>
+                                <span class="ticket-status status-pending">Pending</span>
+                            </div>
+                            <div class="ticket-subject">Feature request: Dark mode support</div>
+                            <div class="ticket-meta">
+                                <span>Alex Rodriguez</span>
+                                <span class="ticket-priority priority-normal">Normal</span>
+                                <span>4h ago</span>
+                            </div>
+                        </div>
+                        <div class="ticket-item" onclick="selectTicket(this, 'T-4819')">
+                            <div class="ticket-header">
+                                <span class="ticket-id">#4819</span>
+                                <span class="ticket-status status-open">Open</span>
+                            </div>
+                            <div class="ticket-subject">Payment processing error on checkout</div>
+                            <div class="ticket-meta">
+                                <span>Mike Johnson</span>
+                                <span class="ticket-priority priority-high">High</span>
+                                <span>6h ago</span>
+                            </div>
+                        </div>
+                        <div class="ticket-item" onclick="selectTicket(this, 'T-4818')">
+                            <div class="ticket-header">
+                                <span class="ticket-id">#4818</span>
+                                <span class="ticket-status status-solved">Solved</span>
+                            </div>
+                            <div class="ticket-subject">How to reset password?</div>
+                            <div class="ticket-meta">
+                                <span>Emma Davis</span>
+                                <span class="ticket-priority priority-low">Low</span>
+                                <span>8h ago</span>
+                            </div>
+                        </div>
+                        <div class="ticket-item" onclick="selectTicket(this, 'T-4817')">
+                            <div class="ticket-header">
+                                <span class="ticket-id">#4817</span>
+                                <span class="ticket-status status-pending">Pending</span>
+                            </div>
+                            <div class="ticket-subject">Mobile app crashing on Android 12</div>
+                            <div class="ticket-meta">
+                                <span>David Wong</span>
+                                <span class="ticket-priority priority-normal">Normal</span>
+                                <span>12h ago</span>
+                            </div>
+                        </div>
+                        <div class="ticket-item" onclick="selectTicket(this, 'T-4816')">
+                            <div class="ticket-header">
+                                <span class="ticket-id">#4816</span>
+                                <span class="ticket-status status-open">Open</span>
+                            </div>
+                            <div class="ticket-subject">API rate limiting documentation</div>
+                            <div class="ticket-meta">
+                                <span>Lisa Park</span>
+                                <span class="ticket-priority priority-normal">Normal</span>
+                                <span>1d ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ticket Detail -->
+                <div class="ticket-detail">
+                    <div class="detail-header">
+                        <div class="detail-title" id="ticket-title">Login issues after recent update</div>
+                        <div class="detail-meta">
+                            <span>Ticket #<span id="ticket-id">4821</span></span>
+                            <span>Created: 2h ago</span>
+                            <span>Updated: 1h ago</span>
+                            <span>Status: <strong>Open</strong></span>
+                            <span>Priority: <strong style="color: #721c24;">High</strong></span>
+                        </div>
+                    </div>
+                    <div class="detail-content">
+                        <div class="conversation" id="conversation">
+                            <div class="conversation-item">
+                                <div class="conversation-avatar">SC</div>
+                                <div class="conversation-content">
+                                    <div class="conversation-header">
+                                        <span class="conversation-author">Sarah Chen</span>
+                                        <span class="conversation-time">2 hours ago</span>
+                                    </div>
+                                    <div class="conversation-message">
+                                        Hi, I'm having trouble logging into my account after the recent app update. When I try to enter my credentials, the login button becomes unresponsive and nothing happens. I've tried clearing my browser cache and using different browsers, but the issue persists.
+                                        <br><br>
+                                        My account email: sarah.chen@company.com
+                                        <br>Browser: Chrome 118.0.5993.88
+                                        <br>OS: Windows 11
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="conversation-item">
+                                <div class="conversation-avatar">JD</div>
+                                <div class="conversation-content">
+                                    <div class="conversation-header">
+                                        <span class="conversation-author">John Davis (Agent)</span>
+                                        <span class="conversation-time">1 hour ago</span>
+                                    </div>
+                                    <div class="conversation-message conversation-internal">
+                                        <strong>Internal Note:</strong> This seems to be related to the authentication service changes deployed yesterday. Checking with the dev team for known issues.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="conversation-item">
+                                <div class="conversation-avatar">JD</div>
+                                <div class="conversation-content">
+                                    <div class="conversation-header">
+                                        <span class="conversation-author">John Davis (Agent)</span>
+                                        <span class="conversation-time">45 minutes ago</span>
+                                    </div>
+                                    <div class="conversation-message">
+                                        Hi Sarah,
+                                        <br><br>
+                                        Thank you for reporting this issue. I can see that you're experiencing login problems after our recent update. This appears to be a known issue affecting a small number of users with specific browser configurations.
+                                        <br><br>
+                                        Could you please try the following workaround:
+                                        <br>1. Go to Settings > Privacy & Security > Cookies and site data
+                                        <br>2. Click "Manage exceptions"
+                                        <br>3. Add our domain and set it to "Allow"
+                                        <br><br>
+                                        Our development team is working on a permanent fix that should be deployed within the next 24 hours.
+                                        <br><br>
+                                        Please let me know if this workaround resolves the issue for you.
+                                        <br><br>
+                                        Best regards,<br>John
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="detail-sidebar">
+                            <div class="sidebar-section">
+                                <h3>Ticket Properties</h3>
+                                <div class="field-group">
+                                    <div class="field-label">Assignee</div>
+                                    <select class="field-select" onchange="updateField('assignee', this.value)">
+                                        <option>John Davis</option>
+                                        <option>Lisa Park</option>
+                                        <option>Mike Johnson</option>
+                                        <option>Unassigned</option>
+                                    </select>
+                                </div>
+                                <div class="field-group">
+                                    <div class="field-label">Status</div>
+                                    <select class="field-select" onchange="updateField('status', this.value)">
+                                        <option selected>Open</option>
+                                        <option>Pending</option>
+                                        <option>On-Hold</option>
+                                        <option>Solved</option>
+                                        <option>Closed</option>
+                                    </select>
+                                </div>
+                                <div class="field-group">
+                                    <div class="field-label">Priority</div>
+                                    <select class="field-select" onchange="updateField('priority', this.value)">
+                                        <option>Low</option>
+                                        <option>Normal</option>
+                                        <option selected>High</option>
+                                        <option>Urgent</option>
+                                    </select>
+                                </div>
+                                <div class="field-group">
+                                    <div class="field-label">Type</div>
+                                    <select class="field-select">
+                                        <option>Question</option>
+                                        <option selected>Problem</option>
+                                        <option>Incident</option>
+                                        <option>Feature Request</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="sidebar-section">
+                                <h3>Requester</h3>
+                                <div class="field-value"><strong>Sarah Chen</strong></div>
+                                <div class="field-value" style="font-size: 11px; color: #666;">sarah.chen@company.com</div>
+                                <div class="field-value" style="font-size: 11px; color: #666;">Premium Customer</div>
+                                <div class="field-value" style="font-size: 11px; color: #666;">Last seen: 30 minutes ago</div>
+                            </div>
+                            <div class="sidebar-section">
+                                <h3>Organization</h3>
+                                <div class="field-value">Acme Corporation</div>
+                                <div class="field-value" style="font-size: 11px; color: #666;">Enterprise Plan</div>
+                            </div>
+                            <div class="sidebar-section">
+                                <h3>Tags</h3>
+                                <div class="tags">
+                                    <span class="tag">authentication</span>
+                                    <span class="tag">login</span>
+                                    <span class="tag">browser</span>
+                                    <span class="tag">update</span>
+                                </div>
+                            </div>
+                            <div class="sidebar-section">
+                                <h3>SLA Status</h3>
+                                <div class="field-value" style="color: #d97706;">First Reply: 2h 15m remaining</div>
+                                <div class="field-value" style="color: #059669;">Resolution: 22h remaining</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="reply-box">
+                        <div class="reply-tabs">
+                            <button class="reply-tab active" onclick="switchReplyTab(this, 'public')">Public Reply</button>
+                            <button class="reply-tab" onclick="switchReplyTab(this, 'internal')">Internal Note</button>
+                        </div>
+                        <textarea class="reply-textarea" placeholder="Write your reply..."></textarea>
+                        <div class="reply-actions">
+                            <div class="reply-options">
+                                <label class="reply-checkbox">
+                                    <input type="checkbox" checked>
+                                    <span>Send email notification</span>
+                                </label>
+                                <label class="reply-checkbox">
+                                    <input type="checkbox">
+                                    <span>Mark as solved</span>
+                                </label>
+                            </div>
+                            <div>
+                                <button class="btn">Save Draft</button>
+                                <button class="btn btn-primary">Send Reply</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTicketId = 'T-4821';
+        let currentReplyType = 'public';
+
+        const ticketData = {
+            'T-4821': {
+                id: '4821',
+                title: 'Login issues after recent update',
+                status: 'Open',
+                priority: 'High',
+                requester: 'Sarah Chen',
+                created: '2h ago',
+                updated: '1h ago'
+            },
+            'T-4820': {
+                id: '4820',
+                title: 'Feature request: Dark mode support',
+                status: 'Pending',
+                priority: 'Normal',
+                requester: 'Alex Rodriguez',
+                created: '4h ago',
+                updated: '4h ago'
+            },
+            'T-4819': {
+                id: '4819',
+                title: 'Payment processing error on checkout',
+                status: 'Open',
+                priority: 'High',
+                requester: 'Mike Johnson',
+                created: '6h ago',
+                updated: '6h ago'
+            }
+        };
+
+        function selectTicket(element, ticketId) {
+            // Remove active class from all tickets
+            document.querySelectorAll('.ticket-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active class to selected ticket
+            element.classList.add('active');
+            
+            // Update ticket detail view
+            currentTicketId = ticketId;
+            updateTicketDetail(ticketId);
+        }
+
+        function updateTicketDetail(ticketId) {
+            const ticket = ticketData[ticketId];
+            if (!ticket) return;
+
+            document.getElementById('ticket-title').textContent = ticket.title;
+            document.getElementById('ticket-id').textContent = ticket.id;
+            
+            // Update meta information
+            const metaDiv = document.querySelector('.detail-meta');
+            metaDiv.innerHTML = `
+                <span>Ticket #${ticket.id}</span>
+                <span>Created: ${ticket.created}</span>
+                <span>Updated: ${ticket.updated}</span>
+                <span>Status: <strong>${ticket.status}</strong></span>
+                <span>Priority: <strong style="color: ${ticket.priority === 'High' ? '#721c24' : '#666'};">${ticket.priority}</strong></span>
+            `;
+        }
+
+        function updateField(field, value) {
+            console.log(`Updated ${field} to: ${value}`);
+            
+            // Simulate field update
+            if (field === 'status') {
+                // Update status in ticket list
+                const activeTicket = document.querySelector('.ticket-item.active .ticket-status');
+                if (activeTicket) {
+                    activeTicket.textContent = value;
+                    activeTicket.className = `ticket-status status-${value.toLowerCase()}`;
+                }
+                
+                // Update detail view
+                const metaDiv = document.querySelector('.detail-meta');
+                const statusRegex = /Status: <strong>[^<]*<\/strong>/;
+                metaDiv.innerHTML = metaDiv.innerHTML.replace(statusRegex, `Status: <strong>${value}</strong>`);
+            }
+        }
+
+        function switchReplyTab(button, type) {
+            // Remove active from all tabs
+            document.querySelectorAll('.reply-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Add active to clicked tab
+            button.classList.add('active');
+            
+            currentReplyType = type;
+            
+            // Update placeholder
+            const textarea = document.querySelector('.reply-textarea');
+            if (type === 'internal') {
+                textarea.placeholder = 'Write an internal note (not visible to customers)...';
+                textarea.style.background = '#fff3cd';
+            } else {
+                textarea.placeholder = 'Write your reply...';
+                textarea.style.background = 'white';
+            }
+        }
+
+        // Filter tabs functionality
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Filter tickets based on status
+                const status = this.textContent.split(' ')[0].toLowerCase();
+                filterTicketsByStatus(status);
+            });
+        });
+
+        function filterTicketsByStatus(status) {
+            const tickets = document.querySelectorAll('.ticket-item');
+            tickets.forEach(ticket => {
+                const ticketStatus = ticket.querySelector('.ticket-status').textContent.toLowerCase();
+                if (status === 'open' || status === 'pending' || status === 'solved') {
+                    ticket.style.display = ticketStatus === status ? 'block' : 'none';
+                } else {
+                    ticket.style.display = 'block';
+                }
+            });
+        }
+
+        // Search functionality
+        document.querySelector('.search-box input').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const tickets = document.querySelectorAll('.ticket-item');
+            
+            tickets.forEach(ticket => {
+                const subject = ticket.querySelector('.ticket-subject').textContent.toLowerCase();
+                const requester = ticket.querySelector('.ticket-meta span').textContent.toLowerCase();
+                const ticketId = ticket.querySelector('.ticket-id').textContent.toLowerCase();
+                
+                if (subject.includes(searchTerm) || requester.includes(searchTerm) || ticketId.includes(searchTerm)) {
+                    ticket.style.display = 'block';
+                } else {
+                    ticket.style.display = 'none';
+                }
+            });
+        });
+
+        // Add real-time updates simulation
+        setInterval(() => {
+            const activeTicket = document.querySelector('.ticket-item.active');
+            if (activeTicket) {
+                const timeSpan = activeTicket.querySelector('.ticket-meta span:last-child');
+                if (timeSpan && timeSpan.textContent.includes('ago')) {
+                    // Simulate time passage
+                    let time = timeSpan.textContent;
+                    if (time.includes('h ago')) {
+                        let hours = parseInt(time);
+                        timeSpan.textContent = `${hours}h ago`;
+                    }
+                }
+            }
+        }, 30000);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTicketDetail(currentTicketId);
+        });
+    </script>
+</body>
+</html>

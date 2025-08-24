@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>코드 리뷰 보고서</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cascadia Code', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Malgun Gothic', monospace;
+            line-height: 1.6;
+            color: #1a202c;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            color: white;
+            padding: 50px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><g fill="rgba(255,255,255,0.05)" font-family="monospace" font-size="4"><text x="5" y="15">{}</text><text x="25" y="25">if</text><text x="45" y="35">for</text><text x="70" y="15">const</text><text x="15" y="45">return</text><text x="60" y="55">async</text><text x="10" y="65">function</text><text x="80" y="75">import</text><text x="35" y="85">=&gt;</text></g></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .code-stats {
+            background: rgba(102, 126, 234, 0.2);
+            padding: 25px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .content {
+            padding: 50px;
+        }
+
+        .toc {
+            background: linear-gradient(135deg, #f7fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 50px;
+            border: 2px solid #667eea;
+            position: relative;
+        }
+
+        .toc::before {
+            content: '</>';
+            position: absolute;
+            top: -15px;
+            left: 40px;
+            background: #667eea;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        .toc h2 {
+            color: #1a202c;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            margin-left: 30px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .toc-item {
+            background: white;
+            padding: 18px 20px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .toc-item:hover {
+            transform: translateX(8px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .toc-item a {
+            color: #1a202c;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .section {
+            margin-bottom: 60px;
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 45px;
+            border-left: 6px solid #4c51bf;
+            position: relative;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .section::before {
+            content: attr(data-icon);
+            position: absolute;
+            top: -15px;
+            left: 35px;
+            background: #4c51bf;
+            color: white;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+        }
+
+        .section h2 {
+            color: #1a202c;
+            font-size: 2.2rem;
+            margin-bottom: 35px;
+            margin-left: 25px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .code-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 35px 0;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-top: 5px solid #667eea;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::after {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.1), transparent);
+            border-radius: 50%;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .metric-card:nth-child(2n) { border-top-color: #48bb78; }
+        .metric-card:nth-child(3n) { border-top-color: #ed8936; }
+        .metric-card:nth-child(4n) { border-top-color: #9f7aea; }
+
+        .metric-value {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .quality-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+        }
+
+        .quality-excellent {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .quality-good {
+            background: #bee3f8;
+            color: #2c5282;
+        }
+
+        .quality-needs-improvement {
+            background: #fef5e7;
+            color: #744210;
+        }
+
+        .quality-poor {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .code-block {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            border-left: 4px solid #667eea;
+            position: relative;
+        }
+
+        .code-block::before {
+            content: attr(data-lang);
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: rgba(102, 126, 234, 0.8);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+
+        .code-line {
+            display: block;
+            padding: 2px 0;
+        }
+
+        .code-line.highlight {
+            background: rgba(237, 137, 54, 0.2);
+            margin: 0 -25px;
+            padding: 2px 25px;
+        }
+
+        .code-line.error {
+            background: rgba(229, 62, 62, 0.2);
+            margin: 0 -25px;
+            padding: 2px 25px;
+        }
+
+        .code-line.good {
+            background: rgba(72, 187, 120, 0.2);
+            margin: 0 -25px;
+            padding: 2px 25px;
+        }
+
+        .review-table {
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            margin: 35px 0;
+        }
+
+        .review-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .review-table th {
+            background: linear-gradient(135deg, #1a202c, #2d3748);
+            color: white;
+            padding: 20px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.05rem;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .review-table td {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.95rem;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .review-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        .review-table tr:hover {
+            background: #edf2f7;
+            transition: all 0.2s ease;
+        }
+
+        .severity-critical { color: #e53e3e; font-weight: 700; }
+        .severity-major { color: #ed8936; font-weight: 600; }
+        .severity-minor { color: #ecc94b; font-weight: 600; }
+        .severity-info { color: #4299e1; font-weight: 600; }
+
+        .file-analysis {
+            background: linear-gradient(135deg, #4c51bf, #667eea);
+            color: white;
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+        }
+
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .file-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 25px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-family: monospace;
+        }
+
+        .file-path {
+            color: #bee3f8;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .file-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        .recommendations {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+        }
+
+        .rec-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .rec-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 25px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border-left: 4px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .priority-high { border-left-color: #f56565; }
+        .priority-medium { border-left-color: #ed8936; }
+        .priority-low { border-left-color: #4299e1; }
+
+        .chart-container {
+            background: white;
+            padding: 35px;
+            border-radius: 14px;
+            margin: 35px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .chart-placeholder {
+            height: 350px;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #667eea;
+            color: #718096;
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .footer {
+            background: #1a202c;
+            color: white;
+            padding: 35px 50px;
+            text-align: center;
+            font-size: 0.95rem;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .header-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div>
+                    <h1>코드 리뷰 보고서</h1>
+                    <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 10px; font-family: 'Segoe UI', sans-serif;">Code Review Report</p>
+                    <p style="font-size: 1rem; opacity: 0.8; font-family: 'Segoe UI', sans-serif;">고객관리시스템 v2.0 코드 품질 분석</p>
+                </div>
+                <div class="code-stats">
+                    <h3 style="margin-bottom: 12px; font-family: 'Segoe UI', sans-serif;">📊 코드 품질 점수</h3>
+                    <div style="font-size: 2.5rem; font-weight: 900; margin-bottom: 8px;">B+</div>
+                    <div style="font-size: 0.9rem; font-family: 'Segoe UI', sans-serif;">전체 점수: 82/100</div>
+                    <div style="font-size: 0.85rem; opacity: 0.8; margin-top: 8px; font-family: 'Segoe UI', sans-serif;">
+                        리뷰 대상: 145개 파일<br>
+                        코드 라인: 24,830줄<br>
+                        리뷰어: 박시니어개발자
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+            <div class="toc">
+                <h2>목차 (Table of Contents)</h2>
+                <div class="toc-grid">
+                    <div class="toc-item">
+                        <a href="#summary">1. 리뷰 요약</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#code-metrics">2. 코드 메트릭스</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#quality-analysis">3. 품질 분석</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#issues-found">4. 발견된 이슈</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#file-analysis">5. 파일별 분석</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#recommendations">6. 개선 권고사항</a>
+                    </div>
+                </div>
+            </div>
+
+            <section id="summary" class="section" data-icon="📝">
+                <h2>리뷰 요약 (Review Summary)</h2>
+                <div class="code-metrics">
+                    <div class="metric-card">
+                        <div class="metric-value">82/100</div>
+                        <h3>전체 품질 점수</h3>
+                        <div class="quality-badge quality-good">양호</div>
+                        <p>코드 품질이 전반적으로 양호하며, 몇 가지 개선 사항이 있습니다.</p>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">24,830</div>
+                        <h3>총 코드 라인</h3>
+                        <div class="quality-badge quality-excellent">적정</div>
+                        <p>주석 포함 라인 수, 빈 줄 제외 실제 코드는 18,645줄</p>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">145</div>
+                        <h3>분석 파일 수</h3>
+                        <div class="quality-badge quality-good">정상</div>
+                        <p>JavaScript 98개, TypeScript 32개, CSS 15개</p>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">23</div>
+                        <h3>발견된 이슈</h3>
+                        <div class="quality-badge quality-needs-improvement">개선필요</div>
+                        <p>Critical 3개, Major 8개, Minor 12개</p>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">7.2</div>
+                        <h3>평균 복잡도</h3>
+                        <div class="quality-badge quality-good">양호</div>
+                        <p>권장값 10 이하, 일부 함수에서 복잡도 높음</p>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">78%</div>
+                        <h3>테스트 커버리지</h3>
+                        <div class="quality-badge quality-good">양호</div>
+                        <p>목표 80%, 핵심 비즈니스 로직 95% 커버</p>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 35px; border-radius: 14px; margin: 40px 0; box-shadow: 0 6px 20px rgba(0,0,0,0.1);">
+                    <h3 style="margin-bottom: 25px; color: #1a202c; font-family: 'Segoe UI', sans-serif;">주요 발견 사항</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                        <div style="border-left: 4px solid #e53e3e; padding-left: 20px;">
+                            <h4 style="color: #e53e3e; margin-bottom: 10px; font-family: 'Segoe UI', sans-serif;">🚨 즉시 수정 필요</h4>
+                            <ul style="line-height: 2; font-family: 'Segoe UI', sans-serif;">
+                                <li>SQL Injection 가능성 (3건)</li>
+                                <li>Memory Leak 위험 (1건)</li>
+                                <li>하드코딩된 민감정보 (2건)</li>
+                            </ul>
+                        </div>
+                        <div style="border-left: 4px solid #ed8936; padding-left: 20px;">
+                            <h4 style="color: #ed8936; margin-bottom: 10px; font-family: 'Segoe UI', sans-serif;">⚠️ 개선 권장</h4>
+                            <ul style="line-height: 2; font-family: 'Segoe UI', sans-serif;">
+                                <li>함수 복잡도 개선 (8건)</li>
+                                <li>에러 처리 강화 (5건)</li>
+                                <li>코딩 컨벤션 통일 (7건)</li>
+                            </ul>
+                        </div>
+                        <div style="border-left: 4px solid #48bb78; padding-left: 20px;">
+                            <h4 style="color: #48bb78; margin-bottom: 10px; font-family: 'Segoe UI', sans-serif;">✅ 잘 작성된 부분</h4>
+                            <ul style="line-height: 2; font-family: 'Segoe UI', sans-serif;">
+                                <li>모듈화 및 재사용성</li>
+                                <li>TypeScript 타입 안정성</li>
+                                <li>단위 테스트 품질</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="code-metrics" class="section" data-icon="📊">
+                <h2>코드 메트릭스 (Code Metrics)</h2>
+                <div class="review-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>메트릭</th>
+                                <th>현재 값</th>
+                                <th>목표값</th>
+                                <th>상태</th>
+                                <th>비고</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>라인 수 (SLOC)</strong></td>
+                                <td>18,645</td>
+                                <td>&lt; 25,000</td>
+                                <td><span class="quality-badge quality-excellent">우수</span></td>
+                                <td>적정 규모 유지</td>
+                            </tr>
+                            <tr>
+                                <td><strong>평균 복잡도 (CC)</strong></td>
+                                <td>7.2</td>
+                                <td>&lt; 10</td>
+                                <td><span class="quality-badge quality-good">양호</span></td>
+                                <td>일부 함수 최적화 필요</td>
+                            </tr>
+                            <tr>
+                                <td><strong>최대 복잡도</strong></td>
+                                <td>23</td>
+                                <td>&lt; 15</td>
+                                <td><span class="quality-badge quality-poor">개선필요</span></td>
+                                <td>validateUser() 함수</td>
+                            </tr>
+                            <tr>
+                                <td><strong>함수당 평균 라인</strong></td>
+                                <td>12.4</td>
+                                <td>&lt; 20</td>
+                                <td><span class="quality-badge quality-excellent">우수</span></td>
+                                <td>적절한 함수 크기</td>
+                            </tr>
+                            <tr>
+                                <td><strong>중복 코드율</strong></td>
+                                <td>8.3%</td>
+                                <td>&lt; 5%</td>
+                                <td><span class="quality-badge quality-needs-improvement">개선필요</span></td>
+                                <td>공통 함수 추출 필요</td>
+                            </tr>
+                            <tr>
+                                <td><strong>주석 비율</strong></td>
+                                <td>15.2%</td>
+                                <td>10-20%</td>
+                                <td><span class="quality-badge quality-good">양호</span></td>
+                                <td>적정 수준의 주석</td>
+                            </tr>
+                            <tr>
+                                <td><strong>테스트 커버리지</strong></td>
+                                <td>78%</td>
+                                <td>&gt; 80%</td>
+                                <td><span class="quality-badge quality-good">양호</span></td>
+                                <td>목표에 근접</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 40px 0;">
+                    <div class="chart-container" style="margin: 0;">
+                        <h3 style="margin-bottom: 20px;">복잡도 분포</h3>
+                        <div class="chart-placeholder" style="height: 280px;">
+                            [복잡도 히스토그램]<br>
+                            낮음(1-5): 68% | 보통(6-10): 25% | 높음(11+): 7%
+                        </div>
+                    </div>
+                    <div class="chart-container" style="margin: 0;">
+                        <h3 style="margin-bottom: 20px;">파일 크기 분포</h3>
+                        <div class="chart-placeholder" style="height: 280px;">
+                            [파일 크기 분포 차트]<br>
+                            작음(&lt;100): 45% | 보통(100-300): 42% | 큼(300+): 13%
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="quality-analysis" class="section" data-icon="🔍">
+                <h2>품질 분석 (Quality Analysis)</h2>
+                <div class="code-block" data-lang="javascript">
+<span class="code-line">// ❌ 문제가 있는 코드 예시</span>
+<span class="code-line error">function validateUser(user) {</span>
+<span class="code-line error">  if (user.name && user.email && user.password && user.age > 18</span>
+<span class="code-line error">      && user.phone && user.address && user.city && user.country</span>
+<span class="code-line error">      && user.zipcode && user.terms === true && user.newsletter !== null) {</span>
+<span class="code-line error">    // 복잡한 중첩 조건문...</span>
+<span class="code-line error">    return processUser(user);</span>
+<span class="code-line error">  }</span>
+<span class="code-line error">  return false;</span>
+<span class="code-line error">}</span>
+                </div>
+
+                <div class="code-block" data-lang="javascript">
+<span class="code-line">// ✅ 개선된 코드 예시</span>
+<span class="code-line good">function validateUser(user) {</span>
+<span class="code-line good">  const requiredFields = ['name', 'email', 'password'];</span>
+<span class="code-line good">  const hasRequiredFields = requiredFields.every(field => user[field]);</span>
+<span class="code-line good">  </span>
+<span class="code-line good">  if (!hasRequiredFields) return false;</span>
+<span class="code-line good">  if (!isValidAge(user.age)) return false;</span>
+<span class="code-line good">  if (!hasAcceptedTerms(user)) return false;</span>
+<span class="code-line good">  </span>
+<span class="code-line good">  return processUser(user);</span>
+<span class="code-line good">}</span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin: 40px 0;">
+                    <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); border-left: 4px solid #e53e3e;">
+                        <h4 style="color: #e53e3e; margin-bottom: 15px; font-family: 'Segoe UI', sans-serif;">🔴 Critical Issues</h4>
+                        <div style="font-size: 2rem; font-weight: 800; color: #e53e3e; margin-bottom: 10px;">3건</div>
+                        <ul style="line-height: 2; font-size: 0.95rem; font-family: 'Segoe UI', sans-serif;">
+                            <li>SQL Injection 가능성</li>
+                            <li>하드코딩된 비밀번호</li>
+                            <li>Memory Leak 위험</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); border-left: 4px solid #ed8936;">
+                        <h4 style="color: #ed8936; margin-bottom: 15px; font-family: 'Segoe UI', sans-serif;">🟡 Major Issues</h4>
+                        <div style="font-size: 2rem; font-weight: 800; color: #ed8936; margin-bottom: 10px;">8건</div>
+                        <ul style="line-height: 2; font-size: 0.95rem; font-family: 'Segoe UI', sans-serif;">
+                            <li>높은 함수 복잡도</li>
+                            <li>부족한 에러 처리</li>
+                            <li>중복 코드 존재</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); border-left: 4px solid #ecc94b;">
+                        <h4 style="color: #d69e2e; margin-bottom: 15px; font-family: 'Segoe UI', sans-serif;">🟠 Minor Issues</h4>
+                        <div style="font-size: 2rem; font-weight: 800; color: #d69e2e; margin-bottom: 10px;">12건</div>
+                        <ul style="line-height: 2; font-size: 0.95rem; font-family: 'Segoe UI', sans-serif;">
+                            <li>네이밍 컨벤션</li>
+                            <li>불필요한 주석</li>
+                            <li>사용하지 않는 변수</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="code-block" data-lang="typescript">
+<span class="code-line">// 🔒 보안 이슈 예시</span>
+<span class="code-line error">const query = `SELECT * FROM users WHERE id = ${userId}`; // SQL Injection</span>
+<span class="code-line error">const API_KEY = "sk-1234567890abcdef"; // 하드코딩된 API 키</span>
+<span class="code-line error">app.get('/admin', (req, res) => { // 인증 없는 관리자 페이지</span>
+<span class="code-line error">  res.render('admin', { users: getAllUsers() });</span>
+<span class="code-line error">});</span>
+<span class="code-line"></span>
+<span class="code-line">// ✅ 보안 개선 예시</span>
+<span class="code-line good">const query = `SELECT * FROM users WHERE id = ?`; // 준비된 문장</span>
+<span class="code-line good">const API_KEY = process.env.API_KEY; // 환경변수 사용</span>
+<span class="code-line good">app.get('/admin', authenticate, authorize, (req, res) => {</span>
+<span class="code-line good">  res.render('admin', { users: getAllUsers() });</span>
+<span class="code-line good">});</span>
+                </div>
+            </section>
+
+            <section id="issues-found" class="section" data-icon="⚠️">
+                <h2>발견된 이슈 (Issues Found)</h2>
+                <div class="review-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>파일</th>
+                                <th>라인</th>
+                                <th>심각도</th>
+                                <th>이슈 내용</th>
+                                <th>권장 수정</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>src/controllers/UserController.js</code></td>
+                                <td>45</td>
+                                <td><span class="severity-critical">Critical</span></td>
+                                <td>SQL Injection 취약점</td>
+                                <td>매개변수화된 쿼리 사용</td>
+                            </tr>
+                            <tr>
+                                <td><code>src/config/database.js</code></td>
+                                <td>12</td>
+                                <td><span class="severity-critical">Critical</span></td>
+                                <td>하드코딩된 DB 비밀번호</td>
+                                <td>환경변수로 이동</td>
+                            </tr>
+                            <tr>
+                                <td><code>src/utils/FileUpload.js</code></td>
+                                <td>78</td>
+                                <td><span class="severity-critical">Critical</span></td>
+                                <td>메모리 누수 가능성</td>
+                                <td>스트림 정리 코드 추가</td>
+                            </tr>
+                            <tr>
+                                <td><code>src/services/ValidationService.js</code></td>
+                                <td>23-67</td>
+                                <td><span class="severity-major">Major</span></td>
+                                <td>함수 복잡도 23 (권장: &lt;15)</td>
+                                <td>함수 분리 및 리팩토링</td>
+                            </tr>
+                            <tr>
+                                <td><code>src/middleware/auth.js</code></td>
+                                <td>34</td>
+                                <td><span class="severity-major">Major</span></td>
+                                <td>예외 처리 미흡</td>
+                                <td>try-catch 블록 추가</td>
+                            </tr>
+                            <tr>
+                                <td><code>src/components/UserForm.tsx</code></td>
+                                <td>156</td>
+                                <td><span class="severity-major">Major</span></td>
+                                <td>중복 코드 (15줄)</td>
+                                <td>공통 함수로 추출</td>
+                            </tr>
+                            <tr>
+                                <td><code>src/utils/helpers.js</code></td>
+                                <td>89</td>
+                                <td><span class="severity-minor">Minor</span></td>
+                                <td>변수명 컨벤션 위반</td>
+                                <td>camelCase로 변경</td>
+                            </tr>
+                            <tr>
+                                <td><code>src/hooks/useApi.ts</code></td>
+                                <td>45</td>
+                                <td><span class="severity-minor">Minor</span></td>
+                                <td>사용하지 않는 import</td>
+                                <td>불필요한 import 제거</td>
+                            </tr>
+                            <tr>
+                                <td><code>src/pages/Dashboard.jsx</code></td>
+                                <td>120</td>
+                                <td><span class="severity-info">Info</span></td>
+                                <td>콘솔 로그 남아있음</td>
+                                <td>프로덕션용 로거 사용</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="code-block" data-lang="javascript">
+<span class="code-line">// 🔍 복잡도가 높은 함수 예시 (CC: 23)</span>
+<span class="code-line error">function validateUserInput(data) {</span>
+<span class="code-line error">  if (data.type === 'premium') {</span>
+<span class="code-line error">    if (data.plan === 'monthly') {</span>
+<span class="code-line error">      if (data.payment === 'card') {</span>
+<span class="code-line error">        if (data.card.type === 'visa') {</span>
+<span class="code-line error">          // 깊은 중첩...</span>
+<span class="code-line error">        } else if (data.card.type === 'mastercard') {</span>
+<span class="code-line error">          // 더 많은 중첩...</span>
+<span class="code-line error">        }</span>
+<span class="code-line error">      }</span>
+<span class="code-line error">    }</span>
+<span class="code-line error">  }</span>
+<span class="code-line error">  return result;</span>
+<span class="code-line error">}</span>
+                </div>
+            </section>
+
+            <section id="file-analysis" class="section" data-icon="📁">
+                <h2>파일별 분석 (File Analysis)</h2>
+                <div class="file-analysis">
+                    <h3 style="margin-bottom: 25px; font-size: 1.8rem; font-family: 'Segoe UI', sans-serif;">주요 파일 품질 분석</h3>
+                    <div class="file-grid">
+                        <div class="file-item">
+                            <div class="file-path">src/controllers/UserController.js</div>
+                            <h4 style="color: #fed7d7; margin-bottom: 12px;">품질: C (60/100)</h4>
+                            <div class="file-metrics">
+                                <div>라인 수: 342</div>
+                                <div>복잡도: 18</div>
+                                <div>이슈: 5개</div>
+                                <div>커버리지: 65%</div>
+                            </div>
+                            <p style="margin-top: 15px; font-size: 0.9rem; font-family: 'Segoe UI', sans-serif;">
+                                중요한 보안 취약점과 높은 복잡도로 즉시 리팩토링 필요
+                            </p>
+                        </div>
+                        <div class="file-item">
+                            <div class="file-path">src/services/ApiService.ts</div>
+                            <h4 style="color: #c6f6d5; margin-bottom: 12px;">품질: A- (87/100)</h4>
+                            <div class="file-metrics">
+                                <div>라인 수: 156</div>
+                                <div>복잡도: 6</div>
+                                <div>이슈: 1개</div>
+                                <div>커버리지: 92%</div>
+                            </div>
+                            <p style="margin-top: 15px; font-size: 0.9rem; font-family: 'Segoe UI', sans-serif;">
+                                잘 구조화되고 테스트가 충분한 우수한 코드
+                            </p>
+                        </div>
+                        <div class="file-item">
+                            <div class="file-path">src/components/DataTable.tsx</div>
+                            <h4 style="color: #bee3f8; margin-bottom: 12px;">품질: B+ (84/100)</h4>
+                            <div class="file-metrics">
+                                <div>라인 수: 268</div>
+                                <div>복잡도: 9</div>
+                                <div>이슈: 2개</div>
+                                <div>커버리지: 78%</div>
+                            </div>
+                            <p style="margin-top: 15px; font-size: 0.9rem; font-family: 'Segoe UI', sans-serif;">
+                                재사용 가능한 컴포넌트, 소규모 개선 필요
+                            </p>
+                        </div>
+                        <div class="file-item">
+                            <div class="file-path">src/utils/ValidationUtils.js</div>
+                            <h4 style="color: #fef5e7; margin-bottom: 12px;">품질: B (75/100)</h4>
+                            <div class="file-metrics">
+                                <div>라인 수: 189</div>
+                                <div>복잡도: 12</div>
+                                <div>이슈: 3개</div>
+                                <div>커버리지: 85%</div>
+                            </div>
+                            <p style="margin-top: 15px; font-size: 0.9rem; font-family: 'Segoe UI', sans-serif;">
+                                유틸리티 함수들의 복잡도 개선과 중복 제거 필요
+                            </p>
+                        </div>
+                        <div class="file-item">
+                            <div class="file-path">src/hooks/useAuth.ts</div>
+                            <h4 style="color: #c6f6d5; margin-bottom: 12px;">품질: A (90/100)</h4>
+                            <div class="file-metrics">
+                                <div>라인 수: 87</div>
+                                <div>복잡도: 4</div>
+                                <div>이슈: 0개</div>
+                                <div>커버리지: 95%</div>
+                            </div>
+                            <p style="margin-top: 15px; font-size: 0.9rem; font-family: 'Segoe UI', sans-serif;">
+                                모범적인 React Hook 구현, 다른 파일의 참고 모델
+                            </p>
+                        </div>
+                        <div class="file-item">
+                            <div class="file-path">src/middleware/errorHandler.js</div>
+                            <h4 style="color: #fef5e7; margin-bottom: 12px;">품질: B- (72/100)</h4>
+                            <div class="file-metrics">
+                                <div>라인 수: 145</div>
+                                <div>복잡도: 14</div>
+                                <div>이슈: 4개</div>
+                                <div>커버리지: 68%</div>
+                            </div>
+                            <p style="margin-top: 15px; font-size: 0.9rem; font-family: 'Segoe UI', sans-serif;">
+                                에러 처리 로직 개선과 테스트 케이스 추가 필요
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3 style="margin-bottom: 25px;">파일별 품질 점수 분포</h3>
+                    <div class="chart-placeholder">
+                        [파일 품질 점수 히스토그램]<br>
+                        A등급(90+): 15% | B등급(70-89): 60% | C등급(50-69): 20% | D등급(&lt;50): 5%
+                    </div>
+                </div>
+            </section>
+
+            <section id="recommendations" class="section" data-icon="💡">
+                <h2>개선 권고사항 (Recommendations)</h2>
+                <div class="recommendations">
+                    <h3 style="margin-bottom: 25px; font-size: 1.8rem; font-family: 'Segoe UI', sans-serif;">우선순위별 개선 계획</h3>
+                    <div class="rec-grid">
+                        <div class="rec-item priority-high">
+                            <h4 style="margin-bottom: 15px; font-family: 'Segoe UI', sans-serif;">🚨 긴급 (1주 이내)</h4>
+                            <ul style="line-height: 2.2; font-family: 'Segoe UI', sans-serif;">
+                                <li><strong>보안 취약점 수정:</strong> SQL Injection 및 하드코딩 제거</li>
+                                <li><strong>메모리 누수 해결:</strong> FileUpload 모듈 스트림 정리</li>
+                                <li><strong>환경변수 분리:</strong> 모든 설정값 외부화</li>
+                                <li><strong>인증 보강:</strong> 관리자 페이지 접근 제어</li>
+                            </ul>
+                        </div>
+                        <div class="rec-item priority-medium">
+                            <h4 style="margin-bottom: 15px; font-family: 'Segoe UI', sans-serif;">⚡ 높음 (2주 이내)</h4>
+                            <ul style="line-height: 2.2; font-family: 'Segoe UI', sans-serif;">
+                                <li><strong>복잡도 개선:</strong> validateUser() 함수 분리</li>
+                                <li><strong>에러 처리:</strong> 모든 비동기 함수에 try-catch 추가</li>
+                                <li><strong>중복 코드 제거:</strong> 공통 함수로 추출</li>
+                                <li><strong>테스트 커버리지:</strong> 80% 목표 달성</li>
+                            </ul>
+                        </div>
+                        <div class="rec-item priority-low">
+                            <h4 style="margin-bottom: 15px; font-family: 'Segoe UI', sans-serif;">📋 보통 (1개월 이내)</h4>
+                            <ul style="line-height: 2.2; font-family: 'Segoe UI', sans-serif;">
+                                <li><strong>네이밍 통일:</strong> ESLint 규칙 적용</li>
+                                <li><strong>불필요한 코드:</strong> 사용하지 않는 import/변수 제거</li>
+                                <li><strong>주석 정리:</strong> 의미 있는 주석으로 개선</li>
+                                <li><strong>코드 스타일:</strong> Prettier 적용</li>
+                            </ul>
+                        </div>
+                        <div class="rec-item">
+                            <h4 style="margin-bottom: 15px; font-family: 'Segoe UI', sans-serif;">🔄 장기 (3개월 이내)</h4>
+                            <ul style="line-height: 2.2; font-family: 'Segoe UI', sans-serif;">
+                                <li><strong>아키텍처 개선:</strong> 계층화 및 모듈 분리</li>
+                                <li><strong>성능 최적화:</strong> 번들 크기 및 로딩 시간</li>
+                                <li><strong>문서화:</strong> API 문서 및 코드 가이드</li>
+                                <li><strong>CI/CD 강화:</strong> 자동 코드 품질 검사</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="review-table">
+                    <h3 style="margin-bottom: 25px; font-family: 'Segoe UI', sans-serif;">개선 작업 일정 및 담당자</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>개선사항</th>
+                                <th>우선순위</th>
+                                <th>예상 소요시간</th>
+                                <th>담당자</th>
+                                <th>완료 목표일</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>SQL Injection 수정</strong></td>
+                                <td><span class="severity-critical">긴급</span></td>
+                                <td>8시간</td>
+                                <td>이백엔드</td>
+                                <td>2025-08-26</td>
+                            </tr>
+                            <tr>
+                                <td><strong>환경변수 분리</strong></td>
+                                <td><span class="severity-critical">긴급</span></td>
+                                <td>4시간</td>
+                                <td>김데브옵스</td>
+                                <td>2025-08-27</td>
+                            </tr>
+                            <tr>
+                                <td><strong>복잡한 함수 리팩토링</strong></td>
+                                <td><span class="severity-major">높음</span></td>
+                                <td>16시간</td>
+                                <td>박시니어</td>
+                                <td>2025-09-05</td>
+                            </tr>
+                            <tr>
+                                <td><strong>에러 처리 강화</strong></td>
+                                <td><span class="severity-major">높음</span></td>
+                                <td>12시간</td>
+                                <td>최주니어</td>
+                                <td>2025-09-10</td>
+                            </tr>
+                            <tr>
+                                <td><strong>테스트 커버리지 개선</strong></td>
+                                <td><span class="severity-major">높음</span></td>
+                                <td>20시간</td>
+                                <td>정테스터</td>
+                                <td>2025-09-15</td>
+                            </tr>
+                            <tr>
+                                <td><strong>코드 스타일 통일</strong></td>
+                                <td><span class="severity-minor">보통</span></td>
+                                <td>6시간</td>
+                                <td>전체팀</td>
+                                <td>2025-09-30</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="background: #f7fafc; padding: 35px; border-radius: 16px; margin-top: 40px; border: 2px solid #4c51bf;">
+                    <h4 style="color: #4c51bf; margin-bottom: 25px; font-size: 1.4rem; font-family: 'Segoe UI', sans-serif;">🎯 품질 목표 및 기대 효과</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                        <div>
+                            <h5 style="color: #1a202c; margin-bottom: 10px; font-family: 'Segoe UI', sans-serif;">단기 목표 (1개월)</h5>
+                            <ul style="line-height: 2; font-family: 'Segoe UI', sans-serif;">
+                                <li>보안 취약점 0건</li>
+                                <li>Critical/Major 이슈 해결</li>
+                                <li>테스트 커버리지 80% 달성</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 style="color: #1a202c; margin-bottom: 10px; font-family: 'Segoe UI', sans-serif;">기대 효과</h5>
+                            <ul style="line-height: 2; font-family: 'Segoe UI', sans-serif;">
+                                <li>코드 품질 점수 90+ 달성</li>
+                                <li>버그 발생률 50% 감소</li>
+                                <li>개발 생산성 30% 향상</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 style="color: #1a202c; margin-bottom: 10px; font-family: 'Segoe UI', sans-serif;">연락처</h5>
+                            <div style="line-height: 2; font-family: 'Segoe UI', sans-serif;">
+                                <strong>코드 리뷰어:</strong><br>
+                                박시니어개발자<br>
+                                senior@company.com<br>
+                                내선: 1234
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer class="footer">
+            <p>본 코드 리뷰 보고서는 개발팀 내부 문서입니다. 품질 향상을 위한 건설적인 피드백입니다.</p>
+            <p>코드 리뷰팀 | 문의: codereview@company.com | 작성일: 2025-08-23</p>
+        </footer>
+    </div>
+</body>
+</html>

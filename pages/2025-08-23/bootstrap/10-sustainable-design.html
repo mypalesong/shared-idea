@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sustainable Design - Web Design Trend</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+            color: #2d5f2d;
+            line-height: 1.7;
+        }
+        .eco-card {
+            background: white;
+            border: none;
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 8px 24px rgba(45, 95, 45, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .eco-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #4a7c59, #68b984, #8ed1a3);
+        }
+        .eco-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 40px rgba(45, 95, 45, 0.15);
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #4a7c59 0%, #68b984 50%, #8ed1a3 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        .leaf-pattern {
+            position: absolute;
+            opacity: 0.1;
+            font-size: 3rem;
+            animation: float-eco 8s ease-in-out infinite;
+        }
+        .leaf-1 { top: 20%; right: 10%; animation-delay: -2s; }
+        .leaf-2 { top: 60%; left: 15%; animation-delay: -4s; }
+        .leaf-3 { bottom: 30%; right: 20%; animation-delay: -6s; }
+        @keyframes float-eco {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+        .sustainable-btn {
+            background: linear-gradient(135deg, #4a7c59, #68b984);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            padding: 15px 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .sustainable-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.5s ease;
+        }
+        .sustainable-btn:hover::before {
+            left: 100%;
+        }
+        .sustainable-btn:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(74, 124, 89, 0.4);
+        }
+        .icon-eco {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #68b984, #8ed1a3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 8px 16px rgba(104, 185, 132, 0.3);
+        }
+        .progress-eco {
+            background: #e9f7ed;
+            border-radius: 10px;
+            height: 12px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        .progress-bar-eco {
+            background: linear-gradient(90deg, #4a7c59, #68b984);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 2s ease-in-out;
+        }
+        .carbon-neutral {
+            background: linear-gradient(135deg, #2d5f2d, #4a7c59);
+            color: white;
+            padding: 4rem 0;
+            border-radius: 30px;
+            margin: 3rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .carbon-neutral::before {
+            content: '♻';
+            position: absolute;
+            font-size: 10rem;
+            opacity: 0.1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: rotate-slow 20s linear infinite;
+        }
+        @keyframes rotate-slow {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        .eco-stats {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(45, 95, 45, 0.1);
+            border: 2px solid #e9f7ed;
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #4a7c59;
+            margin-bottom: 0.5rem;
+        }
+        .energy-meter {
+            width: 100px;
+            height: 100px;
+            border: 8px solid #e9f7ed;
+            border-top: 8px solid #4a7c59;
+            border-radius: 50%;
+            margin: 0 auto;
+            animation: spin 3s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .nature-section {
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="%234a7c59" opacity="0.3"/><circle cx="80" cy="40" r="1.5" fill="%2368b984" opacity="0.4"/><circle cx="50" cy="70" r="2.5" fill="%238ed1a3" opacity="0.2"/><circle cx="30" cy="80" r="1" fill="%234a7c59" opacity="0.5"/></svg>');
+            background-size: 200px 200px;
+            padding: 5rem 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="#" style="color: #4a7c59;">
+                🌱 ECO DESIGN
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="#" style="color: #2d5f2d;">Sustainable</a>
+                <a class="nav-link" href="#" style="color: #2d5f2d;">Green Tech</a>
+                <a class="nav-link" href="#" style="color: #2d5f2d;">Impact</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-3 fw-bold mb-4">Sustainable Web Design</h1>
+                    <p class="lead mb-5">Creating digital experiences that minimize environmental impact while maximizing user satisfaction and accessibility.</p>
+                    <button class="sustainable-btn me-3">Learn More</button>
+                    <button class="btn btn-outline-light btn-lg px-4">Calculate Impact</button>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <div style="font-size: 8rem; opacity: 0.3; animation: pulse 2s ease-in-out infinite;">🌍</div>
+                </div>
+            </div>
+        </div>
+        <div class="leaf-pattern leaf-1">🍃</div>
+        <div class="leaf-pattern leaf-2">🌿</div>
+        <div class="leaf-pattern leaf-3">🌱</div>
+    </section>
+
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5" style="color: #2d5f2d; font-size: 2.5rem; font-weight: 700;">Sustainable Design Principles</h2>
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="eco-card text-center">
+                        <div class="icon-eco">⚡</div>
+                        <h4 class="mb-3" style="color: #4a7c59;">Energy Efficiency</h4>
+                        <p>Optimize code, compress images, and minimize HTTP requests to reduce server energy consumption.</p>
+                        <div class="progress-eco">
+                            <div class="progress-bar-eco" style="width: 90%;"></div>
+                        </div>
+                        <small class="text-muted">90% Optimized</small>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="eco-card text-center">
+                        <div class="icon-eco">♻️</div>
+                        <h4 class="mb-3" style="color: #4a7c59;">Circular Design</h4>
+                        <p>Create designs that promote reuse, recycling, and sustainable consumption patterns.</p>
+                        <div class="progress-eco">
+                            <div class="progress-bar-eco" style="width: 85%;"></div>
+                        </div>
+                        <small class="text-muted">85% Circular</small>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="eco-card text-center">
+                        <div class="icon-eco">🌱</div>
+                        <h4 class="mb-3" style="color: #4a7c59;">Green Hosting</h4>
+                        <p>Choose renewable energy-powered servers and CDNs to reduce carbon footprint.</p>
+                        <div class="progress-eco">
+                            <div class="progress-bar-eco" style="width: 95%;"></div>
+                        </div>
+                        <small class="text-muted">95% Renewable</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="carbon-neutral">
+        <div class="container">
+            <h2 class="display-4 mb-4">Carbon Neutral Web</h2>
+            <p class="lead mb-4">Every design decision impacts the environment. Make choices that matter.</p>
+            <div class="row">
+                <div class="col-lg-3 mb-3">
+                    <div class="eco-stats">
+                        <div class="stat-number">2.4%</div>
+                        <p class="mb-0">Global CO2 from Internet</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 mb-3">
+                    <div class="eco-stats">
+                        <div class="stat-number">4.6B</div>
+                        <p class="mb-0">Websites Online</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 mb-3">
+                    <div class="eco-stats">
+                        <div class="stat-number">70%</div>
+                        <p class="mb-0">Reduction Possible</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 mb-3">
+                    <div class="eco-stats">
+                        <div class="energy-meter"></div>
+                        <p class="mt-2 mb-0">Measuring Impact</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="nature-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="eco-card">
+                        <h3 class="mb-4" style="color: #2d5f2d;">Performance = Sustainability</h3>
+                        <ul class="list-unstyled">
+                            <li class="mb-3">🚀 <strong>Fast Loading:</strong> Reduced energy consumption</li>
+                            <li class="mb-3">📱 <strong>Mobile First:</strong> Lower power device optimization</li>
+                            <li class="mb-3">🎨 <strong>Efficient Design:</strong> Minimal resource usage</li>
+                            <li class="mb-3">🔍 <strong>Clean Code:</strong> Better performance metrics</li>
+                            <li class="mb-3">☁️ <strong>Smart Caching:</strong> Reduced server requests</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="eco-card">
+                        <h3 class="mb-4" style="color: #2d5f2d;">Design Strategies</h3>
+                        <div class="mb-3">
+                            <h5>Dark Mode</h5>
+                            <p class="text-muted">Saves battery on OLED displays</p>
+                        </div>
+                        <div class="mb-3">
+                            <h5>Simplified Navigation</h5>
+                            <p class="text-muted">Reduces user journey complexity</p>
+                        </div>
+                        <div class="mb-3">
+                            <h5>Optimized Images</h5>
+                            <p class="text-muted">WebP format, lazy loading</p>
+                        </div>
+                        <div class="mb-3">
+                            <h5>Minimal JavaScript</h5>
+                            <p class="text-muted">Faster execution, less energy</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5" style="background: white;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2 text-center">
+                    <h2 class="mb-4" style="color: #2d5f2d;">Tools for Sustainable Design</h2>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="eco-card">
+                                <h5 style="color: #4a7c59;">🔍 Website Carbon</h5>
+                                <p>Calculate your site's carbon footprint and get optimization recommendations.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="eco-card">
+                                <h5 style="color: #4a7c59;">⚡ Google PageSpeed</h5>
+                                <p>Optimize performance metrics that directly impact energy efficiency.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="eco-card">
+                                <h5 style="color: #4a7c59;">🌿 Green Web Foundation</h5>
+                                <p>Directory of hosting providers powered by renewable energy.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="eco-card">
+                                <h5 style="color: #4a7c59;">📊 EcoGrader</h5>
+                                <p>Comprehensive sustainability scoring for websites.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5" style="background: #f0f8f0;">
+        <div class="container text-center">
+            <h2 class="mb-4" style="color: #2d5f2d; font-size: 3rem;">Design for the Future</h2>
+            <p class="lead mb-4" style="color: #4a7c59;">Sustainable web design isn't just about reducing carbon footprint—it's about creating better experiences for everyone.</p>
+            <button class="sustainable-btn me-3">Start Green Design</button>
+            <button class="btn btn-outline-success btn-lg px-4">Measure Impact</button>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Startup Tech - Innovation Development</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', 'Arial', sans-serif;
+            background: #ffffff;
+            color: #2c3e50;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .startup-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 0;
+            z-index: 100;
+            border-bottom: 1px solid #e8f4f8;
+        }
+        
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: #667eea;
+        }
+        
+        header {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            z-index: 2;
+        }
+        
+        .hero-content h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+        }
+        
+        .hero-content .highlight {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-content p {
+            font-size: 1.3rem;
+            color: #5a6c7d;
+            margin-bottom: 3rem;
+            line-height: 1.7;
+        }
+        
+        .startup-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .startup-button {
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .hero-visual {
+            position: relative;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .startup-graphic {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+            animation: startupFloat 6s ease-in-out infinite;
+        }
+        
+        .startup-graphic::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: linear-gradient(135deg, transparent, rgba(255,255,255,0.3), transparent);
+            border-radius: 30px;
+            animation: startupGlow 4s ease-in-out infinite;
+        }
+        
+        .startup-graphic .icon {
+            font-size: 6rem;
+            color: white;
+            z-index: 2;
+        }
+        
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .startup-element {
+            position: absolute;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+            opacity: 0.1;
+            animation: elementFloat 8s ease-in-out infinite;
+        }
+        
+        .element-1 {
+            width: 60px;
+            height: 60px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .element-2 {
+            width: 40px;
+            height: 80px;
+            top: 70%;
+            left: 20%;
+            animation-delay: 2s;
+        }
+        
+        .element-3 {
+            width: 80px;
+            height: 40px;
+            top: 30%;
+            right: 15%;
+            animation-delay: 4s;
+        }
+        
+        .element-4 {
+            width: 50px;
+            height: 50px;
+            bottom: 40%;
+            right: 25%;
+            border-radius: 50%;
+            animation-delay: 6s;
+        }
+        
+        .features-section {
+            padding: 120px 0;
+            background: white;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 6rem;
+        }
+        
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #5a6c7d;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+        
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 2rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-card p {
+            color: #5a6c7d;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+        
+        .feature-list {
+            list-style: none;
+        }
+        
+        .feature-list li {
+            color: #5a6c7d;
+            margin-bottom: 0.8rem;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .feature-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .stats-section {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 100px 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            text-align: center;
+        }
+        
+        .stat-item {
+            padding: 2rem;
+        }
+        
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            animation: countUp 2s ease-out;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .testimonials-section {
+            padding: 120px 0;
+            background: #f8fafe;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+        
+        .testimonial {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        
+        .testimonial::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 30px;
+            font-size: 4rem;
+            color: #667eea;
+            font-weight: bold;
+            opacity: 0.3;
+        }
+        
+        .testimonial-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #5a6c7d;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .author-info h4 {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        
+        .author-info p {
+            color: #5a6c7d;
+            font-size: 0.9rem;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 120px 0;
+            text-align: center;
+        }
+        
+        .cta-content h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+        
+        .cta-content p {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .startup-form {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            gap: 1rem;
+            background: rgba(255,255,255,0.1);
+            padding: 1rem;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .startup-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.9);
+            color: #2c3e50;
+            font-size: 1rem;
+        }
+        
+        .startup-input::placeholder {
+            color: #999;
+        }
+        
+        .startup-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+        
+        .startup-submit {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .startup-submit:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .rocket {
+            position: absolute;
+            right: -100px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 3rem;
+            animation: rocketFly 10s ease-in-out infinite;
+        }
+        
+        @keyframes startupFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+        }
+        
+        @keyframes startupGlow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+        
+        @keyframes elementFloat {
+            0%, 100% { transform: translateY(0px) translateX(0px); }
+            33% { transform: translateY(-30px) translateX(15px); }
+            66% { transform: translateY(15px) translateX(-10px); }
+        }
+        
+        @keyframes countUp {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes rocketFly {
+            0% { right: -100px; }
+            25% { right: 50%; transform: translateY(-50%) rotate(-10deg); }
+            50% { right: 50%; transform: translateY(-60%) rotate(0deg); }
+            75% { right: 50%; transform: translateY(-50%) rotate(10deg); }
+            100% { right: calc(100% + 100px); }
+        }
+        
+        .code-preview {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 3rem 0;
+            font-family: 'Courier New', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .code-preview::before {
+            content: 'STARTUP.JS';
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 0.8rem;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .code-line {
+            margin-bottom: 0.8rem;
+            animation: typewriter 0.5s ease-in-out;
+        }
+        
+        @keyframes typewriter {
+            0% { width: 0; overflow: hidden; }
+            100% { width: 100%; }
+        }
+        
+        @media (max-width: 768px) {
+            .hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .startup-graphic {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .startup-form {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+        
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 4rem;
+            flex-wrap: wrap;
+        }
+        
+        .tech-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .tech-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .tech-icon {
+            font-size: 2.5rem;
+        }
+        
+        .tech-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    
+    <nav class="startup-nav">
+        <div class="container">
+            <div class="nav-content">
+                <div class="logo">StartupTech</div>
+                <ul class="nav-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#testimonials">Testimonials</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <header>
+        <div class="container">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>Build the <span class="highlight">Future</span> of Tech</h1>
+                    <p>Transform your innovative ideas into scalable software solutions. We help startups and entrepreneurs create cutting-edge applications that disrupt industries.</p>
+                    <div class="startup-buttons">
+                        <a href="#" class="startup-button btn-primary">Start Your Project</a>
+                        <a href="#" class="startup-button btn-secondary">View Portfolio</a>
+                    </div>
+                    
+                    <div class="code-preview">
+                        <div class="code-line" style="color: #667eea;">const startup = {</div>
+                        <div class="code-line" style="color: #e74c3c; margin-left: 20px;">innovation: true,</div>
+                        <div class="code-line" style="color: #e74c3c; margin-left: 20px;">scalability: 'unlimited',</div>
+                        <div class="code-line" style="color: #e74c3c; margin-left: 20px;">disruption: 'guaranteed'</div>
+                        <div class="code-line" style="color: #667eea;">};</div>
+                        <div class="code-line" style="color: #27ae60;">// Launch in 3... 2... 1... 🚀</div>
+                    </div>
+                </div>
+                
+                <div class="hero-visual">
+                    <div class="startup-graphic">
+                        <div class="icon">🚀</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="floating-elements">
+            <div class="startup-element element-1"></div>
+            <div class="startup-element element-2"></div>
+            <div class="startup-element element-3"></div>
+            <div class="startup-element element-4"></div>
+        </div>
+        
+        <div class="rocket">🚀</div>
+    </header>
+    
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" data-target="150">0</div>
+                    <div class="stat-label">Projects Launched</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="98">0</div>
+                    <div class="stat-label">Success Rate %</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="50">0</div>
+                    <div class="stat-label">Startups Funded</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="24">0</div>
+                    <div class="stat-label">Months Experience</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Why Choose StartupTech?</h2>
+                <p class="section-subtitle">We combine cutting-edge technology with startup agility to deliver solutions that scale with your business growth.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Rapid Prototyping</h3>
+                    <p>Go from idea to working prototype in weeks, not months. Our agile development process ensures fast iteration and quick market validation.</p>
+                    <ul class="feature-list">
+                        <li>MVP Development in 2-4 weeks</li>
+                        <li>User Testing & Feedback Integration</li>
+                        <li>Continuous Deployment Pipeline</li>
+                        <li>Real-time Collaboration Tools</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Market-Focused Solutions</h3>
+                    <p>Every line of code we write is designed to solve real market problems and create value for your target audience.</p>
+                    <ul class="feature-list">
+                        <li>Market Research & Analysis</li>
+                        <li>Competitor Analysis</li>
+                        <li>User Journey Optimization</li>
+                        <li>Growth Hacking Integration</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <h3>Scalable Architecture</h3>
+                    <p>Build on solid foundations that can handle millions of users. Our cloud-native approach ensures your app grows with your success.</p>
+                    <ul class="feature-list">
+                        <li>Microservices Architecture</li>
+                        <li>Auto-scaling Infrastructure</li>
+                        <li>Global CDN Integration</li>
+                        <li>Performance Monitoring</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Investor-Ready</h3>
+                    <p>Present polished, professional applications that impress investors and attract funding for your startup.</p>
+                    <ul class="feature-list">
+                        <li>Professional UI/UX Design</li>
+                        <li>Analytics & Metrics Dashboard</li>
+                        <li>Security & Compliance</li>
+                        <li>Pitch Deck Support</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🤝</div>
+                    <h3>Partnership Approach</h3>
+                    <p>We're not just developers - we're your technology partners invested in your long-term success.</p>
+                    <ul class="feature-list">
+                        <li>CTO-level Strategic Guidance</li>
+                        <li>Technology Roadmap Planning</li>
+                        <li>Team Extension Services</li>
+                        <li>Ongoing Support & Maintenance</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Launch Support</h3>
+                    <p>From beta testing to production deployment, we ensure your product launches successfully and gains traction.</p>
+                    <ul class="feature-list">
+                        <li>Beta Testing Programs</li>
+                        <li>Production Deployment</li>
+                        <li>Marketing Integration</li>
+                        <li>Post-launch Optimization</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <div class="tech-icon">⚛</div>
+                    <div class="tech-name">React</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">⬢</div>
+                    <div class="tech-name">Node.js</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">☁</div>
+                    <div class="tech-name">AWS</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">🔥</div>
+                    <div class="tech-name">Firebase</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">📱</div>
+                    <div class="tech-name">React Native</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="testimonials-section" id="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Success Stories</h2>
+                <p class="section-subtitle">Hear from founders who turned their vision into reality with our help.</p>
+            </div>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial">
+                    <p class="testimonial-text">"StartupTech helped us build our MVP in just 3 weeks. We launched, got our first 1000 users, and raised $500K in seed funding. Their technical expertise and startup mindset made all the difference."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SK</div>
+                        <div class="author-info">
+                            <h4>Sarah Kim</h4>
+                            <p>CEO, TechFlow</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial">
+                    <p class="testimonial-text">"The scalable architecture they built handled our viral growth from 0 to 100K users without breaking. Their forward-thinking approach saved us months of refactoring later."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">MJ</div>
+                        <div class="author-info">
+                            <h4>Mike Johnson</h4>
+                            <p>Founder, GrowthApp</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial">
+                    <p class="testimonial-text">"Not only did they deliver an amazing product, but they also provided strategic guidance that helped us pivot at the right time. True technology partners."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">EL</div>
+                        <div class="author-info">
+                            <h4>Emily Lopez</h4>
+                            <p>Co-founder, InnovateLab</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="cta-section" id="contact">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Launch Your Startup?</h2>
+                <p>Join hundreds of successful entrepreneurs who chose StartupTech to build their next big thing. Let's turn your vision into reality.</p>
+                
+                <form class="startup-form">
+                    <input type="email" class="startup-input" placeholder="Enter your email to get started">
+                    <button type="submit" class="startup-submit">Launch Now</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <script>
+        // Progress bar
+        window.addEventListener('scroll', () => {
+            const scrolled = (window.pageYOffset / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            document.getElementById('progressBar').style.width = Math.min(scrolled, 100) + '%';
+        });
+        
+        // Stats counter animation
+        function animateCounters() {
+            document.querySelectorAll('.stat-number').forEach(stat => {
+                const target = parseInt(stat.getAttribute('data-target'));
+                const increment = target / 100;
+                let current = 0;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        stat.textContent = target + (target === 98 ? '%' : '');
+                        clearInterval(timer);
+                    } else {
+                        stat.textContent = Math.floor(current) + (target === 98 ? '%' : '');
+                    }
+                }, 20);
+            });
+        }
+        
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Animate feature cards
+        document.querySelectorAll('.feature-card, .testimonial').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.8s ease';
+            card.style.transitionDelay = index * 0.1 + 's';
+            observer.observe(card);
+        });
+        
+        // Stats animation trigger
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        statsObserver.observe(document.querySelector('.stats-section'));
+        
+        // Form submission
+        document.querySelector('.startup-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const input = this.querySelector('.startup-input');
+            const button = this.querySelector('.startup-submit');
+            
+            if (input.value && input.value.includes('@')) {
+                button.textContent = 'Launching... 🚀';
+                button.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+                
+                setTimeout(() => {
+                    button.textContent = 'Success! We\'ll be in touch!';
+                    input.value = '';
+                    
+                    setTimeout(() => {
+                        button.textContent = 'Launch Now';
+                        button.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+                    }, 3000);
+                }, 2000);
+            } else {
+                button.textContent = 'Please enter valid email';
+                button.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+                
+                setTimeout(() => {
+                    button.textContent = 'Launch Now';
+                    button.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+                }, 2000);
+            }
+        });
+        
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Interactive floating elements
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            document.querySelectorAll('.startup-element').forEach((element, index) => {
+                const speed = (index + 1) * 0.02;
+                const x = (mouseX - 0.5) * 30 * speed;
+                const y = (mouseY - 0.5) * 30 * speed;
+                
+                element.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        });
+        
+        // Startup graphic interaction
+        document.querySelector('.startup-graphic').addEventListener('click', () => {
+            const graphic = document.querySelector('.startup-graphic');
+            graphic.style.transform = 'scale(1.1) rotate(10deg)';
+            graphic.style.transition = 'all 0.3s ease';
+            
+            setTimeout(() => {
+                graphic.style.transform = '';
+            }, 300);
+            
+            // Create explosion effect
+            for (let i = 0; i < 6; i++) {
+                const spark = document.createElement('div');
+                spark.style.cssText = `
+                    position: absolute;
+                    width: 20px;
+                    height: 20px;
+                    background: linear-gradient(135deg, #667eea, #764ba2);
+                    border-radius: 50%;
+                    top: 50%;
+                    left: 50%;
+                    pointer-events: none;
+                    animation: sparkFly${i} 1s ease-out forwards;
+                `;
+                
+                graphic.appendChild(spark);
+                
+                setTimeout(() => {
+                    spark.remove();
+                }, 1000);
+            }
+        });
+        
+        // Add spark animations
+        const sparkStyles = document.createElement('style');
+        let sparkCSS = '';
+        for (let i = 0; i < 6; i++) {
+            const angle = (i * 60) * (Math.PI / 180);
+            const x = Math.cos(angle) * 100;
+            const y = Math.sin(angle) * 100;
+            
+            sparkCSS += `
+                @keyframes sparkFly${i} {
+                    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+                    100% { transform: translate(${x}px, ${y}px) scale(0); opacity: 0; }
+                }
+            `;
+        }
+        sparkStyles.textContent = sparkCSS;
+        document.head.appendChild(sparkStyles);
+        
+        // Tech stack hover effects
+        document.querySelectorAll('.tech-item').forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                item.style.transform = 'translateY(-5px) scale(1.05)';
+                item.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+                item.style.color = 'white';
+            });
+            
+            item.addEventListener('mouseleave', () => {
+                item.style.transform = '';
+                item.style.background = 'white';
+                item.style.color = '';
+            });
+        });
+        
+        // Parallax effect for hero section
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.startup-element');
+            
+            parallaxElements.forEach((element, index) => {
+                const speed = (index + 1) * 0.5;
+                element.style.transform += ` translateY(${scrolled * speed}px)`;
+            });
+        });
+    </script>
+</body>
+</html>

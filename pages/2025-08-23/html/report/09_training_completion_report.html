@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>교육 이수 보고서</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Malgun Gothic', sans-serif;
+            line-height: 1.6;
+            color: #1a202c;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4c51bf 0%, #553c9a 50%, #667eea 100%);
+            color: white;
+            padding: 60px 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><g fill="rgba(255,255,255,0.1)"><circle cx="20" cy="20" r="8"/><circle cx="50" cy="15" r="6"/><circle cx="80" cy="25" r="10"/><circle cx="15" cy="50" r="5"/><circle cx="40" cy="45" r="7"/><circle cx="70" cy="55" r="9"/><circle cx="85" cy="75" r="6"/><circle cx="25" cy="80" r="8"/><circle cx="60" cy="85" r="5"/></g></svg>');
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .completion-badge {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 30px;
+            border-radius: 16px;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+        }
+
+        .content {
+            padding: 60px 50px;
+        }
+
+        .toc {
+            background: linear-gradient(135deg, #f7fafc 0%, #e2e8f0 100%);
+            border-radius: 20px;
+            padding: 45px;
+            margin-bottom: 60px;
+            border: 3px solid #667eea;
+            position: relative;
+        }
+
+        .toc::before {
+            content: '🎓';
+            position: absolute;
+            top: -25px;
+            left: 45px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 50%;
+            font-size: 2.5rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .toc h2 {
+            color: #1a202c;
+            margin-bottom: 35px;
+            font-size: 2.2rem;
+            margin-left: 50px;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 25px;
+        }
+
+        .toc-item {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            border-left: 6px solid #667eea;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .toc-item:hover {
+            transform: translateX(12px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .toc-item a {
+            color: #1a202c;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .section {
+            margin-bottom: 80px;
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 60px;
+            border-left: 10px solid #667eea;
+            position: relative;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section::before {
+            content: attr(data-icon);
+            position: absolute;
+            top: -25px;
+            left: 45px;
+            background: #667eea;
+            color: white;
+            padding: 18px 22px;
+            border-radius: 50%;
+            font-size: 2rem;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .section h2 {
+            color: #1a202c;
+            font-size: 2.8rem;
+            margin-bottom: 45px;
+            margin-left: 50px;
+        }
+
+        .training-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 35px;
+            margin: 45px 0;
+        }
+
+        .overview-card {
+            background: white;
+            padding: 40px;
+            border-radius: 18px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+            transition: all 0.3s ease;
+            border-top: 8px solid #667eea;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .overview-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse-glow 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { transform: scale(0.8); opacity: 0.6; }
+            50% { transform: scale(1.2); opacity: 0.2; }
+        }
+
+        .overview-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.18);
+        }
+
+        .overview-card:nth-child(2n) { border-top-color: #48bb78; }
+        .overview-card:nth-child(3n) { border-top-color: #ed8936; }
+        .overview-card:nth-child(4n) { border-top-color: #9f7aea; }
+
+        .metric-value {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .completion-status {
+            display: inline-block;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 15px;
+        }
+
+        .status-completed {
+            background: linear-gradient(45deg, #48bb78, #68d391);
+            color: white;
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);
+        }
+
+        .status-in-progress {
+            background: linear-gradient(45deg, #ed8936, #f6ad55);
+            color: white;
+            box-shadow: 0 4px 15px rgba(237, 137, 54, 0.4);
+        }
+
+        .status-excellent {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .course-table {
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+            margin: 45px 0;
+        }
+
+        .course-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .course-table th {
+            background: linear-gradient(135deg, #4c51bf, #553c9a);
+            color: white;
+            padding: 25px 20px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .course-table td {
+            padding: 20px;
+            border-bottom: 2px solid #e2e8f0;
+            font-size: 1rem;
+        }
+
+        .course-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        .course-table tr:hover {
+            background: #e6fffa;
+            transition: all 0.3s ease;
+        }
+
+        .score-excellent { color: #48bb78; font-weight: 800; }
+        .score-good { color: #4299e1; font-weight: 700; }
+        .score-average { color: #ed8936; font-weight: 600; }
+        .score-poor { color: #e53e3e; font-weight: 600; }
+
+        .skill-assessment {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 50px;
+            border-radius: 20px;
+            margin: 45px 0;
+        }
+
+        .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 35px;
+        }
+
+        .skill-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 30px;
+            border-radius: 16px;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .skill-progress {
+            background: rgba(255, 255, 255, 0.2);
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .skill-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 1s ease-in-out;
+        }
+
+        .skill-expert { background: linear-gradient(90deg, #48bb78, #68d391); }
+        .skill-advanced { background: linear-gradient(90deg, #4299e1, #63b3ed); }
+        .skill-intermediate { background: linear-gradient(90deg, #ed8936, #f6ad55); }
+        .skill-beginner { background: linear-gradient(90deg, #ecc94b, #f6e05e); }
+
+        .achievements {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            padding: 50px;
+            border-radius: 20px;
+            margin: 45px 0;
+        }
+
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 35px;
+        }
+
+        .achievement-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 30px;
+            border-radius: 16px;
+            backdrop-filter: blur(15px);
+            border-left: 6px solid rgba(255, 255, 255, 0.6);
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .achievement-icon {
+            font-size: 3rem;
+            opacity: 0.8;
+        }
+
+        .recommendation {
+            background: linear-gradient(135deg, #9f7aea, #805ad5);
+            color: white;
+            padding: 50px;
+            border-radius: 20px;
+            margin: 45px 0;
+        }
+
+        .rec-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 35px;
+        }
+
+        .rec-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 30px;
+            border-radius: 16px;
+            backdrop-filter: blur(15px);
+            border-left: 6px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .priority-high { border-left-color: #f56565; }
+        .priority-medium { border-left-color: #ed8936; }
+        .priority-low { border-left-color: #4299e1; }
+
+        .chart-container {
+            background: white;
+            padding: 40px;
+            border-radius: 18px;
+            margin: 45px 0;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .chart-placeholder {
+            height: 400px;
+            background: linear-gradient(135deg, #f7fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px dashed #667eea;
+            color: #4a5568;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .certificate-display {
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 16px;
+            padding: 40px;
+            margin: 45px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .certificate-display::before {
+            content: '🏆';
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #667eea;
+            padding: 15px;
+            border-radius: 50%;
+            font-size: 2rem;
+        }
+
+        .footer {
+            background: #1a202c;
+            color: white;
+            padding: 40px 50px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 40px 25px;
+            }
+            
+            .header-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: 40px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div>
+                    <h1>교육 이수 보고서</h1>
+                    <p style="font-size: 1.3rem; opacity: 0.9; margin-bottom: 15px;">Training Completion Report</p>
+                    <p style="font-size: 1.1rem; opacity: 0.8;">개발자 역량 강화 교육 프로그램 수료</p>
+                </div>
+                <div class="completion-badge">
+                    <h3 style="margin-bottom: 15px;">🎯 이수 현황</h3>
+                    <div style="font-size: 2.8rem; font-weight: 900; margin-bottom: 12px;">95%</div>
+                    <div style="font-size: 1rem;">총 20개 과정 중 19개 완료</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 12px;">
+                        교육 기간: 2025.03.01 ~ 2025.08.20<br>
+                        이수자: 이개발자 (Senior Developer)<br>
+                        총 교육시간: 156시간
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+            <div class="toc">
+                <h2>목차 (Table of Contents)</h2>
+                <div class="toc-grid">
+                    <div class="toc-item">
+                        <a href="#training-summary">1. 교육 요약</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#course-completion">2. 과정별 이수 현황</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#skill-assessment">3. 역량 평가</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#achievements">4. 성취 및 인증</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#learning-outcomes">5. 학습 성과</a>
+                    </div>
+                    <div class="toc-item">
+                        <a href="#recommendations">6. 향후 학습 계획</a>
+                    </div>
+                </div>
+            </div>
+
+            <section id="training-summary" class="section" data-icon="📊">
+                <h2>교육 요약 (Training Summary)</h2>
+                <div class="training-overview">
+                    <div class="overview-card">
+                        <div class="metric-value">156시간</div>
+                        <h3>총 교육시간</h3>
+                        <div class="completion-status status-completed">목표 달성</div>
+                        <p>목표 150시간 대비 104% 달성, 평균 주당 12시간 학습</p>
+                    </div>
+                    <div class="overview-card">
+                        <div class="metric-value">19/20</div>
+                        <h3>완료 과정 수</h3>
+                        <div class="completion-status status-completed">95% 완료</div>
+                        <p>핵심 과정 모두 완료, 선택 과정 1개 진행 중</p>
+                    </div>
+                    <div class="overview-card">
+                        <div class="metric-value">88.5점</div>
+                        <h3>평균 점수</h3>
+                        <div class="completion-status status-excellent">우수</div>
+                        <p>전체 과정 평균 88.5점, 목표 80점 초과 달성</p>
+                    </div>
+                    <div class="overview-card">
+                        <div class="metric-value">12개</div>
+                        <h3>취득 인증서</h3>
+                        <div class="completion-status status-completed">인증 완료</div>
+                        <p>AWS, Azure, Google Cloud 등 주요 플랫폼 인증</p>
+                    </div>
+                    <div class="overview-card">
+                        <div class="metric-value">4.8/5.0</div>
+                        <h3>교육 만족도</h3>
+                        <div class="completion-status status-excellent">매우 만족</div>
+                        <p>내용 품질, 강사진, 실습 환경 모두 높은 만족도</p>
+                    </div>
+                    <div class="overview-card">
+                        <div class="metric-value">15개</div>
+                        <h3>실습 프로젝트</h3>
+                        <div class="completion-status status-completed">완료</div>
+                        <p>실무 연계 프로젝트를 통한 실전 경험 습득</p>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 40px; border-radius: 18px; margin: 45px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                    <h3 style="margin-bottom: 30px; color: #1a202c;">교육 프로그램 개요</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                        <div style="border-left: 6px solid #667eea; padding-left: 25px;">
+                            <h4 style="color: #667eea; margin-bottom: 15px;">🚀 핵심 기술 스택</h4>
+                            <ul style="line-height: 2.2;">
+                                <li>React 18 & Next.js 13 마스터리</li>
+                                <li>Node.js 백엔드 개발 심화</li>
+                                <li>AWS 클라우드 아키텍처</li>
+                                <li>Docker & Kubernetes 실무</li>
+                                <li>데이터베이스 최적화 전략</li>
+                            </ul>
+                        </div>
+                        <div style="border-left: 6px solid #48bb78; padding-left: 25px;">
+                            <h4 style="color: #48bb78; margin-bottom: 15px;">🎯 특화 영역</h4>
+                            <ul style="line-height: 2.2;">
+                                <li>마이크로서비스 아키텍처 설계</li>
+                                <li>CI/CD 파이프라인 구축</li>
+                                <li>보안 베스트 프랙티스</li>
+                                <li>성능 모니터링 & 최적화</li>
+                                <li>아지일 방법론 & 팀 리더십</li>
+                            </ul>
+                        </div>
+                        <div style="border-left: 6px solid #ed8936; padding-left: 25px;">
+                            <h4 style="color: #ed8936; margin-bottom: 15px;">💡 소프트 스킬</h4>
+                            <ul style="line-height: 2.2;">
+                                <li>기술 의사결정 및 아키텍처 설계</li>
+                                <li>코드 리뷰 & 멘토링 스킬</li>
+                                <li>프로젝트 관리 & 일정 계획</li>
+                                <li>팀 커뮤니케이션 향상</li>
+                                <li>지속적 학습 및 자기개발</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="course-completion" class="section" data-icon="📚">
+                <h2>과정별 이수 현황 (Course Completion Status)</h2>
+                <div class="course-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>과정명</th>
+                                <th>카테고리</th>
+                                <th>교육시간</th>
+                                <th>점수</th>
+                                <th>등급</th>
+                                <th>완료일</th>
+                                <th>상태</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>React 18 Advanced Patterns</strong></td>
+                                <td>Frontend</td>
+                                <td>12시간</td>
+                                <td class="score-excellent">94점</td>
+                                <td>A</td>
+                                <td>2025-03-15</td>
+                                <td><span class="completion-status status-completed" style="font-size: 0.8rem;">완료</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Next.js 13 App Router & SSR</strong></td>
+                                <td>Frontend</td>
+                                <td>10시간</td>
+                                <td class="score-excellent">91점</td>
+                                <td>A</td>
+                                <td>2025-03-28</td>
+                                <td><span class="completion-status status-completed" style="font-size: 0.8rem;">완료</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Node.js Enterprise Patterns</strong></td>
+                                <td>Backend</td>
+                                <td>15시간</td>
+                                <td class="score-excellent">89점</td>
+                                <td>B+</td>
+                                <td>2025-04-12</td>
+                                <td><span class="completion-status status-completed" style="font-size: 0.8rem;">완료</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>AWS Solutions Architect</strong></td>
+                                <td>Cloud</td>
+                                <td>20시간</td>
+                                <td class="score-excellent">96점</td>
+                                <td>A+</td>
+                                <td>2025-04-30</td>
+                                <td><span class="completion-status status-completed" style="font-size: 0.8rem;">완료</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Docker & Kubernetes Mastery</strong></td>
+                                <td>DevOps</td>
+                                <td>18시간</td>
+                                <td class="score-excellent">92점</td>
+                                <td>A</td>
+                                <td>2025-05-18</td>
+                                <td><span class="completion-status status-completed" style="font-size: 0.8rem;">완료</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>PostgreSQL Performance Tuning</strong></td>
+                                <td>Database</td>
+                                <td>8시간</td>
+                                <td class="score-good">87점</td>
+                                <td>B+</td>
+                                <td>2025-05-25</td>
+                                <td><span class="completion-status status-completed" style="font-size: 0.8rem;">완료</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Microservices Architecture</strong></td>
+                                <td>Architecture</td>
+                                <td>14시간</td>
+                                <td class="score-excellent">93점</td>
+                                <td>A</td>
+                                <td>2025-06-08</td>
+                                <td><span class="completion-status status-completed" style="font-size: 0.8rem;">완료</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>CI/CD with GitHub Actions</strong></td>
+                                <td>DevOps</td>
+                                <td>6시간</td>
+                                <td class="score-good">85점</td>
+                                <td>B</td>
+                                <td>2025-06-15</td>
+                                <td><span class="completion-status status-completed" style="font-size: 0.8rem;">완료</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Web Security Best Practices</strong></td>
+                                <td>Security</td>
+                                <td>12시간</td>
+                                <td class="score-excellent">90점</td>
+                                <td>A-</td>
+                                <td>2025-06-30</td>
+                                <td><span class="completion-status status-completed" style="font-size: 0.8rem;">완료</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>GraphQL API Development</strong></td>
+                                <td>Backend</td>
+                                <td>10시간</td>
+                                <td class="score-good">88점</td>
+                                <td>B+</td>
+                                <td>2025-07-10</td>
+                                <td><span class="completion-status status-completed" style="font-size: 0.8rem;">완료</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Redis & Caching Strategies</strong></td>
+                                <td>Database</td>
+                                <td>7시간</td>
+                                <td class="score-good">86점</td>
+                                <td>B+</td>
+                                <td>2025-07-18</td>
+                                <td><span class="completion-status status-completed" style="font-size: 0.8rem;">완료</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>TypeScript Advanced Types</strong></td>
+                                <td>Language</td>
+                                <td>8시간</td>
+                                <td class="score-excellent">95점</td>
+                                <td>A+</td>
+                                <td>2025-07-25</td>
+                                <td><span class="completion-status status-completed" style="font-size: 0.8rem;">완료</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Agile Leadership & Team Management</strong></td>
+                                <td>Soft Skills</td>
+                                <td>6시간</td>
+                                <td class="score-good">84점</td>
+                                <td>B</td>
+                                <td>2025-08-02</td>
+                                <td><span class="completion-status status-completed" style="font-size: 0.8rem;">완료</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Machine Learning for Developers</strong></td>
+                                <td>AI/ML</td>
+                                <td>16시간</td>
+                                <td class="score-good">82점</td>
+                                <td>B</td>
+                                <td>2025-08-20</td>
+                                <td><span class="completion-status status-completed" style="font-size: 0.8rem;">완료</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Blockchain & Smart Contracts</strong></td>
+                                <td>Emerging Tech</td>
+                                <td>14시간</td>
+                                <td class="score-average">75점</td>
+                                <td>C+</td>
+                                <td>진행중</td>
+                                <td><span class="completion-status status-in-progress" style="font-size: 0.8rem;">80%</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 35px; margin: 45px 0;">
+                    <div class="chart-container" style="margin: 0;">
+                        <h3 style="margin-bottom: 25px;">카테고리별 이수 현황</h3>
+                        <div class="chart-placeholder" style="height: 320px;">
+                            [카테고리별 완료율 파이 차트]<br>
+                            Frontend: 100% | Backend: 100%<br>
+                            DevOps: 100% | Cloud: 100%<br>
+                            Database: 100% | Security: 100%
+                        </div>
+                    </div>
+                    <div class="chart-container" style="margin: 0;">
+                        <h3 style="margin-bottom: 25px;">월별 학습 시간</h3>
+                        <div class="chart-placeholder" style="height: 320px;">
+                            [월별 학습 시간 막대 차트]<br>
+                            3월: 22시간 | 4월: 35시간<br>
+                            5월: 26시간 | 6월: 28시간<br>
+                            7월: 25시간 | 8월: 20시간
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="skill-assessment" class="section" data-icon="⭐">
+                <h2>역량 평가 (Skill Assessment)</h2>
+                <div class="skill-assessment">
+                    <h3 style="margin-bottom: 30px; font-size: 1.8rem;">기술별 숙련도 평가</h3>
+                    <div class="skill-grid">
+                        <div class="skill-item">
+                            <h4>Frontend Development</h4>
+                            <div style="display: flex; justify-content: space-between; margin: 10px 0;">
+                                <span>React/Next.js</span>
+                                <span style="font-weight: bold;">Expert (95%)</span>
+                            </div>
+                            <div class="skill-progress">
+                                <div class="skill-fill skill-expert" style="width: 95%;"></div>
+                            </div>
+                            <p style="font-size: 0.95rem; opacity: 0.9;">
+                                고급 패턴, 성능 최적화, SSR/SSG 구현에 능숙하며, 
+                                복잡한 상태 관리와 컴포넌트 설계 가능
+                            </p>
+                        </div>
+                        <div class="skill-item">
+                            <h4>Backend Development</h4>
+                            <div style="display: flex; justify-content: space-between; margin: 10px 0;">
+                                <span>Node.js/Express</span>
+                                <span style="font-weight: bold;">Advanced (88%)</span>
+                            </div>
+                            <div class="skill-progress">
+                                <div class="skill-fill skill-advanced" style="width: 88%;"></div>
+                            </div>
+                            <p style="font-size: 0.95rem; opacity: 0.9;">
+                                RESTful API 설계, GraphQL 구현, 데이터베이스 연동 및 
+                                비동기 처리에 대한 깊은 이해
+                            </p>
+                        </div>
+                        <div class="skill-item">
+                            <h4>Cloud Architecture</h4>
+                            <div style="display: flex; justify-content: space-between; margin: 10px 0;">
+                                <span>AWS/Azure</span>
+                                <span style="font-weight: bold;">Expert (92%)</span>
+                            </div>
+                            <div class="skill-progress">
+                                <div class="skill-fill skill-expert" style="width: 92%;"></div>
+                            </div>
+                            <p style="font-size: 0.95rem; opacity: 0.9;">
+                                클라우드 네이티브 아키텍처 설계, 서버리스 구현, 
+                                비용 최적화 및 보안 구성 전문가 수준
+                            </p>
+                        </div>
+                        <div class="skill-item">
+                            <h4>DevOps & Automation</h4>
+                            <div style="display: flex; justify-content: space-between; margin: 10px 0;">
+                                <span>Docker/K8s/CI/CD</span>
+                                <span style="font-weight: bold;">Advanced (85%)</span>
+                            </div>
+                            <div class="skill-progress">
+                                <div class="skill-fill skill-advanced" style="width: 85%;"></div>
+                            </div>
+                            <p style="font-size: 0.95rem; opacity: 0.9;">
+                                컨테이너화, 오케스트레이션, 자동화된 배포 파이프라인 
+                                구축 및 모니터링 시스템 운영
+                            </p>
+                        </div>
+                        <div class="skill-item">
+                            <h4>Database Management</h4>
+                            <div style="display: flex; justify-content: space-between; margin: 10px 0;">
+                                <span>PostgreSQL/Redis</span>
+                                <span style="font-weight: bold;">Advanced (83%)</span>
+                            </div>
+                            <div class="skill-progress">
+                                <div class="skill-fill skill-advanced" style="width: 83%;"></div>
+                            </div>
+                            <p style="font-size: 0.95rem; opacity: 0.9;">
+                                데이터베이스 설계, 쿼리 최적화, 인덱싱 전략, 
+                                캐싱 구현 및 성능 튜닝 경험
+                            </p>
+                        </div>
+                        <div class="skill-item">
+                            <h4>Security & Best Practices</h4>
+                            <div style="display: flex; justify-content: space-between; margin: 10px 0;">
+                                <span>Web Security</span>
+                                <span style="font-weight: bold;">Advanced (87%)</span>
+                            </div>
+                            <div class="skill-progress">
+                                <div class="skill-fill skill-advanced" style="width: 87%;"></div>
+                            </div>
+                            <p style="font-size: 0.95rem; opacity: 0.9;">
+                                OWASP Top 10 대응, 인증/인가 시스템, 암호화, 
+                                보안 코딩 가이드라인 숙지 및 적용
+                            </p>
+                        </div>
+                        <div class="skill-item">
+                            <h4>Team Leadership</h4>
+                            <div style="display: flex; justify-content: space-between; margin: 10px 0;">
+                                <span>Agile/Mentoring</span>
+                                <span style="font-weight: bold;">Intermediate (78%)</span>
+                            </div>
+                            <div class="skill-progress">
+                                <div class="skill-fill skill-intermediate" style="width: 78%;"></div>
+                            </div>
+                            <p style="font-size: 0.95rem; opacity: 0.9;">
+                                팀 프로젝트 리딩, 주니어 멘토링, 아지일 방법론 
+                                적용 및 기술 의사결정 참여 경험
+                            </p>
+                        </div>
+                        <div class="skill-item">
+                            <h4>Emerging Technologies</h4>
+                            <div style="display: flex; justify-content: space-between; margin: 10px 0;">
+                                <span>AI/ML/Blockchain</span>
+                                <span style="font-weight: bold;">Beginner (65%)</span>
+                            </div>
+                            <div class="skill-progress">
+                                <div class="skill-fill skill-beginner" style="width: 65%;"></div>
+                            </div>
+                            <p style="font-size: 0.95rem; opacity: 0.9;">
+                                기본 개념 이해 및 간단한 구현 경험, 
+                                지속적 학습을 통한 역량 개발 중
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="course-table" style="margin-top: 45px;">
+                    <h3 style="padding: 25px 25px 0; color: #1a202c;">동료 평가 및 360도 피드백</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>평가 영역</th>
+                                <th>자기평가</th>
+                                <th>상급자 평가</th>
+                                <th>동료 평가</th>
+                                <th>후배 평가</th>
+                                <th>종합 점수</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>기술적 전문성</strong></td>
+                                <td class="score-excellent">92점</td>
+                                <td class="score-excellent">89점</td>
+                                <td class="score-excellent">91점</td>
+                                <td class="score-excellent">94점</td>
+                                <td class="score-excellent"><strong>91점</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>문제 해결 능력</strong></td>
+                                <td class="score-good">88점</td>
+                                <td class="score-excellent">92점</td>
+                                <td class="score-excellent">90점</td>
+                                <td class="score-excellent">93점</td>
+                                <td class="score-excellent"><strong>91점</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>협업 및 소통</strong></td>
+                                <td class="score-good">85점</td>
+                                <td class="score-good">87점</td>
+                                <td class="score-good">89점</td>
+                                <td class="score-excellent">91점</td>
+                                <td class="score-good"><strong>88점</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>학습 및 성장</strong></td>
+                                <td class="score-excellent">95점</td>
+                                <td class="score-excellent">93점</td>
+                                <td class="score-excellent">92점</td>
+                                <td class="score-excellent">96점</td>
+                                <td class="score-excellent"><strong>94점</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>멘토링 역량</strong></td>
+                                <td class="score-average">78점</td>
+                                <td class="score-good">82점</td>
+                                <td class="score-good">80점</td>
+                                <td class="score-good">85점</td>
+                                <td class="score-good"><strong>81점</strong></td>
+                            </tr>
+                            <tr style="background: #e6fffa; font-weight: bold;">
+                                <td><strong>종합 평가</strong></td>
+                                <td class="score-excellent">88점</td>
+                                <td class="score-excellent">89점</td>
+                                <td class="score-excellent">88점</td>
+                                <td class="score-excellent">92점</td>
+                                <td class="score-excellent"><strong>89점</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="achievements" class="section" data-icon="🏆">
+                <h2>성취 및 인증 (Achievements & Certifications)</h2>
+                <div class="achievements">
+                    <h3 style="margin-bottom: 30px; font-size: 1.8rem;">획득한 인증서 및 성취</h3>
+                    <div class="achievement-grid">
+                        <div class="achievement-item">
+                            <div class="achievement-icon">🎖️</div>
+                            <div>
+                                <h4>AWS Solutions Architect Associate</h4>
+                                <p style="margin: 8px 0; opacity: 0.9;">Amazon Web Services</p>
+                                <p style="font-size: 0.9rem;">
+                                    클라우드 아키텍처 설계 및 구현 역량 인증<br>
+                                    취득일: 2025-05-02 | 유효기간: 3년
+                                </p>
+                            </div>
+                        </div>
+                        <div class="achievement-item">
+                            <div class="achievement-icon">☸️</div>
+                            <div>
+                                <h4>Certified Kubernetes Administrator</h4>
+                                <p style="margin: 8px 0; opacity: 0.9;">Cloud Native Computing Foundation</p>
+                                <p style="font-size: 0.9rem;">
+                                    쿠버네티스 클러스터 관리 및 운영 역량 인증<br>
+                                    취득일: 2025-06-15 | 유효기간: 3년
+                                </p>
+                            </div>
+                        </div>
+                        <div class="achievement-item">
+                            <div class="achievement-icon">⚛️</div>
+                            <div>
+                                <h4>React Advanced Developer</h4>
+                                <p style="margin: 8px 0; opacity: 0.9;">Meta (Facebook)</p>
+                                <p style="font-size: 0.9rem;">
+                                    React 고급 패턴 및 성능 최적화 전문가<br>
+                                    취득일: 2025-03-20 | 온라인 인증
+                                </p>
+                            </div>
+                        </div>
+                        <div class="achievement-item">
+                            <div class="achievement-icon">🛡️</div>
+                            <div>
+                                <h4>Certified Ethical Hacker (CEH)</h4>
+                                <p style="margin: 8px 0; opacity: 0.9;">EC-Council</p>
+                                <p style="font-size: 0.9rem;">
+                                    웹 애플리케이션 보안 및 침투 테스트 역량<br>
+                                    취득일: 2025-07-08 | 유효기간: 3년
+                                </p>
+                            </div>
+                        </div>
+                        <div class="achievement-item">
+                            <div class="achievement-icon">🎓</div>
+                            <div>
+                                <h4>Agile Certified Practitioner</h4>
+                                <p style="margin: 8px 0; opacity: 0.9;">Project Management Institute</p>
+                                <p style="font-size: 0.9rem;">
+                                    아지일 방법론 및 프로젝트 관리 전문가<br>
+                                    취득일: 2025-08-05 | 유효기간: 3년
+                                </p>
+                            </div>
+                        </div>
+                        <div class="achievement-item">
+                            <div class="achievement-icon">🔥</div>
+                            <div>
+                                <h4>Top Performer Award</h4>
+                                <p style="margin: 8px 0; opacity: 0.9;">사내 교육 프로그램</p>
+                                <p style="font-size: 0.9rem;">
+                                    전체 교육생 중 상위 5% 성과 달성<br>
+                                    수여일: 2025-08-15 | 개발팀 전체 1위
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="certificate-display">
+                    <h3 style="margin-bottom: 25px; color: #1a202c; margin-top: 30px;">대표 인증서</h3>
+                    <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 40px; border-radius: 12px; margin: 20px 0;">
+                        <h2 style="margin-bottom: 20px;">Certificate of Excellence</h2>
+                        <h3 style="margin-bottom: 30px;">개발자 역량 강화 교육 프로그램</h3>
+                        <p style="font-size: 1.2rem; margin-bottom: 15px;"><strong>이개발자</strong>님께서</p>
+                        <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 25px;">
+                            총 156시간의 교육 과정을 우수한 성적(88.5점)으로 완료하고<br>
+                            12개의 전문 인증서를 취득하였음을 인증합니다.
+                        </p>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+                            <div>
+                                <p>발급일: 2025년 8월 23일</p>
+                                <p>인증 번호: DEV-2025-0823-001</p>
+                            </div>
+                            <div style="text-align: right;">
+                                <p><strong>교육 책임자</strong></p>
+                                <p>박교육이사</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="color: #4a5568; font-size: 0.9rem; margin-top: 15px;">
+                        본 인증서는 QR코드를 통한 온라인 검증이 가능하며, 회사 교육 포털에서 확인할 수 있습니다.
+                    </p>
+                </div>
+            </section>
+
+            <section id="learning-outcomes" class="section" data-icon="📈">
+                <h2>학습 성과 (Learning Outcomes)</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin: 45px 0;">
+                    <div style="background: white; padding: 35px; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-left: 6px solid #48bb78;">
+                        <h4 style="color: #48bb78; margin-bottom: 20px;">💪 역량 향상 성과</h4>
+                        <ul style="line-height: 2.2;">
+                            <li><strong>기술 스택 확장:</strong> 15개 신규 기술 습득</li>
+                            <li><strong>아키텍처 설계:</strong> 마이크로서비스 전문가 레벨</li>
+                            <li><strong>클라우드 역량:</strong> AWS/Azure 모두 활용 가능</li>
+                            <li><strong>리더십 개발:</strong> 팀 리딩 및 멘토링 역량 향상</li>
+                            <li><strong>프로젝트 관리:</strong> 애자일 방법론 완전 습득</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 35px; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-left: 6px solid #667eea;">
+                        <h4 style="color: #667eea; margin-bottom: 20px;">🚀 업무 적용 성과</h4>
+                        <ul style="line-height: 2.2;">
+                            <li><strong>개발 생산성:</strong> 30% 향상 (측정 결과)</li>
+                            <li><strong>코드 품질:</strong> 버그 발생률 40% 감소</li>
+                            <li><strong>시스템 성능:</strong> API 응답속도 25% 개선</li>
+                            <li><strong>배포 효율성:</strong> CI/CD 도입으로 배포시간 60% 단축</li>
+                            <li><strong>보안 강화:</strong> 취약점 0건 달성 (6개월 연속)</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; padding: 35px; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-left: 6px solid #ed8936;">
+                        <h4 style="color: #ed8936; margin-bottom: 20px;">📊 정량적 성과</h4>
+                        <ul style="line-height: 2.2;">
+                            <li><strong>완료한 프로젝트:</strong> 8개 (전년 대비 +60%)</li>
+                            <li><strong>멘토링 인원:</strong> 주니어 개발자 4명</li>
+                            <li><strong>기술 세미나:</strong> 사내 발표 6회 진행</li>
+                            <li><strong>오픈소스 기여:</strong> GitHub 커밋 1,200+</li>
+                            <li><strong>블로그 포스팅:</strong> 기술 글 24편 작성</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3 style="margin-bottom: 25px;">학습 전후 역량 비교</h3>
+                    <div class="chart-placeholder">
+                        [역량 비교 레이더 차트]<br>
+                        Frontend: 70% → 95% | Backend: 75% → 88%<br>
+                        DevOps: 40% → 85% | Cloud: 30% → 92%<br>
+                        Leadership: 50% → 78% | Security: 45% → 87%
+                    </div>
+                </div>
+
+                <div style="background: #e6fffa; padding: 40px; border-radius: 16px; margin: 45px 0; border: 2px solid #48bb78;">
+                    <h4 style="color: #22543d; margin-bottom: 25px; font-size: 1.4rem;">🎉 핵심 학습 성과 요약</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 2.5rem; color: #48bb78; font-weight: 900; margin-bottom: 10px;">+40%</div>
+                            <p style="color: #22543d; font-weight: 600;">전반적 역량 향상</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2.5rem; color: #48bb78; font-weight: 900; margin-bottom: 10px;">12개</div>
+                            <p style="color: #22543d; font-weight: 600;">전문 인증서 취득</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2.5rem; color: #48bb78; font-weight: 900; margin-bottom: 10px;">156시간</div>
+                            <p style="color: #22543d; font-weight: 600;">집중적 학습 완료</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2.5rem; color: #48bb78; font-weight: 900; margin-bottom: 10px;">89점</div>
+                            <p style="color: #22543d; font-weight: 600;">종합 평가 점수</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="recommendations" class="section" data-icon="🎯">
+                <h2>향후 학습 계획 (Future Learning Plan)</h2>
+                <div class="recommendation">
+                    <h3 style="margin-bottom: 30px; font-size: 1.8rem;">개인별 맞춤 학습 로드맵</h3>
+                    <div class="rec-grid">
+                        <div class="rec-item priority-high">
+                            <h4 style="margin-bottom: 15px;">🎯 단기 목표 (3개월)</h4>
+                            <ul style="line-height: 2.2;">
+                                <li><strong>Blockchain 과정 완료:</strong> 진행중인 스마트 계약 개발 마스터</li>
+                                <li><strong>AI/ML 심화:</strong> TensorFlow 및 PyTorch 실무 과정</li>
+                                <li><strong>고급 보안:</strong> DevSecOps 및 보안 자동화 도구</li>
+                                <li><strong>리더십 강화:</strong> 기술 팀장 역량 개발 프로그램</li>
+                            </ul>
+                        </div>
+                        <div class="rec-item priority-medium">
+                            <h4 style="margin-bottom: 15px;">🚀 중기 목표 (6개월)</h4>
+                            <ul style="line-height: 2.2;">
+                                <li><strong>아키텍트 자격:</strong> AWS Solutions Architect Professional</li>
+                                <li><strong>데이터 엔지니어링:</strong> 빅데이터 처리 및 실시간 스트리밍</li>
+                                <li><strong>마이크로서비스 마스터:</strong> Service Mesh 및 이벤트 드리븐</li>
+                                <li><strong>글로벌 역량:</strong> 영어 기술 프레젠테이션 스킬</li>
+                            </ul>
+                        </div>
+                        <div class="rec-item priority-low">
+                            <h4 style="margin-bottom: 15px;">📈 장기 목표 (1년)</h4>
+                            <ul style="line-height: 2.2;">
+                                <li><strong>기술 리더십:</strong> CTO 트랙 준비 과정</li>
+                                <li><strong>혁신 기술:</strong> 양자 컴퓨팅, Edge Computing</li>
+                                <li><strong>비즈니스 역량:</strong> 기술 창업 및 사업 개발</li>
+                                <li><strong>커뮤니티 활동:</strong> 컨퍼런스 키노트 스피커</li>
+                            </ul>
+                        </div>
+                        <div class="rec-item">
+                            <h4 style="margin-bottom: 15px;">🌟 지속적 개발</h4>
+                            <ul style="line-height: 2.2;">
+                                <li><strong>월간 학습:</strong> 최신 기술 트렌드 정기 학습</li>
+                                <li><strong>실습 프로젝트:</strong> 개인 사이드 프로젝트 지속</li>
+                                <li><strong>지식 공유:</strong> 블로그, 유튜브 등 컨텐츠 제작</li>
+                                <li><strong>네트워킹:</strong> 개발자 커뮤니티 적극 참여</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="course-table">
+                    <h3 style="padding: 25px 25px 0; color: #1a202c;">추천 학습 과정 및 일정</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>과정명</th>
+                                <th>제공기관</th>
+                                <th>예상 기간</th>
+                                <th>우선순위</th>
+                                <th>예상 비용</th>
+                                <th>시작 목표일</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Blockchain Development Mastery</strong></td>
+                                <td>ConsenSys Academy</td>
+                                <td>2개월</td>
+                                <td><span class="completion-status status-completed" style="background: #f56565;">긴급</span></td>
+                                <td>$1,200</td>
+                                <td>2025-09-01</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Machine Learning Engineering</strong></td>
+                                <td>Google Cloud</td>
+                                <td>3개월</td>
+                                <td><span class="completion-status status-completed" style="background: #f56565;">긴급</span></td>
+                                <td>$1,800</td>
+                                <td>2025-10-01</td>
+                            </tr>
+                            <tr>
+                                <td><strong>AWS Solutions Architect Pro</strong></td>
+                                <td>AWS Training</td>
+                                <td>4개월</td>
+                                <td><span class="completion-status status-in-progress">높음</span></td>
+                                <td>$2,000</td>
+                                <td>2025-11-01</td>
+                            </tr>
+                            <tr>
+                                <td><strong>DevSecOps Implementation</strong></td>
+                                <td>Linux Academy</td>
+                                <td>6주</td>
+                                <td><span class="completion-status status-in-progress">높음</span></td>
+                                <td>$800</td>
+                                <td>2025-09-15</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Technical Leadership Program</strong></td>
+                                <td>사내 교육원</td>
+                                <td>3개월</td>
+                                <td><span class="completion-status status-in-progress">높음</span></td>
+                                <td>무료</td>
+                                <td>2025-10-15</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Data Engineering Fundamentals</strong></td>
+                                <td>Coursera</td>
+                                <td>4개월</td>
+                                <td><span class="completion-status status-excellent" style="background: #4299e1;">보통</span></td>
+                                <td>$600</td>
+                                <td>2026-01-01</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="background: #f7fafc; padding: 40px; border-radius: 16px; margin: 45px 0; border: 2px solid #667eea;">
+                    <h4 style="color: #4c51bf; margin-bottom: 25px; font-size: 1.4rem;">🎓 개인 학습 전략 및 목표</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                        <div>
+                            <h5 style="color: #1a202c; margin-bottom: 15px;">학습 방식 최적화</h5>
+                            <ul style="line-height: 2;">
+                                <li>실습 중심의 프로젝트 기반 학습</li>
+                                <li>멘토와의 정기적인 1:1 세션</li>
+                                <li>동료와의 스터디 그룹 참여</li>
+                                <li>학습한 내용의 즉시 업무 적용</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 style="color: #1a202c; margin-bottom: 15px;">성과 측정 지표</h5>
+                            <ul style="line-height: 2;">
+                                <li>분기별 기술 역량 평가</li>
+                                <li>프로젝트 성과 개선 지표</li>
+                                <li>팀 기여도 및 리더십 평가</li>
+                                <li>외부 인증 및 자격증 취득</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 style="color: #1a202c; margin-bottom: 15px;">지원 및 리소스</h5>
+                            <ul style="line-height: 2;">
+                                <li>회사 교육비 지원 프로그램 활용</li>
+                                <li>업무 시간 내 학습시간 확보</li>
+                                <li>최신 도서 및 온라인 강의 접근</li>
+                                <li>컨퍼런스 및 세미나 참석 기회</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer class="footer">
+            <p>본 교육 이수 보고서는 개인의 전문 역량 개발과 지속적 성장을 위해 작성되었습니다.</p>
+            <p>교육개발팀 | 문의: training@company.com | 인증 확인: certification.company.com | 작성일: 2025-08-23</p>
+        </footer>
+    </div>
+</body>
+</html>

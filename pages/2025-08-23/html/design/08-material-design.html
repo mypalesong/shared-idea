@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Material Development - Google Design</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', 'Arial', sans-serif;
+            background: #fafafa;
+            color: #212121;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero {
+            text-align: center;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            animation: materialSlideUp 0.8s ease-out;
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            font-weight: 300;
+            opacity: 0.9;
+            animation: materialSlideUp 0.8s ease-out 0.2s both;
+        }
+        
+        .material-fab {
+            width: 56px;
+            height: 56px;
+            background: #ff4081;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            cursor: pointer;
+            margin: 2rem auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .material-fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 5px -3px rgba(0,0,0,.2), 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12);
+        }
+        
+        .material-fab::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .material-fab:active::before {
+            width: 100px;
+            height: 100px;
+        }
+        
+        .material-button {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+            text-decoration: none;
+            display: inline-block;
+            animation: materialSlideUp 0.8s ease-out 0.4s both;
+        }
+        
+        .material-button:hover {
+            box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12);
+            transform: translateY(-1px);
+        }
+        
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .material-shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: materialFloat 6s ease-in-out infinite;
+        }
+        
+        .shape-1 {
+            width: 100px;
+            height: 100px;
+            background: #ffffff;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .shape-2 {
+            width: 150px;
+            height: 150px;
+            background: #ff4081;
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+        
+        .shape-3 {
+            width: 80px;
+            height: 80px;
+            background: #ffffff;
+            bottom: 30%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+        
+        .content-section {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #1976d2;
+        }
+        
+        .material-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-top: 3rem;
+        }
+        
+        .material-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            overflow: hidden;
+        }
+        
+        .material-card:hover {
+            box-shadow: 0 5px 5px -3px rgba(0,0,0,.2), 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12);
+            transform: translateY(-4px);
+        }
+        
+        .card-header {
+            height: 200px;
+            background: linear-gradient(135deg, #1976d2, #42a5f5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.1) 10px,
+                rgba(255,255,255,0.1) 20px
+            );
+            animation: materialStripe 20s linear infinite;
+        }
+        
+        .card-icon {
+            font-size: 3rem;
+            color: white;
+            z-index: 2;
+        }
+        
+        .card-content {
+            padding: 24px;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            color: #212121;
+        }
+        
+        .card-description {
+            color: #757575;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-actions {
+            padding: 8px 16px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+        
+        .material-text-button {
+            background: none;
+            border: none;
+            color: #1976d2;
+            padding: 8px 16px;
+            font-weight: 500;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .material-text-button:hover {
+            background: rgba(25, 118, 210, 0.04);
+        }
+        
+        .code-showcase {
+            background: #263238;
+            color: #ffffff;
+            padding: 24px;
+            border-radius: 8px;
+            margin: 2rem 0;
+            font-family: 'Roboto Mono', 'Courier New', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .code-showcase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
+            animation: codeShine 3s ease-in-out infinite;
+        }
+        
+        .code-line {
+            margin-bottom: 8px;
+        }
+        
+        .keyword {
+            color: #c792ea;
+        }
+        
+        .string {
+            color: #c3e88d;
+        }
+        
+        .comment {
+            color: #546e7a;
+        }
+        
+        .material-progress {
+            width: 100%;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: #1976d2;
+            border-radius: 2px;
+            animation: materialProgress 2s ease-in-out infinite;
+        }
+        
+        .ripple {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stats-section {
+            background: linear-gradient(135deg, #1976d2, #42a5f5);
+            color: white;
+            padding: 80px 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+        
+        .stat-item {
+            padding: 2rem;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        @keyframes materialSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes materialFloat {
+            0%, 100% {
+                transform: translateY(0px) translateX(0px) rotate(0deg);
+            }
+            33% {
+                transform: translateY(-20px) translateX(10px) rotate(120deg);
+            }
+            66% {
+                transform: translateY(10px) translateX(-5px) rotate(240deg);
+            }
+        }
+        
+        @keyframes materialStripe {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+        
+        @keyframes codeShine {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+        
+        @keyframes materialProgress {
+            0% {
+                width: 0%;
+            }
+            50% {
+                width: 70%;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+        
+        .elevation-1 { box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12); }
+        .elevation-2 { box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12); }
+        .elevation-4 { box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12); }
+        .elevation-8 { box-shadow: 0 5px 5px -3px rgba(0,0,0,.2), 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12); }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="hero">
+                <h1>Material Design</h1>
+                <p>Beautiful, intuitive development</p>
+                <button class="material-fab">+</button>
+                <div class="material-progress">
+                    <div class="progress-bar"></div>
+                </div>
+                <a href="#" class="material-button">Get Started</a>
+                
+                <div class="code-showcase">
+                    <div class="code-line">
+                        <span class="keyword">const</span> material = {
+                    </div>
+                    <div class="code-line" style="margin-left: 20px;">
+                        design: <span class="string">'beautiful'</span>,
+                    </div>
+                    <div class="code-line" style="margin-left: 20px;">
+                        elevation: <span class="string">'layered'</span>,
+                    </div>
+                    <div class="code-line" style="margin-left: 20px;">
+                        motion: <span class="string">'meaningful'</span>
+                    </div>
+                    <div class="code-line">};</div>
+                    <div class="code-line">
+                        <span class="comment">// Google's design language</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="floating-shapes">
+            <div class="material-shape shape-1"></div>
+            <div class="material-shape shape-2"></div>
+            <div class="material-shape shape-3"></div>
+        </div>
+    </header>
+    
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Design Principles</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100+</div>
+                    <div class="stat-label">Components</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24dp</div>
+                    <div class="stat-label">Base Grid</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Possibilities</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="content-section">
+        <div class="container">
+            <h2 class="section-title">Development Stack</h2>
+            
+            <div class="material-cards">
+                <div class="material-card">
+                    <div class="card-header">
+                        <div class="card-icon">⚛</div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">React Material-UI</h3>
+                        <p class="card-description">Comprehensive React components implementing Google's Material Design principles with accessibility and customization.</p>
+                    </div>
+                    <div class="card-actions">
+                        <button class="material-text-button">Learn More</button>
+                        <button class="material-text-button">Install</button>
+                    </div>
+                </div>
+                
+                <div class="material-card">
+                    <div class="card-header">
+                        <div class="card-icon">⚙</div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Angular Material</h3>
+                        <p class="card-description">Official Material Design components for Angular applications with TypeScript support and enterprise features.</p>
+                    </div>
+                    <div class="card-actions">
+                        <button class="material-text-button">Explore</button>
+                        <button class="material-text-button">Docs</button>
+                    </div>
+                </div>
+                
+                <div class="material-card">
+                    <div class="card-header">
+                        <div class="card-icon">🎨</div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Design System</h3>
+                        <p class="card-description">Complete design system with tokens, components, and guidelines for consistent user experiences.</p>
+                    </div>
+                    <div class="card-actions">
+                        <button class="material-text-button">View</button>
+                        <button class="material-text-button">Download</button>
+                    </div>
+                </div>
+                
+                <div class="material-card">
+                    <div class="card-header">
+                        <div class="card-icon">📱</div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Mobile First</h3>
+                        <p class="card-description">Responsive components designed for mobile devices with touch-friendly interactions and gestures.</p>
+                    </div>
+                    <div class="card-actions">
+                        <button class="material-text-button">Test</button>
+                        <button class="material-text-button">Demo</button>
+                    </div>
+                </div>
+                
+                <div class="material-card">
+                    <div class="card-header">
+                        <div class="card-icon">♿</div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Accessibility</h3>
+                        <p class="card-description">Built-in WCAG compliance with screen reader support, keyboard navigation, and semantic HTML.</p>
+                    </div>
+                    <div class="card-actions">
+                        <button class="material-text-button">Check</button>
+                        <button class="material-text-button">Guide</button>
+                    </div>
+                </div>
+                
+                <div class="material-card">
+                    <div class="card-header">
+                        <div class="card-icon">🎯</div>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Theming</h3>
+                        <p class="card-description">Powerful theming system with custom color palettes, typography scales, and component variants.</p>
+                    </div>
+                    <div class="card-actions">
+                        <button class="material-text-button">Customize</button>
+                        <button class="material-text-button">Preview</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <script>
+        // Ripple effect for buttons
+        function createRipple(event) {
+            const button = event.currentTarget;
+            const ripple = document.createElement('span');
+            const rect = button.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size}px;
+                left: ${x}px;
+                top: ${y}px;
+                background: rgba(255, 255, 255, 0.6);
+                border-radius: 50%;
+                transform: scale(0);
+                animation: ripple 0.6s ease-out;
+                pointer-events: none;
+            `;
+            
+            button.style.position = 'relative';
+            button.style.overflow = 'hidden';
+            button.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        }
+        
+        // Add ripple effect to all buttons
+        document.querySelectorAll('.material-button, .material-fab, .material-text-button').forEach(button => {
+            button.addEventListener('click', createRipple);
+        });
+        
+        // Card hover animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.animation = 'materialSlideUp 0.8s ease-out';
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 100);
+                }
+            });
+        }, observerOptions);
+        
+        // Observe cards for animation
+        document.querySelectorAll('.material-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            cardObserver.observe(card);
+        });
+        
+        // Stats counter animation
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = entry.target;
+                    const number = target.querySelector('.stat-number');
+                    const finalValue = number.textContent;
+                    
+                    if (finalValue !== '∞' && finalValue !== '24dp') {
+                        const numericValue = parseInt(finalValue.replace(/\D/g, ''));
+                        animateCounter(number, 0, numericValue, finalValue);
+                    }
+                }
+            });
+        }, { threshold: 0.7 });
+        
+        document.querySelectorAll('.stat-item').forEach(stat => {
+            statsObserver.observe(stat);
+        });
+        
+        function animateCounter(element, start, end, finalText) {
+            const duration = 2000;
+            const increment = end / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= end) {
+                    element.textContent = finalText;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current) + (finalText.includes('+') ? '+' : '');
+                }
+            }, 16);
+        }
+        
+        // Floating action button click
+        document.querySelector('.material-fab').addEventListener('click', function() {
+            this.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+        });
+        
+        // Material elevation on scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const cards = document.querySelectorAll('.material-card');
+            
+            cards.forEach((card, index) => {
+                const rect = card.getBoundingClientRect();
+                const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+                
+                if (isVisible) {
+                    const elevation = Math.min(8, Math.floor(scrolled / 100) + 1);
+                    card.className = card.className.replace(/elevation-\d+/, '');
+                    card.classList.add(`elevation-${elevation}`);
+                }
+            });
+        });
+        
+        // Add ripple animation CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(2);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Material design motion curves
+        const materialEasing = 'cubic-bezier(0.4, 0.0, 0.2, 1)';
+        
+        // Apply material motion to hover effects
+        document.querySelectorAll('.material-card').forEach(card => {
+            card.style.transition = `all 0.3s ${materialEasing}`;
+        });
+        
+        // Smooth scroll for better UX
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

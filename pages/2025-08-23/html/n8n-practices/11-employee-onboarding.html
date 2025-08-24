@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n8n 신입사원 온보딩 자동화 - 완벽한 첫날부터 90일까지</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+        
+        .workflow-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 40px;
+        }
+        
+        .workflow-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 30px;
+        }
+        
+        .workflow-title {
+            flex-grow: 1;
+        }
+        
+        .workflow-title h2 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .workflow-title p {
+            color: #666;
+            font-size: 0.95em;
+        }
+        
+        .persona-section {
+            background: linear-gradient(135deg, #f5f3ff, #f0f0ff);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .persona-title {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 25px;
+        }
+        
+        .persona-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .persona-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .persona-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin-right: 20px;
+        }
+        
+        .persona-info {
+            flex-grow: 1;
+        }
+        
+        .persona-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .persona-role {
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        .persona-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .detail-icon {
+            margin-right: 10px;
+            color: #667eea;
+        }
+        
+        .timeline-section {
+            margin: 40px 0;
+        }
+        
+        .timeline-title {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin: 40px 0;
+        }
+        
+        .timeline-content {
+            position: relative;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 45%;
+        }
+        
+        .timeline-left {
+            left: 0;
+        }
+        
+        .timeline-right {
+            left: 55%;
+        }
+        
+        .timeline-marker {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            top: 30px;
+        }
+        
+        .timeline-day {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        .scenario-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .scenario-title {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+        }
+        
+        .scenario-step {
+            background: white;
+            margin: 20px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .step-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .step-number {
+            background: rgba(255,255,255,0.2);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        
+        .step-content {
+            padding: 20px;
+        }
+        
+        .step-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .trigger-box, .action-box {
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .trigger-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .action-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        
+        .automation-tools {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minWidth(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #f5f3ff, #f0f0ff);
+            border-radius: 15px;
+        }
+        
+        .tool-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .tool-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .tool-icon {
+            font-size: 35px;
+            margin-bottom: 10px;
+        }
+        
+        .checklist-section {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        
+        .checklist-title {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .checklist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minWidth(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .checklist-category {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .category-title {
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            padding: 5px 0;
+        }
+        
+        .checklist-icon {
+            color: #28a745;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        
+        .metrics-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minWidth(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .metric-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .cta {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .cta h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        
+        .cta p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .timeline::after {
+                left: 20px;
+            }
+            
+            .timeline-content {
+                width: calc(100% - 60px);
+                left: 50px !important;
+            }
+            
+            .timeline-marker {
+                left: 20px;
+                transform: none;
+            }
+            
+            .step-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>👋 신입사원 온보딩 자동화</h1>
+            <p class="subtitle">n8n으로 구현하는 첫날부터 90일까지 완벽한 온보딩 여정</p>
+        </header>
+        
+        <div class="workflow-card">
+            <div class="workflow-header">
+                <div class="icon">🎯</div>
+                <div class="workflow-title">
+                    <h2>스마트 온보딩 워크플로우</h2>
+                    <p>신입사원의 성공적인 적응을 위한 체계적인 자동화 프로세스</p>
+                </div>
+            </div>
+            
+            <div class="persona-section">
+                <h3 class="persona-title">📋 실제 시나리오: 신입 개발자 김민준님의 사례</h3>
+                <div class="persona-card">
+                    <div class="persona-header">
+                        <div class="persona-avatar">👨‍💻</div>
+                        <div class="persona-info">
+                            <div class="persona-name">김민준</div>
+                            <div class="persona-role">신입 프론트엔드 개발자</div>
+                        </div>
+                    </div>
+                    <div class="persona-details">
+                        <div class="detail-item">
+                            <span class="detail-icon">🏢</span>
+                            <span>ABC테크 입사 예정</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">📅</span>
+                            <span>입사일: 2024년 3월 4일</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">👥</span>
+                            <span>소속: 개발팀</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">📧</span>
+                            <span>minjun.kim@abctech.com</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">🎓</span>
+                            <span>경력: 신입 (부트캠프 수료)</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">👤</span>
+                            <span>멘토: 박시니어 개발자</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="timeline-section">
+                <h3 class="timeline-title">📅 자동화된 온보딩 타임라인</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content timeline-left">
+                            <div class="timeline-day">입사 2주 전</div>
+                            <h4>사전 준비 단계</h4>
+                            <ul style="margin-top: 10px; padding-left: 20px;">
+                                <li>환영 이메일 자동 발송</li>
+                                <li>필수 서류 체크리스트 전송</li>
+                                <li>회사 소개 영상 링크 제공</li>
+                                <li>첫날 일정 안내</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content timeline-right">
+                            <div class="timeline-day">입사 1주 전</div>
+                            <h4>시스템 준비</h4>
+                            <ul style="margin-top: 10px; padding-left: 20px;">
+                                <li>IT 장비 주문 및 설정 요청</li>
+                                <li>보안 카드 발급 신청</li>
+                                <li>각종 계정 생성 (Slack, GitHub, Jira)</li>
+                                <li>멘토 배정 및 알림</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content timeline-left">
+                            <div class="timeline-day">첫날</div>
+                            <h4>웰컴 데이</h4>
+                            <ul style="margin-top: 10px; padding-left: 20px;">
+                                <li>체크인 알림 및 좌석 안내</li>
+                                <li>팀원 소개 슬랙 메시지</li>
+                                <li>오리엔테이션 스케줄 자동 캘린더 등록</li>
+                                <li>점심 멘토링 일정 예약</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content timeline-right">
+                            <div class="timeline-day">첫 주</div>
+                            <h4>기초 적응</h4>
+                            <ul style="margin-top: 10px; padding-left: 20px;">
+                                <li>매일 체크인 서베이</li>
+                                <li>필수 교육과정 진도 확인</li>
+                                <li>코드 리뷰 세션 예약</li>
+                                <li>첫 프로젝트 배정</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content timeline-left">
+                            <div class="timeline-day">30일</div>
+                            <h4>1개월 평가</h4>
+                            <ul style="margin-top: 10px; padding-left: 20px;">
+                                <li>자동 피드백 수집</li>
+                                <li>멘토-멘티 평가 설문</li>
+                                <li>HR 면담 일정 조정</li>
+                                <li>추가 지원 필요사항 파악</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content timeline-right">
+                            <div class="timeline-day">90일</div>
+                            <h4>온보딩 완료</h4>
+                            <ul style="margin-top: 10px; padding-left: 20px;">
+                                <li>종합 성과 리뷰</li>
+                                <li>정규직 전환 프로세스</li>
+                                <li>피드백 세션 및 개선사항</li>
+                                <li>성공 축하 이벤트</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="scenario-section">
+                <h3 class="scenario-title">🔄 실제 자동화 시나리오 상세 분석</h3>
+                
+                <div class="scenario-step">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <div>
+                            <h4>입사 계약 체결 즉시 트리거</h4>
+                            <p>HR 시스템에서 계약 완료 시 자동 실행</p>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <p><strong>상황:</strong> HR 담당자가 김민준님의 채용 계약을 시스템에 입력 완료</p>
+                        <div class="step-details">
+                            <div class="trigger-box">
+                                <strong>🎯 트리거 조건</strong>
+                                <ul style="margin-top: 8px;">
+                                    <li>• HR 시스템에 신규 직원 등록</li>
+                                    <li>• 계약 상태가 "Signed"로 변경</li>
+                                    <li>• 입사일이 2주 이내</li>
+                                </ul>
+                            </div>
+                            <div class="action-box">
+                                <strong>⚡ 자동 실행 액션</strong>
+                                <ul style="margin-top: 8px;">
+                                    <li>• 개인 이메일로 환영 메시지 발송</li>
+                                    <li>• Slack 채널에 팀원 소개 예약</li>
+                                    <li>• IT 팀에 장비 준비 요청</li>
+                                    <li>• 보안팀에 출입카드 발급 요청</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scenario-step">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <div>
+                            <h4>입사 1주 전 시스템 계정 생성</h4>
+                            <p>모든 업무 도구의 계정을 자동으로 생성</p>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <p><strong>상황:</strong> 입사 7일 전, 시스템이 자동으로 각종 계정을 생성하고 권한 설정</p>
+                        <div class="step-details">
+                            <div class="trigger-box">
+                                <strong>🎯 트리거 조건</strong>
+                                <ul style="margin-top: 8px;">
+                                    <li>• 입사일 기준 7일 전</li>
+                                    <li>• 부서별 권한 매트릭스 확인</li>
+                                    <li>• IT 보안 정책 적용</li>
+                                </ul>
+                            </div>
+                            <div class="action-box">
+                                <strong>⚡ 자동 실행 액션</strong>
+                                <ul style="margin-top: 8px;">
+                                    <li>• 회사 이메일 계정 생성</li>
+                                    <li>• Slack 워크스페이스 초대</li>
+                                    <li>• GitHub 조직 멤버 추가</li>
+                                    <li>• Jira 프로젝트 액세스 권한 부여</li>
+                                    <li>• VPN 계정 설정</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scenario-step">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <div>
+                            <h4>첫 출근일 자동 체크인</h4>
+                            <p>출입카드 태그 시 환영 프로세스 시작</p>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <p><strong>상황:</strong> 김민준님이 오전 9시에 출입카드로 사무실 입장</p>
+                        <div class="step-details">
+                            <div class="trigger-box">
+                                <strong>🎯 트리거 조건</strong>
+                                <ul style="margin-top: 8px;">
+                                    <li>• 신규 직원 카드 첫 태그</li>
+                                    <li>• 입사 당일 날짜 확인</li>
+                                    <li>• 오전 8-10시 시간대</li>
+                                </ul>
+                            </div>
+                            <div class="action-box">
+                                <strong>⚡ 자동 실행 액션</strong>
+                                <ul style="margin-top: 8px;">
+                                    <li>• 팀 Slack에 "김민준님 출근!" 메시지</li>
+                                    <li>• 멘토에게 체크인 알림</li>
+                                    <li>• 좌석 위치 안내 이메일</li>
+                                    <li>• 오늘 일정 캘린더 알림</li>
+                                    <li>• HR에게 출근 확인 알림</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scenario-step">
+                    <div class="step-header">
+                        <div class="step-number">4</div>
+                        <div>
+                            <h4>첫 주 일일 체크인 서베이</h4>
+                            <p>매일 오후 6시 자동으로 적응 현황 확인</p>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <p><strong>상황:</strong> 첫 주 동안 매일 퇴근 시간에 간단한 피드백 수집</p>
+                        <div class="step-details">
+                            <div class="trigger-box">
+                                <strong>🎯 트리거 조건</strong>
+                                <ul style="margin-top: 8px;">
+                                    <li>• 입사 후 7일간 매일 18시</li>
+                                    <li>• 근무일만 실행 (주말 제외)</li>
+                                    <li>• 이전 설문 미응답시 리마인더</li>
+                                </ul>
+                            </div>
+                            <div class="action-box">
+                                <strong>⚡ 자동 실행 액션</strong>
+                                <ul style="margin-top: 8px;">
+                                    <li>• 개인 슬랙으로 체크인 폼 발송</li>
+                                    <li>• 오늘의 학습 내용 기록</li>
+                                    <li>• 어려웠던 점, 도움 필요한 부분</li>
+                                    <li>• 응답에 따른 추가 지원 알림</li>
+                                    <li>• 멘토에게 일일 리포트 전송</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="automation-tools">
+                <div class="tool-item">
+                    <div class="tool-icon">🏢</div>
+                    <strong>HR 시스템</strong>
+                    <p>BambooHR, Workday</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">💬</div>
+                    <strong>커뮤니케이션</strong>
+                    <p>Slack, Teams</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">📧</div>
+                    <strong>이메일</strong>
+                    <p>Gmail, Outlook</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">📅</div>
+                    <strong>캘린더</strong>
+                    <p>Google Calendar</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">🔐</div>
+                    <strong>인증 시스템</strong>
+                    <p>Active Directory</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">📊</div>
+                    <strong>프로젝트 관리</strong>
+                    <p>Jira, Notion</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">💻</div>
+                    <strong>개발 도구</strong>
+                    <p>GitHub, GitLab</p>
+                </div>
+                <div class="tool-item">
+                    <div class="tool-icon">📋</div>
+                    <strong>설문 도구</strong>
+                    <p>Google Forms</p>
+                </div>
+            </div>
+            
+            <div class="checklist-section">
+                <h3 class="checklist-title">✅ 자동화된 온보딩 체크리스트</h3>
+                <div class="checklist-grid">
+                    <div class="checklist-category">
+                        <div class="category-title">📋 사전 준비 (입사 2주 전)</div>
+                        <div class="checklist-item">
+                            <span class="checklist-icon">✓</span>
+                            <span>환영 이메일 발송</span>
+                        </div>
+                        <div class="checklist-item">
+                            <span class="checklist-icon">✓</span>
+                            <span>필수 서류 안내</span>
+                        </div>
+                        <div class="checklist-item">
+                            <span class="checklist-icon">✓</span>
+                            <span>회사 소개 자료 전송</span>
+                        </div>
+                        <div class="checklist-item">
+                            <span class="checklist-icon">✓</span>
+                            <span>첫날 스케줄 안내</span>
+                        </div>
+                    </div>
+                    
+                    <div class="checklist-category">
+                        <div class="category-title">🔧 시스템 설정 (입사 1주 전)</div>
+                        <div class="checklist-item">
+                            <span class="checklist-icon">✓</span>
+                            <span>이메일 계정 생성</span>
+                        </div>
+                        <div class="checklist-item">
+                            <span class="checklist-icon">✓</span>
+                            <span>Slack 워크스페이스 초대</span>
+                        </div>
+                        <div class="checklist-item">
+                            <span class="checklist-icon">✓</span>
+                            <span>개발 도구 액세스 권한</span>
+                        </div>
+                        <div class="checklist-item">
+                            <span class="checklist-icon">✓</span>
+                            <span>보안 카드 발급</span>
+                        </div>
+                        <div class="checklist-item">
+                            <span class="checklist-icon">✓</span>
+                            <span>IT 장비 준비</span>
+                        </div>
+                    </div>
+                    
+                    <div class="checklist-category">
+                        <div class="category-title">🎉 첫날 환영 (D-Day)</div>
+                        <div class="checklist-item">
+                            <span class="checklist-icon">✓</span>
+                            <span>출근 확인 및 팀 알림</span>
+                        </div>
+                        <div class="checklist-item">
+                            <span class="checklist-icon">✓</span>
+                            <span>좌석 및 장비 안내</span>
+                        </div>
+                        <div class="checklist-item">
+                            <span class="checklist-icon">✓</span>
+                            <span>오리엔테이션 참석</span>
+                        </div>
+                        <div class="checklist-item">
+                            <span class="checklist-icon">✓</span>
+                            <span>멘토와 첫 미팅</span>
+                        </div>
+                    </div>
+                    
+                    <div class="checklist-category">
+                        <div class="category-title">📈 지속적 관리 (첫 90일)</div>
+                        <div class="checklist-item">
+                            <span class="checklist-icon">✓</span>
+                            <span>주간 체크인 미팅</span>
+                        </div>
+                        <div class="checklist-item">
+                            <span class="checklist-icon">✓</span>
+                            <span>학습 진도 추적</span>
+                        </div>
+                        <div class="checklist-item">
+                            <span class="checklist-icon">✓</span>
+                            <span>프로젝트 참여도 평가</span>
+                        </div>
+                        <div class="checklist-item">
+                            <span class="checklist-icon">✓</span>
+                            <span>피드백 세션</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="metrics-section">
+                <div class="metric-card">
+                    <div class="metric-value">85%</div>
+                    <div class="metric-label">온보딩 만족도 향상</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">60%</div>
+                    <div class="metric-label">HR 업무 시간 단축</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">40%</div>
+                    <div class="metric-label">초기 이직률 감소</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">2주</div>
+                    <div class="metric-label">적응 기간 단축</div>
+                </div>
+            </div>
+            
+            <div class="cta">
+                <h3>신입사원의 성공적인 여정을 시작하세요!</h3>
+                <p>n8n의 스마트 온보딩 자동화로 새로운 팀원이 최고의 첫인상과 함께 빠르게 적응할 수 있도록 지원하세요</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

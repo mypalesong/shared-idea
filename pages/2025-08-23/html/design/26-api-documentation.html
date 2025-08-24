@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocuAPI - Interactive API Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #ecf0f1;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .api-network {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .api-node {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, #e74c3c 0%, #c0392b 100%);
+            border-radius: 50%;
+            animation: nodeFloat 6s ease-in-out infinite;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
+        }
+
+        .api-connection {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #e74c3c, transparent);
+            animation: dataFlow 3s ease-in-out infinite;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '📡';
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 4em;
+            animation: signalPulse 2s ease-in-out infinite;
+        }
+
+        .header h1 {
+            font-size: 4.5em;
+            font-weight: 900;
+            background: linear-gradient(45deg, #e74c3c, #3498db, #9b59b6, #e74c3c);
+            background-size: 400% 400%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: colorShift 5s ease infinite;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            font-size: 1.4em;
+            color: #bdc3c7;
+            margin-bottom: 30px;
+        }
+
+        .api-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .endpoint-card {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(52, 152, 219, 0.1));
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(231, 76, 60, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+        }
+
+        .endpoint-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(231, 76, 60, 0.1), transparent);
+            animation: cardSweep 4s infinite;
+        }
+
+        .endpoint-card:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 25px 50px rgba(231, 76, 60, 0.2);
+            border-color: rgba(231, 76, 60, 0.6);
+        }
+
+        .http-method {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .method-get { background: #27ae60; color: white; }
+        .method-post { background: #e74c3c; color: white; }
+        .method-put { background: #f39c12; color: white; }
+        .method-delete { background: #8e44ad; color: white; }
+
+        .endpoint-url {
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            color: #3498db;
+            margin-bottom: 15px;
+            word-break: break-all;
+        }
+
+        .endpoint-description {
+            color: #bdc3c7;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .endpoint-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: statusPulse 2s infinite;
+        }
+
+        .status-active { background: #27ae60; }
+        .status-deprecated { background: #f39c12; }
+        .status-beta { background: #3498db; }
+
+        .interactive-docs {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(231, 76, 60, 0.3);
+            border-radius: 20px;
+            padding: 35px;
+            margin: 40px 0;
+        }
+
+        .docs-title {
+            font-size: 2.8em;
+            color: #e74c3c;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .request-builder {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .request-panel {
+            background: rgba(52, 73, 94, 0.5);
+            border: 1px solid rgba(231, 76, 60, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .panel-title {
+            font-size: 1.4em;
+            color: #3498db;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            color: #bdc3c7;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            border-radius: 8px;
+            color: #ecf0f1;
+            font-family: 'Courier New', monospace;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #e74c3c;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .request-body {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            border-radius: 8px;
+            color: #27ae60;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            resize: vertical;
+        }
+
+        .response-display {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .response-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(52, 152, 219, 0.3);
+        }
+
+        .response-status {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .status-200 { background: rgba(39, 174, 96, 0.2); color: #27ae60; }
+        .status-404 { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+        .status-500 { background: rgba(142, 68, 173, 0.2); color: #8e44ad; }
+
+        .response-body {
+            font-family: 'Courier New', monospace;
+            color: #3498db;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            font-size: 0.9em;
+        }
+
+        .code-examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(155, 89, 182, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(155, 89, 182, 0.3);
+        }
+
+        .language-badge {
+            background: #9b59b6;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .code-content {
+            font-family: 'Courier New', monospace;
+            color: #f1c40f;
+            line-height: 1.6;
+            font-size: 0.85em;
+            white-space: pre-wrap;
+        }
+
+        .api-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 50px 0;
+            flex-wrap: wrap;
+        }
+
+        .api-btn {
+            padding: 16px 30px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border: none;
+            border-radius: 25px;
+            color: #fff;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+        }
+
+        .api-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .api-btn:hover::before {
+            left: 100%;
+        }
+
+        .api-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(231, 76, 60, 0.4);
+            background: linear-gradient(135deg, #c0392b, #a93226);
+        }
+
+        @keyframes nodeFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-15px) rotate(120deg); }
+            66% { transform: translateY(15px) rotate(240deg); }
+        }
+
+        @keyframes dataFlow {
+            0% { opacity: 0.3; transform: scaleX(0); }
+            50% { opacity: 1; transform: scaleX(1); }
+            100% { opacity: 0.3; transform: scaleX(0); }
+        }
+
+        @keyframes signalPulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.2); }
+        }
+
+        @keyframes colorShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes cardSweep {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.2); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 3.2em; }
+            .request-builder { grid-template-columns: 1fr; }
+            .api-controls { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="api-network"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>DocuAPI</h1>
+            <p>Interactive API Documentation & Testing Platform</p>
+        </div>
+
+        <div class="api-overview">
+            <div class="endpoint-card">
+                <div class="http-method method-get">GET</div>
+                <div class="endpoint-url">/api/v1/users</div>
+                <div class="endpoint-description">Retrieve a list of all users with optional filtering and pagination support</div>
+                <div class="endpoint-status">
+                    <div class="status-indicator status-active"></div>
+                    <span>Active</span>
+                </div>
+            </div>
+            <div class="endpoint-card">
+                <div class="http-method method-post">POST</div>
+                <div class="endpoint-url">/api/v1/users</div>
+                <div class="endpoint-description">Create a new user account with email validation and password hashing</div>
+                <div class="endpoint-status">
+                    <div class="status-indicator status-active"></div>
+                    <span>Active</span>
+                </div>
+            </div>
+            <div class="endpoint-card">
+                <div class="http-method method-put">PUT</div>
+                <div class="endpoint-url">/api/v1/users/{id}</div>
+                <div class="endpoint-description">Update an existing user's information with partial update support</div>
+                <div class="endpoint-status">
+                    <div class="status-indicator status-beta"></div>
+                    <span>Beta</span>
+                </div>
+            </div>
+            <div class="endpoint-card">
+                <div class="http-method method-delete">DELETE</div>
+                <div class="endpoint-url">/api/v1/users/{id}</div>
+                <div class="endpoint-description">Permanently delete a user account and all associated data</div>
+                <div class="endpoint-status">
+                    <div class="status-indicator status-deprecated"></div>
+                    <span>Deprecated</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="interactive-docs">
+            <h2 class="docs-title">🚀 Interactive API Tester</h2>
+            <div class="request-builder">
+                <div class="request-panel">
+                    <div class="panel-title">Request Configuration</div>
+                    <div class="form-group">
+                        <label class="form-label">HTTP Method</label>
+                        <select class="form-input" id="httpMethod">
+                            <option value="GET">GET</option>
+                            <option value="POST">POST</option>
+                            <option value="PUT">PUT</option>
+                            <option value="DELETE">DELETE</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Endpoint URL</label>
+                        <input type="text" class="form-input" id="endpointUrl" value="/api/v1/users" placeholder="/api/v1/endpoint">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Authorization Token</label>
+                        <input type="text" class="form-input" id="authToken" placeholder="Bearer your-jwt-token-here">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Request Body (JSON)</label>
+                        <textarea class="request-body" id="requestBody" placeholder='{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "role": "user"
+}'></textarea>
+                    </div>
+                </div>
+                
+                <div class="request-panel">
+                    <div class="panel-title">Response Preview</div>
+                    <div class="response-display" id="responseDisplay">
+                        <div class="response-header">
+                            <span>Status:</span>
+                            <div class="response-status status-200">200 OK</div>
+                        </div>
+                        <div class="response-body" id="responseBody">Click "Send Request" to see the response...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3 style="text-align: center; color: #e74c3c; font-size: 2.5em; margin: 50px 0; font-weight: 700;">Code Examples</h3>
+        <div class="code-examples">
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="panel-title">JavaScript (Fetch)</div>
+                    <div class="language-badge">JavaScript</div>
+                </div>
+                <div class="code-content">fetch('/api/v1/users', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer your-token',
+    'Content-Type': 'application/json'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));</div>
+            </div>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="panel-title">Python (Requests)</div>
+                    <div class="language-badge">Python</div>
+                </div>
+                <div class="code-content">import requests
+
+headers = {
+    'Authorization': 'Bearer your-token',
+    'Content-Type': 'application/json'
+}
+
+response = requests.get('/api/v1/users', headers=headers)
+data = response.json()
+print(data)</div>
+            </div>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="panel-title">cURL Command</div>
+                    <div class="language-badge">cURL</div>
+                </div>
+                <div class="code-content">curl -X GET \
+  '/api/v1/users' \
+  -H 'Authorization: Bearer your-token' \
+  -H 'Content-Type: application/json'</div>
+            </div>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <div class="panel-title">Node.js (Axios)</div>
+                    <div class="language-badge">Node.js</div>
+                </div>
+                <div class="code-content">const axios = require('axios');
+
+const config = {
+  method: 'get',
+  url: '/api/v1/users',
+  headers: {
+    'Authorization': 'Bearer your-token',
+    'Content-Type': 'application/json'
+  }
+};
+
+axios(config)
+  .then(response => console.log(response.data))
+  .catch(error => console.log(error));</div>
+            </div>
+        </div>
+
+        <div class="api-controls">
+            <button class="api-btn" onclick="sendRequest()">Send Request</button>
+            <button class="api-btn" onclick="generateCode()">Generate Code</button>
+            <button class="api-btn" onclick="validateSchema()">Validate Schema</button>
+            <button class="api-btn" onclick="exportDocs()">Export Docs</button>
+        </div>
+    </div>
+
+    <script>
+        // Generate API network visualization
+        function createAPINetwork() {
+            const network = document.querySelector('.api-network');
+            const nodeCount = 20;
+            const connectionCount = 10;
+
+            // Create API nodes
+            for (let i = 0; i < nodeCount; i++) {
+                const node = document.createElement('div');
+                node.className = 'api-node';
+                node.style.left = Math.random() * 100 + '%';
+                node.style.top = Math.random() * 100 + '%';
+                node.style.animationDelay = Math.random() * 6 + 's';
+                network.appendChild(node);
+            }
+
+            // Create connections
+            for (let i = 0; i < connectionCount; i++) {
+                const connection = document.createElement('div');
+                connection.className = 'api-connection';
+                connection.style.left = Math.random() * 100 + '%';
+                connection.style.top = Math.random() * 100 + '%';
+                connection.style.width = Math.random() * 200 + 100 + 'px';
+                connection.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+                connection.style.animationDelay = Math.random() * 3 + 's';
+                network.appendChild(connection);
+            }
+        }
+
+        // Send API request simulation
+        function sendRequest() {
+            const method = document.getElementById('httpMethod').value;
+            const url = document.getElementById('endpointUrl').value;
+            const token = document.getElementById('authToken').value;
+            const body = document.getElementById('requestBody').value;
+            
+            showNotification(`Sending ${method} request to ${url}...`, 'info');
+            
+            // Update response display
+            const responseDisplay = document.getElementById('responseDisplay');
+            const responseBody = document.getElementById('responseBody');
+            
+            responseBody.textContent = 'Loading...';
+            
+            setTimeout(() => {
+                // Simulate different responses based on method
+                let mockResponse = '';
+                let statusClass = 'status-200';
+                let statusText = '200 OK';
+                
+                if (method === 'GET') {
+                    mockResponse = JSON.stringify({
+                        data: [
+                            { id: 1, name: 'John Doe', email: 'john@example.com', role: 'admin' },
+                            { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'user' },
+                            { id: 3, name: 'Mike Johnson', email: 'mike@example.com', role: 'user' }
+                        ],
+                        meta: {
+                            total: 3,
+                            page: 1,
+                            per_page: 10
+                        }
+                    }, null, 2);
+                } else if (method === 'POST') {
+                    statusClass = 'status-200';
+                    statusText = '201 Created';
+                    mockResponse = JSON.stringify({
+                        message: 'User created successfully',
+                        data: {
+                            id: 4,
+                            name: 'New User',
+                            email: 'newuser@example.com',
+                            role: 'user',
+                            created_at: new Date().toISOString()
+                        }
+                    }, null, 2);
+                } else if (method === 'PUT') {
+                    mockResponse = JSON.stringify({
+                        message: 'User updated successfully',
+                        data: {
+                            id: 1,
+                            name: 'John Doe Updated',
+                            email: 'john.updated@example.com',
+                            role: 'admin',
+                            updated_at: new Date().toISOString()
+                        }
+                    }, null, 2);
+                } else if (method === 'DELETE') {
+                    statusClass = 'status-404';
+                    statusText = '404 Not Found';
+                    mockResponse = JSON.stringify({
+                        error: 'User not found',
+                        message: 'The requested user does not exist or has already been deleted'
+                    }, null, 2);
+                }
+                
+                // Update response display
+                responseDisplay.innerHTML = `
+                    <div class="response-header">
+                        <span>Status:</span>
+                        <div class="response-status ${statusClass}">${statusText}</div>
+                    </div>
+                    <div class="response-body">${mockResponse}</div>
+                `;
+                
+                showNotification(`Request completed: ${statusText}`, statusClass === 'status-200' ? 'success' : 'warning');
+            }, 2000);
+        }
+
+        // Generate code examples
+        function generateCode() {
+            const method = document.getElementById('httpMethod').value;
+            const url = document.getElementById('endpointUrl').value;
+            const token = document.getElementById('authToken').value;
+            
+            showNotification('Generating code examples for current configuration...', 'info');
+            
+            setTimeout(() => {
+                // Update JavaScript example
+                const jsCode = document.querySelector('.code-examples .code-block:nth-child(1) .code-content');
+                jsCode.textContent = `fetch('${url}', {
+  method: '${method}',
+  headers: {
+    'Authorization': '${token || 'Bearer your-token'}',
+    'Content-Type': 'application/json'
+  }${method !== 'GET' ? ',\n  body: JSON.stringify(requestData)' : ''}
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));`;
+                
+                // Update cURL example
+                const curlCode = document.querySelector('.code-examples .code-block:nth-child(3) .code-content');
+                curlCode.textContent = `curl -X ${method} \\
+  '${url}' \\
+  -H 'Authorization: ${token || 'Bearer your-token'}' \\
+  -H 'Content-Type: application/json'${method !== 'GET' ? " \\\n  -d 'request-body-json'" : ''}`;
+                
+                showNotification('Code examples updated successfully!', 'success');
+            }, 1500);
+        }
+
+        // Validate API schema
+        function validateSchema() {
+            showNotification('Validating API schema and request format...', 'info');
+            
+            const requestBody = document.getElementById('requestBody').value;
+            
+            setTimeout(() => {
+                try {
+                    if (requestBody.trim()) {
+                        JSON.parse(requestBody);
+                        showNotification('✅ Schema validation passed! Request format is valid.', 'success');
+                    } else {
+                        showNotification('⚠️ No request body to validate.', 'warning');
+                    }
+                } catch (error) {
+                    showNotification('❌ Schema validation failed: Invalid JSON format.', 'error');
+                }
+            }, 1000);
+        }
+
+        // Export documentation
+        function exportDocs() {
+            showNotification('Exporting API documentation...', 'info');
+            
+            setTimeout(() => {
+                const docData = {
+                    title: 'DocuAPI Documentation',
+                    version: '1.0.0',
+                    timestamp: new Date().toISOString(),
+                    endpoints: [
+                        { method: 'GET', url: '/api/v1/users', description: 'Retrieve all users' },
+                        { method: 'POST', url: '/api/v1/users', description: 'Create new user' },
+                        { method: 'PUT', url: '/api/v1/users/{id}', description: 'Update user' },
+                        { method: 'DELETE', url: '/api/v1/users/{id}', description: 'Delete user' }
+                    ]
+                };
+                
+                const blob = new Blob([JSON.stringify(docData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `api-documentation-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showNotification('📄 API documentation exported successfully!', 'success');
+            }, 1500);
+        }
+
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            const colors = {
+                success: '#27ae60',
+                info: '#3498db',
+                warning: '#f39c12',
+                error: '#e74c3c'
+            };
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 16px 24px;
+                background: rgba(0, 0, 0, 0.9);
+                border: 2px solid ${colors[type] || '#3498db'};
+                color: ${colors[type] || '#3498db'};
+                border-radius: 10px;
+                z-index: 1000;
+                font-family: 'Inter', sans-serif;
+                font-weight: 600;
+                animation: slideIn 0.5s ease;
+                max-width: 400px;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.5s ease';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 500);
+            }, 4000);
+        }
+
+        // Add slide animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Interactive endpoint card clicks
+        function setupEndpointInteractions() {
+            document.querySelectorAll('.endpoint-card').forEach((card, index) => {
+                card.addEventListener('click', function() {
+                    const method = this.querySelector('.http-method').textContent;
+                    const url = this.querySelector('.endpoint-url').textContent;
+                    const description = this.querySelector('.endpoint-description').textContent;
+                    
+                    // Auto-fill the request form
+                    document.getElementById('httpMethod').value = method;
+                    document.getElementById('endpointUrl').value = url;
+                    
+                    showNotification(`Loaded ${method} ${url} endpoint configuration`, 'info');
+                });
+            });
+        }
+
+        // Auto-update request body based on method
+        function setupMethodListener() {
+            document.getElementById('httpMethod').addEventListener('change', function() {
+                const method = this.value;
+                const requestBody = document.getElementById('requestBody');
+                
+                if (method === 'GET' || method === 'DELETE') {
+                    requestBody.value = '';
+                    requestBody.placeholder = 'No request body needed for ' + method + ' requests';
+                } else {
+                    requestBody.placeholder = '{\n  "name": "John Doe",\n  "email": "john@example.com",\n  "role": "user"\n}';
+                    if (method === 'POST') {
+                        requestBody.value = '{\n  "name": "John Doe",\n  "email": "john@example.com",\n  "role": "user"\n}';
+                    } else if (method === 'PUT') {
+                        requestBody.value = '{\n  "name": "John Doe Updated",\n  "email": "john.updated@example.com"\n}';
+                    }
+                }
+            });
+        }
+
+        // Copy code functionality
+        function setupCodeCopyFeature() {
+            document.querySelectorAll('.code-block').forEach(block => {
+                const copyBtn = document.createElement('button');
+                copyBtn.textContent = '📋';
+                copyBtn.style.cssText = `
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    background: rgba(155, 89, 182, 0.8);
+                    border: none;
+                    color: white;
+                    padding: 8px;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    font-size: 0.9em;
+                `;
+                
+                copyBtn.addEventListener('click', function() {
+                    const code = block.querySelector('.code-content').textContent;
+                    navigator.clipboard.writeText(code).then(() => {
+                        showNotification('Code copied to clipboard!', 'success');
+                        copyBtn.textContent = '✅';
+                        setTimeout(() => copyBtn.textContent = '📋', 2000);
+                    });
+                });
+                
+                block.style.position = 'relative';
+                block.appendChild(copyBtn);
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createAPINetwork();
+            setupEndpointInteractions();
+            setupMethodListener();
+            setupCodeCopyFeature();
+            
+            // Set default request body for POST
+            document.getElementById('requestBody').value = '{\n  "name": "John Doe",\n  "email": "john@example.com",\n  "role": "user"\n}';
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'Enter':
+                        e.preventDefault();
+                        sendRequest();
+                        break;
+                    case 'g':
+                        e.preventDefault();
+                        generateCode();
+                        break;
+                    case 'v':
+                        e.preventDefault();
+                        validateSchema();
+                        break;
+                    case 'e':
+                        e.preventDefault();
+                        exportDocs();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

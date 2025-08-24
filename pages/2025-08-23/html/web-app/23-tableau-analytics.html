@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau - Business Intelligence Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f6f8fa;
+            color: #444;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Header */
+        .top-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 48px;
+            background: #1f4e79;
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            margin-right: 24px;
+        }
+
+        .tableau-logo {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #ff7043, #e91e63);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-size: 14px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .header-nav a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-nav a.active,
+        .header-nav a:hover {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-search {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 4px;
+            color: white;
+            font-size: 12px;
+            width: 220px;
+        }
+
+        .header-search::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 220px;
+            background: white;
+            border-right: 1px solid #e1e5e9;
+            padding-top: 48px;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 16px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .project-selector {
+            width: 100%;
+            background: #f6f8fa;
+            border: 1px solid #d1d5da;
+            color: #444;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .sidebar-section {
+            padding: 16px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .sidebar-section h3 {
+            font-size: 11px;
+            font-weight: 600;
+            color: #6a737d;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 2px;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 6px 12px;
+            color: #586069;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-nav a:hover {
+            background: #f6f8fa;
+            color: #0366d6;
+        }
+
+        .sidebar-nav a.active {
+            background: #e3f2fd;
+            color: #1976d2;
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            opacity: 0.8;
+        }
+
+        /* Data Sources Panel */
+        .data-sources {
+            background: #f8f9fa;
+            padding: 12px;
+            margin: 8px 12px;
+            border-radius: 4px;
+            border-left: 3px solid #28a745;
+        }
+
+        .data-source-item {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .connection-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 3px;
+            background: #28a745;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding-top: 48px;
+            display: flex;
+            flex-direction: column;
+            background: #f6f8fa;
+        }
+
+        .content-header {
+            background: white;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e1e5e9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .content-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #24292e;
+        }
+
+        .content-subtitle {
+            font-size: 12px;
+            color: #6a737d;
+            margin-top: 2px;
+        }
+
+        .content-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: 1px solid #d1d5da;
+            background: white;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn:hover {
+            background: #f6f8fa;
+            border-color: #959da5;
+        }
+
+        .btn-primary {
+            background: #0366d6;
+            color: white;
+            border-color: #0366d6;
+        }
+
+        .btn-primary:hover {
+            background: #0256cc;
+        }
+
+        /* Dashboard Controls */
+        .dashboard-controls {
+            background: white;
+            padding: 12px 24px;
+            border-bottom: 1px solid #e1e5e9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-label {
+            font-size: 11px;
+            color: #6a737d;
+            font-weight: 600;
+        }
+
+        .filter-select {
+            padding: 4px 8px;
+            border: 1px solid #d1d5da;
+            border-radius: 4px;
+            font-size: 11px;
+            background: white;
+            min-width: 100px;
+        }
+
+        .date-range {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            flex: 1;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto auto auto;
+            gap: 16px;
+            overflow: auto;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid #e1e5e9;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .chart-container:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .chart-container.large {
+            grid-column: span 2;
+        }
+
+        .chart-container.tall {
+            grid-row: span 2;
+        }
+
+        .chart-header {
+            padding: 16px;
+            border-bottom: 1px solid #f0f2f5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chart-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #24292e;
+        }
+
+        .chart-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chart-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        .chart-btn:hover {
+            background: #f6f8fa;
+        }
+
+        .chart-content {
+            padding: 16px;
+            height: calc(100% - 60px);
+            position: relative;
+        }
+
+        /* Chart Styles */
+        .kpi-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1976d2;
+            margin-bottom: 4px;
+        }
+
+        .kpi-label {
+            font-size: 12px;
+            color: #6a737d;
+            margin-bottom: 8px;
+        }
+
+        .kpi-change {
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .kpi-up {
+            color: #28a745;
+        }
+
+        .kpi-down {
+            color: #dc3545;
+        }
+
+        .chart-placeholder {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(45deg, #f8f9fa 25%, transparent 25%), 
+                        linear-gradient(-45deg, #f8f9fa 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #f8f9fa 75%), 
+                        linear-gradient(-45deg, transparent 75%, #f8f9fa 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            border: 2px dashed #d1d5da;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6a737d;
+            font-size: 11px;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Simulated Charts */
+        .bar-chart {
+            height: 180px;
+            display: flex;
+            align-items: end;
+            gap: 8px;
+            padding: 12px 0;
+        }
+
+        .bar {
+            flex: 1;
+            background: linear-gradient(180deg, #4fc3f7, #2196f3);
+            border-radius: 2px 2px 0 0;
+            min-height: 10px;
+            position: relative;
+        }
+
+        .line-chart {
+            height: 180px;
+            background: 
+                linear-gradient(90deg, transparent 24%, rgba(33,150,243,0.1) 25%, rgba(33,150,243,0.1) 26%, transparent 27%),
+                linear-gradient(180deg, transparent 24%, rgba(33,150,243,0.1) 25%, rgba(33,150,243,0.1) 26%, transparent 27%);
+            background-size: 25px 25px;
+            position: relative;
+            border-radius: 4px;
+        }
+
+        .line-path {
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            right: 10%;
+            height: 3px;
+            background: linear-gradient(90deg, #2196f3, #4caf50, #ff9800);
+            border-radius: 2px;
+            transform: rotate(-5deg);
+        }
+
+        .pie-chart {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: conic-gradient(#2196f3 0deg 108deg, #4caf50 108deg 180deg, #ff9800 180deg 252deg, #f44336 252deg 360deg);
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .pie-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .map-viz {
+            height: 180px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #f44336;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(244,67,54,0.5);
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            font-size: 11px;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            padding: 8px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #444;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .data-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Legends */
+        .chart-legend {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-header">
+        <div class="header-brand">
+            <div class="tableau-logo">T</div>
+            <span>Tableau</span>
+        </div>
+        <div class="header-nav">
+            <a href="#" class="active">📊 Home</a>
+            <a href="#">📈 Explore</a>
+            <a href="#">📋 Favorites</a>
+            <a href="#">📚 Recents</a>
+            <a href="#">🔍 Recommendations</a>
+        </div>
+        <div class="header-right">
+            <input type="text" class="header-search" placeholder="Search workbooks, views, data sources...">
+            <button class="btn">🔔</button>
+            <div style="width: 28px; height: 28px; border-radius: 14px; background: #4caf50; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 500;">DA</div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <select class="project-selector">
+                    <option>Sales Performance Dashboard</option>
+                    <option>Marketing Analytics</option>
+                    <option>Financial Reporting</option>
+                    <option>Operations Dashboard</option>
+                </select>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3>Sheets</h3>
+                <ul class="sidebar-nav">
+                    <li><a href="#" class="active">📊 Revenue Overview</a></li>
+                    <li><a href="#">📈 Sales Trends</a></li>
+                    <li><a href="#">🌍 Regional Performance</a></li>
+                    <li><a href="#">👥 Customer Analysis</a></li>
+                    <li><a href="#">📦 Product Performance</a></li>
+                </ul>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3>Dashboards</h3>
+                <ul class="sidebar-nav">
+                    <li><a href="#">🎯 Executive Summary</a></li>
+                    <li><a href="#">📊 Sales Dashboard</a></li>
+                    <li><a href="#">🔍 Detailed Analysis</a></li>
+                    <li><a href="#">📱 Mobile View</a></li>
+                </ul>
+            </div>
+            
+            <div class="data-sources">
+                <div style="font-size: 11px; font-weight: 600; color: #666; margin-bottom: 8px;">Data Sources</div>
+                <div class="data-source-item">
+                    <div class="connection-dot"></div>
+                    <span>SQL Server - Sales DB</span>
+                </div>
+                <div class="data-source-item">
+                    <div class="connection-dot"></div>
+                    <span>Excel - Customer Data</span>
+                </div>
+                <div class="data-source-item">
+                    <div class="connection-dot"></div>
+                    <span>Google Analytics</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3>Filters</h3>
+                <div style="padding: 8px; background: #f8f9fa; border-radius: 4px; margin-bottom: 8px;">
+                    <div style="font-size: 11px; margin-bottom: 4px; color: #666;">Date Range</div>
+                    <select class="filter-select" onchange="updateDateFilter(this.value)">
+                        <option value="ytd">Year to Date</option>
+                        <option value="last12">Last 12 Months</option>
+                        <option value="thisyear">This Year</option>
+                        <option value="custom">Custom Range</option>
+                    </select>
+                </div>
+                <div style="padding: 8px; background: #f8f9fa; border-radius: 4px; margin-bottom: 8px;">
+                    <div style="font-size: 11px; margin-bottom: 4px; color: #666;">Region</div>
+                    <select class="filter-select" onchange="updateRegionFilter(this.value)">
+                        <option value="all">All Regions</option>
+                        <option value="na">North America</option>
+                        <option value="eu">Europe</option>
+                        <option value="asia">Asia Pacific</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="content-header">
+                <div>
+                    <h1 class="content-title">Sales Performance Dashboard</h1>
+                    <div class="content-subtitle">Real-time sales analytics and performance metrics</div>
+                </div>
+                <div class="content-actions">
+                    <button class="btn">📤 Export</button>
+                    <button class="btn">📧 Subscribe</button>
+                    <button class="btn">⚙️ Edit</button>
+                    <button class="btn btn-primary">🔄 Refresh</button>
+                </div>
+            </div>
+
+            <div class="dashboard-controls">
+                <div class="filter-controls">
+                    <div class="filter-group">
+                        <span class="filter-label">Period:</span>
+                        <span class="date-range">Jan 1 - Dec 31, 2024</span>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Region:</span>
+                        <select class="filter-select">
+                            <option>All Regions</option>
+                            <option>North America</option>
+                            <option>Europe</option>
+                            <option>Asia Pacific</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Product:</span>
+                        <select class="filter-select">
+                            <option>All Products</option>
+                            <option>Software</option>
+                            <option>Hardware</option>
+                            <option>Services</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <span style="font-size: 11px; color: #666;">Last updated: 2 minutes ago</span>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- KPI Cards -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">Total Revenue</div>
+                        <div class="chart-actions">
+                            <button class="chart-btn" title="More options">⋮</button>
+                        </div>
+                    </div>
+                    <div class="chart-content">
+                        <div class="kpi-value" id="totalRevenue">$12.4M</div>
+                        <div class="kpi-label">This Year</div>
+                        <div class="kpi-change kpi-up">
+                            ↗ +15.3% vs last year
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">New Customers</div>
+                        <div class="chart-actions">
+                            <button class="chart-btn" title="More options">⋮</button>
+                        </div>
+                    </div>
+                    <div class="chart-content">
+                        <div class="kpi-value" id="newCustomers">2,847</div>
+                        <div class="kpi-label">This Quarter</div>
+                        <div class="kpi-change kpi-up">
+                            ↗ +8.7% vs last quarter
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">Conversion Rate</div>
+                        <div class="chart-actions">
+                            <button class="chart-btn" title="More options">⋮</button>
+                        </div>
+                    </div>
+                    <div class="chart-content">
+                        <div class="kpi-value" id="conversionRate">24.6%</div>
+                        <div class="kpi-label">This Month</div>
+                        <div class="kpi-change kpi-down">
+                            ↘ -2.1% vs last month
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Revenue Trend Chart -->
+                <div class="chart-container large">
+                    <div class="chart-header">
+                        <div class="chart-title">Revenue Trend (12 Months)</div>
+                        <div class="chart-actions">
+                            <button class="chart-btn" title="Download">⬇</button>
+                            <button class="chart-btn" title="Full screen">⛶</button>
+                            <button class="chart-btn" title="More options">⋮</button>
+                        </div>
+                    </div>
+                    <div class="chart-content">
+                        <div class="line-chart">
+                            <div class="line-path"></div>
+                            <div style="position: absolute; bottom: 10px; left: 10px; font-size: 10px; color: #666;">Jan 2024</div>
+                            <div style="position: absolute; bottom: 10px; right: 10px; font-size: 10px; color: #666;">Dec 2024</div>
+                            <div style="position: absolute; top: 10px; left: 10px; font-size: 10px; color: #666;">$2M</div>
+                            <div style="position: absolute; bottom: 50%; left: 10px; font-size: 10px; color: #666;">$1M</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Regional Performance -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">Regional Performance</div>
+                        <div class="chart-actions">
+                            <button class="chart-btn" title="More options">⋮</button>
+                        </div>
+                    </div>
+                    <div class="chart-content">
+                        <div class="bar-chart">
+                            <div class="bar" style="height: 85%;" title="North America: $5.2M"></div>
+                            <div class="bar" style="height: 62%;" title="Europe: $3.1M"></div>
+                            <div class="bar" style="height: 74%;" title="Asia Pacific: $3.7M"></div>
+                            <div class="bar" style="height: 45%;" title="Latin America: $2.3M"></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-around; margin-top: 8px; font-size: 10px; color: #666;">
+                            <span>NA</span>
+                            <span>EU</span>
+                            <span>APAC</span>
+                            <span>LATAM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sales by Product -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">Sales by Product</div>
+                        <div class="chart-actions">
+                            <button class="chart-btn" title="More options">⋮</button>
+                        </div>
+                    </div>
+                    <div class="chart-content">
+                        <div class="pie-chart">
+                            <div class="pie-center">100%</div>
+                        </div>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #2196f3;"></div>
+                                <span>Software (30%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #4caf50;"></div>
+                                <span>Hardware (20%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #ff9800;"></div>
+                                <span>Services (20%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #f44336;"></div>
+                                <span>Support (30%)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Geographic Sales Map -->
+                <div class="chart-container large">
+                    <div class="chart-header">
+                        <div class="chart-title">Geographic Sales Distribution</div>
+                        <div class="chart-actions">
+                            <button class="chart-btn" title="Layer options">🗺️</button>
+                            <button class="chart-btn" title="More options">⋮</button>
+                        </div>
+                    </div>
+                    <div class="chart-content">
+                        <div class="map-viz">
+                            <div class="map-dot" style="top: 25%; left: 15%;"></div>
+                            <div class="map-dot" style="top: 20%; left: 45%;"></div>
+                            <div class="map-dot" style="top: 35%; left: 75%;"></div>
+                            <div class="map-dot" style="top: 60%; left: 20%;"></div>
+                            <div class="map-dot" style="top: 45%; left: 65%;"></div>
+                            <div style="position: absolute; bottom: 10px; left: 10px; font-size: 10px; color: #666;">Sales locations with revenue > $100K</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Customers Table -->
+                <div class="chart-container tall">
+                    <div class="chart-header">
+                        <div class="chart-title">Top Customers</div>
+                        <div class="chart-actions">
+                            <button class="chart-btn" title="Export">📤</button>
+                            <button class="chart-btn" title="More options">⋮</button>
+                        </div>
+                    </div>
+                    <div class="chart-content" style="padding: 0;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Revenue</th>
+                                    <th>Growth</th>
+                                    <th>Region</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr onclick="selectCustomer('acme-corp')">
+                                    <td><strong>Acme Corp</strong></td>
+                                    <td>$845K</td>
+                                    <td style="color: #28a745;">+12.5%</td>
+                                    <td>North America</td>
+                                </tr>
+                                <tr onclick="selectCustomer('global-tech')">
+                                    <td><strong>Global Tech</strong></td>
+                                    <td>$723K</td>
+                                    <td style="color: #28a745;">+8.3%</td>
+                                    <td>Europe</td>
+                                </tr>
+                                <tr onclick="selectCustomer('innovate-inc')">
+                                    <td><strong>Innovate Inc</strong></td>
+                                    <td>$692K</td>
+                                    <td style="color: #dc3545;">-2.1%</td>
+                                    <td>Asia Pacific</td>
+                                </tr>
+                                <tr onclick="selectCustomer('mega-solutions')">
+                                    <td><strong>Mega Solutions</strong></td>
+                                    <td>$567K</td>
+                                    <td style="color: #28a745;">+15.7%</td>
+                                    <td>North America</td>
+                                </tr>
+                                <tr onclick="selectCustomer('future-systems')">
+                                    <td><strong>Future Systems</strong></td>
+                                    <td>$489K</td>
+                                    <td style="color: #28a745;">+6.2%</td>
+                                    <td>Europe</td>
+                                </tr>
+                                <tr onclick="selectCustomer('smart-enterprises')">
+                                    <td><strong>Smart Enterprises</strong></td>
+                                    <td>$445K</td>
+                                    <td style="color: #ffc107;">0.0%</td>
+                                    <td>Asia Pacific</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentFilters = {
+            dateRange: 'ytd',
+            region: 'all',
+            product: 'all'
+        };
+
+        function updateDateFilter(value) {
+            currentFilters.dateRange = value;
+            refreshDashboard();
+        }
+
+        function updateRegionFilter(value) {
+            currentFilters.region = value;
+            refreshDashboard();
+        }
+
+        function refreshDashboard() {
+            console.log('Refreshing dashboard with filters:', currentFilters);
+            
+            // Simulate data refresh
+            const kpiElements = {
+                totalRevenue: document.getElementById('totalRevenue'),
+                newCustomers: document.getElementById('newCustomers'),
+                conversionRate: document.getElementById('conversionRate')
+            };
+            
+            // Add loading state
+            Object.values(kpiElements).forEach(el => {
+                el.style.opacity = '0.5';
+            });
+            
+            setTimeout(() => {
+                // Simulate updated values based on filters
+                if (currentFilters.region === 'na') {
+                    kpiElements.totalRevenue.textContent = '$5.2M';
+                    kpiElements.newCustomers.textContent = '1,247';
+                } else if (currentFilters.region === 'eu') {
+                    kpiElements.totalRevenue.textContent = '$3.1M';
+                    kpiElements.newCustomers.textContent = '856';
+                } else {
+                    kpiElements.totalRevenue.textContent = '$12.4M';
+                    kpiElements.newCustomers.textContent = '2,847';
+                }
+                
+                // Remove loading state
+                Object.values(kpiElements).forEach(el => {
+                    el.style.opacity = '1';
+                });
+            }, 1000);
+        }
+
+        function selectCustomer(customerId) {
+            console.log('Selected customer:', customerId);
+            
+            // Highlight selected row
+            document.querySelectorAll('.data-table tr').forEach(row => {
+                row.style.background = '';
+            });
+            
+            event.target.closest('tr').style.background = '#e3f2fd';
+            
+            // Could trigger drill-down view or customer details
+            alert(`Drilling down to ${customerId} details...`);
+        }
+
+        // Auto-refresh simulation
+        setInterval(() => {
+            console.log('Auto-refreshing dashboard data...');
+            
+            // Simulate real-time updates
+            const revenue = document.getElementById('totalRevenue');
+            if (revenue) {
+                const currentValue = parseFloat(revenue.textContent.replace('$', '').replace('M', ''));
+                const change = (Math.random() - 0.5) * 0.1;
+                const newValue = Math.max(0, currentValue + change);
+                revenue.textContent = `$${newValue.toFixed(1)}M`;
+            }
+        }, 30000);
+
+        // Interactive chart hover effects
+        document.querySelectorAll('.chart-container').forEach(container => {
+            container.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            container.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Toolbar interactions
+        document.querySelectorAll('.chart-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const title = this.getAttribute('title');
+                console.log(`Chart action: ${title}`);
+                
+                if (title === 'Full screen') {
+                    const container = this.closest('.chart-container');
+                    container.style.position = 'fixed';
+                    container.style.top = '0';
+                    container.style.left = '0';
+                    container.style.right = '0';
+                    container.style.bottom = '0';
+                    container.style.zIndex = '9999';
+                    container.style.margin = '0';
+                }
+            });
+        });
+
+        // Search functionality
+        document.querySelector('.header-search').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            console.log('Searching for:', searchTerm);
+            
+            // Simulate search highlighting
+            document.querySelectorAll('.chart-title').forEach(title => {
+                if (searchTerm && title.textContent.toLowerCase().includes(searchTerm)) {
+                    title.style.background = '#fff3cd';
+                } else {
+                    title.style.background = '';
+                }
+            });
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Tableau Dashboard loaded');
+            refreshDashboard();
+        });
+    </script>
+</body>
+</html>

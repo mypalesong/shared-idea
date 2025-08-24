@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Portfolio - Design & Development</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', 'Times', serif;
+            background: #faf8f3;
+            color: #2c2c2c;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: linear-gradient(135deg, #faf8f3 0%, #f0ede5 100%);
+        }
+        
+        .hero {
+            text-align: center;
+            position: relative;
+            z-index: 3;
+        }
+        
+        .hero h1 {
+            font-size: 5rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            color: #2c2c2c;
+            position: relative;
+            animation: creativeFloat 4s ease-in-out infinite;
+        }
+        
+        .hero h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1);
+            animation: underlineGrow 2s ease-out;
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            color: #666;
+            font-style: italic;
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+        
+        .creative-nav {
+            position: fixed;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+            z-index: 100;
+        }
+        
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(44, 44, 44, 0.3);
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-dot.active {
+            background: #ff6b6b;
+            transform: scale(1.5);
+        }
+        
+        .nav-dot::before {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 2px solid transparent;
+            border-radius: 50%;
+            top: -9px;
+            left: -9px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-dot:hover::before {
+            border-color: #ff6b6b;
+        }
+        
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .creative-shape {
+            position: absolute;
+            opacity: 0.6;
+            animation: creativeFloat 6s ease-in-out infinite;
+        }
+        
+        .shape-1 {
+            top: 15%;
+            left: 10%;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            border-radius: 20px;
+            transform: rotate(45deg);
+            animation-delay: 0s;
+        }
+        
+        .shape-2 {
+            top: 25%;
+            right: 20%;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #4ecdc4, #7dd3c0);
+            border-radius: 50%;
+            animation-delay: 2s;
+        }
+        
+        .shape-3 {
+            bottom: 30%;
+            left: 15%;
+            width: 100px;
+            height: 40px;
+            background: linear-gradient(45deg, #45b7d1, #6bb6dd);
+            border-radius: 20px;
+            animation-delay: 4s;
+        }
+        
+        .shape-4 {
+            bottom: 20%;
+            right: 10%;
+            width: 50px;
+            height: 90px;
+            background: linear-gradient(45deg, #96ceb4, #b8d4c4);
+            border-radius: 25px;
+            animation-delay: 1s;
+        }
+        
+        .creative-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: transparent;
+            color: #2c2c2c;
+            text-decoration: none;
+            border: 2px solid #2c2c2c;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 1s ease-out 1s both;
+        }
+        
+        .creative-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+            transition: all 0.4s ease;
+            z-index: -1;
+        }
+        
+        .creative-button:hover {
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .creative-button:hover::before {
+            left: 0;
+        }
+        
+        .portfolio-section {
+            padding: 150px 0;
+            position: relative;
+        }
+        
+        .section-title {
+            font-size: 3.5rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            color: #2c2c2c;
+            font-weight: 300;
+            position: relative;
+        }
+        
+        .section-title::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+        }
+        
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+            margin-top: 5rem;
+        }
+        
+        .portfolio-item {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+        
+        .portfolio-item:hover {
+            transform: translateY(-10px) rotate(2deg);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+        }
+        
+        .portfolio-image {
+            height: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .portfolio-image::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+        
+        .portfolio-image.code::before {
+            content: '</>';
+        }
+        
+        .portfolio-image.design::before {
+            content: '🎨';
+        }
+        
+        .portfolio-image.mobile::before {
+            content: '📱';
+        }
+        
+        .portfolio-image.web::before {
+            content: '🌐';
+        }
+        
+        .portfolio-content {
+            padding: 2.5rem;
+        }
+        
+        .portfolio-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #2c2c2c;
+            font-weight: 500;
+        }
+        
+        .portfolio-description {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+        
+        .portfolio-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .tag {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .skills-section {
+            background: #2c2c2c;
+            color: white;
+            padding: 150px 0;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 4rem;
+            margin-top: 5rem;
+        }
+        
+        .skill-category {
+            text-align: center;
+        }
+        
+        .skill-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .skill-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: skillShine 3s linear infinite;
+        }
+        
+        .skill-category h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+        }
+        
+        .skill-list {
+            list-style: none;
+            text-align: left;
+        }
+        
+        .skill-list li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .skill-list li::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            color: #ff6b6b;
+        }
+        
+        .creative-quote {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+        }
+        
+        .quote-text {
+            font-size: 2.5rem;
+            font-style: italic;
+            font-weight: 300;
+            line-height: 1.4;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .quote-author {
+            font-size: 1.2rem;
+            margin-top: 2rem;
+            opacity: 0.8;
+        }
+        
+        .contact-section {
+            padding: 150px 0;
+            background: #faf8f3;
+        }
+        
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 2rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c2c2c;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ff6b6b;
+        }
+        
+        @keyframes creativeFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(5deg); }
+            66% { transform: translateY(10px) rotate(-3deg); }
+        }
+        
+        @keyframes underlineGrow {
+            0% { width: 0; }
+            100% { width: 100px; }
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes skillShine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(200%) translateY(200%) rotate(45deg); }
+        }
+        
+        .creative-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: all 0.3s ease;
+        }
+        
+        .parallax-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .artwork {
+            position: absolute;
+            opacity: 0.1;
+            font-size: 8rem;
+            color: #ff6b6b;
+            animation: artworkFloat 10s ease-in-out infinite;
+        }
+        
+        .artwork-1 { top: 20%; left: 5%; animation-delay: 0s; }
+        .artwork-2 { top: 60%; right: 10%; animation-delay: 3s; }
+        .artwork-3 { bottom: 30%; left: 50%; animation-delay: 6s; }
+        
+        @keyframes artworkFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.1; }
+            50% { transform: translateY(-30px) rotate(10deg); opacity: 0.2; }
+        }
+    </style>
+</head>
+<body>
+    <div class="creative-cursor"></div>
+    
+    <nav class="creative-nav">
+        <div class="nav-dot active"></div>
+        <div class="nav-dot"></div>
+        <div class="nav-dot"></div>
+        <div class="nav-dot"></div>
+        <div class="nav-dot"></div>
+    </nav>
+    
+    <header>
+        <div class="container">
+            <div class="hero">
+                <h1>Creative Developer</h1>
+                <p>Where art meets code, magic happens</p>
+                <a href="#" class="creative-button">Explore My Work</a>
+            </div>
+        </div>
+        
+        <div class="floating-shapes">
+            <div class="creative-shape shape-1"></div>
+            <div class="creative-shape shape-2"></div>
+            <div class="creative-shape shape-3"></div>
+            <div class="creative-shape shape-4"></div>
+        </div>
+        
+        <div class="parallax-layer">
+            <div class="artwork artwork-1">✦</div>
+            <div class="artwork artwork-2">◆</div>
+            <div class="artwork artwork-3">⬟</div>
+        </div>
+    </header>
+    
+    <section class="portfolio-section">
+        <div class="container">
+            <h2 class="section-title">Featured Projects</h2>
+            
+            <div class="portfolio-grid">
+                <div class="portfolio-item">
+                    <div class="portfolio-image code"></div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">Interactive Web App</h3>
+                        <p class="portfolio-description">A beautiful and intuitive web application built with modern technologies, featuring smooth animations and responsive design.</p>
+                        <div class="portfolio-tags">
+                            <span class="tag">React</span>
+                            <span class="tag">TypeScript</span>
+                            <span class="tag">GSAP</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="portfolio-item">
+                    <div class="portfolio-image design"></div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">Brand Identity System</h3>
+                        <p class="portfolio-description">Complete visual identity design including logo, color palette, typography, and brand guidelines for a tech startup.</p>
+                        <div class="portfolio-tags">
+                            <span class="tag">UI Design</span>
+                            <span class="tag">Branding</span>
+                            <span class="tag">Figma</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="portfolio-item">
+                    <div class="portfolio-image mobile"></div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">Mobile Experience</h3>
+                        <p class="portfolio-description">Cross-platform mobile application with native feel and performance, featuring innovative user interface patterns.</p>
+                        <div class="portfolio-tags">
+                            <span class="tag">React Native</span>
+                            <span class="tag">UX Design</span>
+                            <span class="tag">Animation</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="portfolio-item">
+                    <div class="portfolio-image web"></div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">E-commerce Platform</h3>
+                        <p class="portfolio-description">Full-stack e-commerce solution with modern design, seamless checkout experience, and advanced analytics.</p>
+                        <div class="portfolio-tags">
+                            <span class="tag">Next.js</span>
+                            <span class="tag">Node.js</span>
+                            <span class="tag">MongoDB</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="skills-section">
+        <div class="container">
+            <h2 class="section-title" style="color: white;">Skills & Expertise</h2>
+            
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <div class="skill-icon">⚛</div>
+                    <h3>Frontend Development</h3>
+                    <ul class="skill-list">
+                        <li>React & Vue.js Mastery</li>
+                        <li>Advanced CSS & Sass</li>
+                        <li>JavaScript ES6+</li>
+                        <li>TypeScript</li>
+                        <li>Responsive Design</li>
+                        <li>Animation Libraries</li>
+                    </ul>
+                </div>
+                
+                <div class="skill-category">
+                    <div class="skill-icon">⚙</div>
+                    <h3>Backend Development</h3>
+                    <ul class="skill-list">
+                        <li>Node.js & Express</li>
+                        <li>Python & Django</li>
+                        <li>Database Design</li>
+                        <li>API Development</li>
+                        <li>Cloud Services</li>
+                        <li>DevOps & CI/CD</li>
+                    </ul>
+                </div>
+                
+                <div class="skill-category">
+                    <div class="skill-icon">🎨</div>
+                    <h3>Design & UX</h3>
+                    <ul class="skill-list">
+                        <li>User Experience Design</li>
+                        <li>Visual Design</li>
+                        <li>Prototyping</li>
+                        <li>Design Systems</li>
+                        <li>Brand Identity</li>
+                        <li>Creative Direction</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="creative-quote">
+        <div class="container">
+            <div class="quote-text">"Design is not just what it looks like and feels like. Design is how it works."</div>
+            <div class="quote-author">— Steve Jobs</div>
+        </div>
+    </section>
+    
+    <section class="contact-section">
+        <div class="container">
+            <h2 class="section-title">Let's Create Together</h2>
+            
+            <form class="contact-form">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="project">Project Type</label>
+                    <input type="text" id="project" name="project" placeholder="Web App, Mobile App, Design...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="5" placeholder="Tell me about your project..."></textarea>
+                </div>
+                
+                <a href="#" class="creative-button" style="width: 100%; text-align: center; display: block;">Send Message</a>
+            </form>
+        </div>
+    </section>
+    
+    <script>
+        // Custom cursor
+        const cursor = document.querySelector('.creative-cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX - 10 + 'px';
+            cursor.style.top = e.clientY - 10 + 'px';
+        });
+        
+        // Cursor effects on hover
+        document.querySelectorAll('a, button, .portfolio-item').forEach(element => {
+            element.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(2)';
+                cursor.style.mixBlendMode = 'normal';
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+                cursor.style.mixBlendMode = 'difference';
+            });
+        });
+        
+        // Parallax scrolling
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxLayers = document.querySelectorAll('.parallax-layer, .floating-shapes');
+            
+            parallaxLayers.forEach((layer, index) => {
+                const speed = (index + 1) * 0.5;
+                layer.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+            
+            // Artwork parallax
+            document.querySelectorAll('.artwork').forEach((artwork, index) => {
+                const speed = (index + 1) * 0.3;
+                artwork.style.transform += ` translateY(${scrolled * speed}px)`;
+            });
+        });
+        
+        // Portfolio item animations
+        const portfolioObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.animation = 'fadeIn 0.8s ease-out';
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 200);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.portfolio-item, .skill-category').forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(50px)';
+            portfolioObserver.observe(item);
+        });
+        
+        // Navigation dots
+        const navDots = document.querySelectorAll('.nav-dot');
+        const sections = document.querySelectorAll('section, header');
+        
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach((section, index) => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = index;
+                }
+            });
+            
+            navDots.forEach((dot, index) => {
+                dot.classList.remove('active');
+                if (index === current) {
+                    dot.classList.add('active');
+                }
+            });
+        });
+        
+        // Navigation dot clicks
+        navDots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                sections[index].scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Creative animations
+        document.querySelectorAll('.creative-shape').forEach(shape => {
+            shape.addEventListener('mouseenter', () => {
+                shape.style.animation = 'none';
+                shape.style.transform = 'scale(1.2) rotate(180deg)';
+            });
+            
+            shape.addEventListener('mouseleave', () => {
+                shape.style.animation = '';
+                shape.style.transform = '';
+            });
+        });
+        
+        // Form interactions
+        document.querySelectorAll('.form-group input, .form-group textarea').forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.style.transform = 'scale(1.02)';
+                input.parentElement.style.transition = 'all 0.3s ease';
+            });
+            
+            input.addEventListener('blur', () => {
+                input.parentElement.style.transform = '';
+            });
+        });
+        
+        // Creative button interactions
+        document.querySelectorAll('.creative-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Create ripple effect
+                const ripple = document.createElement('div');
+                const rect = button.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: radial-gradient(circle, rgba(255,107,107,0.6) 0%, transparent 70%);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: creativeRipple 0.6s ease-out;
+                    pointer-events: none;
+                `;
+                
+                button.style.position = 'relative';
+                button.style.overflow = 'hidden';
+                button.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+        
+        // Add ripple animation CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes creativeRipple {
+                to {
+                    transform: scale(2);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Random creative effects
+        setInterval(() => {
+            const shapes = document.querySelectorAll('.creative-shape');
+            const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+            
+            randomShape.style.filter = 'hue-rotate(90deg)';
+            setTimeout(() => {
+                randomShape.style.filter = '';
+            }, 1000);
+        }, 5000);
+    </script>
+</body>
+</html>

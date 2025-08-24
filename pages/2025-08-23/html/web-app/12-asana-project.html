@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Manager - Asana Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafbfc;
+            color: #151b26;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-size: 13px;
+        }
+        
+        .header {
+            background: #fff;
+            border-bottom: 1px solid #d0d7de;
+            padding: 0 16px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo {
+            color: #f06a6a;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .search-container {
+            position: relative;
+        }
+        
+        .search-input {
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            padding: 6px 12px 6px 32px;
+            width: 280px;
+            font-size: 13px;
+            outline: none;
+        }
+        
+        .search-input:focus {
+            border-color: #f06a6a;
+            box-shadow: 0 0 0 3px rgba(240, 106, 106, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #656d76;
+            font-size: 14px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .header-btn {
+            background: none;
+            border: 1px solid #d0d7de;
+            color: #24292f;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .header-btn:hover {
+            background: #f6f8fa;
+            border-color: #8c959f;
+        }
+        
+        .header-btn.primary {
+            background: #f06a6a;
+            color: white;
+            border-color: #f06a6a;
+        }
+        
+        .header-btn.primary:hover {
+            background: #e55555;
+            border-color: #e55555;
+        }
+        
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f06a6a 0%, #e55555 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .main-container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 220px;
+            background: #fff;
+            border-right: 1px solid #d0d7de;
+            display: flex;
+            flex-direction: column;
+            padding: 16px 0;
+        }
+        
+        .sidebar-section {
+            padding: 0 16px 16px;
+        }
+        
+        .sidebar-title {
+            font-size: 11px;
+            color: #656d76;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+        
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 2px;
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+        
+        .sidebar-item:hover {
+            background: #f6f8fa;
+        }
+        
+        .sidebar-item.active {
+            background: #fff5f5;
+            color: #f06a6a;
+        }
+        
+        .sidebar-icon {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .project-header {
+            background: #fff;
+            padding: 16px 24px;
+            border-bottom: 1px solid #d0d7de;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .project-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .project-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #151b26;
+        }
+        
+        .project-status {
+            background: #28a745;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        .project-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .view-tabs {
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            padding: 0;
+            display: flex;
+        }
+        
+        .view-tab {
+            background: none;
+            border: none;
+            padding: 8px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            color: #656d76;
+            border-radius: 5px;
+            margin: 1px;
+            transition: all 0.2s;
+        }
+        
+        .view-tab.active {
+            background: #fff;
+            color: #151b26;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        }
+        
+        .task-container {
+            flex: 1;
+            padding: 16px 24px;
+            overflow-y: auto;
+        }
+        
+        .task-group {
+            margin-bottom: 20px;
+        }
+        
+        .group-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+            border-bottom: 1px solid #d0d7de;
+            margin-bottom: 8px;
+        }
+        
+        .group-toggle {
+            background: none;
+            border: none;
+            color: #656d76;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 2px;
+            border-radius: 3px;
+        }
+        
+        .group-toggle:hover {
+            background: #f6f8fa;
+        }
+        
+        .group-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #151b26;
+            flex: 1;
+        }
+        
+        .group-count {
+            font-size: 12px;
+            color: #656d76;
+        }
+        
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        
+        .task-item:hover {
+            background: #f6f8fa;
+            border-color: #d0d7de;
+        }
+        
+        .task-item.completed {
+            opacity: 0.6;
+        }
+        
+        .task-checkbox {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #d0d7de;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .task-checkbox.checked {
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+            font-size: 10px;
+        }
+        
+        .task-info {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+        
+        .task-title {
+            font-size: 13px;
+            color: #151b26;
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .task-tags {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        
+        .task-tag {
+            background: #e1f5fe;
+            color: #0277bd;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+        
+        .task-tag.high { background: #ffebee; color: #d32f2f; }
+        .task-tag.medium { background: #fff3e0; color: #f57c00; }
+        .task-tag.low { background: #e8f5e8; color: #388e3c; }
+        
+        .task-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #656d76;
+            font-size: 12px;
+        }
+        
+        .task-assignee {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        
+        .task-due {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .task-subtasks {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .add-task {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            color: #656d76;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        
+        .add-task:hover {
+            background: #f6f8fa;
+            color: #151b26;
+        }
+        
+        .quick-add {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            background: #f06a6a;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(240, 106, 106, 0.3);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .quick-add:hover {
+            background: #e55555;
+            transform: scale(1.05);
+        }
+        
+        .task-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .task-modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            width: 480px;
+            max-width: 90vw;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            margin-bottom: 16px;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #151b26;
+            flex: 1;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #656d76;
+            padding: 4px;
+            border-radius: 4px;
+        }
+        
+        .close-btn:hover {
+            background: #f6f8fa;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #151b26;
+            margin-bottom: 6px;
+        }
+        
+        .form-input {
+            width: 100%;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 13px;
+            outline: none;
+        }
+        
+        .form-input:focus {
+            border-color: #f06a6a;
+            box-shadow: 0 0 0 3px rgba(240, 106, 106, 0.1);
+        }
+        
+        .form-select {
+            width: 100%;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 13px;
+            outline: none;
+            background: white;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #f06a6a;
+            color: white;
+            border-color: #f06a6a;
+        }
+        
+        .btn-primary:hover {
+            background: #e55555;
+            border-color: #e55555;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #24292f;
+        }
+        
+        .btn-secondary:hover {
+            background: #f6f8fa;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f6f8fa;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #d0d7de;
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8c959f;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">asana</div>
+            <div class="search-container">
+                <div class="search-icon">🔍</div>
+                <input class="search-input" placeholder="Search tasks, projects, conversations..." />
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="header-btn">👥</button>
+            <button class="header-btn">📊</button>
+            <button class="header-btn primary">+ Create</button>
+            <div class="user-avatar">JM</div>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Favorites</div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">⭐</div>
+                    <span>My tasks</span>
+                </div>
+                <div class="sidebar-item active">
+                    <div class="sidebar-icon">📊</div>
+                    <span>Web Redesign</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Projects</div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">🏗️</div>
+                    <span>Mobile App</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">🚀</div>
+                    <span>Product Launch</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">📝</div>
+                    <span>Content Strategy</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Teams</div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">👥</div>
+                    <span>Design Team</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">💻</div>
+                    <span>Engineering</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">📈</div>
+                    <span>Marketing</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="project-header">
+                <div class="project-info">
+                    <div class="project-name">Web Redesign Project</div>
+                    <div class="project-status">On Track</div>
+                </div>
+                <div class="project-controls">
+                    <div class="view-tabs">
+                        <button class="view-tab active" onclick="switchView(this)">List</button>
+                        <button class="view-tab" onclick="switchView(this)">Board</button>
+                        <button class="view-tab" onclick="switchView(this)">Timeline</button>
+                        <button class="view-tab" onclick="switchView(this)">Calendar</button>
+                    </div>
+                    <button class="header-btn">Share</button>
+                    <button class="header-btn">⋯</button>
+                </div>
+            </div>
+            
+            <div class="task-container">
+                <div class="task-group">
+                    <div class="group-header">
+                        <button class="group-toggle">▼</button>
+                        <div class="group-title">🎨 Design Phase</div>
+                        <div class="group-count">4 tasks</div>
+                    </div>
+                    
+                    <div class="task-item" onclick="openTaskModal()">
+                        <div class="task-checkbox" onclick="toggleTask(this, event)"></div>
+                        <div class="task-info">
+                            <div class="task-title">Create wireframes for homepage</div>
+                            <div class="task-tags">
+                                <div class="task-tag high">High</div>
+                                <div class="task-tag">Design</div>
+                            </div>
+                        </div>
+                        <div class="task-meta">
+                            <div class="task-assignee">SM</div>
+                            <div class="task-due">📅 Dec 28</div>
+                            <div class="task-subtasks">✅ 2/4</div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item">
+                        <div class="task-checkbox checked" onclick="toggleTask(this, event)">✓</div>
+                        <div class="task-info">
+                            <div class="task-title">Design system documentation</div>
+                            <div class="task-tags">
+                                <div class="task-tag medium">Medium</div>
+                            </div>
+                        </div>
+                        <div class="task-meta">
+                            <div class="task-assignee">JK</div>
+                            <div class="task-due">📅 Dec 25</div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="toggleTask(this, event)"></div>
+                        <div class="task-info">
+                            <div class="task-title">User research interviews</div>
+                            <div class="task-tags">
+                                <div class="task-tag low">Low</div>
+                                <div class="task-tag">Research</div>
+                            </div>
+                        </div>
+                        <div class="task-meta">
+                            <div class="task-assignee">AL</div>
+                            <div class="task-due">📅 Jan 2</div>
+                            <div class="task-subtasks">💬 3</div>
+                        </div>
+                    </div>
+                    
+                    <div class="add-task" onclick="openTaskModal()">
+                        + Add task
+                    </div>
+                </div>
+                
+                <div class="task-group">
+                    <div class="group-header">
+                        <button class="group-toggle">▼</button>
+                        <div class="group-title">💻 Development</div>
+                        <div class="group-count">6 tasks</div>
+                    </div>
+                    
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="toggleTask(this, event)"></div>
+                        <div class="task-info">
+                            <div class="task-title">Set up development environment</div>
+                            <div class="task-tags">
+                                <div class="task-tag high">High</div>
+                                <div class="task-tag">Frontend</div>
+                            </div>
+                        </div>
+                        <div class="task-meta">
+                            <div class="task-assignee">TH</div>
+                            <div class="task-due">📅 Dec 30</div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="toggleTask(this, event)"></div>
+                        <div class="task-info">
+                            <div class="task-title">Implement responsive navigation</div>
+                            <div class="task-tags">
+                                <div class="task-tag medium">Medium</div>
+                            </div>
+                        </div>
+                        <div class="task-meta">
+                            <div class="task-assignee">MR</div>
+                            <div class="task-due">📅 Jan 5</div>
+                            <div class="task-subtasks">✅ 1/3</div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item">
+                        <div class="task-checkbox" onclick="toggleTask(this, event)"></div>
+                        <div class="task-info">
+                            <div class="task-title">API integration for user data</div>
+                            <div class="task-tags">
+                                <div class="task-tag high">High</div>
+                                <div class="task-tag">Backend</div>
+                            </div>
+                        </div>
+                        <div class="task-meta">
+                            <div class="task-assignee">CW</div>
+                            <div class="task-due">📅 Jan 8</div>
+                            <div class="task-subtasks">💬 2</div>
+                        </div>
+                    </div>
+                    
+                    <div class="add-task" onclick="openTaskModal()">
+                        + Add task
+                    </div>
+                </div>
+                
+                <div class="task-group">
+                    <div class="group-header">
+                        <button class="group-toggle">▶</button>
+                        <div class="group-title">🧪 Testing</div>
+                        <div class="group-count">3 tasks</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <button class="quick-add" onclick="openTaskModal()">+</button>
+    
+    <div class="task-modal" id="taskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Create new task</div>
+                <button class="close-btn" onclick="closeTaskModal()">×</button>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Task name</label>
+                <input class="form-input" id="taskName" placeholder="What needs to be done?" />
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea class="form-input" id="taskDescription" rows="3" placeholder="Add details..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Assignee</label>
+                <select class="form-select" id="taskAssignee">
+                    <option value="">Select assignee...</option>
+                    <option value="sm">Sarah Miller</option>
+                    <option value="jk">John Kim</option>
+                    <option value="al">Alex Lee</option>
+                    <option value="th">Tom Harris</option>
+                    <option value="mr">Mike Rodriguez</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Priority</label>
+                <select class="form-select" id="taskPriority">
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Due date</label>
+                <input class="form-input" id="taskDue" type="date" />
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeTaskModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="createTask()">Create Task</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function switchView(tab) {
+            document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+        }
+        
+        function toggleTask(checkbox, event) {
+            event.stopPropagation();
+            const taskItem = checkbox.closest('.task-item');
+            
+            if (checkbox.classList.contains('checked')) {
+                checkbox.classList.remove('checked');
+                checkbox.textContent = '';
+                taskItem.classList.remove('completed');
+            } else {
+                checkbox.classList.add('checked');
+                checkbox.textContent = '✓';
+                taskItem.classList.add('completed');
+            }
+        }
+        
+        function openTaskModal() {
+            document.getElementById('taskModal').classList.add('show');
+        }
+        
+        function closeTaskModal() {
+            document.getElementById('taskModal').classList.remove('show');
+            // Reset form
+            document.getElementById('taskName').value = '';
+            document.getElementById('taskDescription').value = '';
+            document.getElementById('taskAssignee').value = '';
+            document.getElementById('taskPriority').value = 'medium';
+            document.getElementById('taskDue').value = '';
+        }
+        
+        function createTask() {
+            const name = document.getElementById('taskName').value;
+            const assignee = document.getElementById('taskAssignee').value;
+            const priority = document.getElementById('taskPriority').value;
+            const due = document.getElementById('taskDue').value;
+            
+            if (!name.trim()) {
+                alert('Task name is required');
+                return;
+            }
+            
+            // Find first task group to add to
+            const firstGroup = document.querySelector('.task-group');
+            const addTaskBtn = firstGroup.querySelector('.add-task');
+            
+            // Create new task element
+            const newTask = document.createElement('div');
+            newTask.className = 'task-item';
+            newTask.onclick = () => openTaskModal();
+            
+            const priorityClass = priority === 'high' ? 'high' : priority === 'medium' ? 'medium' : 'low';
+            const assigneeInitials = assignee ? assignee.toUpperCase() : 'UN';
+            const dueDate = due ? new Date(due).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+            
+            newTask.innerHTML = `
+                <div class="task-checkbox" onclick="toggleTask(this, event)"></div>
+                <div class="task-info">
+                    <div class="task-title">${name}</div>
+                    <div class="task-tags">
+                        <div class="task-tag ${priorityClass}">${priority}</div>
+                    </div>
+                </div>
+                <div class="task-meta">
+                    ${assignee ? `<div class="task-assignee">${assigneeInitials}</div>` : ''}
+                    ${due ? `<div class="task-due">📅 ${dueDate}</div>` : ''}
+                </div>
+            `;
+            
+            firstGroup.insertBefore(newTask, addTaskBtn);
+            closeTaskModal();
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('taskModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeTaskModal();
+            }
+        });
+        
+        // Toggle group collapse
+        document.querySelectorAll('.group-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const group = this.closest('.task-group');
+                const tasks = group.querySelectorAll('.task-item, .add-task');
+                
+                if (this.textContent === '▼') {
+                    this.textContent = '▶';
+                    tasks.forEach(task => task.style.display = 'none');
+                } else {
+                    this.textContent = '▼';
+                    tasks.forEach(task => task.style.display = 'flex');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

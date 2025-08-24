@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geospatial Data Explorer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/topojson@3"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="geo-container">
+        <!-- Geographic Command Center -->
+        <header class="geo-header">
+            <div class="brand-zone">
+                <div class="geo-logo">
+                    <div class="globe-container">
+                        <div class="globe-sphere">
+                            <div class="globe-grid"></div>
+                            <div class="globe-continents"></div>
+                        </div>
+                        <div class="globe-rotation"></div>
+                    </div>
+                    <i class="fas fa-globe-americas"></i>
+                </div>
+                <div class="brand-info">
+                    <h1>GeoSpatial Explorer</h1>
+                    <span class="tagline">Geographic Data Analysis</span>
+                </div>
+            </div>
+
+            <div class="geo-controls">
+                <div class="control-cluster">
+                    <button id="loadData" class="geo-btn primary">
+                        <i class="fas fa-upload"></i>
+                        <span>Load Data</span>
+                        <div class="btn-wave"></div>
+                    </button>
+                    
+                    <button id="geolocateBtn" class="geo-btn accent">
+                        <i class="fas fa-location-arrow"></i>
+                        <span>Geolocate</span>
+                        <div class="btn-wave"></div>
+                    </button>
+                    
+                    <button id="analyzePatterns" class="geo-btn success">
+                        <i class="fas fa-search-location"></i>
+                        <span>Analyze</span>
+                        <div class="btn-wave"></div>
+                    </button>
+
+                    <button id="heatmapToggle" class="geo-btn warning">
+                        <i class="fas fa-fire"></i>
+                        <span>Heatmap</span>
+                        <div class="btn-wave"></div>
+                    </button>
+                </div>
+
+                <div class="geo-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="locationCount">0</div>
+                        <div class="stat-label">Locations</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="boundingArea">0 km²</div>
+                        <div class="stat-label">Area</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="clusterCount">0</div>
+                        <div class="stat-label">Clusters</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="centerPoint">0°, 0°</div>
+                        <div class="stat-label">Center</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="map-modes">
+                <div class="mode-selector">
+                    <button class="mode-btn active" data-mode="street">
+                        <i class="fas fa-road"></i>
+                        <span>Street</span>
+                    </button>
+                    <button class="mode-btn" data-mode="satellite">
+                        <i class="fas fa-satellite"></i>
+                        <span>Satellite</span>
+                    </button>
+                    <button class="mode-btn" data-mode="terrain">
+                        <i class="fas fa-mountain"></i>
+                        <span>Terrain</span>
+                    </button>
+                    <button class="mode-btn" data-mode="dark">
+                        <i class="fas fa-moon"></i>
+                        <span>Dark</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Geographic Interface -->
+        <main class="geo-main">
+            <!-- Left Control Panel -->
+            <aside class="left-geo-panel">
+                <div class="panel-tabs">
+                    <button class="tab-btn active" data-tab="layers">
+                        <i class="fas fa-layer-group"></i>
+                        Layers
+                    </button>
+                    <button class="tab-btn" data-tab="search">
+                        <i class="fas fa-search"></i>
+                        Search
+                    </button>
+                    <button class="tab-btn" data-tab="analysis">
+                        <i class="fas fa-chart-area"></i>
+                        Analysis
+                    </button>
+                </div>
+
+                <div class="tab-content">
+                    <!-- Layers Tab -->
+                    <div id="layersTab" class="tab-pane active">
+                        <div class="layers-section">
+                            <h3><i class="fas fa-map-marked"></i> Data Layers</h3>
+                            <div class="layer-controls" id="layerControls">
+                                <!-- Layer controls will be populated here -->
+                            </div>
+                        </div>
+
+                        <div class="layers-section">
+                            <h3><i class="fas fa-palette"></i> Style Options</h3>
+                            <div class="style-controls">
+                                <div class="style-control">
+                                    <label>Marker Size:</label>
+                                    <input type="range" id="markerSize" min="5" max="30" value="10">
+                                    <span id="markerSizeValue">10px</span>
+                                </div>
+                                <div class="style-control">
+                                    <label>Opacity:</label>
+                                    <input type="range" id="markerOpacity" min="0.1" max="1" step="0.1" value="0.8">
+                                    <span id="opacityValue">0.8</span>
+                                </div>
+                                <div class="style-control">
+                                    <label>Color Scheme:</label>
+                                    <select id="colorScheme">
+                                        <option value="viridis">Viridis</option>
+                                        <option value="plasma">Plasma</option>
+                                        <option value="inferno">Inferno</option>
+                                        <option value="category">Category</option>
+                                        <option value="blue">Blue</option>
+                                        <option value="red">Red</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layers-section">
+                            <h3><i class="fas fa-eye"></i> Visibility</h3>
+                            <div class="visibility-controls">
+                                <label class="visibility-control">
+                                    <input type="checkbox" id="showMarkers" checked>
+                                    <span class="checkmark"></span>
+                                    <span>Show Markers</span>
+                                </label>
+                                <label class="visibility-control">
+                                    <input type="checkbox" id="showClusters" checked>
+                                    <span class="checkmark"></span>
+                                    <span>Show Clusters</span>
+                                </label>
+                                <label class="visibility-control">
+                                    <input type="checkbox" id="showHeatmap">
+                                    <span class="checkmark"></span>
+                                    <span>Show Heatmap</span>
+                                </label>
+                                <label class="visibility-control">
+                                    <input type="checkbox" id="showTrails">
+                                    <span class="checkmark"></span>
+                                    <span>Show Trails</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search Tab -->
+                    <div id="searchTab" class="tab-pane">
+                        <div class="search-section">
+                            <h3><i class="fas fa-map-pin"></i> Location Search</h3>
+                            <div class="location-search">
+                                <input type="text" id="locationSearch" placeholder="Search for places..." class="search-input">
+                                <button class="search-btn" onclick="searchLocation()">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                            <div class="search-results" id="searchResults">
+                                <!-- Search results will appear here -->
+                            </div>
+                        </div>
+
+                        <div class="search-section">
+                            <h3><i class="fas fa-filter"></i> Spatial Filters</h3>
+                            <div class="spatial-filters">
+                                <div class="filter-group">
+                                    <label>Distance from point:</label>
+                                    <div class="distance-filter">
+                                        <input type="number" id="distanceValue" placeholder="Distance" min="0">
+                                        <select id="distanceUnit">
+                                            <option value="km">km</option>
+                                            <option value="mi">miles</option>
+                                            <option value="m">meters</option>
+                                        </select>
+                                        <button onclick="applyDistanceFilter()" class="apply-filter-btn">Apply</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="filter-group">
+                                    <label>Bounding Box:</label>
+                                    <div class="bbox-inputs">
+                                        <input type="number" id="bboxNorth" placeholder="North" step="any">
+                                        <input type="number" id="bboxSouth" placeholder="South" step="any">
+                                        <input type="number" id="bboxEast" placeholder="East" step="any">
+                                        <input type="number" id="bboxWest" placeholder="West" step="any">
+                                        <button onclick="applyBboxFilter()" class="apply-filter-btn">Apply</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="search-section">
+                            <h3><i class="fas fa-crosshairs"></i> Coordinates</h3>
+                            <div class="coordinate-input">
+                                <div class="coord-group">
+                                    <label>Latitude:</label>
+                                    <input type="number" id="coordLat" placeholder="0.000000" step="any">
+                                </div>
+                                <div class="coord-group">
+                                    <label>Longitude:</label>
+                                    <input type="number" id="coordLng" placeholder="0.000000" step="any">
+                                </div>
+                                <button onclick="goToCoordinates()" class="coord-btn">Go to Location</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analysis Tab -->
+                    <div id="analysisTab" class="tab-pane">
+                        <div class="analysis-section">
+                            <h3><i class="fas fa-brain"></i> Spatial Analysis</h3>
+                            <div class="analysis-tools">
+                                <button class="analysis-btn" onclick="analyzeDistribution()">
+                                    <i class="fas fa-chart-scatter"></i>
+                                    Distribution Analysis
+                                </button>
+                                <button class="analysis-btn" onclick="findClusters()">
+                                    <i class="fas fa-object-group"></i>
+                                    Cluster Detection
+                                </button>
+                                <button class="analysis-btn" onclick="calculateDensity()">
+                                    <i class="fas fa-grip-dots"></i>
+                                    Density Analysis
+                                </button>
+                                <button class="analysis-btn" onclick="findHotspots()">
+                                    <i class="fas fa-fire"></i>
+                                    Hotspot Detection
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="analysis-section">
+                            <h3><i class="fas fa-chart-line"></i> Statistics</h3>
+                            <div class="geo-statistics" id="geoStatistics">
+                                <div class="no-stats">
+                                    <i class="fas fa-calculator"></i>
+                                    <p>Load data to view statistics</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="analysis-section">
+                            <h3><i class="fas fa-route"></i> Path Analysis</h3>
+                            <div class="path-tools">
+                                <button class="path-btn" onclick="calculateRoute()">
+                                    <i class="fas fa-directions"></i>
+                                    Calculate Route
+                                </button>
+                                <button class="path-btn" onclick="findOptimalPath()">
+                                    <i class="fas fa-route"></i>
+                                    Optimal Path
+                                </button>
+                                <button class="path-btn" onclick="analyzePaths()">
+                                    <i class="fas fa-project-diagram"></i>
+                                    Path Network
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Central Map Canvas -->
+            <div class="geo-canvas">
+                <div class="map-controls">
+                    <div class="control-group">
+                        <button id="zoomToFit" class="map-control" title="Zoom to Fit">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                        </button>
+                        <button id="getCurrentLocation" class="map-control" title="Current Location">
+                            <i class="fas fa-crosshairs"></i>
+                        </button>
+                        <button id="fullscreenMap" class="map-control" title="Fullscreen">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+
+                    <div class="map-info">
+                        <span id="currentZoom">Zoom: 10</span>
+                        <span class="separator">•</span>
+                        <span id="currentCenter">Center: 0°, 0°</span>
+                        <span class="separator">•</span>
+                        <span id="selectedLocation">Select a location</span>
+                    </div>
+
+                    <div class="control-group">
+                        <button id="measureDistance" class="map-control" title="Measure Distance">
+                            <i class="fas fa-ruler"></i>
+                        </button>
+                        <button id="drawPolygon" class="map-control" title="Draw Area">
+                            <i class="fas fa-draw-polygon"></i>
+                        </button>
+                        <button id="exportMap" class="map-control" title="Export Map">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="map-container" id="mapContainer">
+                    <!-- Leaflet map will be initialized here -->
+                </div>
+
+                <!-- Map Loading State -->
+                <div class="geo-loading" id="geoLoading">
+                    <div class="loading-globe">
+                        <div class="globe-outer"></div>
+                        <div class="globe-inner"></div>
+                        <div class="loading-continents">
+                            <div class="continent continent-1"></div>
+                            <div class="continent continent-2"></div>
+                            <div class="continent continent-3"></div>
+                        </div>
+                    </div>
+                    <p>Processing geographic data...</p>
+                </div>
+
+                <!-- Map Empty State -->
+                <div class="geo-empty" id="geoEmpty">
+                    <div class="empty-globe">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Geographic Explorer Ready</h3>
+                    <p>Load JSON data with geographic coordinates to begin mapping</p>
+                </div>
+            </div>
+
+            <!-- Right Analysis Panel -->
+            <aside class="right-geo-panel">
+                <div class="panel-header">
+                    <h3 id="analysisTitle">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Location Details
+                    </h3>
+                    <button id="closeAnalysis" class="close-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="analysis-content" id="analysisContent">
+                    <div class="analysis-empty">
+                        <i class="fas fa-mouse-pointer"></i>
+                        <h4>Select a Location</h4>
+                        <p>Click on any marker or area on the map to view detailed information</p>
+                    </div>
+                </div>
+
+                <div class="geo-inspector" id="geoInspector">
+                    <div class="inspector-tabs">
+                        <button class="inspector-tab active" data-tab="properties">
+                            <i class="fas fa-info-circle"></i>
+                            Properties
+                        </button>
+                        <button class="inspector-tab" data-tab="spatial">
+                            <i class="fas fa-map"></i>
+                            Spatial
+                        </button>
+                        <button class="inspector-tab" data-tab="context">
+                            <i class="fas fa-layer-group"></i>
+                            Context
+                        </button>
+                    </div>
+
+                    <div class="inspector-content">
+                        <div id="propertiesInspector" class="inspector-pane active">
+                            <!-- Properties content -->
+                        </div>
+                        <div id="spatialInspector" class="inspector-pane">
+                            <!-- Spatial content -->
+                        </div>
+                        <div id="contextInspector" class="inspector-pane">
+                            <!-- Context content -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spatial Analytics -->
+                <div class="spatial-analytics" id="spatialAnalytics">
+                    <div class="analytics-section">
+                        <h4><i class="fas fa-chart-area"></i> Spatial Metrics</h4>
+                        <div class="spatial-metrics">
+                            <div class="metric-card">
+                                <div class="metric-value" id="avgDistance">0 km</div>
+                                <div class="metric-label">Avg Distance</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value" id="spatialSpread">0 km²</div>
+                                <div class="metric-label">Spread</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-section">
+                        <h4><i class="fas fa-thermometer-half"></i> Density Heatmap</h4>
+                        <div class="density-viz" id="densityVisualization">
+                            <!-- Density visualization will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Geographic Context Menu -->
+        <div id="geoContextMenu" class="geo-context-menu">
+            <button onclick="addMarkerHere()">
+                <i class="fas fa-map-pin"></i>
+                Add Marker
+            </button>
+            <button onclick="measureFromHere()">
+                <i class="fas fa-ruler"></i>
+                Measure From Here
+            </button>
+            <button onclick="searchNearby()">
+                <i class="fas fa-search-location"></i>
+                Search Nearby
+            </button>
+            <div class="menu-separator"></div>
+            <button onclick="getElevation()">
+                <i class="fas fa-mountain"></i>
+                Get Elevation
+            </button>
+            <button onclick="getAddress()">
+                <i class="fas fa-map-marked-alt"></i>
+                Get Address
+            </button>
+            <div class="menu-separator"></div>
+            <button onclick="exportLocation()">
+                <i class="fas fa-download"></i>
+                Export Location
+            </button>
+        </div>
+
+        <!-- Spatial Analysis Modal -->
+        <div id="spatialAnalysisModal" class="geo-modal">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-chart-area"></i> Spatial Analysis Results</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="analysis-tabs">
+                        <button class="analysis-tab active" data-tab="distribution">Distribution</button>
+                        <button class="analysis-tab" data-tab="clusters">Clusters</button>
+                        <button class="analysis-tab" data-tab="density">Density</button>
+                        <button class="analysis-tab" data-tab="hotspots">Hotspots</button>
+                    </div>
+                    
+                    <div class="analysis-results">
+                        <div id="distributionAnalysis" class="analysis-pane active">
+                            <!-- Distribution analysis results -->
+                        </div>
+                        <div id="clustersAnalysis" class="analysis-pane">
+                            <!-- Cluster analysis results -->
+                        </div>
+                        <div id="densityAnalysis" class="analysis-pane">
+                            <!-- Density analysis results -->
+                        </div>
+                        <div id="hotspotsAnalysis" class="analysis-pane">
+                            <!-- Hotspot analysis results -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="geo-btn secondary" onclick="exportAnalysisResults()">Export Results</button>
+                    <button class="geo-btn primary" onclick="closeSpatialAnalysis()">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Measurement Tool Overlay -->
+        <div id="measurementOverlay" class="measurement-overlay">
+            <div class="measurement-info">
+                <div class="measurement-result">
+                    <span id="measurementDistance">0 km</span>
+                    <span id="measurementArea"></span>
+                </div>
+                <div class="measurement-controls">
+                    <button onclick="clearMeasurement()" class="clear-btn">Clear</button>
+                    <button onclick="closeMeasurement()" class="close-btn">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div id="mapLegend" class="map-legend">
+            <div class="legend-header">
+                <span class="legend-title">Legend</span>
+                <button class="legend-toggle" onclick="toggleLegend()">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+            <div class="legend-content" id="legendContent">
+                <!-- Legend items will be populated here -->
+            </div>
+        </div>
+
+        <!-- Tooltip -->
+        <div id="geoTooltip" class="geo-tooltip">
+            <div class="tooltip-header">
+                <span class="tooltip-title"></span>
+                <span class="tooltip-coordinates"></span>
+            </div>
+            <div class="tooltip-content">
+                <div class="tooltip-description"></div>
+                <div class="tooltip-metadata"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

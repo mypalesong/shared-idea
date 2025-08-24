@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Image Grid</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto 40px;
+        }
+
+        .grid-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .grid-btn {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .grid-btn:hover,
+        .grid-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .basic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 80px;
+        }
+
+        .grid-item {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .grid-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .grid-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .grid-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .item-info {
+            padding: 20px;
+        }
+
+        .item-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .item-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .responsive-grid {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 80px;
+        }
+
+        .responsive-grid.layout-1 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .responsive-grid.layout-2 {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+
+        .responsive-grid.layout-3 {
+            grid-template-columns: 2fr 1fr 1fr;
+            grid-template-rows: repeat(3, 200px);
+        }
+
+        .responsive-grid.layout-4 {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .responsive-grid.layout-4 .grid-item {
+            flex: 1 1 calc(33.333% - 20px);
+            min-width: 250px;
+        }
+
+        .featured-item {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .featured-item img {
+            height: 300px;
+        }
+
+        .adaptive-grid {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 80px;
+        }
+
+        @media (min-width: 1200px) {
+            .adaptive-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .adaptive-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991px) {
+            .adaptive-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (min-width: 576px) and (max-width: 767px) {
+            .adaptive-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 575px) {
+            .adaptive-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .isotope-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 80px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 40px;
+            color: #333;
+            font-weight: 300;
+        }
+
+        .grid-showcase {
+            margin-bottom: 80px;
+        }
+
+        .aspect-ratio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .aspect-ratio-item {
+            position: relative;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .aspect-ratio-1x1::before {
+            content: '';
+            display: block;
+            padding-bottom: 100%;
+        }
+
+        .aspect-ratio-16x9::before {
+            content: '';
+            display: block;
+            padding-bottom: 56.25%;
+        }
+
+        .aspect-ratio-4x3::before {
+            content: '';
+            display: block;
+            padding-bottom: 75%;
+        }
+
+        .aspect-ratio-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .aspect-ratio-content img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .mosaic-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: repeat(4, 150px);
+            gap: 15px;
+            margin-bottom: 80px;
+        }
+
+        .mosaic-item {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .mosaic-item:hover {
+            transform: scale(1.05);
+            z-index: 10;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .mosaic-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .mosaic-large {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .mosaic-wide {
+            grid-column: span 2;
+        }
+
+        .mosaic-tall {
+            grid-row: span 2;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .grid-controls {
+                gap: 10px;
+            }
+            
+            .grid-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .responsive-grid.layout-3 {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+            }
+            
+            .featured-item {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
+            
+            .mosaic-grid {
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-rows: repeat(6, 120px);
+            }
+            
+            .mosaic-large {
+                grid-column: span 2;
+                grid-row: span 2;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .mosaic-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(8, 100px);
+            }
+            
+            .mosaic-large,
+            .mosaic-wide {
+                grid-column: span 2;
+            }
+            
+            .mosaic-tall {
+                grid-row: span 2;
+            }
+        }
+
+        .loading-placeholder {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 2s infinite;
+            height: 200px;
+            border-radius: 15px;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .grid-info {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .grid-item:hover .grid-info {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Responsive Image Grids</h1>
+        <p>Explore different approaches to creating flexible, responsive image layouts that adapt beautifully to any screen size. From basic CSS Grid to complex mosaic patterns.</p>
+        
+        <div class="grid-controls">
+            <button class="grid-btn active" data-grid="basic">Basic Grid</button>
+            <button class="grid-btn" data-grid="adaptive">Adaptive</button>
+            <button class="grid-btn" data-grid="featured">Featured</button>
+            <button class="grid-btn" data-grid="mosaic">Mosaic</button>
+            <button class="grid-btn" data-grid="aspect">Aspect Ratio</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="grid-showcase" id="gridShowcase">
+            
+            <div class="basic-grid active-grid" id="basicGrid">
+                <h2 class="section-title">Basic Responsive Grid</h2>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="landscape">Landscape</button>
+                    <button class="filter-btn" data-filter="portrait">Portrait</button>
+                    <button class="filter-btn" data-filter="urban">Urban</button>
+                </div>
+                <div class="isotope-grid" id="imageGrid">
+                    <div class="grid-item" data-category="landscape">
+                        <div class="grid-info">Landscape</div>
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&w=400&q=80" alt="Mountain">
+                        <div class="item-info">
+                            <h3>Mountain Vista</h3>
+                            <p>Breathtaking mountain landscape</p>
+                        </div>
+                    </div>
+
+                    <div class="grid-item" data-category="urban">
+                        <div class="grid-info">Urban</div>
+                        <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&w=400&q=80" alt="City">
+                        <div class="item-info">
+                            <h3>Urban Life</h3>
+                            <p>Dynamic city atmosphere</p>
+                        </div>
+                    </div>
+
+                    <div class="grid-item" data-category="landscape">
+                        <div class="grid-info">Landscape</div>
+                        <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&w=400&q=80" alt="Forest">
+                        <div class="item-info">
+                            <h3>Forest Path</h3>
+                            <p>Mysterious woodland trail</p>
+                        </div>
+                    </div>
+
+                    <div class="grid-item featured-item" data-category="landscape">
+                        <div class="grid-info">Featured</div>
+                        <img src="https://images.unsplash.com/photo-1520637736862-4d197d17c86a?ixlib=rb-4.0.3&w=600&q=80" alt="Ocean">
+                        <div class="item-info">
+                            <h3>Ocean Waves</h3>
+                            <p>Powerful waves crashing on the shore during golden hour</p>
+                        </div>
+                    </div>
+
+                    <div class="grid-item" data-category="portrait">
+                        <div class="grid-info">Portrait</div>
+                        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&w=400&q=80" alt="Portrait">
+                        <div class="item-info">
+                            <h3>Urban Portrait</h3>
+                            <p>Street photography excellence</p>
+                        </div>
+                    </div>
+
+                    <div class="grid-item" data-category="landscape">
+                        <div class="grid-info">Landscape</div>
+                        <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&w=400&q=80" alt="Desert">
+                        <div class="item-info">
+                            <h3>Desert Dunes</h3>
+                            <p>Endless golden sand formations</p>
+                        </div>
+                    </div>
+
+                    <div class="grid-item" data-category="urban">
+                        <div class="grid-info">Urban</div>
+                        <img src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?ixlib=rb-4.0.3&w=400&q=80" alt="Architecture">
+                        <div class="item-info">
+                            <h3>Modern Architecture</h3>
+                            <p>Contemporary building design</p>
+                        </div>
+                    </div>
+
+                    <div class="grid-item" data-category="portrait">
+                        <div class="grid-info">Portrait</div>
+                        <img src="https://images.unsplash.com/photo-1502780402662-acc01917ab59?ixlib=rb-4.0.3&w=400&q=80" alt="Travel">
+                        <div class="item-info">
+                            <h3>Travel Moments</h3>
+                            <p>Capturing wanderlust spirit</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="basic-grid" id="adaptiveGrid" style="display: none;">
+                <h2 class="section-title">Adaptive Breakpoint Grid</h2>
+                <div class="adaptive-grid">
+                    <div class="grid-item"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&w=300&q=80" alt="Image 1"></div>
+                    <div class="grid-item"><img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&w=300&q=80" alt="Image 2"></div>
+                    <div class="grid-item"><img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&w=300&q=80" alt="Image 3"></div>
+                    <div class="grid-item"><img src="https://images.unsplash.com/photo-1520637736862-4d197d17c86a?ixlib=rb-4.0.3&w=300&q=80" alt="Image 4"></div>
+                    <div class="grid-item"><img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&w=300&q=80" alt="Image 5"></div>
+                    <div class="grid-item"><img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&w=300&q=80" alt="Image 6"></div>
+                    <div class="grid-item"><img src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?ixlib=rb-4.0.3&w=300&q=80" alt="Image 7"></div>
+                    <div class="grid-item"><img src="https://images.unsplash.com/photo-1502780402662-acc01917ab59?ixlib=rb-4.0.3&w=300&q=80" alt="Image 8"></div>
+                    <div class="grid-item"><img src="https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?ixlib=rb-4.0.3&w=300&q=80" alt="Image 9"></div>
+                    <div class="grid-item"><img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&w=300&q=80" alt="Image 10"></div>
+                </div>
+            </div>
+
+            <div class="basic-grid" id="featuredGrid" style="display: none;">
+                <h2 class="section-title">Featured Item Grid</h2>
+                <div class="responsive-grid layout-1">
+                    <div class="grid-item featured-item">
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&w=600&q=80" alt="Featured">
+                        <div class="item-info">
+                            <h3>Featured Story</h3>
+                            <p>This is a highlighted item that spans multiple columns and rows</p>
+                        </div>
+                    </div>
+                    <div class="grid-item"><img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&w=300&q=80" alt="Regular"></div>
+                    <div class="grid-item"><img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&w=300&q=80" alt="Regular"></div>
+                    <div class="grid-item"><img src="https://images.unsplash.com/photo-1520637736862-4d197d17c86a?ixlib=rb-4.0.3&w=300&q=80" alt="Regular"></div>
+                    <div class="grid-item"><img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&w=300&q=80" alt="Regular"></div>
+                </div>
+            </div>
+
+            <div class="basic-grid" id="mosaicGrid" style="display: none;">
+                <h2 class="section-title">Mosaic Layout</h2>
+                <div class="mosaic-grid">
+                    <div class="mosaic-item mosaic-large"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&w=400&q=80" alt="Large"></div>
+                    <div class="mosaic-item"><img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&w=200&q=80" alt="Small"></div>
+                    <div class="mosaic-item mosaic-tall"><img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&w=200&q=80" alt="Tall"></div>
+                    <div class="mosaic-item"><img src="https://images.unsplash.com/photo-1520637736862-4d197d17c86a?ixlib=rb-4.0.3&w=200&q=80" alt="Small"></div>
+                    <div class="mosaic-item mosaic-wide"><img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&w=400&q=80" alt="Wide"></div>
+                    <div class="mosaic-item"><img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&w=200&q=80" alt="Small"></div>
+                    <div class="mosaic-item"><img src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?ixlib=rb-4.0.3&w=200&q=80" alt="Small"></div>
+                    <div class="mosaic-item mosaic-wide"><img src="https://images.unsplash.com/photo-1502780402662-acc01917ab59?ixlib=rb-4.0.3&w=400&q=80" alt="Wide"></div>
+                    <div class="mosaic-item"><img src="https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?ixlib=rb-4.0.3&w=200&q=80" alt="Small"></div>
+                    <div class="mosaic-item"><img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&w=200&q=80" alt="Small"></div>
+                </div>
+            </div>
+
+            <div class="basic-grid" id="aspectGrid" style="display: none;">
+                <h2 class="section-title">Aspect Ratio Grid</h2>
+                <div class="aspect-ratio-grid">
+                    <div class="aspect-ratio-item aspect-ratio-16x9">
+                        <div class="aspect-ratio-content">
+                            <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&w=400&q=80" alt="16:9">
+                        </div>
+                    </div>
+                    <div class="aspect-ratio-item aspect-ratio-1x1">
+                        <div class="aspect-ratio-content">
+                            <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&w=400&q=80" alt="1:1">
+                        </div>
+                    </div>
+                    <div class="aspect-ratio-item aspect-ratio-4x3">
+                        <div class="aspect-ratio-content">
+                            <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&w=400&q=80" alt="4:3">
+                        </div>
+                    </div>
+                    <div class="aspect-ratio-item aspect-ratio-1x1">
+                        <div class="aspect-ratio-content">
+                            <img src="https://images.unsplash.com/photo-1520637736862-4d197d17c86a?ixlib=rb-4.0.3&w=400&q=80" alt="1:1">
+                        </div>
+                    </div>
+                    <div class="aspect-ratio-item aspect-ratio-16x9">
+                        <div class="aspect-ratio-content">
+                            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&w=400&q=80" alt="16:9">
+                        </div>
+                    </div>
+                    <div class="aspect-ratio-item aspect-ratio-4x3">
+                        <div class="aspect-ratio-content">
+                            <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&w=400&q=80" alt="4:3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class ResponsiveGrid {
+            constructor() {
+                this.gridButtons = document.querySelectorAll('.grid-btn');
+                this.filterButtons = document.querySelectorAll('.filter-btn');
+                this.gridItems = document.querySelectorAll('.grid-item[data-category]');
+                
+                this.init();
+            }
+            
+            init() {
+                this.bindEvents();
+                this.observeElements();
+            }
+            
+            bindEvents() {
+                this.gridButtons.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.switchGrid(e.target.dataset.grid);
+                        this.setActiveButton(e.target, this.gridButtons);
+                    });
+                });
+                
+                this.filterButtons.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.filterItems(e.target.dataset.filter);
+                        this.setActiveButton(e.target, this.filterButtons);
+                    });
+                });
+            }
+            
+            setActiveButton(activeBtn, buttonGroup) {
+                buttonGroup.forEach(btn => btn.classList.remove('active'));
+                activeBtn.classList.add('active');
+            }
+            
+            switchGrid(gridType) {
+                const grids = {
+                    'basic': 'basicGrid',
+                    'adaptive': 'adaptiveGrid',
+                    'featured': 'featuredGrid',
+                    'mosaic': 'mosaicGrid',
+                    'aspect': 'aspectGrid'
+                };
+                
+                Object.values(grids).forEach(gridId => {
+                    const grid = document.getElementById(gridId);
+                    if (grid) {
+                        grid.style.display = 'none';
+                        grid.classList.remove('active-grid');
+                    }
+                });
+                
+                const activeGrid = document.getElementById(grids[gridType]);
+                if (activeGrid) {
+                    activeGrid.style.display = 'block';
+                    activeGrid.classList.add('active-grid');
+                    
+                    setTimeout(() => {
+                        this.animateGridItems(activeGrid);
+                    }, 100);
+                }
+            }
+            
+            filterItems(filter) {
+                this.gridItems.forEach(item => {
+                    const category = item.dataset.category;
+                    const shouldShow = filter === 'all' || category === filter;
+                    
+                    if (shouldShow) {
+                        item.style.display = 'block';
+                        setTimeout(() => {
+                            item.style.opacity = '1';
+                            item.style.transform = 'translateY(0) scale(1)';
+                        }, 100);
+                    } else {
+                        item.style.opacity = '0';
+                        item.style.transform = 'translateY(20px) scale(0.9)';
+                        setTimeout(() => {
+                            item.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            }
+            
+            animateGridItems(container) {
+                const items = container.querySelectorAll('.grid-item, .mosaic-item, .aspect-ratio-item');
+                
+                items.forEach((item, index) => {
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateY(30px)';
+                    
+                    setTimeout(() => {
+                        item.style.transition = 'all 0.6s ease';
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+            }
+            
+            observeElements() {
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+                
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }
+                    });
+                }, observerOptions);
+                
+                document.querySelectorAll('.grid-item, .mosaic-item').forEach(item => {
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateY(50px)';
+                    item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                    observer.observe(item);
+                });
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            new ResponsiveGrid();
+        });
+
+        window.addEventListener('resize', () => {
+            const mosaicItems = document.querySelectorAll('.mosaic-item');
+            mosaicItems.forEach(item => {
+                item.style.transform = 'scale(1)';
+            });
+        });
+
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                const activeGrid = document.querySelector('.active-grid');
+                if (activeGrid) {
+                    const items = activeGrid.querySelectorAll('.grid-item, .mosaic-item');
+                    items.forEach((item, index) => {
+                        setTimeout(() => {
+                            item.style.transform = 'translateY(0) scale(1)';
+                        }, index * 50);
+                    });
+                }
+            }, 250);
+        });
+    </script>
+</body>
+</html>

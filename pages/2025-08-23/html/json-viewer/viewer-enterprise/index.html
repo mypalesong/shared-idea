@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise JSON Viewer</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="enterprise-app">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="app-branding">
+                    <div class="app-logo">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="2" y="2" width="28" height="28" rx="4" fill="#2563eb"/>
+                            <path d="M8 12h16v2H8v-2zm0 4h16v2H8v-2zm0 4h12v2H8v-2z" fill="white"/>
+                        </svg>
+                    </div>
+                    <div class="app-info">
+                        <h1 class="app-title">Enterprise JSON Viewer</h1>
+                        <p class="app-subtitle">Professional Data Analysis Tool</p>
+                    </div>
+                </div>
+                
+                <div class="header-actions">
+                    <button id="exportBtn" class="btn btn-outline">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 1a.5.5 0 0 1 .5.5v4H10a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H8.5v4a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1-.5-.5V6a.5.5 0 0 1 .5-.5h1.5v-4A.5.5 0 0 1 8 1z"/>
+                        </svg>
+                        Export
+                    </button>
+                    <button id="printBtn" class="btn btn-outline">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zM4 4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1H4V4z"/>
+                            <path d="M2 6a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H2z"/>
+                        </svg>
+                        Print
+                    </button>
+                    <button id="helpBtn" class="btn btn-ghost">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                            <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                        </svg>
+                        Help
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="app-nav">
+            <div class="nav-content">
+                <div class="nav-section">
+                    <button id="loadDataBtn" class="nav-btn active" data-section="load">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707l-2.146 2.147a.5.5 0 0 1-.708-.708l3-3z"/>
+                        </svg>
+                        Load Data
+                    </button>
+                    <button id="viewDataBtn" class="nav-btn" data-section="view">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h11A1.5 1.5 0 0 1 15 2.5v3.563a2 2 0 0 1 0 3.874V13.5A1.5 1.5 0 0 1 13.5 15h-11A1.5 1.5 0 0 1 1 13.5V2.5z"/>
+                        </svg>
+                        View Data
+                    </button>
+                    <button id="compareBtn" class="nav-btn" data-section="compare">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM1.5 2h-1a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1zM9 13a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-2.5-1.5h-1a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z"/>
+                        </svg>
+                        Compare
+                    </button>
+                    <button id="analyzeBtn" class="nav-btn" data-section="analyze">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M4 11H2v3h2v-3zm5-4H7v7h2V7zm5-5v12h-2V2h2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1h-2zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zM1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3z"/>
+                        </svg>
+                        Analyze
+                    </button>
+                </div>
+                
+                <div class="nav-utilities">
+                    <div class="search-bar">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="search-icon">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                        <input type="text" id="searchInput" placeholder="Search keys, values, or paths..." class="search-input">
+                        <button id="clearSearch" class="search-clear" style="display: none;">×</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Load Data Section -->
+            <section id="loadSection" class="content-section active">
+                <div class="section-header">
+                    <h2>Load JSON Data</h2>
+                    <p class="section-description">Import JSON data from file, URL, or raw input to begin analysis</p>
+                </div>
+                
+                <div class="load-options">
+                    <div class="load-card">
+                        <div class="card-icon">
+                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707v4.586l-3-3L9.586 7.5H6.5L9 10l2.293-2.293L14 10.414V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"/>
+                            </svg>
+                        </div>
+                        <div class="card-content">
+                            <h3>Upload File</h3>
+                            <p>Select a JSON file from your computer</p>
+                            <button id="uploadFileBtn" class="btn btn-primary">Choose File</button>
+                        </div>
+                    </div>
+                    
+                    <div class="load-card">
+                        <div class="card-icon">
+                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm7.5-6.923c-.67.204-1.335.82-1.887 1.855A7.97 7.97 0 0 0 5.145 4H7.5V1.077zM4.09 4a9.267 9.267 0 0 1 .64-1.539 6.7 6.7 0 0 1 .597-.933A7.025 7.025 0 0 0 2.255 4H4.09zm-.582 3.5c.03-.877.138-1.718.312-2.5H1.674a6.958 6.958 0 0 0-.656 2.5h2.49zM4.847 5a12.5 12.5 0 0 0-.338 2.5H7.5V5H4.847zM8.5 5v2.5h2.99a12.495 12.495 0 0 0-.337-2.5H8.5zM4.51 8.5a12.5 12.5 0 0 0 .337 2.5H7.5V8.5H4.51zm3.99 0V11h2.653c.187-.765.306-1.608.338-2.5H8.5zM5.145 12c.138.386.295.744.468 1.068.552 1.035 1.218 1.65 1.887 1.855V12H5.145zm.182 2.472a6.696 6.696 0 0 1-.597-.933A9.268 9.268 0 0 1 4.09 12H2.255a7.024 7.024 0 0 0 3.072 2.472zM3.82 11a13.652 13.652 0 0 1-.312-2.5h-2.49c.062.89.291 1.733.656 2.5H3.82zm6.853 3.472A7.024 7.024 0 0 0 13.745 12H11.91a9.27 9.27 0 0 1-.64 1.539 6.688 6.688 0 0 1-.597.933zM8.5 12v2.923c.67-.204 1.335-.82 1.887-1.855.173-.324.33-.682.468-1.068H8.5zm3.68-1h2.146c.365-.767.594-1.61.656-2.5h-2.49a13.65 13.65 0 0 1-.312 2.5zm.342-4a12.495 12.495 0 0 0-.337-2.5H8.5V7.5h4.022zM14.332 3.5c-.365-.767-.594-1.61-.656-2.5h-2.49c.03.877.138 1.718.312 2.5h2.834z"/>
+                            </svg>
+                        </div>
+                        <div class="card-content">
+                            <h3>Load from URL</h3>
+                            <p>Fetch JSON data from a web URL</p>
+                            <div class="url-input-group">
+                                <input type="url" id="urlInput" placeholder="https://api.example.com/data.json" class="form-input">
+                                <button id="loadUrlBtn" class="btn btn-primary">Load</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="load-card">
+                        <div class="card-icon">
+                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
+                                <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                            </svg>
+                        </div>
+                        <div class="card-content">
+                            <h3>Raw Input</h3>
+                            <p>Paste JSON text directly</p>
+                            <button id="rawInputBtn" class="btn btn-primary">Open Editor</button>
+                        </div>
+                    </div>
+                    
+                    <div class="load-card">
+                        <div class="card-icon">
+                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M1.5 14.5A1.5 1.5 0 0 1 0 13V6a1.5 1.5 0 0 1 1.5-1.5h13A1.5 1.5 0 0 1 16 6v7a1.5 1.5 0 0 1-1.5 1.5h-13z"/>
+                            </svg>
+                        </div>
+                        <div class="card-content">
+                            <h3>Sample Data</h3>
+                            <p>Load example data for demonstration</p>
+                            <button id="loadSampleBtn" class="btn btn-primary">Load Sample</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- View Data Section -->
+            <section id="viewSection" class="content-section">
+                <div class="section-header">
+                    <h2>JSON Data Viewer</h2>
+                    <div class="section-controls">
+                        <div class="control-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="hideEmptyValues" checked>
+                                <span class="checkbox-checkmark"></span>
+                                Hide empty values
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="showLineNumbers">
+                                <span class="checkbox-checkmark"></span>
+                                Show line numbers
+                            </label>
+                        </div>
+                        <div class="button-group">
+                            <button id="expandAllBtn" class="btn btn-ghost btn-sm">Expand All</button>
+                            <button id="collapseAllBtn" class="btn btn-ghost btn-sm">Collapse All</button>
+                            <button id="copyPathBtn" class="btn btn-ghost btn-sm" disabled>Copy Path</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="view-container">
+                    <div class="data-panel">
+                        <div class="panel-header">
+                            <h3>JSON Structure</h3>
+                            <div class="panel-stats" id="dataStats">
+                                <span class="stat-item">Keys: <strong>0</strong></span>
+                                <span class="stat-item">Size: <strong>0 KB</strong></span>
+                                <span class="stat-item">Depth: <strong>0</strong></span>
+                            </div>
+                        </div>
+                        <div class="json-container" id="jsonContainer">
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <svg width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"/>
+                                    </svg>
+                                </div>
+                                <h4>No data loaded</h4>
+                                <p>Use the Load Data section to import JSON data</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-panel">
+                        <div class="panel-header">
+                            <h3 id="detailTitle">Object Details</h3>
+                            <button id="closeDetailBtn" class="btn btn-ghost btn-sm">Close</button>
+                        </div>
+                        <div class="detail-container" id="detailContainer">
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <svg width="48" height="48" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                        <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                                    </svg>
+                                </div>
+                                <h4>Select an object</h4>
+                                <p>Click on any object key to view detailed information</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Compare Section -->
+            <section id="compareSection" class="content-section">
+                <div class="section-header">
+                    <h2>JSON Comparison</h2>
+                    <p class="section-description">Compare two JSON files to identify differences</p>
+                </div>
+
+                <div class="comparison-setup">
+                    <div class="compare-input">
+                        <h3>JSON A</h3>
+                        <div class="input-actions">
+                            <button id="loadCompareA" class="btn btn-primary">Load File A</button>
+                            <span class="file-name" id="fileNameA">No file selected</span>
+                        </div>
+                    </div>
+                    <div class="compare-input">
+                        <h3>JSON B</h3>
+                        <div class="input-actions">
+                            <button id="loadCompareB" class="btn btn-primary">Load File B</button>
+                            <span class="file-name" id="fileNameB">No file selected</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comparison-results" id="comparisonResults" style="display: none;">
+                    <div class="results-header">
+                        <h3>Comparison Results</h3>
+                        <div class="diff-summary" id="diffSummary"></div>
+                    </div>
+                    <div class="diff-viewer" id="diffViewer"></div>
+                </div>
+            </section>
+
+            <!-- Analyze Section -->
+            <section id="analyzeSection" class="content-section">
+                <div class="section-header">
+                    <h2>Data Analysis</h2>
+                    <p class="section-description">Comprehensive analysis of JSON structure and content</p>
+                </div>
+
+                <div class="analysis-grid" id="analysisGrid">
+                    <div class="analysis-card">
+                        <div class="card-header">
+                            <h3>Structure Overview</h3>
+                        </div>
+                        <div class="card-content" id="structureAnalysis">
+                            <p class="analysis-placeholder">No data to analyze</p>
+                        </div>
+                    </div>
+
+                    <div class="analysis-card">
+                        <div class="card-header">
+                            <h3>Data Types</h3>
+                        </div>
+                        <div class="card-content" id="typeAnalysis">
+                            <p class="analysis-placeholder">No data to analyze</p>
+                        </div>
+                    </div>
+
+                    <div class="analysis-card">
+                        <div class="card-header">
+                            <h3>Key Patterns</h3>
+                        </div>
+                        <div class="card-content" id="keyAnalysis">
+                            <p class="analysis-placeholder">No data to analyze</p>
+                        </div>
+                    </div>
+
+                    <div class="analysis-card">
+                        <div class="card-header">
+                            <h3>Value Insights</h3>
+                        </div>
+                        <div class="card-content" id="valueAnalysis">
+                            <p class="analysis-placeholder">No data to analyze</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Raw Input Modal -->
+    <div class="modal-overlay" id="rawInputModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Raw JSON Input</h3>
+                <button id="closeRawModal" class="btn btn-ghost">×</button>
+            </div>
+            <div class="modal-body">
+                <textarea id="rawJsonTextarea" placeholder="Paste your JSON data here..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button id="parseJsonBtn" class="btn btn-primary">Parse JSON</button>
+                <button id="cancelRawBtn" class="btn btn-ghost">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal-overlay" id="helpModal">
+        <div class="modal modal-large">
+            <div class="modal-header">
+                <h3>Help & Documentation</h3>
+                <button id="closeHelpModal" class="btn btn-ghost">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="help-content">
+                    <section class="help-section">
+                        <h4>Getting Started</h4>
+                        <p>This enterprise JSON viewer helps you analyze, compare, and understand JSON data structures efficiently.</p>
+                        <ul>
+                            <li>Load JSON data from files, URLs, or raw input</li>
+                            <li>Navigate through complex data structures</li>
+                            <li>Compare different JSON files</li>
+                            <li>Analyze data patterns and statistics</li>
+                        </ul>
+                    </section>
+                    
+                    <section class="help-section">
+                        <h4>Keyboard Shortcuts</h4>
+                        <div class="shortcuts-grid">
+                            <div class="shortcut-item">
+                                <kbd>Ctrl</kbd> + <kbd>O</kbd>
+                                <span>Load file</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>Ctrl</kbd> + <kbd>F</kbd>
+                                <span>Search</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>Ctrl</kbd> + <kbd>E</kbd>
+                                <span>Expand all</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd>
+                                <span>Collapse all</span>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file inputs -->
+    <input type="file" id="fileInput" accept=".json" style="display: none;">
+    <input type="file" id="compareFileA" accept=".json" style="display: none;">
+    <input type="file" id="compareFileB" accept=".json" style="display: none;">
+
+    <script src="script.js"></script>
+</body>
+</html>

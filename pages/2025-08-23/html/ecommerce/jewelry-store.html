@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuxeJewels - 프리미엄 주얼리</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2c1810, #8b4513);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ffd700;
+            font-family: 'Times New Roman', serif;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
+        
+        nav a:hover {
+            color: #ffd700;
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(44,24,16,0.7), rgba(44,24,16,0.7)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23f5f5dc" width="1200" height="600"/><text x="600" y="280" text-anchor="middle" font-size="36" fill="%23b8860b">✨ Luxury Jewelry ✨</text><text x="600" y="340" text-anchor="middle" font-size="24" fill="%23daa520">Premium Collection</text></svg>');
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+        
+        .hero-content h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            font-family: 'Times New Roman', serif;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+        }
+        
+        .hero-content p {
+            font-size: 1.4rem;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            line-height: 1.8;
+            letter-spacing: 1px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #ffd700, #ffed4a);
+            color: #2c1810;
+            padding: 18px 35px;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.3s;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 25px rgba(255,215,0,0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255,215,0,0.4);
+            background: linear-gradient(45deg, #ffed4a, #ffd700);
+        }
+        
+        .collections {
+            padding: 100px 0;
+            background: #faf8f5;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 3.2rem;
+            margin-bottom: 4rem;
+            color: #2c1810;
+            font-family: 'Times New Roman', serif;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background: #ffd700;
+            margin: 20px auto;
+        }
+        
+        .collection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+        }
+        
+        .collection-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            position: relative;
+        }
+        
+        .collection-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .collection-img {
+            height: 300px;
+            background: linear-gradient(135deg, #f8f8f8, #e8e8e8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8b4513;
+            font-size: 2rem;
+            position: relative;
+        }
+        
+        .luxury-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #ffd700, #ffed4a);
+            color: #2c1810;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .collection-info {
+            padding: 2.5rem;
+            text-align: center;
+        }
+        
+        .collection-info h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #2c1810;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        .collection-info p {
+            color: #666;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .collection-btn {
+            display: inline-block;
+            background: transparent;
+            color: #8b4513;
+            padding: 12px 25px;
+            text-decoration: none;
+            border: 2px solid #8b4513;
+            border-radius: 25px;
+            transition: all 0.3s;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .collection-btn:hover {
+            background: #8b4513;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .featured-products {
+            padding: 100px 0;
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            margin-top: 4rem;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+        }
+        
+        .product-img {
+            height: 280px;
+            background: linear-gradient(45deg, #f9f9f9, #f0f0f0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8b4513;
+            font-size: 1.2rem;
+            position: relative;
+        }
+        
+        .product-info {
+            padding: 2rem;
+        }
+        
+        .product-category {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .product-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        .product-description {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .product-price {
+            font-size: 1.8rem;
+            color: #8b4513;
+            font-weight: bold;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        .craftsmanship {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #2c1810, #8b4513);
+            color: white;
+        }
+        
+        .craftsmanship-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minItems(350px, 1fr));
+            gap: 4rem;
+            margin-top: 4rem;
+        }
+        
+        .craft-item {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .craft-icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            color: #ffd700;
+        }
+        
+        .craft-item h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        .craft-item p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .testimonials {
+            padding: 100px 0;
+            background: #faf8f5;
+        }
+        
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minMax(400px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+        
+        .testimonial-card {
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+            position: relative;
+        }
+        
+        .testimonial-card::before {
+            content: '"';
+            font-size: 6rem;
+            color: #ffd700;
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        .testimonial-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            font-style: italic;
+            color: #555;
+        }
+        
+        .testimonial-author {
+            font-weight: bold;
+            color: #8b4513;
+            font-size: 1.1rem;
+        }
+        
+        footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minMax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1.5rem;
+            color: #ffd700;
+            font-family: 'Times New Roman', serif;
+            font-size: 1.3rem;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: #ffd700;
+        }
+        
+        .footer-contact {
+            background: rgba(255,215,0,0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #ffd700;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid #333;
+            padding-top: 2rem;
+            text-align: center;
+            color: #999;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.8rem;
+            }
+            
+            .section-title {
+                font-size: 2.4rem;
+            }
+            
+            .collection-grid,
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">LuxeJewels</div>
+            <ul>
+                <li><a href="#home">홈</a></li>
+                <li><a href="#collections">컬렉션</a></li>
+                <li><a href="#products">제품</a></li>
+                <li><a href="#about">브랜드 스토리</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>영원을 담은 아름다움</h1>
+            <p>세상에서 가장 소중한 순간을 위한 프리미엄 주얼리 컬렉션</p>
+            <a href="#collections" class="btn">컬렉션 둘러보기</a>
+        </div>
+    </section>
+
+    <section id="collections" class="collections">
+        <div class="container">
+            <h2 class="section-title">시그니처 컬렉션</h2>
+            <div class="collection-grid">
+                <div class="collection-card">
+                    <div class="collection-img">
+                        <div class="luxury-badge">Signature</div>
+                        💎 다이아몬드 컬렉션
+                    </div>
+                    <div class="collection-info">
+                        <h3>에터널 브릴리언스</h3>
+                        <p>최고급 다이아몬드로 제작된 영원한 아름다움의 상징. 완벽한 컷팅과 투명도로 빛나는 프리미엄 다이아몬드 주얼리</p>
+                        <a href="#" class="collection-btn">컬렉션 보기</a>
+                    </div>
+                </div>
+                <div class="collection-card">
+                    <div class="collection-img">
+                        <div class="luxury-badge">Premium</div>
+                        💍 웨딩 컬렉션
+                    </div>
+                    <div class="collection-info">
+                        <h3>퓨어 프로미스</h3>
+                        <p>영원한 사랑의 맹세를 담은 웨딩 주얼리. 클래식하면서도 모던한 디자인으로 완성된 특별한 순간을 위한 반지</p>
+                        <a href="#" class="collection-btn">컬렉션 보기</a>
+                    </div>
+                </div>
+                <div class="collection-card">
+                    <div class="collection-img">
+                        <div class="luxury-badge">Exclusive</div>
+                        ✨ 귀금속 컬렉션
+                    </div>
+                    <div class="collection-info">
+                        <h3>골든 엘레강스</h3>
+                        <p>순금과 백금으로 제작된 고급 주얼리. 세련된 디자인과 완벽한 마감으로 품격있는 스타일을 연출하는 귀금속 라인</p>
+                        <a href="#" class="collection-btn">컬렉션 보기</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="products" class="featured-products">
+        <div class="container">
+            <h2 class="section-title">Featured Products</h2>
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-img">💎 솔리테어 다이아몬드 반지</div>
+                    <div class="product-info">
+                        <div class="product-category">다이아몬드 링</div>
+                        <h3>클래식 솔리테어 1.5ct</h3>
+                        <div class="product-description">완벽한 라운드 브릴리언트 컷 다이아몬드가 세팅된 클래식 솔리테어 반지</div>
+                        <div class="product-price">12,500,000원</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">💍 플래티넘 웨딩밴드</div>
+                    <div class="product-info">
+                        <div class="product-category">웨딩밴드</div>
+                        <h3>플래티넘 이터니티 밴드</h3>
+                        <div class="product-description">프리미엄 플래티넘에 세팅된 이터니티 다이아몬드 웨딩밴드</div>
+                        <div class="product-price">3,800,000원</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">✨ 다이아몬드 목걸이</div>
+                    <div class="product-info">
+                        <div class="product-category">목걸이</div>
+                        <h3>테니스 다이아몬드 목걸이</h3>
+                        <div class="product-description">균일한 사이즈의 다이아몬드가 연결된 클래식 테니스 목걸이</div>
+                        <div class="product-price">8,900,000원</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">💎 다이아몬드 귀걸이</div>
+                    <div class="product-info">
+                        <div class="product-category">귀걸이</div>
+                        <h3>드롭 다이아몬드 귀걸이</h3>
+                        <div class="product-description">우아한 드롭 스타일의 다이아몬드 귀걸이, 특별한 날을 위한 선택</div>
+                        <div class="product-price">5,200,000원</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="craftsmanship">
+        <div class="container">
+            <h2 class="section-title">장인 정신</h2>
+            <div class="craftsmanship-grid">
+                <div class="craft-item">
+                    <div class="craft-icon">🔨</div>
+                    <h3>수공 제작</h3>
+                    <p>숙련된 장인이 하나하나 정성스럽게 제작하는 수공예 주얼리. 기계로는 만들 수 없는 섬세함과 품질을 자랑합니다.</p>
+                </div>
+                <div class="craft-item">
+                    <div class="craft-icon">💎</div>
+                    <h3>엄선된 원석</h3>
+                    <p>세계 각지에서 엄선된 최상급 원석만을 사용합니다. GIA 인증을 받은 다이아몬드와 프리미엄 귀금속을 제공합니다.</p>
+                </div>
+                <div class="craft-item">
+                    <div class="craft-icon">⚡</div>
+                    <h3>완벽한 마감</h3>
+                    <p>세밀한 검수 과정을 거쳐 완벽한 마감을 구현합니다. 각 제품은 엄격한 품질 기준을 통과한 완성품입니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">고객 후기</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        프러포즈용으로 구매한 다이아몬드 반지가 정말 완벽했어요. 품질도 우수하고 서비스도 최고였습니다. 평생 간직할 소중한 추억이 되었습니다.
+                    </div>
+                    <div class="testimonial-author">- 김민수 님</div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        결혼 10주년 기념으로 목걸이를 선물받았는데, 정말 아름다워요. 디자인도 세련되고 품질도 최고급이라 매일 착용하고 있어요.
+                    </div>
+                    <div class="testimonial-author">- 박지영 님</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>고객 서비스</h3>
+                    <ul>
+                        <li><a href="#">주문 및 배송</a></li>
+                        <li><a href="#">교환 및 반품</a></li>
+                        <li><a href="#">사이즈 가이드</a></li>
+                        <li><a href="#">A/S 서비스</a></li>
+                        <li><a href="#">맞춤 제작</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>제품 정보</h3>
+                    <ul>
+                        <li><a href="#">다이아몬드 가이드</a></li>
+                        <li><a href="#">귀금속 정보</a></li>
+                        <li><a href="#">인증서 안내</a></li>
+                        <li><a href="#">케어 가이드</a></li>
+                        <li><a href="#">품질 보증</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>브랜드</h3>
+                    <ul>
+                        <li><a href="#">브랜드 스토리</a></li>
+                        <li><a href="#">장인 소개</a></li>
+                        <li><a href="#">매장 안내</a></li>
+                        <li><a href="#">채용 정보</a></li>
+                        <li><a href="#">뉴스 & 이벤트</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <div class="footer-contact">
+                        <h3>📞 고객센터</h3>
+                        <p><strong>1588-1234</strong></p>
+                        <p>평일 10:00-19:00</p>
+                        <p>토요일 10:00-17:00</p>
+                        <p>일요일 및 공휴일 휴무</p>
+                        <br>
+                        <p>📧 <a href="#">support@luxejewels.com</a></p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 LuxeJewels. All rights reserved. | 사업자등록번호: 123-45-67890 | 통신판매업신고: 2025-서울강남-1234</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

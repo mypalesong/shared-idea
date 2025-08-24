@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제품 소개 - CloudSync Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            line-height: 1.6;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 120px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-image: radial-gradient(circle, white 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+        .product-hero-image {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            font-size: 8rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .feature-section {
+            padding: 100px 0;
+        }
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: none;
+            height: 100%;
+        }
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .demo-section {
+            background: #f8fafc;
+            padding: 100px 0;
+        }
+        .demo-video {
+            background: linear-gradient(135deg, #e2e8f0, #cbd5e0);
+            border-radius: 20px;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .demo-video::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        }
+        .play-button {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #667eea;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+        .play-button:hover {
+            transform: scale(1.1);
+            background: white;
+        }
+        .stats-section {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 80px 0;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        .testimonial-section {
+            padding: 100px 0;
+            background: white;
+        }
+        .testimonial-card {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        .testimonial-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.1);
+        }
+        .testimonial-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #e2e8f0, #cbd5e0);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #64748b;
+        }
+        .rating {
+            color: #fbbf24;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        .integration-section {
+            background: #f8fafc;
+            padding: 100px 0;
+        }
+        .integration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        .integration-item {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .integration-item:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+        }
+        .integration-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #64748b;
+        }
+        .cta-section {
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+        .btn-primary-custom {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 15px 35px;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+        .btn-primary-custom:hover {
+            background: white;
+            color: #ff6b6b;
+        }
+        .btn-outline-custom {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            padding: 15px 35px;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+        .btn-outline-custom:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: white;
+            color: white;
+        }
+        .comparison-table {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin: 3rem 0;
+        }
+        .table thead {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        .table th {
+            border: none;
+            padding: 1.5rem 1rem;
+            font-weight: 600;
+        }
+        .table td {
+            padding: 1rem;
+            border-color: #f1f5f9;
+        }
+        .check-icon {
+            color: #10b981;
+            font-size: 1.2rem;
+        }
+        .cross-icon {
+            color: #ef4444;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#" style="color: #667eea;">
+                <i class="bi bi-cloud-arrow-up me-2"></i>CloudSync
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">홈</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active fw-bold" href="#">제품</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">요금제</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">고객사례</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">지원</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary text-white px-3 ms-2" href="#" style="background: linear-gradient(135deg, #667eea, #764ba2); border: none;">무료 체험</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="hero-bg-pattern"></div>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">CloudSync Pro</h1>
+                    <h2 class="h3 mb-4 opacity-90">기업을 위한 스마트 클라우드 동기화 솔루션</h2>
+                    <p class="lead mb-4">
+                        실시간 파일 동기화, 협업 도구, 고급 보안 기능을 하나의 플랫폼에서 제공합니다. 
+                        팀의 생산성을 높이고 데이터를 안전하게 보호하세요.
+                    </p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <button class="btn btn-light btn-lg px-4">무료로 시작하기</button>
+                        <button class="btn btn-outline-light btn-lg px-4">라이브 데모 보기</button>
+                    </div>
+                    <div class="mt-4 d-flex align-items-center gap-4 flex-wrap">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-circle me-2"></i>
+                            <span>14일 무료 체험</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-circle me-2"></i>
+                            <span>신용카드 불필요</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-circle me-2"></i>
+                            <span>24/7 고객지원</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center mt-5 mt-lg-0">
+                    <div class="product-hero-image">
+                        <i class="bi bi-cloud-arrow-up-fill"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="feature-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2 text-center mb-5">
+                    <h2 class="display-5 fw-bold mb-4">핵심 기능</h2>
+                    <p class="lead text-muted">CloudSync Pro가 제공하는 강력한 기능들을 확인해보세요.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon mx-auto">
+                            <i class="bi bi-lightning-charge"></i>
+                        </div>
+                        <h4 class="mb-3">실시간 동기화</h4>
+                        <p class="text-muted">
+                            파일 변경사항을 실시간으로 모든 디바이스에 동기화합니다. 
+                            오프라인에서 작업해도 온라인 상태가 되면 자동으로 동기화됩니다.
+                        </p>
+                        <ul class="list-unstyled text-start text-muted">
+                            <li><i class="bi bi-check text-success me-2"></i>99.9% 동기화 정확도</li>
+                            <li><i class="bi bi-check text-success me-2"></i>충돌 자동 해결</li>
+                            <li><i class="bi bi-check text-success me-2"></i>버전 히스토리 보존</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon mx-auto">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h4 class="mb-3">팀 협업</h4>
+                        <p class="text-muted">
+                            실시간 공동 편집, 댓글, 승인 워크플로우를 통해 팀 협업을 
+                            더욱 효율적으로 만들어보세요.
+                        </p>
+                        <ul class="list-unstyled text-start text-muted">
+                            <li><i class="bi bi-check text-success me-2"></i>실시간 공동 편집</li>
+                            <li><i class="bi bi-check text-success me-2"></i>댓글 & 피드백 시스템</li>
+                            <li><i class="bi bi-check text-success me-2"></i>승인 워크플로우</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon mx-auto">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <h4 class="mb-3">엔터프라이즈 보안</h4>
+                        <p class="text-muted">
+                            군사급 암호화, 2단계 인증, 고급 접근 제어로 
+                            기업 데이터를 완벽하게 보호합니다.
+                        </p>
+                        <ul class="list-unstyled text-start text-muted">
+                            <li><i class="bi bi-check text-success me-2"></i>AES-256 암호화</li>
+                            <li><i class="bi bi-check text-success me-2"></i>SSO 통합 지원</li>
+                            <li><i class="bi bi-check text-success me-2"></i>감사 로그 제공</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon mx-auto">
+                            <i class="bi bi-graph-up"></i>
+                        </div>
+                        <h4 class="mb-3">분석 & 인사이트</h4>
+                        <p class="text-muted">
+                            상세한 사용량 분석과 인사이트를 통해 팀의 생산성을 
+                            측정하고 최적화하세요.
+                        </p>
+                        <ul class="list-unstyled text-start text-muted">
+                            <li><i class="bi bi-check text-success me-2"></i>실시간 대시보드</li>
+                            <li><i class="bi bi-check text-success me-2"></i>사용량 리포트</li>
+                            <li><i class="bi bi-check text-success me-2"></i>생산성 지표</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon mx-auto">
+                            <i class="bi bi-phone"></i>
+                        </div>
+                        <h4 class="mb-3">모바일 앱</h4>
+                        <p class="text-muted">
+                            iOS와 Android 네이티브 앱으로 언제 어디서나 
+                            파일에 접근하고 작업하세요.
+                        </p>
+                        <ul class="list-unstyled text-start text-muted">
+                            <li><i class="bi bi-check text-success me-2"></i>오프라인 접근</li>
+                            <li><i class="bi bi-check text-success me-2"></i>푸시 알림</li>
+                            <li><i class="bi bi-check text-success me-2"></i>파일 미리보기</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon mx-auto">
+                            <i class="bi bi-puzzle"></i>
+                        </div>
+                        <h4 class="mb-3">API & 통합</h4>
+                        <p class="text-muted">
+                            강력한 REST API와 수백 개의 앱 통합을 통해 
+                            기존 워크플로우와 완벽하게 연결하세요.
+                        </p>
+                        <ul class="list-unstyled text-start text-muted">
+                            <li><i class="bi bi-check text-success me-2"></i>RESTful API</li>
+                            <li><i class="bi bi-check text-success me-2"></i>Webhook 지원</li>
+                            <li><i class="bi bi-check text-success me-2"></i>500+ 앱 통합</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4">
+                    <h2 class="display-6 fw-bold mb-4">실제 동작을 확인해보세요</h2>
+                    <p class="lead text-muted mb-4">
+                        CloudSync Pro가 어떻게 팀의 생산성을 높이는지 3분 데모 영상으로 확인해보세요.
+                    </p>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="bi bi-play-circle text-primary me-2"></i>실시간 파일 동기화 시연</li>
+                        <li class="mb-2"><i class="bi bi-play-circle text-primary me-2"></i>팀 협업 기능 둘러보기</li>
+                        <li class="mb-2"><i class="bi bi-play-circle text-primary me-2"></i>보안 설정 가이드</li>
+                        <li class="mb-2"><i class="bi bi-play-circle text-primary me-2"></i>모바일 앱 사용법</li>
+                    </ul>
+                    <button class="btn btn-primary btn-lg px-4 mt-3" style="background: linear-gradient(135deg, #667eea, #764ba2); border: none;">
+                        무료 체험 시작하기
+                    </button>
+                </div>
+                <div class="col-lg-6">
+                    <div class="demo-video">
+                        <div class="play-button">
+                            <i class="bi bi-play-fill"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stat-item">
+                        <span class="stat-number">50,000+</span>
+                        <div class="stat-label">활성 사용자</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stat-item">
+                        <span class="stat-number">99.9%</span>
+                        <div class="stat-label">서비스 가용성</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stat-item">
+                        <span class="stat-number">1PB+</span>
+                        <div class="stat-label">저장된 데이터</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stat-item">
+                        <span class="stat-number">150+</span>
+                        <div class="stat-label">국가에서 사용</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonial-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2 text-center mb-5">
+                    <h2 class="display-5 fw-bold mb-4">고객들의 목소리</h2>
+                    <p class="lead text-muted">실제 사용자들이 CloudSync Pro를 어떻게 평가하는지 확인해보세요.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="testimonial-card h-100">
+                        <div class="testimonial-avatar">
+                            <i class="bi bi-person"></i>
+                        </div>
+                        <div class="rating mb-3">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="mb-4">
+                            "CloudSync Pro 덕분에 원격 팀 관리가 정말 쉬워졌습니다. 
+                            실시간 동기화 기능이 특히 인상적이에요."
+                        </p>
+                        <h6 class="fw-bold">김철수</h6>
+                        <small class="text-muted">ABC 스타트업 CTO</small>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="testimonial-card h-100">
+                        <div class="testimonial-avatar">
+                            <i class="bi bi-person"></i>
+                        </div>
+                        <div class="rating mb-3">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="mb-4">
+                            "보안 기능이 뛰어나고 사용하기 쉬워서 우리 회사 전체가 
+                            만족하고 있습니다. 강력 추천합니다!"
+                        </p>
+                        <h6 class="fw-bold">이영희</h6>
+                        <small class="text-muted">XYZ 대기업 IT팀장</small>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="testimonial-card h-100">
+                        <div class="testimonial-avatar">
+                            <i class="bi bi-person"></i>
+                        </div>
+                        <div class="rating mb-3">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="mb-4">
+                            "API 통합이 정말 간단해서 기존 시스템과 쉽게 연결할 수 있었습니다. 
+                            개발팀이 매우 만족하고 있어요."
+                        </p>
+                        <h6 class="fw-bold">박민수</h6>
+                        <small class="text-muted">DEF 솔루션 개발팀장</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="integration-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2 text-center">
+                    <h2 class="display-5 fw-bold mb-4">500+ 앱과 연결</h2>
+                    <p class="lead text-muted mb-0">
+                        이미 사용하고 있는 도구들과 완벽하게 통합됩니다.
+                    </p>
+                    <div class="integration-grid">
+                        <div class="integration-item">
+                            <div class="integration-icon">
+                                <i class="bi bi-slack"></i>
+                            </div>
+                            <h6>Slack</h6>
+                        </div>
+                        <div class="integration-item">
+                            <div class="integration-icon">
+                                <i class="bi bi-microsoft"></i>
+                            </div>
+                            <h6>Office 365</h6>
+                        </div>
+                        <div class="integration-item">
+                            <div class="integration-icon">
+                                <i class="bi bi-google"></i>
+                            </div>
+                            <h6>G Suite</h6>
+                        </div>
+                        <div class="integration-item">
+                            <div class="integration-icon">
+                                <i class="bi bi-github"></i>
+                            </div>
+                            <h6>GitHub</h6>
+                        </div>
+                        <div class="integration-item">
+                            <div class="integration-icon">
+                                <i class="bi bi-trello"></i>
+                            </div>
+                            <h6>Trello</h6>
+                        </div>
+                        <div class="integration-item">
+                            <div class="integration-icon">
+                                <i class="bi bi-calendar"></i>
+                            </div>
+                            <h6>Calendar</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 bg-white">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2 text-center mb-4">
+                    <h2 class="display-5 fw-bold mb-4">경쟁사와의 비교</h2>
+                    <p class="lead text-muted">CloudSync Pro가 다른 솔루션보다 뛰어난 점을 확인해보세요.</p>
+                </div>
+            </div>
+            <div class="comparison-table">
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th>기능</th>
+                                <th class="text-center">CloudSync Pro</th>
+                                <th class="text-center">경쟁사 A</th>
+                                <th class="text-center">경쟁사 B</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="fw-semibold">실시간 동기화</td>
+                                <td class="text-center"><i class="bi bi-check-lg check-icon"></i></td>
+                                <td class="text-center"><i class="bi bi-check-lg check-icon"></i></td>
+                                <td class="text-center"><i class="bi bi-x-lg cross-icon"></i></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">엔터프라이즈 보안</td>
+                                <td class="text-center"><i class="bi bi-check-lg check-icon"></i></td>
+                                <td class="text-center"><i class="bi bi-x-lg cross-icon"></i></td>
+                                <td class="text-center"><i class="bi bi-check-lg check-icon"></i></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">무제한 API 호출</td>
+                                <td class="text-center"><i class="bi bi-check-lg check-icon"></i></td>
+                                <td class="text-center"><i class="bi bi-x-lg cross-icon"></i></td>
+                                <td class="text-center"><i class="bi bi-x-lg cross-icon"></i></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">24/7 고객지원</td>
+                                <td class="text-center"><i class="bi bi-check-lg check-icon"></i></td>
+                                <td class="text-center"><i class="bi bi-check-lg check-icon"></i></td>
+                                <td class="text-center"><i class="bi bi-x-lg cross-icon"></i></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">모바일 앱</td>
+                                <td class="text-center"><i class="bi bi-check-lg check-icon"></i></td>
+                                <td class="text-center"><i class="bi bi-check-lg check-icon"></i></td>
+                                <td class="text-center"><i class="bi bi-check-lg check-icon"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2 text-center">
+                    <h2 class="display-4 fw-bold mb-4">지금 바로 시작하세요</h2>
+                    <p class="lead mb-4">
+                        14일 무료 체험으로 CloudSync Pro의 모든 기능을 경험해보세요. 
+                        신용카드 등록 없이도 바로 시작할 수 있습니다.
+                    </p>
+                    <div class="d-flex gap-3 justify-content-center flex-wrap mb-4">
+                        <button class="btn btn-primary-custom btn-lg">무료로 시작하기</button>
+                        <button class="btn btn-outline-custom btn-lg">영업팀과 상담하기</button>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center gap-4 flex-wrap">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-circle me-2"></i>
+                            <span>14일 무료 체험</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-circle me-2"></i>
+                            <span>언제든지 취소</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-circle me-2"></i>
+                            <span>설정 지원</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="mb-3"><i class="bi bi-cloud-arrow-up me-2"></i>CloudSync</h5>
+                    <p class="text-muted">기업을 위한 스마트 클라우드 동기화 솔루션</p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-muted"><i class="bi bi-facebook fs-4"></i></a>
+                        <a href="#" class="text-muted"><i class="bi bi-twitter fs-4"></i></a>
+                        <a href="#" class="text-muted"><i class="bi bi-linkedin fs-4"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-md-3 mb-4">
+                            <h6 class="mb-3">제품</h6>
+                            <ul class="list-unstyled">
+                                <li><a href="#" class="text-muted text-decoration-none">기능</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">요금제</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">보안</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">통합</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <h6 class="mb-3">지원</h6>
+                            <ul class="list-unstyled">
+                                <li><a href="#" class="text-muted text-decoration-none">고객센터</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">문서</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">API</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">상태 페이지</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <h6 class="mb-3">회사</h6>
+                            <ul class="list-unstyled">
+                                <li><a href="#" class="text-muted text-decoration-none">회사소개</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">팀</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">채용</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">뉴스</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <h6 class="mb-3">연락처</h6>
+                            <p class="text-muted mb-1"><i class="bi bi-phone me-2"></i>02-1234-5678</p>
+                            <p class="text-muted"><i class="bi bi-envelope me-2"></i>support@cloudsync.co.kr</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center">
+                <p class="text-muted mb-0">&copy; 2024 CloudSync. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

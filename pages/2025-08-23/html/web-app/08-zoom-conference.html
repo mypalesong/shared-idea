@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Conference - Zoom Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #232323;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .meeting-header {
+            background: #1f2937;
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #374151;
+        }
+        
+        .meeting-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .meeting-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #f9fafb;
+        }
+        
+        .meeting-id {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        
+        .meeting-time {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        
+        .recording-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #dc2626;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+        
+        .recording-dot {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: blink 1.5s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+        
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .header-btn {
+            background: #374151;
+            border: none;
+            color: #d1d5db;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .header-btn:hover {
+            background: #4b5563;
+        }
+        
+        .main-container {
+            flex: 1;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .video-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            gap: 16px;
+        }
+        
+        .video-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 8px;
+            max-height: calc(100vh - 160px);
+            overflow-y: auto;
+        }
+        
+        .video-tile {
+            background: #1f2937;
+            border-radius: 8px;
+            position: relative;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .video-tile.speaking {
+            border-color: #10b981;
+        }
+        
+        .video-tile.screen-share {
+            grid-column: 1 / -1;
+            aspect-ratio: 16/9;
+            background: #000;
+        }
+        
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .screen-share-content {
+            width: 100%;
+            height: 100%;
+            background: #1e293b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .screen-share-icon {
+            font-size: 64px;
+            color: #64748b;
+        }
+        
+        .screen-share-text {
+            color: #94a3b8;
+            font-size: 18px;
+            text-align: center;
+        }
+        
+        .participant-info {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .mic-status {
+            font-size: 10px;
+        }
+        
+        .mic-muted {
+            color: #ef4444;
+        }
+        
+        .mic-active {
+            color: #10b981;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: #1f2937;
+            border-left: 1px solid #374151;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar.open {
+            transform: translateX(0);
+        }
+        
+        .sidebar-tabs {
+            display: flex;
+            border-bottom: 1px solid #374151;
+        }
+        
+        .sidebar-tab {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .sidebar-tab:hover {
+            color: #f9fafb;
+            background: #374151;
+        }
+        
+        .sidebar-tab.active {
+            color: #60a5fa;
+            border-bottom: 2px solid #60a5fa;
+        }
+        
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .participants-list {
+            padding: 16px;
+        }
+        
+        .participant-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            transition: background 0.2s;
+        }
+        
+        .participant-item:hover {
+            background: #374151;
+        }
+        
+        .participant-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .participant-details {
+            flex: 1;
+        }
+        
+        .participant-name {
+            font-size: 14px;
+            color: #f9fafb;
+            margin-bottom: 2px;
+        }
+        
+        .participant-status {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+        
+        .participant-controls {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .participant-control {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        
+        .control-bar {
+            background: #1f2937;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            border-top: 1px solid #374151;
+        }
+        
+        .control-group {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .control-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .control-btn.mute {
+            background: #374151;
+            color: #d1d5db;
+        }
+        
+        .control-btn.mute:hover {
+            background: #4b5563;
+        }
+        
+        .control-btn.mute.active {
+            background: #dc2626;
+            color: white;
+        }
+        
+        .control-btn.video {
+            background: #374151;
+            color: #d1d5db;
+        }
+        
+        .control-btn.video:hover {
+            background: #4b5563;
+        }
+        
+        .control-btn.video.active {
+            background: #dc2626;
+            color: white;
+        }
+        
+        .control-btn.share {
+            background: #059669;
+            color: white;
+        }
+        
+        .control-btn.share:hover {
+            background: #047857;
+        }
+        
+        .control-btn.leave {
+            background: #dc2626;
+            color: white;
+        }
+        
+        .control-btn.leave:hover {
+            background: #b91c1c;
+        }
+        
+        .control-btn.participants {
+            background: #374151;
+            color: #d1d5db;
+        }
+        
+        .control-btn.participants:hover {
+            background: #4b5563;
+        }
+        
+        .control-btn.participants.active {
+            background: #2563eb;
+            color: white;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 18px;
+            height: 18px;
+            background: #dc2626;
+            border-radius: 50%;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .meeting-notification {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 12px 16px;
+            max-width: 280px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 100;
+        }
+        
+        .notification-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .notification-icon {
+            color: #10b981;
+        }
+        
+        .notification-text {
+            font-size: 13px;
+            color: #f9fafb;
+        }
+        
+        .notification-time {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="meeting-header">
+        <div class="meeting-info">
+            <div class="meeting-title">Product Team Standup</div>
+            <div class="meeting-id">Meeting ID: 123 456 7890</div>
+            <div class="meeting-time">14:35</div>
+            <div class="recording-indicator">
+                <div class="recording-dot"></div>
+                Recording
+            </div>
+        </div>
+        <div class="header-controls">
+            <button class="header-btn">🛡️ Security</button>
+            <button class="header-btn">⚙️ Settings</button>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="video-area">
+            <div class="video-grid">
+                <div class="video-tile screen-share">
+                    <div class="screen-share-content">
+                        <div class="screen-share-icon">🖥️</div>
+                        <div class="screen-share-text">Sarah is sharing her screen</div>
+                    </div>
+                    <div class="participant-info">
+                        <span>Sarah Johnson</span>
+                        <span class="mic-status mic-active">🎤</span>
+                    </div>
+                </div>
+                
+                <div class="video-tile speaking">
+                    <div class="video-placeholder">SJ</div>
+                    <div class="participant-info">
+                        <span>Sarah Johnson (You)</span>
+                        <span class="mic-status mic-active">🎤</span>
+                    </div>
+                </div>
+                
+                <div class="video-tile">
+                    <div class="video-placeholder">MK</div>
+                    <div class="participant-info">
+                        <span>Mike Kim</span>
+                        <span class="mic-status mic-muted">🎤</span>
+                    </div>
+                </div>
+                
+                <div class="video-tile">
+                    <div class="video-placeholder">ED</div>
+                    <div class="participant-info">
+                        <span>Emma Davis</span>
+                        <span class="mic-status mic-active">🎤</span>
+                    </div>
+                </div>
+                
+                <div class="video-tile">
+                    <div class="video-placeholder">JD</div>
+                    <div class="participant-info">
+                        <span>John Doe</span>
+                        <span class="mic-status mic-muted">🎤</span>
+                    </div>
+                </div>
+                
+                <div class="video-tile">
+                    <div class="video-placeholder">AR</div>
+                    <div class="participant-info">
+                        <span>Alex Rodriguez</span>
+                        <span class="mic-status mic-active">🎤</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-tabs">
+                <button class="sidebar-tab active">Participants</button>
+                <button class="sidebar-tab">Chat</button>
+                <button class="sidebar-tab">Polls</button>
+            </div>
+            <div class="sidebar-content">
+                <div class="participants-list">
+                    <div class="participant-item">
+                        <div class="participant-avatar">SJ</div>
+                        <div class="participant-details">
+                            <div class="participant-name">Sarah Johnson (You)</div>
+                            <div class="participant-status">Host • Speaking</div>
+                        </div>
+                        <div class="participant-controls">
+                            <div class="participant-control" style="color: #10b981;">🎤</div>
+                            <div class="participant-control" style="color: #10b981;">📹</div>
+                        </div>
+                    </div>
+                    
+                    <div class="participant-item">
+                        <div class="participant-avatar">MK</div>
+                        <div class="participant-details">
+                            <div class="participant-name">Mike Kim</div>
+                            <div class="participant-status">Co-host</div>
+                        </div>
+                        <div class="participant-controls">
+                            <div class="participant-control" style="color: #ef4444;">🚫</div>
+                            <div class="participant-control" style="color: #10b981;">📹</div>
+                        </div>
+                    </div>
+                    
+                    <div class="participant-item">
+                        <div class="participant-avatar">ED</div>
+                        <div class="participant-details">
+                            <div class="participant-name">Emma Davis</div>
+                            <div class="participant-status">Participant</div>
+                        </div>
+                        <div class="participant-controls">
+                            <div class="participant-control" style="color: #10b981;">🎤</div>
+                            <div class="participant-control" style="color: #10b981;">📹</div>
+                        </div>
+                    </div>
+                    
+                    <div class="participant-item">
+                        <div class="participant-avatar">JD</div>
+                        <div class="participant-details">
+                            <div class="participant-name">John Doe</div>
+                            <div class="participant-status">Participant</div>
+                        </div>
+                        <div class="participant-controls">
+                            <div class="participant-control" style="color: #ef4444;">🚫</div>
+                            <div class="participant-control" style="color: #ef4444;">🚫</div>
+                        </div>
+                    </div>
+                    
+                    <div class="participant-item">
+                        <div class="participant-avatar">AR</div>
+                        <div class="participant-details">
+                            <div class="participant-name">Alex Rodriguez</div>
+                            <div class="participant-status">Participant • Joined recently</div>
+                        </div>
+                        <div class="participant-controls">
+                            <div class="participant-control" style="color: #10b981;">🎤</div>
+                            <div class="participant-control" style="color: #ef4444;">🚫</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="control-bar">
+        <div class="control-group">
+            <button class="control-btn mute" title="Mute">🎤</button>
+            <button class="control-btn video" title="Stop Video">📹</button>
+        </div>
+        <div class="control-group">
+            <button class="control-btn share" title="Share Screen">📺</button>
+            <button class="control-btn participants" title="Participants" onclick="toggleSidebar()">
+                👥
+                <span class="notification-badge">6</span>
+            </button>
+            <button class="control-btn" title="Chat">💬</button>
+            <button class="control-btn" title="Reactions">😀</button>
+            <button class="control-btn" title="More">⋯</button>
+        </div>
+        <div class="control-group">
+            <button class="control-btn leave" title="Leave Meeting">📞</button>
+        </div>
+    </div>
+    
+    <div class="meeting-notification">
+        <div class="notification-header">
+            <span class="notification-icon">✅</span>
+            <span class="notification-text">Alex Rodriguez joined the meeting</span>
+        </div>
+        <div class="notification-time">Just now</div>
+    </div>
+    
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+        
+        // Simulate joining notification
+        setTimeout(() => {
+            const notification = document.querySelector('.meeting-notification');
+            notification.style.opacity = '0';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 300);
+        }, 3000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubuntu Linux 초급/중급/고급 명령어 완전 정복 - 실무 강의</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <div class="particles"></div>
+    
+    <header class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="ubuntu-logo">🐧</span>
+                Ubuntu Linux
+                <span class="subtitle">명령어 완전 정복</span>
+            </h1>
+            <p class="hero-description">초급부터 고급까지, 시스템 관리자와 개발자를 위한 완전한 Linux 명령어 실무 강의</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="scrollToSection('basics')">시작하기</button>
+                <button class="btn btn-secondary" onclick="scrollToSection('advanced')">고급 과정</button>
+            </div>
+        </div>
+        <div class="terminal-mockup">
+            <div class="terminal-header">
+                <div class="terminal-buttons">
+                    <span class="btn-close"></span>
+                    <span class="btn-minimize"></span>
+                    <span class="btn-maximize"></span>
+                </div>
+                <div class="terminal-title">user@ubuntu:~$</div>
+            </div>
+            <div class="terminal-body">
+                <div class="typing-animation" id="terminalText"></div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="sticky-nav" id="stickyNav">
+        <div class="nav-content">
+            <div class="nav-brand">Linux 강의</div>
+            <ul class="nav-links">
+                <li><a href="#basics" data-section="basics">기초</a></li>
+                <li><a href="#file-system" data-section="file-system">파일 시스템</a></li>
+                <li><a href="#text-processing" data-section="text-processing">텍스트 처리</a></li>
+                <li><a href="#process-management" data-section="process-management">프로세스 관리</a></li>
+                <li><a href="#network" data-section="network">네트워크</a></li>
+                <li><a href="#intermediate" data-section="intermediate">중급</a></li>
+                <li><a href="#advanced" data-section="advanced">고급</a></li>
+                <li><a href="#system-admin" data-section="system-admin">시스템 관리</a></li>
+                <li><a href="#shell-scripting" data-section="shell-scripting">스크립팅</a></li>
+                <li><a href="#reference" data-section="reference">참고자료</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- 기초 명령어 섹션 -->
+        <section id="basics" class="section">
+            <div class="container">
+                <h2 class="section-title">
+                    <span class="icon">🚀</span>
+                    기초 명령어
+                </h2>
+                <div class="section-intro">
+                    <p>Linux를 시작하는 모든 사용자가 반드시 알아야 할 핵심 명령어들입니다.</p>
+                </div>
+
+                <div class="command-grid">
+                    <div class="command-card" data-category="navigation">
+                        <div class="command-header">
+                            <h3>pwd</h3>
+                            <span class="difficulty basic">기초</span>
+                        </div>
+                        <div class="command-description">
+                            현재 작업 디렉토리의 전체 경로를 출력합니다. 터미널에서 현재 위치를 파악할 때 사용하는 가장 기본적인 명령어입니다.
+                        </div>
+                        <div class="command-example">
+                            <div class="example-title">예시:</div>
+                            <pre><code class="language-bash">$ pwd
+/home/username/Documents</code></pre>
+                        </div>
+                        <div class="command-tips">
+                            <strong>팁:</strong> Print Working Directory의 줄임말입니다.
+                        </div>
+                    </div>
+
+                    <div class="command-card" data-category="navigation">
+                        <div class="command-header">
+                            <h3>ls</h3>
+                            <span class="difficulty basic">기초</span>
+                        </div>
+                        <div class="command-description">
+                            디렉토리 내용을 목록으로 보여줍니다. Linux에서 가장 자주 사용되는 명령어 중 하나로, 파일과 디렉토리의 정보를 다양한 형태로 확인할 수 있습니다.
+                        </div>
+                        <div class="command-example">
+                            <div class="example-title">기본 사용법:</div>
+                            <pre><code class="language-bash">$ ls
+Desktop  Documents  Downloads  Pictures</code></pre>
+                            <div class="example-title">옵션 활용:</div>
+                            <pre><code class="language-bash">$ ls -la
+total 32
+drwxr-xr-x  5 user user 4096 Aug 23 10:30 .
+drwxr-xr-x  3 user user 4096 Aug 22 15:20 ..
+-rw-r--r--  1 user user  220 Aug 22 15:20 .bashrc</code></pre>
+                        </div>
+                        <div class="command-options">
+                            <div class="option"><code>-l</code>: 자세한 정보 표시</div>
+                            <div class="option"><code>-a</code>: 숨겨진 파일 포함</div>
+                            <div class="option"><code>-h</code>: 사람이 읽기 쉬운 크기 표시</div>
+                            <div class="option"><code>-t</code>: 수정 시간순 정렬</div>
+                        </div>
+                    </div>
+
+                    <div class="command-card" data-category="navigation">
+                        <div class="command-header">
+                            <h3>cd</h3>
+                            <span class="difficulty basic">기초</span>
+                        </div>
+                        <div class="command-description">
+                            디렉토리를 변경합니다. 파일 시스템을 탐색하고 원하는 위치로 이동할 때 사용합니다. Change Directory의 줄임말입니다.
+                        </div>
+                        <div class="command-example">
+                            <div class="example-title">다양한 사용법:</div>
+                            <pre><code class="language-bash"># 특정 디렉토리로 이동
+$ cd /home/user/Documents
+
+# 홈 디렉토리로 이동
+$ cd ~
+$ cd
+
+# 상위 디렉토리로 이동
+$ cd ..
+
+# 이전 디렉토리로 이동
+$ cd -</code></pre>
+                        </div>
+                        <div class="command-tips">
+                            <strong>유용한 단축키:</strong>
+                            <ul>
+                                <li><code>~</code>: 홈 디렉토리</li>
+                                <li><code>..</code>: 상위 디렉토리</li>
+                                <li><code>-</code>: 이전 디렉토리</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 파일 시스템 관리 섹션 -->
+        <section id="file-system" class="section">
+            <div class="container">
+                <h2 class="section-title">
+                    <span class="icon">📁</span>
+                    파일 시스템 관리
+                </h2>
+                
+                <div class="command-grid">
+                    <div class="command-card" data-category="file-operations">
+                        <div class="command-header">
+                            <h3>mkdir</h3>
+                            <span class="difficulty basic">기초</span>
+                        </div>
+                        <div class="command-description">
+                            새로운 디렉토리를 생성합니다. Make Directory의 줄임말로, 프로젝트 구조를 만들거나 파일을 체계적으로 정리할 때 사용합니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># 단일 디렉토리 생성
+$ mkdir new_folder
+
+# 여러 디렉토리 동시 생성
+$ mkdir folder1 folder2 folder3
+
+# 중간 경로까지 생성 (-p 옵션)
+$ mkdir -p path/to/deep/folder
+
+# 권한을 지정하여 생성
+$ mkdir -m 755 secure_folder
+
+# 상세한 출력과 함께 생성
+$ mkdir -v new_project</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card" data-category="file-operations">
+                        <div class="command-header">
+                            <h3>touch</h3>
+                            <span class="difficulty basic">기초</span>
+                        </div>
+                        <div class="command-description">
+                            빈 파일을 생성하거나 파일의 타임스탬프를 수정합니다. 개발 과정에서 새 파일을 빠르게 만들거나, 파일의 수정 시간을 현재 시간으로 갱신할 때 사용합니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># 새 파일 생성
+$ touch newfile.txt
+
+# 여러 파일 동시 생성
+$ touch file1.txt file2.txt file3.txt
+
+# 특정 시간으로 타임스탬프 설정
+$ touch -t 202312251200 oldfile.txt
+
+# 다른 파일과 같은 타임스탬프로 설정
+$ touch -r reference.txt newfile.txt</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card" data-category="file-operations">
+                        <div class="command-header">
+                            <h3>cp</h3>
+                            <span class="difficulty basic">기초</span>
+                        </div>
+                        <div class="command-description">
+                            파일이나 디렉토리를 복사합니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># 파일 복사
+$ cp source.txt destination.txt
+
+# 디렉토리 복사 (-r 옵션)
+$ cp -r source_dir destination_dir
+
+# 여러 파일을 디렉토리에 복사
+$ cp file1.txt file2.txt target_dir/</code></pre>
+                        </div>
+                        <div class="command-options">
+                            <div class="option"><code>-r</code>: 디렉토리 전체 복사</div>
+                            <div class="option"><code>-i</code>: 덮어쓰기 전 확인</div>
+                            <div class="option"><code>-v</code>: 진행 상황 표시</div>
+                        </div>
+                    </div>
+
+                    <div class="command-card" data-category="file-operations">
+                        <div class="command-header">
+                            <h3>mv</h3>
+                            <span class="difficulty basic">기초</span>
+                        </div>
+                        <div class="command-description">
+                            파일이나 디렉토리를 이동하거나 이름을 변경합니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># 파일 이동
+$ mv file.txt /path/to/destination/
+
+# 파일 이름 변경
+$ mv old_name.txt new_name.txt
+
+# 디렉토리 이동
+$ mv source_dir /path/to/destination/</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card" data-category="file-operations">
+                        <div class="command-header">
+                            <h3>rm</h3>
+                            <span class="difficulty basic">기초</span>
+                        </div>
+                        <div class="command-description">
+                            파일이나 디렉토리를 삭제합니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># 파일 삭제
+$ rm file.txt
+
+# 여러 파일 삭제
+$ rm file1.txt file2.txt
+
+# 디렉토리 삭제
+$ rm -r directory_name
+
+# 강제 삭제 (주의!)
+$ rm -rf directory_name</code></pre>
+                        </div>
+                        <div class="warning">
+                            <strong>⚠️ 주의:</strong> <code>rm -rf</code>는 강제로 모든 것을 삭제하므로 매우 조심해서 사용하세요!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 텍스트 처리 섹션 -->
+        <section id="text-processing" class="section">
+            <div class="container">
+                <h2 class="section-title">
+                    <span class="icon">📝</span>
+                    텍스트 처리
+                </h2>
+                
+                <div class="command-grid">
+                    <div class="command-card" data-category="text">
+                        <div class="command-header">
+                            <h3>cat</h3>
+                            <span class="difficulty basic">기초</span>
+                        </div>
+                        <div class="command-description">
+                            파일의 내용을 출력합니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># 파일 내용 출력
+$ cat file.txt
+
+# 여러 파일 내용 연결 출력
+$ cat file1.txt file2.txt
+
+# 줄 번호와 함께 출력
+$ cat -n file.txt</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card" data-category="text">
+                        <div class="command-header">
+                            <h3>grep</h3>
+                            <span class="difficulty intermediate">중급</span>
+                        </div>
+                        <div class="command-description">
+                            텍스트에서 패턴을 검색합니다. 정규표현식을 사용하여 복잡한 패턴 매칭이 가능하며, 로그 분석, 코드 검색, 데이터 필터링에 필수적인 도구입니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># 특정 문자열 검색
+$ grep "error" log.txt
+
+# 대소문자 구분 없이 검색
+$ grep -i "ERROR" log.txt
+
+# 줄 번호와 함께 표시
+$ grep -n "pattern" file.txt
+
+# 재귀적으로 디렉토리 검색
+$ grep -r "function" *.js
+
+# 정규표현식 사용
+$ grep -E "^[0-9]+$" numbers.txt
+
+# 매치되지 않는 줄 출력
+$ grep -v "debug" log.txt
+
+# 매치된 부분만 출력
+$ grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+" access.log</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card" data-category="text">
+                        <div class="command-header">
+                            <h3>head / tail</h3>
+                            <span class="difficulty basic">기초</span>
+                        </div>
+                        <div class="command-description">
+                            파일의 앞부분(head) 또는 뒷부분(tail)을 출력합니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># 파일의 첫 10줄 출력
+$ head file.txt
+
+# 파일의 마지막 10줄 출력
+$ tail file.txt
+
+# 실시간으로 추가되는 내용 모니터링
+$ tail -f /var/log/syslog
+
+# 특정 줄 수 지정
+$ head -20 file.txt</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 프로세스 관리 섹션 -->
+        <section id="process-management" class="section">
+            <div class="container">
+                <h2 class="section-title">
+                    <span class="icon">⚙️</span>
+                    프로세스 관리
+                </h2>
+                
+                <div class="command-grid">
+                    <div class="command-card" data-category="process">
+                        <div class="command-header">
+                            <h3>ps</h3>
+                            <span class="difficulty intermediate">중급</span>
+                        </div>
+                        <div class="command-description">
+                            실행 중인 프로세스 목록을 표시합니다. Process Status의 줄임말로, 시스템에서 실행 중인 프로그램들의 상태, 리소스 사용량, 프로세스 ID 등을 확인할 수 있습니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># 현재 터미널의 프로세스
+$ ps
+
+# 모든 프로세스 자세히 보기
+$ ps aux
+
+# 특정 사용자의 프로세스
+$ ps -u username
+
+# 트리 구조로 프로세스 관계 표시
+$ ps auxf
+
+# 특정 프로세스 검색
+$ ps aux | grep nginx
+
+# 메모리 사용량 순으로 정렬
+$ ps aux --sort=-%mem | head -10
+
+# CPU 사용량 순으로 정렬
+$ ps aux --sort=-%cpu | head -10</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card" data-category="process">
+                        <div class="command-header">
+                            <h3>top / htop</h3>
+                            <span class="difficulty intermediate">중급</span>
+                        </div>
+                        <div class="command-description">
+                            실시간으로 시스템 프로세스를 모니터링합니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># 실시간 프로세스 모니터링
+$ top
+
+# 더 사용자 친화적인 인터페이스
+$ htop</code></pre>
+                        </div>
+                        <div class="command-tips">
+                            <strong>top 사용법:</strong>
+                            <ul>
+                                <li><code>q</code>: 종료</li>
+                                <li><code>k</code>: 프로세스 종료</li>
+                                <li><code>u</code>: 특정 사용자 필터</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="command-card" data-category="process">
+                        <div class="command-header">
+                            <h3>kill</h3>
+                            <span class="difficulty intermediate">중급</span>
+                        </div>
+                        <div class="command-description">
+                            프로세스를 종료합니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># PID로 프로세스 종료
+$ kill 1234
+
+# 강제 종료
+$ kill -9 1234
+
+# 프로세스 이름으로 종료
+$ killall firefox</code></pre>
+                        </div>
+                        <div class="warning">
+                            <strong>주의:</strong> <code>kill -9</code>는 강제 종료이므로 데이터 손실 가능성이 있습니다.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 네트워크 섹션 -->
+        <section id="network" class="section">
+            <div class="container">
+                <h2 class="section-title">
+                    <span class="icon">🌐</span>
+                    네트워크 관리
+                </h2>
+                
+                <div class="command-grid">
+                    <div class="command-card" data-category="network">
+                        <div class="command-header">
+                            <h3>ping</h3>
+                            <span class="difficulty basic">기초</span>
+                        </div>
+                        <div class="command-description">
+                            네트워크 연결을 테스트합니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># 구글 DNS 핑 테스트
+$ ping google.com
+
+# 4번만 핑 전송
+$ ping -c 4 google.com</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card" data-category="network">
+                        <div class="command-header">
+                            <h3>wget / curl</h3>
+                            <span class="difficulty intermediate">중급</span>
+                        </div>
+                        <div class="command-description">
+                            인터넷에서 파일을 다운로드하거나 HTTP 요청을 보냅니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># 파일 다운로드
+$ wget https://example.com/file.zip
+
+# HTTP GET 요청
+$ curl https://api.example.com/data
+
+# POST 요청
+$ curl -X POST -d "data=value" https://api.example.com</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 중급 명령어 섹션 -->
+        <section id="intermediate" class="section">
+            <div class="container">
+                <h2 class="section-title">
+                    <span class="icon">🔥</span>
+                    중급 명령어 & 고급 기능
+                </h2>
+                
+                <div class="command-grid">
+                    <div class="command-card advanced" data-category="advanced">
+                        <div class="command-header">
+                            <h3>find</h3>
+                            <span class="difficulty advanced">고급</span>
+                        </div>
+                        <div class="command-description">
+                            파일 시스템에서 파일과 디렉토리를 검색합니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># 이름으로 파일 검색
+$ find /path -name "*.txt"
+
+# 크기로 파일 검색
+$ find /path -size +100M
+
+# 수정 시간으로 검색
+$ find /path -mtime -7
+
+# 실행 권한이 있는 파일 검색
+$ find /path -executable -type f</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card advanced" data-category="advanced">
+                        <div class="command-header">
+                            <h3>sed</h3>
+                            <span class="difficulty advanced">고급</span>
+                        </div>
+                        <div class="command-description">
+                            스트림 에디터로 텍스트를 변환하고 필터링합니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># 문자열 치환
+$ sed 's/old/new/g' file.txt
+
+# 특정 줄 삭제
+$ sed '2d' file.txt
+
+# 파일 직접 수정
+$ sed -i 's/old/new/g' file.txt</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card advanced" data-category="advanced">
+                        <div class="command-header">
+                            <h3>awk</h3>
+                            <span class="difficulty advanced">고급</span>
+                        </div>
+                        <div class="command-description">
+                            강력한 텍스트 처리 도구입니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># 특정 열 출력
+$ awk '{print $1}' file.txt
+
+# 조건부 출력
+$ awk '$3 > 100 {print $1, $3}' data.txt
+
+# 합계 계산
+$ awk '{sum += $2} END {print sum}' numbers.txt</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card advanced" data-category="advanced">
+                        <div class="command-header">
+                            <h3>파이프라인 (|)</h3>
+                            <span class="difficulty intermediate">중급</span>
+                        </div>
+                        <div class="command-description">
+                            명령어들을 연결하여 복합적인 작업을 수행합니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># 파일에서 특정 문자열 검색 후 정렬
+$ grep "error" log.txt | sort
+
+# 프로세스 검색 후 개수 세기
+$ ps aux | grep firefox | wc -l
+
+# 용량이 큰 파일 상위 10개
+$ du -sh * | sort -hr | head -10</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card advanced" data-category="advanced">
+                        <div class="command-header">
+                            <h3>권한 관리</h3>
+                            <span class="difficulty intermediate">중급</span>
+                        </div>
+                        <div class="command-description">
+                            파일과 디렉토리의 권한을 관리합니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># 권한 변경 (chmod)
+$ chmod 755 script.sh
+$ chmod u+x file.txt
+
+# 소유자 변경 (chown)
+$ sudo chown user:group file.txt
+
+# 권한 확인
+$ ls -l file.txt</code></pre>
+                        </div>
+                        <div class="command-tips">
+                            <strong>권한 숫자:</strong>
+                            <ul>
+                                <li>4: 읽기(r)</li>
+                                <li>2: 쓰기(w)</li>
+                                <li>1: 실행(x)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 고급 명령어 섹션 -->
+        <section id="advanced" class="section">
+            <div class="container">
+                <h2 class="section-title">
+                    <span class="icon">🎯</span>
+                    고급 명령어
+                </h2>
+                <div class="section-intro">
+                    <p>고급 사용자를 위한 강력하고 전문적인 Linux 명령어들입니다. 시스템 최적화와 고급 작업에 필수적입니다.</p>
+                </div>
+                
+                <div class="command-grid">
+                    <div class="command-card advanced" data-category="advanced">
+                        <div class="command-header">
+                            <h3>rsync</h3>
+                            <span class="difficulty advanced">고급</span>
+                        </div>
+                        <div class="command-description">
+                            효율적인 파일 동기화 및 백업 도구입니다. 네트워크를 통한 원격 동기화도 지원합니다.
+                        </div>
+                        <div class="command-example">
+                            <div class="example-title">로컬 동기화:</div>
+                            <pre><code class="language-bash"># 디렉토리 동기화 (삭제 옵션 포함)
+$ rsync -av --delete source/ destination/
+
+# 진행 상황 표시
+$ rsync -av --progress source/ destination/</code></pre>
+                            <div class="example-title">원격 동기화:</div>
+                            <pre><code class="language-bash"># 원격 서버로 업로드
+$ rsync -avz local_folder/ user@server:/remote/path/
+
+# 원격 서버에서 다운로드
+$ rsync -avz user@server:/remote/path/ local_folder/
+
+# SSH 포트 지정
+$ rsync -avz -e "ssh -p 2222" source/ user@server:/dest/</code></pre>
+                        </div>
+                        <div class="command-options">
+                            <div class="option"><code>-a</code>: 아카이브 모드 (권한, 타임스탬프 보존)</div>
+                            <div class="option"><code>-v</code>: 상세 출력</div>
+                            <div class="option"><code>-z</code>: 압축 전송</div>
+                            <div class="option"><code>--delete</code>: 대상에서 소스에 없는 파일 삭제</div>
+                            <div class="option"><code>--exclude</code>: 특정 파일/디렉토리 제외</div>
+                        </div>
+                        <div class="command-tips">
+                            <strong>실무 활용:</strong>
+                            <ul>
+                                <li>서버 백업 자동화</li>
+                                <li>웹사이트 배포</li>
+                                <li>대용량 파일 동기화</li>
+                                <li>증분 백업 구현</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="command-card advanced" data-category="advanced">
+                        <div class="command-header">
+                            <h3>tar</h3>
+                            <span class="difficulty advanced">고급</span>
+                        </div>
+                        <div class="command-description">
+                            파일들을 하나의 아카이브로 묶거나 압축하는 도구입니다. 백업과 배포에 필수적입니다.
+                        </div>
+                        <div class="command-example">
+                            <div class="example-title">아카이브 생성:</div>
+                            <pre><code class="language-bash"># tar 파일 생성
+$ tar -cvf archive.tar files/
+
+# gzip 압축과 함께
+$ tar -czvf archive.tar.gz files/
+
+# bzip2 압축 (더 높은 압축률)
+$ tar -cjvf archive.tar.bz2 files/
+
+# 특정 파일 제외하고 압축
+$ tar -czvf backup.tar.gz --exclude='*.log' --exclude='tmp/' project/</code></pre>
+                            <div class="example-title">아카이브 해제:</div>
+                            <pre><code class="language-bash"># tar 파일 해제
+$ tar -xvf archive.tar
+
+# 특정 디렉토리에 해제
+$ tar -xzvf archive.tar.gz -C /destination/path/
+
+# 내용 확인만 (해제하지 않음)
+$ tar -tzvf archive.tar.gz</code></pre>
+                        </div>
+                        <div class="command-options">
+                            <div class="option"><code>-c</code>: 아카이브 생성</div>
+                            <div class="option"><code>-x</code>: 아카이브 해제</div>
+                            <div class="option"><code>-t</code>: 내용 확인</div>
+                            <div class="option"><code>-v</code>: 상세 출력</div>
+                            <div class="option"><code>-f</code>: 파일 이름 지정</div>
+                            <div class="option"><code>-z</code>: gzip 압축/해제</div>
+                            <div class="option"><code>-j</code>: bzip2 압축/해제</div>
+                        </div>
+                    </div>
+
+                    <div class="command-card advanced" data-category="advanced">
+                        <div class="command-header">
+                            <h3>xargs</h3>
+                            <span class="difficulty advanced">고급</span>
+                        </div>
+                        <div class="command-description">
+                            표준 입력으로부터 인수를 읽어 다른 명령어에 전달하는 도구입니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># 파일 목록을 rm에 전달
+$ find . -name "*.tmp" | xargs rm
+
+# 병렬 처리 (4개 프로세스)
+$ find . -name "*.jpg" | xargs -P 4 -I {} convert {} {}.webp
+
+# 공백이 포함된 파일명 처리
+$ find . -name "*.txt" -print0 | xargs -0 wc -l
+
+# 확인 후 실행
+$ echo "file1 file2 file3" | xargs -p rm</code></pre>
+                        </div>
+                        <div class="command-options">
+                            <div class="option"><code>-I {}</code>: 대체 문자열 지정</div>
+                            <div class="option"><code>-P n</code>: n개의 병렬 프로세스</div>
+                            <div class="option"><code>-0</code>: null 문자로 구분된 입력 처리</div>
+                            <div class="option"><code>-p</code>: 실행 전 확인</div>
+                        </div>
+                    </div>
+
+                    <div class="command-card advanced" data-category="advanced">
+                        <div class="command-header">
+                            <h3>sort & uniq</h3>
+                            <span class="difficulty advanced">고급</span>
+                        </div>
+                        <div class="command-description">
+                            데이터 정렬과 중복 제거를 위한 강력한 도구들입니다.
+                        </div>
+                        <div class="command-example">
+                            <div class="example-title">Sort 활용:</div>
+                            <pre><code class="language-bash"># 숫자 정렬
+$ sort -n numbers.txt
+
+# 역순 정렬
+$ sort -r file.txt
+
+# 특정 열 기준 정렬 (2번째 열)
+$ sort -k 2 data.txt
+
+# 파일 크기 기준 정렬
+$ du -sh * | sort -h</code></pre>
+                            <div class="example-title">Uniq 활용:</div>
+                            <pre><code class="language-bash"># 중복 라인 제거
+$ sort file.txt | uniq
+
+# 중복 횟수 출력
+$ sort file.txt | uniq -c
+
+# 중복된 라인만 출력
+$ sort file.txt | uniq -d</code></pre>
+                            <div class="example-title">실무 예제:</div>
+                            <pre><code class="language-bash"># 로그에서 가장 많이 접근한 IP 찾기
+$ awk '{print $1}' access.log | sort | uniq -c | sort -nr | head -10
+
+# 가장 큰 파일 10개 찾기
+$ find . -type f -exec du -h {} \; | sort -hr | head -10</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card advanced" data-category="advanced">
+                        <div class="command-header">
+                            <h3>jq</h3>
+                            <span class="difficulty advanced">고급</span>
+                        </div>
+                        <div class="command-description">
+                            JSON 데이터를 조작하고 필터링하는 강력한 도구입니다. API 작업에 필수적입니다.
+                        </div>
+                        <div class="command-example">
+                            <div class="example-title">기본 사용법:</div>
+                            <pre><code class="language-bash"># JSON 예쁘게 출력
+$ curl -s https://api.github.com/users/octocat | jq .
+
+# 특정 필드 추출
+$ jq '.name' user.json
+
+# 배열에서 특정 요소
+$ jq '.[0].title' posts.json</code></pre>
+                            <div class="example-title">고급 필터링:</div>
+                            <pre><code class="language-bash"># 조건부 필터링
+$ jq '.[] | select(.age > 25)' users.json
+
+# 복잡한 변환
+$ jq 'map({name: .name, email: .contact.email})' data.json
+
+# 그룹화 및 집계
+$ jq 'group_by(.category) | map({category: .[0].category, count: length})' items.json</code></pre>
+                        </div>
+                        <div class="command-tips">
+                            <strong>실무 활용:</strong>
+                            <ul>
+                                <li>API 응답 파싱</li>
+                                <li>설정 파일 조작</li>
+                                <li>로그 분석</li>
+                                <li>데이터 변환</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="command-card advanced" data-category="advanced">
+                        <div class="command-header">
+                            <h3>tmux / screen</h3>
+                            <span class="difficulty advanced">고급</span>
+                        </div>
+                        <div class="command-description">
+                            터미널 멀티플렉서로 세션을 관리하고 백그라운드 작업을 수행합니다.
+                        </div>
+                        <div class="command-example">
+                            <div class="example-title">Tmux 기본 명령:</div>
+                            <pre><code class="language-bash"># 새 세션 시작
+$ tmux new-session -s mysession
+
+# 세션 목록 확인
+$ tmux list-sessions
+
+# 세션에 다시 연결
+$ tmux attach-session -t mysession
+
+# 세션에서 분리 (Ctrl+b, d)
+# 새 윈도우 생성 (Ctrl+b, c)
+# 윈도우 전환 (Ctrl+b, 0-9)</code></pre>
+                            <div class="example-title">Screen 기본 명령:</div>
+                            <pre><code class="language-bash"># 새 세션 시작
+$ screen -S mysession
+
+# 세션 목록
+$ screen -ls
+
+# 세션 재연결
+$ screen -r mysession
+
+# 세션에서 분리 (Ctrl+a, d)
+# 새 윈도우 (Ctrl+a, c)</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 시스템 관리 섹션 -->
+        <section id="system-admin" class="section">
+            <div class="container">
+                <h2 class="section-title">
+                    <span class="icon">🔧</span>
+                    시스템 관리
+                </h2>
+                <div class="section-intro">
+                    <p>시스템 관리자를 위한 핵심 명령어들입니다. 서버 운영과 시스템 모니터링에 필수적입니다.</p>
+                </div>
+                
+                <div class="command-grid">
+                    <div class="command-card advanced" data-category="system">
+                        <div class="command-header">
+                            <h3>df / du</h3>
+                            <span class="difficulty intermediate">중급</span>
+                        </div>
+                        <div class="command-description">
+                            디스크 사용량을 확인하는 명령어들입니다.
+                        </div>
+                        <div class="command-example">
+                            <div class="example-title">디스크 용량 확인 (df):</div>
+                            <pre><code class="language-bash"># 파일시스템 용량 확인
+$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1        20G   15G  4.2G  78% /
+/dev/sda2       100G   45G   50G  48% /home
+
+# inode 사용량 확인
+$ df -i
+
+# 특정 파일시스템만
+$ df -h /home</code></pre>
+                            <div class="example-title">디렉토리 용량 확인 (du):</div>
+                            <pre><code class="language-bash"># 현재 디렉토리 용량
+$ du -sh .
+
+# 하위 디렉토리별 용량
+$ du -sh */
+
+# 가장 큰 디렉토리 10개
+$ du -sh * | sort -hr | head -10
+
+# 특정 깊이까지만
+$ du -h --max-depth=2</code></pre>
+                        </div>
+                        <div class="real-world">
+                            <strong>🌍 실무 시나리오:</strong>
+                            <p>"디스크 용량이 부족하다는 알림이 왔을 때, 어떤 디렉토리가 가장 많은 공간을 차지하는지 빠르게 파악하세요."</p>
+                        </div>
+                    </div>
+
+                    <div class="command-card advanced" data-category="system">
+                        <div class="command-header">
+                            <h3>systemctl</h3>
+                            <span class="difficulty advanced">고급</span>
+                        </div>
+                        <div class="command-description">
+                            systemd 서비스를 관리하는 명령어입니다. 최신 Ubuntu 시스템의 핵심입니다.
+                        </div>
+                        <div class="command-example">
+                            <div class="example-title">서비스 관리:</div>
+                            <pre><code class="language-bash"># 서비스 시작/중지/재시작
+$ sudo systemctl start nginx
+$ sudo systemctl stop nginx
+$ sudo systemctl restart nginx
+$ sudo systemctl reload nginx
+
+# 서비스 상태 확인
+$ systemctl status nginx
+
+# 부팅 시 자동 시작 설정
+$ sudo systemctl enable nginx
+$ sudo systemctl disable nginx</code></pre>
+                            <div class="example-title">시스템 정보:</div>
+                            <pre><code class="language-bash"># 모든 서비스 목록
+$ systemctl list-units --type=service
+
+# 실행 중인 서비스만
+$ systemctl list-units --type=service --state=running
+
+# 실패한 서비스
+$ systemctl --failed
+
+# 시스템 로그 확인
+$ journalctl -u nginx -f</code></pre>
+                        </div>
+                        <div class="command-tips">
+                            <strong>자주 관리하는 서비스:</strong>
+                            <ul>
+                                <li><code>nginx</code>: 웹 서버</li>
+                                <li><code>apache2</code>: 웹 서버</li>
+                                <li><code>mysql</code>: 데이터베이스</li>
+                                <li><code>postgresql</code>: 데이터베이스</li>
+                                <li><code>ssh</code>: 원격 접속</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="command-card advanced" data-category="system">
+                        <div class="command-header">
+                            <h3>crontab</h3>
+                            <span class="difficulty advanced">고급</span>
+                        </div>
+                        <div class="command-description">
+                            작업 스케줄링을 위한 도구입니다. 정기적인 백업, 로그 정리 등에 활용합니다.
+                        </div>
+                        <div class="command-example">
+                            <div class="example-title">크론탭 관리:</div>
+                            <pre><code class="language-bash"># 크론탭 편집
+$ crontab -e
+
+# 크론탭 목록 확인
+$ crontab -l
+
+# 크론탭 삭제
+$ crontab -r</code></pre>
+                            <div class="example-title">크론 문법 예제:</div>
+                            <pre><code class="language-bash"># 매일 오전 2시에 백업
+0 2 * * * /home/user/backup.sh
+
+# 매주 일요일 오전 3시에 로그 정리
+0 3 * * 0 /usr/bin/find /var/log -name "*.log" -mtime +7 -delete
+
+# 매 5분마다 시스템 상태 확인
+*/5 * * * * /usr/bin/uptime >> /var/log/uptime.log
+
+# 평일 오전 9시에 리포트 전송
+0 9 * * 1-5 /home/user/send_report.sh</code></pre>
+                        </div>
+                        <div class="command-tips">
+                            <strong>크론 시간 형식:</strong>
+                            <p><code>분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7)</code></p>
+                            <ul>
+                                <li><code>*</code>: 모든 값</li>
+                                <li><code>*/n</code>: n마다</li>
+                                <li><code>a-b</code>: a부터 b까지</li>
+                                <li><code>a,b,c</code>: a, b, c</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="command-card advanced" data-category="system">
+                        <div class="command-header">
+                            <h3>iotop / iftop</h3>
+                            <span class="difficulty advanced">고급</span>
+                        </div>
+                        <div class="command-description">
+                            I/O 및 네트워크 사용량을 실시간 모니터링하는 도구들입니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># 디스크 I/O 모니터링
+$ sudo iotop
+
+# 네트워크 대역폭 모니터링
+$ sudo iftop
+
+# 메모리 사용량 상세 확인
+$ free -h
+$ cat /proc/meminfo
+
+# 시스템 부하 확인
+$ uptime
+$ w
+$ who</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card advanced" data-category="system">
+                        <div class="command-header">
+                            <h3>firewall (ufw)</h3>
+                            <span class="difficulty advanced">고급</span>
+                        </div>
+                        <div class="command-description">
+                            Ubuntu의 기본 방화벽 관리 도구입니다.
+                        </div>
+                        <div class="command-example">
+                            <pre><code class="language-bash"># 방화벽 활성화/비활성화
+$ sudo ufw enable
+$ sudo ufw disable
+
+# 포트 허용/차단
+$ sudo ufw allow 22/tcp    # SSH 허용
+$ sudo ufw allow 80/tcp    # HTTP 허용
+$ sudo ufw allow 443/tcp   # HTTPS 허용
+$ sudo ufw deny 23/tcp     # Telnet 차단
+
+# IP 주소 기반 규칙
+$ sudo ufw allow from 192.168.1.100
+$ sudo ufw deny from 192.168.1.200
+
+# 상태 확인
+$ sudo ufw status verbose</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 셸 스크립팅 섹션 -->
+        <section id="shell-scripting" class="section">
+            <div class="container">
+                <h2 class="section-title">
+                    <span class="icon">📜</span>
+                    셸 스크립팅 기초
+                </h2>
+                <div class="section-intro">
+                    <p>반복 작업을 자동화하고 복잡한 작업을 단순화하는 셸 스크립팅을 학습합니다.</p>
+                </div>
+                
+                <div class="command-grid">
+                    <div class="command-card advanced" data-category="scripting">
+                        <div class="command-header">
+                            <h3>기본 스크립트 구조</h3>
+                            <span class="difficulty advanced">고급</span>
+                        </div>
+                        <div class="command-description">
+                            셸 스크립트의 기본 구조와 작성 방법을 익힙니다.
+                        </div>
+                        <div class="command-example">
+                            <div class="example-title">기본 구조:</div>
+                            <pre><code class="language-bash">#!/bin/bash
+# 스크립트 설명
+
+# 변수 선언
+NAME="Ubuntu"
+VERSION="22.04"
+
+# 함수 정의
+show_info() {
+    echo "운영체제: $NAME $VERSION"
+    echo "현재 시간: $(date)"
+    echo "현재 사용자: $USER"
+}
+
+# 메인 실행부
+echo "시스템 정보 스크립트 시작"
+show_info
+echo "스크립트 완료"</code></pre>
+                            <div class="example-title">실행 권한 부여:</div>
+                            <pre><code class="language-bash"># 실행 권한 추가
+$ chmod +x myscript.sh
+
+# 스크립트 실행
+$ ./myscript.sh</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card advanced" data-category="scripting">
+                        <div class="command-header">
+                            <h3>조건문과 반복문</h3>
+                            <span class="difficulty advanced">고급</span>
+                        </div>
+                        <div class="command-description">
+                            스크립트에서 조건부 실행과 반복 작업을 구현합니다.
+                        </div>
+                        <div class="command-example">
+                            <div class="example-title">조건문 (if-else):</div>
+                            <pre><code class="language-bash">#!/bin/bash
+
+# 파일 존재 확인
+if [ -f "/etc/passwd" ]; then
+    echo "파일이 존재합니다."
+else
+    echo "파일이 존재하지 않습니다."
+fi
+
+# 숫자 비교
+NUM=10
+if [ $NUM -gt 5 ]; then
+    echo "$NUM은 5보다 큽니다."
+elif [ $NUM -eq 5 ]; then
+    echo "$NUM은 5와 같습니다."
+else
+    echo "$NUM은 5보다 작습니다."
+fi</code></pre>
+                            <div class="example-title">반복문 (for, while):</div>
+                            <pre><code class="language-bash"># for 반복문
+for i in {1..5}; do
+    echo "숫자: $i"
+done
+
+# 파일 목록 처리
+for file in *.txt; do
+    if [ -f "$file" ]; then
+        echo "처리 중: $file"
+        # 파일 처리 작업
+    fi
+done
+
+# while 반복문
+COUNTER=1
+while [ $COUNTER -le 5 ]; do
+    echo "카운터: $COUNTER"
+    COUNTER=$((COUNTER + 1))
+done</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card advanced" data-category="scripting">
+                        <div class="command-header">
+                            <h3>실무 스크립트 예제</h3>
+                            <span class="difficulty advanced">고급</span>
+                        </div>
+                        <div class="command-description">
+                            실제 업무에서 활용할 수 있는 유용한 스크립트 예제들입니다.
+                        </div>
+                        <div class="command-example">
+                            <div class="example-title">1. 백업 스크립트:</div>
+                            <pre><code class="language-bash">#!/bin/bash
+
+# 백업 설정
+SOURCE_DIR="/home/user/important_data"
+BACKUP_DIR="/backup"
+DATE=$(date +%Y%m%d_%H%M%S)
+BACKUP_NAME="backup_$DATE.tar.gz"
+
+# 백업 디렉토리 확인
+if [ ! -d "$BACKUP_DIR" ]; then
+    mkdir -p "$BACKUP_DIR"
+fi
+
+# 백업 실행
+echo "백업 시작: $(date)"
+tar -czf "$BACKUP_DIR/$BACKUP_NAME" "$SOURCE_DIR"
+
+if [ $? -eq 0 ]; then
+    echo "백업 완료: $BACKUP_DIR/$BACKUP_NAME"
+else
+    echo "백업 실패!"
+    exit 1
+fi
+
+# 30일 이상 된 백업 파일 삭제
+find "$BACKUP_DIR" -name "backup_*.tar.gz" -mtime +30 -delete
+echo "백업 작업 완료: $(date)"</code></pre>
+                            <div class="example-title">2. 시스템 모니터링 스크립트:</div>
+                            <pre><code class="language-bash">#!/bin/bash
+
+# 임계값 설정
+CPU_THRESHOLD=80
+MEM_THRESHOLD=90
+DISK_THRESHOLD=85
+
+# CPU 사용률 확인
+CPU_USAGE=$(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | cut -d'%' -f1)
+CPU_USAGE=${CPU_USAGE%.*}  # 소수점 제거
+
+# 메모리 사용률 확인
+MEM_USAGE=$(free | grep Mem | awk '{printf "%.0f", $3/$2 * 100.0}')
+
+# 디스크 사용률 확인
+DISK_USAGE=$(df -h / | awk 'NR==2{print $5}' | cut -d'%' -f1)
+
+# 로그 파일
+LOG_FILE="/var/log/system_monitor.log"
+
+# 경고 메시지 생성
+echo "[$(date)] CPU: ${CPU_USAGE}%, MEM: ${MEM_USAGE}%, DISK: ${DISK_USAGE}%" >> "$LOG_FILE"
+
+# 임계값 초과 시 알림
+if [ "$CPU_USAGE" -gt "$CPU_THRESHOLD" ]; then
+    echo "WARNING: CPU usage is ${CPU_USAGE}%" | tee -a "$LOG_FILE"
+fi
+
+if [ "$MEM_USAGE" -gt "$MEM_THRESHOLD" ]; then
+    echo "WARNING: Memory usage is ${MEM_USAGE}%" | tee -a "$LOG_FILE"
+fi
+
+if [ "$DISK_USAGE" -gt "$DISK_THRESHOLD" ]; then
+    echo "WARNING: Disk usage is ${DISK_USAGE}%" | tee -a "$LOG_FILE"
+fi</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 실습 퀴즈 섹션 -->
+        <section id="quiz" class="section quiz-section">
+            <div class="container">
+                <h2 class="section-title">
+                    <span class="icon">🧠</span>
+                    실습 퀴즈
+                </h2>
+                
+                <div class="quiz-container">
+                    <div class="quiz-card active" id="quiz1">
+                        <div class="quiz-question">
+                            <h3>Q1. 현재 디렉토리의 모든 .txt 파일을 찾는 명령어는?</h3>
+                            <div class="quiz-options">
+                                <button class="quiz-option" data-correct="false">find . -type f -name "*.txt"</button>
+                                <button class="quiz-option" data-correct="false">ls *.txt</button>
+                                <button class="quiz-option" data-correct="true">find . -name "*.txt"</button>
+                                <button class="quiz-option" data-correct="false">grep -r "*.txt" .</button>
+                            </div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-card" id="quiz2">
+                        <div class="quiz-question">
+                            <h3>Q2. 파일의 마지막 20줄을 실시간으로 모니터링하는 명령어는?</h3>
+                            <div class="quiz-options">
+                                <button class="quiz-option" data-correct="false">head -20 file.txt</button>
+                                <button class="quiz-option" data-correct="true">tail -f -n 20 file.txt</button>
+                                <button class="quiz-option" data-correct="false">cat -n file.txt</button>
+                                <button class="quiz-option" data-correct="false">less file.txt</button>
+                            </div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-card" id="quiz3">
+                        <div class="quiz-question">
+                            <h3>Q3. 디렉토리와 그 내용을 모두 복사하는 명령어는?</h3>
+                            <div class="quiz-options">
+                                <button class="quiz-option" data-correct="false">cp source dest</button>
+                                <button class="quiz-option" data-correct="true">cp -r source dest</button>
+                                <button class="quiz-option" data-correct="false">mv source dest</button>
+                                <button class="quiz-option" data-correct="false">rsync source dest</button>
+                            </div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-card" id="quiz4">
+                        <div class="quiz-question">
+                            <h3>Q4. 로그 파일에서 'ERROR'가 포함된 줄을 찾아 개수를 세는 명령어는?</h3>
+                            <div class="quiz-options">
+                                <button class="quiz-option" data-correct="false">grep ERROR log.txt</button>
+                                <button class="quiz-option" data-correct="true">grep ERROR log.txt | wc -l</button>
+                                <button class="quiz-option" data-correct="false">cat log.txt | grep ERROR</button>
+                                <button class="quiz-option" data-correct="false">find log.txt -name ERROR</button>
+                            </div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-card" id="quiz5">
+                        <div class="quiz-question">
+                            <h3>Q5. 매일 오전 3시에 스크립트를 실행하는 크론탭 설정은?</h3>
+                            <div class="quiz-options">
+                                <button class="quiz-option" data-correct="false">3 0 * * * /path/script.sh</button>
+                                <button class="quiz-option" data-correct="true">0 3 * * * /path/script.sh</button>
+                                <button class="quiz-option" data-correct="false">* 3 * * * /path/script.sh</button>
+                                <button class="quiz-option" data-correct="false">3 * * * * /path/script.sh</button>
+                            </div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-controls">
+                        <button id="prevQuiz" class="quiz-nav">이전</button>
+                        <span id="quizProgress">1 / 5</span>
+                        <button id="nextQuiz" class="quiz-nav">다음</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- 종합 참고 자료 섹션 -->
+        <section id="reference" class="section">
+            <div class="container">
+                <h2 class="section-title">
+                    <span class="icon">📚</span>
+                    종합 참고 자료
+                </h2>
+                
+                <div class="reference-grid">
+                    <div class="reference-card">
+                        <h3>🔍 명령어 치트시트</h3>
+                        <div class="cheat-sheet">
+                            <div class="cheat-section">
+                                <h4>네비게이션</h4>
+                                <ul>
+                                    <li><code>pwd</code> - 현재 디렉토리 경로</li>
+                                    <li><code>ls -la</code> - 상세 파일 목록</li>
+                                    <li><code>cd ~</code> - 홈 디렉토리로</li>
+                                    <li><code>cd -</code> - 이전 디렉토리로</li>
+                                </ul>
+                            </div>
+                            <div class="cheat-section">
+                                <h4>파일 조작</h4>
+                                <ul>
+                                    <li><code>cp -r source dest</code> - 디렉토리 복사</li>
+                                    <li><code>mv old new</code> - 이동/이름변경</li>
+                                    <li><code>rm -rf folder</code> - 강제 삭제</li>
+                                    <li><code>find . -name "*.txt"</code> - 파일 검색</li>
+                                </ul>
+                            </div>
+                            <div class="cheat-section">
+                                <h4>텍스트 처리</h4>
+                                <ul>
+                                    <li><code>grep -r "pattern" .</code> - 재귀 검색</li>
+                                    <li><code>sed 's/old/new/g'</code> - 문자열 치환</li>
+                                    <li><code>awk '{print $1}'</code> - 첫번째 컬럼</li>
+                                    <li><code>sort | uniq -c</code> - 정렬 후 중복 제거</li>
+                                </ul>
+                            </div>
+                            <div class="cheat-section">
+                                <h4>시스템</h4>
+                                <ul>
+                                    <li><code>ps aux | grep process</code> - 프로세스 검색</li>
+                                    <li><code>df -h</code> - 디스크 사용량</li>
+                                    <li><code>du -sh *</code> - 디렉토리별 용량</li>
+                                    <li><code>systemctl status service</code> - 서비스 상태</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reference-card">
+                        <h3>🚀 실무 활용 시나리오</h3>
+                        <div class="scenarios">
+                            <div class="scenario">
+                                <h4>📊 로그 분석</h4>
+                                <pre><code class="language-bash"># 에러 로그 분석 및 통계
+grep "ERROR" /var/log/app.log | \
+awk '{print $4}' | sort | uniq -c | sort -nr
+
+# 특정 시간대 로그 필터링
+sed -n '/2024-08-23 14:00/,/2024-08-23 15:00/p' access.log
+
+# 접근 빈도 높은 IP 상위 10개
+awk '{print $1}' access.log | sort | uniq -c | \
+sort -nr | head -10</code></pre>
+                            </div>
+                            
+                            <div class="scenario">
+                                <h4>🔧 시스템 모니터링</h4>
+                                <pre><code class="language-bash"># 시스템 리소스 종합 체크
+echo "=== CPU Usage ==="
+top -bn1 | grep "Cpu(s)"
+echo "=== Memory Usage ==="
+free -h
+echo "=== Disk Usage ==="
+df -h
+echo "=== Top Processes ==="
+ps aux --sort=-%cpu | head -5</code></pre>
+                            </div>
+                            
+                            <div class="scenario">
+                                <h4>📁 대용량 파일 관리</h4>
+                                <pre><code class="language-bash"># 큰 파일 찾기 (100MB 이상)
+find / -type f -size +100M -exec ls -lh {} \; 2>/dev/null
+
+# 디렉토리 용량 분석
+du -h --max-depth=1 | sort -hr
+
+# 오래된 로그 파일 정리 (30일 이상)
+find /var/log -name "*.log" -mtime +30 -delete</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reference-card">
+                        <h3>⚡ 성능 최적화 팁</h3>
+                        <div class="optimization-tips">
+                            <div class="tip">
+                                <h4>🔍 명령어 최적화</h4>
+                                <ul>
+                                    <li><strong>파이프 순서:</strong> 가장 필터링이 많이 되는 명령어를 앞에</li>
+                                    <li><strong>grep vs find:</strong> 텍스트 검색은 grep, 파일명은 find</li>
+                                    <li><strong>xargs 활용:</strong> 대량 파일 처리 시 병렬 처리로 속도 향상</li>
+                                    <li><strong>메모리 고려:</strong> sort 대신 필요한 경우에만 사용</li>
+                                </ul>
+                            </div>
+                            <div class="tip">
+                                <h4>📈 성능 모니터링</h4>
+                                <ul>
+                                    <li><code>time command</code> - 명령어 실행 시간 측정</li>
+                                    <li><code>iostat 1</code> - I/O 성능 실시간 모니터링</li>
+                                    <li><code>htop</code> - 프로세스별 리소스 사용량</li>
+                                    <li><code>iotop</code> - 디스크 I/O 사용량</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reference-card">
+                        <h3>🔒 보안 및 권한 관리</h3>
+                        <div class="security-guide">
+                            <div class="security-section">
+                                <h4>파일 권한 (chmod)</h4>
+                                <div class="permission-table">
+                                    <div class="perm-row">
+                                        <span class="perm-num">755</span>
+                                        <span class="perm-desc">rwxr-xr-x (소유자: 모든권한, 그룹/기타: 읽기+실행)</span>
+                                    </div>
+                                    <div class="perm-row">
+                                        <span class="perm-num">644</span>
+                                        <span class="perm-desc">rw-r--r-- (소유자: 읽기+쓰기, 그룹/기타: 읽기만)</span>
+                                    </div>
+                                    <div class="perm-row">
+                                        <span class="perm-num">600</span>
+                                        <span class="perm-desc">rw------- (소유자만 읽기+쓰기)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="security-section">
+                                <h4>보안 체크리스트</h4>
+                                <ul>
+                                    <li>민감한 파일은 600 권한 (소유자만 접근)</li>
+                                    <li>실행 파일은 755, 설정 파일은 644</li>
+                                    <li>sudo 사용 시 최소 권한 원칙 적용</li>
+                                    <li>정기적인 로그 모니터링</li>
+                                    <li>불필요한 서비스 비활성화</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reference-card">
+                        <h3>🛠️ 문제해결 가이드</h3>
+                        <div class="troubleshooting">
+                            <div class="problem">
+                                <h4>❌ "Permission denied" 오류</h4>
+                                <div class="solution">
+                                    <p><strong>원인:</strong> 파일/디렉토리에 대한 권한이 없음</p>
+                                    <p><strong>해결:</strong></p>
+                                    <pre><code># 권한 확인
+ls -l filename
+
+# 권한 변경
+chmod 755 filename
+
+# 소유자 변경 (필요시)
+sudo chown username:groupname filename</code></pre>
+                                </div>
+                            </div>
+                            
+                            <div class="problem">
+                                <h4>💾 "No space left on device" 오류</h4>
+                                <div class="solution">
+                                    <p><strong>해결 단계:</strong></p>
+                                    <pre><code># 1. 디스크 사용량 확인
+df -h
+
+# 2. 큰 파일/디렉토리 찾기
+du -h / | sort -hr | head -20
+
+# 3. 불필요한 파일 정리
+sudo apt clean
+sudo journalctl --vacuum-time=7d
+
+# 4. 로그 파일 정리
+sudo find /var/log -type f -name "*.log" -mtime +7 -delete</code></pre>
+                                </div>
+                            </div>
+                            
+                            <div class="problem">
+                                <h4>🐌 시스템이 느려질 때</h4>
+                                <div class="solution">
+                                    <pre><code># CPU 사용률 높은 프로세스 찾기
+ps aux --sort=-%cpu | head -10
+
+# 메모리 사용률 높은 프로세스
+ps aux --sort=-%mem | head -10
+
+# I/O 대기 시간 확인
+iostat -x 1
+
+# 네트워크 연결 상태
+netstat -tuln</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Ubuntu Linux 명령어 강의</h4>
+                    <p>초급부터 중급까지 체계적인 Linux 학습</p>
+                </div>
+                <div class="footer-section">
+                    <h4>학습 리소스</h4>
+                    <ul>
+                        <li><a href="#basics">기초 명령어</a></li>
+                        <li><a href="#intermediate">중급 명령어</a></li>
+                        <li><a href="#advanced">고급 명령어</a></li>
+                        <li><a href="#system-admin">시스템 관리</a></li>
+                        <li><a href="#shell-scripting">셸 스크립팅</a></li>
+                        <li><a href="#quiz">실습 퀴즈</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>추가 학습</h4>
+                    <ul>
+                        <li><a href="https://ubuntu.com/tutorials" target="_blank">Ubuntu 공식 튜토리얼</a></li>
+                        <li><a href="https://linuxcommand.org" target="_blank">Linux Command</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Ubuntu Linux 명령어 완전 정복. Made with ❤️</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

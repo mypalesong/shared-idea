@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkPlace - Document Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #0dcaf0;
+            --dark-color: #212529;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            z-index: 1000;
+            transition: all 0.3s;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.1);
+            border-left: 4px solid #fff;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .top-navbar {
+            background: white;
+            padding: 15px 30px;
+            margin: -20px -20px 30px -20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 0 0 10px 10px;
+        }
+
+        .document-toolbar {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .view-toggle {
+            display: flex;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .view-btn {
+            padding: 8px 12px;
+            border: none;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .view-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .breadcrumb-nav {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .breadcrumb {
+            margin: 0;
+        }
+
+        .breadcrumb-item a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .main-area {
+            display: flex;
+            gap: 20px;
+        }
+
+        .folder-tree {
+            width: 280px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .tree-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s;
+            margin-bottom: 4px;
+        }
+
+        .tree-item:hover {
+            background: #f8f9fa;
+        }
+
+        .tree-item.active {
+            background: #e3f2fd;
+            color: var(--primary-color);
+        }
+
+        .tree-item.expanded .fa-folder {
+            color: var(--warning-color);
+        }
+
+        .tree-item.expanded .fa-chevron-right {
+            transform: rotate(90deg);
+        }
+
+        .tree-indent {
+            margin-left: 20px;
+        }
+
+        .tree-icon {
+            margin-right: 8px;
+            width: 16px;
+            text-align: center;
+        }
+
+        .document-area {
+            flex: 1;
+        }
+
+        .document-grid {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .grid-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .list-view {
+            display: none;
+        }
+
+        .document-item {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .document-item:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .document-item.selected {
+            border-color: var(--primary-color);
+            background: #e3f2fd;
+        }
+
+        .file-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .file-pdf {
+            color: #dc3545;
+        }
+
+        .file-doc {
+            color: #0d6efd;
+        }
+
+        .file-xlsx {
+            color: #198754;
+        }
+
+        .file-pptx {
+            color: #fd7e14;
+        }
+
+        .file-image {
+            color: #6f42c1;
+        }
+
+        .file-folder {
+            color: #ffc107;
+        }
+
+        .file-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .file-meta {
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+
+        .file-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .document-item:hover .file-actions {
+            opacity: 1;
+        }
+
+        .action-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-left: 4px;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .list-table {
+            margin: 0;
+        }
+
+        .list-table th {
+            background: #f8f9fa;
+            border: none;
+            font-weight: 600;
+            padding: 15px;
+        }
+
+        .list-table td {
+            padding: 15px;
+            border-color: #eee;
+            vertical-align: middle;
+        }
+
+        .file-row {
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .file-row:hover {
+            background: #f8f9fa;
+        }
+
+        .file-row.selected {
+            background: #e3f2fd;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .file-thumb {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            background: #f8f9fa;
+        }
+
+        .file-details {
+            flex: 1;
+        }
+
+        .file-title {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .file-subtitle {
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+
+        .file-size {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .file-date {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .file-owner {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .owner-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .upload-zone {
+            border: 2px dashed #dee2e6;
+            border-radius: 12px;
+            padding: 60px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--primary-color);
+            background: rgba(13, 110, 253, 0.05);
+        }
+
+        .upload-zone.dragover {
+            border-color: var(--success-color);
+            background: rgba(25, 135, 84, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+
+        .recent-files {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .recent-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .recent-item:last-child {
+            border-bottom: none;
+        }
+
+        .recent-item:hover {
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .storage-info {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .storage-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .storage-used {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-color), var(--warning-color));
+            width: 68%;
+            transition: width 0.3s;
+        }
+
+        .storage-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .context-menu {
+            position: absolute;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 8px 0;
+            min-width: 180px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .context-item {
+            padding: 8px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.3s;
+        }
+
+        .context-item:hover {
+            background: #f8f9fa;
+        }
+
+        .context-divider {
+            height: 1px;
+            background: #dee2e6;
+            margin: 4px 0;
+        }
+
+        .preview-modal .modal-dialog {
+            max-width: 90%;
+            margin: 30px auto;
+        }
+
+        .preview-content {
+            height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            padding: 2px 8px;
+            background: #e9ecef;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            color: #495057;
+        }
+
+        .version-history {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .version-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .version-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-briefcase me-2"></i>WorkPlace</h3>
+            <small>Enterprise Solution</small>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-item">
+                <i class="fas fa-tachometer-alt me-3"></i>Dashboard
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-tasks me-3"></i>Projects
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-kanban me-3"></i>Task Board
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-users me-3"></i>Team
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-chart-line me-3"></i>Analytics
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-calendar me-3"></i>Calendar
+            </div>
+            <div class="nav-item active">
+                <i class="fas fa-file-alt me-3"></i>Documents
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-headset me-3"></i>Support
+            </div>
+            <div class="nav-item">
+                <i class="fas fa-cog me-3"></i>Settings
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navbar -->
+        <div class="top-navbar">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-0">문서 관리</h4>
+                    <small class="text-muted">2,847개 파일 • 12.4 GB 사용</small>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                        <i class="fas fa-cloud-upload-alt me-2"></i>업로드
+                    </button>
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#folderModal">
+                        <i class="fas fa-folder-plus me-2"></i>새 폴더
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb-nav">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#"><i class="fas fa-home me-2"></i>홈</a></li>
+                    <li class="breadcrumb-item"><a href="#">프로젝트</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">모바일 앱 개발</li>
+                </ol>
+            </nav>
+        </div>
+
+        <!-- Document Toolbar -->
+        <div class="document-toolbar">
+            <div class="toolbar-left">
+                <div class="input-group" style="width: 300px;">
+                    <span class="input-group-text">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" class="form-control" placeholder="파일명, 내용으로 검색...">
+                </div>
+                <select class="form-select" style="width: 140px;">
+                    <option>모든 파일</option>
+                    <option>문서</option>
+                    <option>이미지</option>
+                    <option>스프레드시트</option>
+                    <option>프레젠테이션</option>
+                </select>
+                <select class="form-select" style="width: 120px;">
+                    <option>최근순</option>
+                    <option>이름순</option>
+                    <option>크기순</option>
+                    <option>유형별</option>
+                </select>
+            </div>
+            <div class="toolbar-right">
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="grid">
+                        <i class="fas fa-th"></i>
+                    </button>
+                    <button class="view-btn" data-view="list">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>선택 항목 다운로드</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-share me-2"></i>공유</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-copy me-2"></i>복사</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>삭제</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-area">
+            <!-- Folder Tree -->
+            <div class="folder-tree">
+                <h6 class="mb-3"><i class="fas fa-folder-open me-2"></i>폴더</h6>
+                
+                <div class="tree-item active">
+                    <i class="fas fa-chevron-right tree-icon"></i>
+                    <i class="fas fa-folder tree-icon"></i>
+                    <span>프로젝트</span>
+                </div>
+                
+                <div class="tree-indent">
+                    <div class="tree-item">
+                        <i class="fas fa-chevron-right tree-icon"></i>
+                        <i class="fas fa-folder tree-icon"></i>
+                        <span>모바일 앱 개발</span>
+                    </div>
+                    
+                    <div class="tree-indent">
+                        <div class="tree-item">
+                            <i class="tree-icon"></i>
+                            <i class="fas fa-folder tree-icon"></i>
+                            <span>설계 문서</span>
+                        </div>
+                        <div class="tree-item">
+                            <i class="tree-icon"></i>
+                            <i class="fas fa-folder tree-icon"></i>
+                            <span>UI 디자인</span>
+                        </div>
+                        <div class="tree-item">
+                            <i class="tree-icon"></i>
+                            <i class="fas fa-folder tree-icon"></i>
+                            <span>개발 자료</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tree-item">
+                    <i class="fas fa-chevron-right tree-icon"></i>
+                    <i class="fas fa-folder tree-icon"></i>
+                    <span>웹사이트 리뉴얼</span>
+                </div>
+
+                <div class="tree-item">
+                    <i class="fas fa-chevron-right tree-icon"></i>
+                    <i class="fas fa-folder tree-icon"></i>
+                    <span>마케팅 자료</span>
+                </div>
+
+                <div class="tree-item">
+                    <i class="fas fa-chevron-right tree-icon"></i>
+                    <i class="fas fa-folder tree-icon"></i>
+                    <span>회의록</span>
+                </div>
+
+                <div class="tree-item">
+                    <i class="fas fa-chevron-right tree-icon"></i>
+                    <i class="fas fa-folder tree-icon"></i>
+                    <span>교육 자료</span>
+                </div>
+
+                <div class="tree-item">
+                    <i class="tree-icon"></i>
+                    <i class="fas fa-star tree-icon text-warning"></i>
+                    <span>즐겨찾기</span>
+                </div>
+
+                <div class="tree-item">
+                    <i class="tree-icon"></i>
+                    <i class="fas fa-trash tree-icon text-danger"></i>
+                    <span>휴지통</span>
+                </div>
+            </div>
+
+            <!-- Document Area -->
+            <div class="document-area">
+                <!-- Grid View -->
+                <div class="document-grid">
+                    <div class="grid-view" id="gridView">
+                        <div class="document-item" data-type="folder">
+                            <div class="file-actions">
+                                <button class="action-btn" style="background: #e3f2fd; color: #1565c0;" title="공유">
+                                    <i class="fas fa-share"></i>
+                                </button>
+                                <button class="action-btn" style="background: #fff3e0; color: #ef6c00;" title="더보기">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </div>
+                            <i class="file-icon file-folder fas fa-folder"></i>
+                            <div class="file-name">설계 문서</div>
+                            <div class="file-meta">24개 파일 • 1일 전</div>
+                        </div>
+
+                        <div class="document-item" data-type="folder">
+                            <div class="file-actions">
+                                <button class="action-btn" style="background: #e3f2fd; color: #1565c0;" title="공유">
+                                    <i class="fas fa-share"></i>
+                                </button>
+                                <button class="action-btn" style="background: #fff3e0; color: #ef6c00;" title="더보기">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </div>
+                            <i class="file-icon file-folder fas fa-folder"></i>
+                            <div class="file-name">UI 디자인</div>
+                            <div class="file-meta">18개 파일 • 2일 전</div>
+                        </div>
+
+                        <div class="document-item" data-type="pdf">
+                            <div class="file-actions">
+                                <button class="action-btn" style="background: #e3f2fd; color: #1565c0;" title="미리보기">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-btn" style="background: #e8f5e8; color: #2e7d32;" title="다운로드">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="action-btn" style="background: #fff3e0; color: #ef6c00;" title="더보기">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </div>
+                            <i class="file-icon file-pdf fas fa-file-pdf"></i>
+                            <div class="file-name">요구사항 명세서.pdf</div>
+                            <div class="file-meta">2.4 MB • 김민수 • 3시간 전</div>
+                        </div>
+
+                        <div class="document-item" data-type="docx">
+                            <div class="file-actions">
+                                <button class="action-btn" style="background: #e3f2fd; color: #1565c0;" title="편집">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn" style="background: #e8f5e8; color: #2e7d32;" title="다운로드">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="action-btn" style="background: #fff3e0; color: #ef6c00;" title="더보기">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </div>
+                            <i class="file-icon file-doc fas fa-file-word"></i>
+                            <div class="file-name">프로젝트 계획서.docx</div>
+                            <div class="file-meta">1.8 MB • 이수정 • 5시간 전</div>
+                        </div>
+
+                        <div class="document-item" data-type="xlsx">
+                            <div class="file-actions">
+                                <button class="action-btn" style="background: #e3f2fd; color: #1565c0;" title="편집">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn" style="background: #e8f5e8; color: #2e7d32;" title="다운로드">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="action-btn" style="background: #fff3e0; color: #ef6c00;" title="더보기">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </div>
+                            <i class="file-icon file-xlsx fas fa-file-excel"></i>
+                            <div class="file-name">일정 관리.xlsx</div>
+                            <div class="file-meta">856 KB • 박서준 • 1일 전</div>
+                        </div>
+
+                        <div class="document-item" data-type="pptx">
+                            <div class="file-actions">
+                                <button class="action-btn" style="background: #e3f2fd; color: #1565c0;" title="발표">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                <button class="action-btn" style="background: #e8f5e8; color: #2e7d32;" title="다운로드">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="action-btn" style="background: #fff3e0; color: #ef6c00;" title="더보기">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </div>
+                            <i class="file-icon file-pptx fas fa-file-powerpoint"></i>
+                            <div class="file-name">시스템 아키텍처.pptx</div>
+                            <div class="file-meta">4.2 MB • 최영희 • 2일 전</div>
+                        </div>
+
+                        <div class="document-item" data-type="image">
+                            <div class="file-actions">
+                                <button class="action-btn" style="background: #e3f2fd; color: #1565c0;" title="미리보기">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-btn" style="background: #e8f5e8; color: #2e7d32;" title="다운로드">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="action-btn" style="background: #fff3e0; color: #ef6c00;" title="더보기">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </div>
+                            <i class="file-icon file-image fas fa-file-image"></i>
+                            <div class="file-name">와이어프레임_v2.png</div>
+                            <div class="file-meta">720 KB • 정현우 • 3일 전</div>
+                        </div>
+
+                        <div class="document-item" data-type="pdf">
+                            <div class="file-actions">
+                                <button class="action-btn" style="background: #e3f2fd; color: #1565c0;" title="미리보기">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-btn" style="background: #e8f5e8; color: #2e7d32;" title="다운로드">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="action-btn" style="background: #fff3e0; color: #ef6c00;" title="더보기">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </div>
+                            <i class="file-icon file-pdf fas fa-file-pdf"></i>
+                            <div class="file-name">API 문서 v1.2.pdf</div>
+                            <div class="file-meta">1.6 MB • 한지민 • 4일 전</div>
+                        </div>
+
+                        <div class="document-item" data-type="docx">
+                            <div class="file-actions">
+                                <button class="action-btn" style="background: #e3f2fd; color: #1565c0;" title="편집">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn" style="background: #e8f5e8; color: #2e7d32;" title="다운로드">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="action-btn" style="background: #fff3e0; color: #ef6c00;" title="더보기">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </div>
+                            <i class="file-icon file-doc fas fa-file-word"></i>
+                            <div class="file-name">회의록_0220.docx</div>
+                            <div class="file-meta">524 KB • 서민지 • 1주일 전</div>
+                        </div>
+
+                        <div class="document-item" data-type="image">
+                            <div class="file-actions">
+                                <button class="action-btn" style="background: #e3f2fd; color: #1565c0;" title="미리보기">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-btn" style="background: #e8f5e8; color: #2e7d32;" title="다운로드">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="action-btn" style="background: #fff3e0; color: #ef6c00;" title="더보기">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </div>
+                            <i class="file-icon file-image fas fa-file-image"></i>
+                            <div class="file-name">스크린샷_메인화면.jpg</div>
+                            <div class="file-meta">1.2 MB • 오수현 • 1주일 전</div>
+                        </div>
+                    </div>
+
+                    <!-- List View -->
+                    <div class="list-view" id="listView">
+                        <table class="table list-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">
+                                        <input type="checkbox" class="form-check-input">
+                                    </th>
+                                    <th>이름</th>
+                                    <th style="width: 120px;">소유자</th>
+                                    <th style="width: 100px;">크기</th>
+                                    <th style="width: 140px;">수정일</th>
+                                    <th style="width: 100px;">작업</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="file-row">
+                                    <td><input type="checkbox" class="form-check-input"></td>
+                                    <td>
+                                        <div class="file-info">
+                                            <div class="file-thumb">
+                                                <i class="fas fa-folder text-warning"></i>
+                                            </div>
+                                            <div class="file-details">
+                                                <div class="file-title">설계 문서</div>
+                                                <div class="file-subtitle">24개 파일</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="file-owner">
+                                            <div class="owner-avatar" style="background: #007bff;">김</div>
+                                            <span>김민수</span>
+                                        </div>
+                                    </td>
+                                    <td class="file-size">-</td>
+                                    <td class="file-date">1일 전</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn" style="background: #e3f2fd; color: #1565c0;" title="공유">
+                                                <i class="fas fa-share"></i>
+                                            </button>
+                                            <button class="action-btn" style="background: #fff3e0; color: #ef6c00;" title="더보기">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="file-row">
+                                    <td><input type="checkbox" class="form-check-input"></td>
+                                    <td>
+                                        <div class="file-info">
+                                            <div class="file-thumb">
+                                                <i class="fas fa-file-pdf text-danger"></i>
+                                            </div>
+                                            <div class="file-details">
+                                                <div class="file-title">요구사항 명세서.pdf</div>
+                                                <div class="file-subtitle">PDF 문서</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="file-owner">
+                                            <div class="owner-avatar" style="background: #007bff;">김</div>
+                                            <span>김민수</span>
+                                        </div>
+                                    </td>
+                                    <td class="file-size">2.4 MB</td>
+                                    <td class="file-date">3시간 전</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn" style="background: #e3f2fd; color: #1565c0;" title="미리보기">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="action-btn" style="background: #e8f5e8; color: #2e7d32;" title="다운로드">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                            <button class="action-btn" style="background: #fff3e0; color: #ef6c00;" title="더보기">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="file-row">
+                                    <td><input type="checkbox" class="form-check-input"></td>
+                                    <td>
+                                        <div class="file-info">
+                                            <div class="file-thumb">
+                                                <i class="fas fa-file-word text-primary"></i>
+                                            </div>
+                                            <div class="file-details">
+                                                <div class="file-title">프로젝트 계획서.docx</div>
+                                                <div class="file-subtitle">Word 문서</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="file-owner">
+                                            <div class="owner-avatar" style="background: #28a745;">이</div>
+                                            <span>이수정</span>
+                                        </div>
+                                    </td>
+                                    <td class="file-size">1.8 MB</td>
+                                    <td class="file-date">5시간 전</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="action-btn" style="background: #e3f2fd; color: #1565c0;" title="편집">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="action-btn" style="background: #e8f5e8; color: #2e7d32;" title="다운로드">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                            <button class="action-btn" style="background: #fff3e0; color: #ef6c00;" title="더보기">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div style="width: 280px;">
+                <!-- Recent Files -->
+                <div class="recent-files">
+                    <h6 class="mb-3"><i class="fas fa-history me-2"></i>최근 파일</h6>
+                    
+                    <div class="recent-item">
+                        <div class="file-thumb">
+                            <i class="fas fa-file-pdf text-danger"></i>
+                        </div>
+                        <div class="file-details">
+                            <div class="file-title">요구사항 명세서.pdf</div>
+                            <div class="file-subtitle">3시간 전</div>
+                        </div>
+                    </div>
+
+                    <div class="recent-item">
+                        <div class="file-thumb">
+                            <i class="fas fa-file-word text-primary"></i>
+                        </div>
+                        <div class="file-details">
+                            <div class="file-title">프로젝트 계획서.docx</div>
+                            <div class="file-subtitle">5시간 전</div>
+                        </div>
+                    </div>
+
+                    <div class="recent-item">
+                        <div class="file-thumb">
+                            <i class="fas fa-file-excel text-success"></i>
+                        </div>
+                        <div class="file-details">
+                            <div class="file-title">일정 관리.xlsx</div>
+                            <div class="file-subtitle">1일 전</div>
+                        </div>
+                    </div>
+
+                    <div class="recent-item">
+                        <div class="file-thumb">
+                            <i class="fas fa-file-powerpoint" style="color: #fd7e14;"></i>
+                        </div>
+                        <div class="file-details">
+                            <div class="file-title">시스템 아키텍처.pptx</div>
+                            <div class="file-subtitle">2일 전</div>
+                        </div>
+                    </div>
+
+                    <div class="recent-item">
+                        <div class="file-thumb">
+                            <i class="fas fa-file-image text-purple"></i>
+                        </div>
+                        <div class="file-details">
+                            <div class="file-title">와이어프레임_v2.png</div>
+                            <div class="file-subtitle">3일 전</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Storage Info -->
+                <div class="storage-info">
+                    <h6 class="mb-3"><i class="fas fa-hdd me-2"></i>저장소 사용량</h6>
+                    
+                    <div class="storage-bar">
+                        <div class="storage-used"></div>
+                    </div>
+                    
+                    <div class="storage-stats">
+                        <span>12.4 GB 사용</span>
+                        <span>50 GB 중</span>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="small">문서</span>
+                            <span class="small text-muted">8.2 GB</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="small">이미지</span>
+                            <span class="small text-muted">2.8 GB</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="small">비디오</span>
+                            <span class="small text-muted">1.4 GB</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="small">기타</span>
+                            <span class="small text-muted">0.2 GB</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-outline-primary btn-sm w-100 mt-3">
+                        <i class="fas fa-plus me-2"></i>용량 추가
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div class="context-menu" id="contextMenu">
+        <div class="context-item">
+            <i class="fas fa-eye"></i>
+            <span>미리보기</span>
+        </div>
+        <div class="context-item">
+            <i class="fas fa-download"></i>
+            <span>다운로드</span>
+        </div>
+        <div class="context-item">
+            <i class="fas fa-share"></i>
+            <span>공유</span>
+        </div>
+        <div class="context-divider"></div>
+        <div class="context-item">
+            <i class="fas fa-edit"></i>
+            <span>이름 변경</span>
+        </div>
+        <div class="context-item">
+            <i class="fas fa-copy"></i>
+            <span>복사</span>
+        </div>
+        <div class="context-item">
+            <i class="fas fa-cut"></i>
+            <span>잘라내기</span>
+        </div>
+        <div class="context-divider"></div>
+        <div class="context-item text-danger">
+            <i class="fas fa-trash"></i>
+            <span>삭제</span>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div class="modal fade" id="uploadModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-cloud-upload-alt me-2"></i>파일 업로드
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="upload-zone" id="uploadZone">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <h5>여기에 파일을 드래그하거나 클릭하여 업로드</h5>
+                        <p class="text-muted">최대 10개 파일, 파일당 최대 100MB</p>
+                        <input type="file" id="fileInput" multiple hidden>
+                        <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                            파일 선택
+                        </button>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">폴더</label>
+                                <select class="form-select">
+                                    <option>현재 폴더 (모바일 앱 개발)</option>
+                                    <option>설계 문서</option>
+                                    <option>UI 디자인</option>
+                                    <option>개발 자료</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">태그</label>
+                                <input type="text" class="form-control" placeholder="태그 입력 (쉼표로 구분)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-check mt-3">
+                        <input class="form-check-input" type="checkbox" id="autoRename">
+                        <label class="form-check-label" for="autoRename">
+                            중복 파일명 자동 변경
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary">업로드 시작</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Folder Modal -->
+    <div class="modal fade" id="folderModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-folder-plus me-2"></i>새 폴더 만들기
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="folderName" placeholder="폴더 이름">
+                        <label for="folderName">폴더 이름</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control" id="folderDescription" style="height: 100px;" placeholder="설명 (선택사항)"></textarea>
+                        <label for="folderDescription">설명</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary">폴더 만들기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div class="modal fade" id="previewModal" tabindex="-1">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">파일 미리보기</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="preview-content">
+                        <i class="fas fa-file-pdf" style="font-size: 5rem; color: #6c757d;"></i>
+                        <p class="mt-3 text-muted">파일 미리보기</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // View toggle functionality
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                const viewType = this.getAttribute('data-view');
+                
+                if (viewType === 'grid') {
+                    document.getElementById('gridView').style.display = 'grid';
+                    document.getElementById('listView').style.display = 'none';
+                } else {
+                    document.getElementById('gridView').style.display = 'none';
+                    document.getElementById('listView').style.display = 'block';
+                }
+            });
+        });
+
+        // Document item selection
+        document.querySelectorAll('.document-item, .file-row').forEach(item => {
+            item.addEventListener('click', function() {
+                // Toggle selection
+                this.classList.toggle('selected');
+                
+                console.log('Document selected:', this.querySelector('.file-name, .file-title').textContent);
+            });
+        });
+
+        // Folder tree navigation
+        document.querySelectorAll('.tree-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active class from all items
+                document.querySelectorAll('.tree-item').forEach(i => i.classList.remove('active'));
+                // Add active class to clicked item
+                this.classList.add('active');
+                
+                // Toggle expanded state for folders
+                const hasChevron = this.querySelector('.fa-chevron-right');
+                if (hasChevron) {
+                    this.classList.toggle('expanded');
+                }
+                
+                console.log('Folder selected:', this.textContent.trim());
+            });
+        });
+
+        // Context menu
+        document.addEventListener('contextmenu', function(e) {
+            const documentItem = e.target.closest('.document-item, .file-row');
+            if (documentItem) {
+                e.preventDefault();
+                
+                const contextMenu = document.getElementById('contextMenu');
+                contextMenu.style.display = 'block';
+                contextMenu.style.left = e.pageX + 'px';
+                contextMenu.style.top = e.pageY + 'px';
+            }
+        });
+
+        // Hide context menu on click outside
+        document.addEventListener('click', function() {
+            document.getElementById('contextMenu').style.display = 'none';
+        });
+
+        // Context menu actions
+        document.querySelectorAll('.context-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const action = this.textContent.trim();
+                console.log('Context menu action:', action);
+                
+                if (action === '미리보기') {
+                    const previewModal = new bootstrap.Modal(document.getElementById('previewModal'));
+                    previewModal.show();
+                }
+                
+                document.getElementById('contextMenu').style.display = 'none';
+            });
+        });
+
+        // File upload drag and drop
+        const uploadZone = document.getElementById('uploadZone');
+        
+        uploadZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('dragover');
+        });
+        
+        uploadZone.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+        });
+        
+        uploadZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            console.log('Files dropped:', files.length);
+            
+            // Handle file upload
+        });
+
+        // Upload zone click
+        uploadZone.addEventListener('click', function() {
+            document.getElementById('fileInput').click();
+        });
+
+        // File input change
+        document.getElementById('fileInput').addEventListener('change', function() {
+            const files = this.files;
+            console.log('Files selected:', files.length);
+        });
+
+        // Action button clicks
+        document.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                
+                const title = this.getAttribute('title');
+                console.log('Action button clicked:', title);
+                
+                if (title === '미리보기') {
+                    const previewModal = new bootstrap.Modal(document.getElementById('previewModal'));
+                    previewModal.show();
+                }
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('input[placeholder*="검색"]');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            console.log('Searching for:', searchTerm);
+            
+            // Filter documents based on search term
+            document.querySelectorAll('.document-item').forEach(item => {
+                const fileName = item.querySelector('.file-name').textContent.toLowerCase();
+                if (fileName.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Filter and sort functionality
+        document.querySelectorAll('.form-select').forEach(select => {
+            select.addEventListener('change', function() {
+                console.log('Filter/Sort changed:', this.value);
+                // Implement filtering and sorting logic
+            });
+        });
+    </script>
+</body>
+</html>

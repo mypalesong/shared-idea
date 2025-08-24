@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D CSS Workshop - 3차원 CSS 워크샵</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+
+        .scene-container {
+            transform-style: preserve-3d;
+            animation: sceneRotate 20s infinite linear;
+        }
+
+        @keyframes sceneRotate {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .floating-cubes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .cube {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            transform-style: preserve-3d;
+            animation: cubeFloat 6s ease-in-out infinite;
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .cube-face.front { transform: translateZ(25px); }
+        .cube-face.back { transform: translateZ(-25px) rotateY(180deg); }
+        .cube-face.left { transform: rotateY(-90deg) translateZ(25px); }
+        .cube-face.right { transform: rotateY(90deg) translateZ(25px); }
+        .cube-face.top { transform: rotateX(90deg) translateZ(25px); }
+        .cube-face.bottom { transform: rotateX(-90deg) translateZ(25px); }
+
+        .cube:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .cube:nth-child(2) {
+            top: 20%;
+            right: 15%;
+            animation-delay: 1s;
+        }
+
+        .cube:nth-child(3) {
+            bottom: 30%;
+            left: 20%;
+            animation-delay: 2s;
+        }
+
+        .cube:nth-child(4) {
+            bottom: 10%;
+            right: 10%;
+            animation-delay: 3s;
+        }
+
+        @keyframes cubeFloat {
+            0%, 100% {
+                transform: translateY(0) rotateX(0deg) rotateY(0deg);
+            }
+            33% {
+                transform: translateY(-20px) rotateX(120deg) rotateY(120deg);
+            }
+            66% {
+                transform: translateY(20px) rotateX(240deg) rotateY(240deg);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 80px;
+            position: relative;
+            z-index: 2;
+            transform-style: preserve-3d;
+        }
+
+        .header h1 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            margin-bottom: 25px;
+            transform: perspective(800px) rotateX(15deg);
+            text-shadow: 
+                0 0 20px rgba(255, 255, 255, 0.5),
+                0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: titlePulse 3s ease-in-out infinite;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { 
+                transform: perspective(800px) rotateX(15deg) scale(1);
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 10px 30px rgba(0, 0, 0, 0.3);
+            }
+            50% { 
+                transform: perspective(800px) rotateX(15deg) scale(1.05);
+                text-shadow: 0 0 30px rgba(255, 255, 255, 0.8), 0 15px 40px rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        .header p {
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+            transform: perspective(600px) rotateX(10deg) translateZ(20px);
+        }
+
+        .workshop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .workshop-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+        }
+
+        .workshop-card:hover {
+            transform: 
+                perspective(1000px) 
+                rotateX(10deg) 
+                rotateY(-10deg) 
+                translateZ(50px);
+            box-shadow: 
+                0 50px 100px rgba(0, 0, 0, 0.3),
+                0 0 50px rgba(255, 255, 255, 0.1);
+        }
+
+        .card-3d-header {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            position: relative;
+            transform-style: preserve-3d;
+            overflow: hidden;
+        }
+
+        .card-3d-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 10px,
+                    rgba(255, 255, 255, 0.1) 10px,
+                    rgba(255, 255, 255, 0.1) 20px
+                );
+            transform: translateZ(10px);
+        }
+
+        .card-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateZ(30px);
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.9);
+            animation: iconRotate 4s ease-in-out infinite;
+        }
+
+        @keyframes iconRotate {
+            0%, 100% { transform: translate(-50%, -50%) translateZ(30px) rotateY(0deg); }
+            50% { transform: translate(-50%, -50%) translateZ(30px) rotateY(180deg); }
+        }
+
+        .card-content {
+            padding: 35px;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .workshop-level {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            transform: translateZ(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .workshop-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 18px;
+            line-height: 1.2;
+            transform: translateZ(15px);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .workshop-description {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.6;
+            margin-bottom: 25px;
+            transform: translateZ(10px);
+        }
+
+        .workshop-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .detail-3d-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            transform: translateZ(5px);
+            transition: all 0.3s ease;
+        }
+
+        .detail-3d-item:hover {
+            transform: translateZ(15px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .detail-icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .detail-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .instructor-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            transform: translateZ(8px);
+        }
+
+        .instructor-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .instructor-avatar::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            transform: translateZ(-10px) scale(1.1);
+            opacity: 0.5;
+        }
+
+        .instructor-info h4 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .instructor-info p {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .register-3d-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.2) 0%,
+                rgba(255, 255, 255, 0.1) 100%
+            );
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transform: translateZ(20px);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .register-3d-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.3), 
+                transparent
+            );
+            transition: left 0.5s ease;
+        }
+
+        .register-3d-btn:hover::before {
+            left: 100%;
+        }
+
+        .register-3d-btn:hover {
+            transform: translateZ(30px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .workshop-showcase {
+            position: relative;
+            height: 300px;
+            margin: 80px 0;
+            perspective: 1200px;
+        }
+
+        .showcase-stage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transform-style: preserve-3d;
+            animation: stageRotate 15s infinite linear;
+        }
+
+        @keyframes stageRotate {
+            from { transform: translate(-50%, -50%) rotateY(0deg); }
+            to { transform: translate(-50%, -50%) rotateY(360deg); }
+        }
+
+        .stage-element {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .stage-element:nth-child(1) {
+            transform: translateZ(150px);
+        }
+
+        .stage-element:nth-child(2) {
+            transform: rotateY(90deg) translateZ(150px);
+        }
+
+        .stage-element:nth-child(3) {
+            transform: rotateY(180deg) translateZ(150px);
+        }
+
+        .stage-element:nth-child(4) {
+            transform: rotateY(270deg) translateZ(150px);
+        }
+
+        .stats-3d {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 80px;
+            perspective: 1000px;
+        }
+
+        .stat-cube {
+            height: 150px;
+            transform-style: preserve-3d;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.5s ease;
+        }
+
+        .stat-cube:hover {
+            transform: rotateY(45deg) rotateX(15deg);
+        }
+
+        .stat-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-face.front {
+            transform: translateZ(75px);
+        }
+
+        .stat-face.back {
+            transform: translateZ(-75px) rotateY(180deg);
+        }
+
+        .stat-face.left {
+            transform: rotateY(-90deg) translateZ(75px);
+        }
+
+        .stat-face.right {
+            transform: rotateY(90deg) translateZ(75px);
+        }
+
+        .stat-face.top {
+            transform: rotateX(90deg) translateZ(75px);
+        }
+
+        .stat-face.bottom {
+            transform: rotateX(-90deg) translateZ(75px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 3rem;
+            }
+            
+            .workshop-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .workshop-card:hover {
+                transform: perspective(1000px) rotateX(5deg) translateZ(20px);
+            }
+            
+            .stats-3d {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .workshop-showcase {
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-3d {
+                grid-template-columns: 1fr;
+            }
+            
+            .workshop-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-cubes">
+        <div class="cube">
+            <div class="cube-face front"></div>
+            <div class="cube-face back"></div>
+            <div class="cube-face left"></div>
+            <div class="cube-face right"></div>
+            <div class="cube-face top"></div>
+            <div class="cube-face bottom"></div>
+        </div>
+        <div class="cube">
+            <div class="cube-face front"></div>
+            <div class="cube-face back"></div>
+            <div class="cube-face left"></div>
+            <div class="cube-face right"></div>
+            <div class="cube-face top"></div>
+            <div class="cube-face bottom"></div>
+        </div>
+        <div class="cube">
+            <div class="cube-face front"></div>
+            <div class="cube-face back"></div>
+            <div class="cube-face left"></div>
+            <div class="cube-face right"></div>
+            <div class="cube-face top"></div>
+            <div class="cube-face bottom"></div>
+        </div>
+        <div class="cube">
+            <div class="cube-face front"></div>
+            <div class="cube-face back"></div>
+            <div class="cube-face left"></div>
+            <div class="cube-face right"></div>
+            <div class="cube-face top"></div>
+            <div class="cube-face bottom"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>3D CSS WORKSHOP</h1>
+            <p>차원을 넘나드는 CSS 3D 변형 기법을 마스터하는 전문 워크샵</p>
+        </div>
+
+        <div class="workshop-grid">
+            <div class="workshop-card">
+                <div class="card-3d-header">
+                    <div class="card-icon">🎯</div>
+                </div>
+                <div class="card-content">
+                    <div class="workshop-level">초급자</div>
+                    <h3 class="workshop-title">CSS 3D 기초 마스터</h3>
+                    <p class="workshop-description">CSS Transform과 Perspective의 기본 개념부터 실제 적용까지, 3D 웹 디자인의 첫걸음을 시작합니다.</p>
+                    
+                    <div class="workshop-details">
+                        <div class="detail-3d-item">
+                            <span class="detail-icon">⏰</span>
+                            <div class="detail-text">4시간</div>
+                        </div>
+                        <div class="detail-3d-item">
+                            <span class="detail-icon">👥</span>
+                            <div class="detail-text">15명</div>
+                        </div>
+                        <div class="detail-3d-item">
+                            <span class="detail-icon">💻</span>
+                            <div class="detail-text">실습 중심</div>
+                        </div>
+                        <div class="detail-3d-item">
+                            <span class="detail-icon">📜</span>
+                            <div class="detail-text">수료증</div>
+                        </div>
+                    </div>
+
+                    <div class="instructor-section">
+                        <div class="instructor-avatar">김</div>
+                        <div class="instructor-info">
+                            <h4>김쓰리디 강사</h4>
+                            <p>프론트엔드 개발 10년 경력</p>
+                        </div>
+                    </div>
+
+                    <button class="register-3d-btn">등록하기</button>
+                </div>
+            </div>
+
+            <div class="workshop-card">
+                <div class="card-3d-header" style="background: linear-gradient(135deg, #ff6b6b, #4ecdc4);">
+                    <div class="card-icon">🚀</div>
+                </div>
+                <div class="card-content">
+                    <div class="workshop-level">중급자</div>
+                    <h3 class="workshop-title">고급 3D 애니메이션</h3>
+                    <p class="workshop-description">복잡한 3D 시계열 애니메이션과 인터랙티브 요소를 구현하여 전문가 수준의 시각 효과를 만들어봅니다.</p>
+                    
+                    <div class="workshop-details">
+                        <div class="detail-3d-item">
+                            <span class="detail-icon">⏰</span>
+                            <div class="detail-text">6시간</div>
+                        </div>
+                        <div class="detail-3d-item">
+                            <span class="detail-icon">👥</span>
+                            <div class="detail-text">12명</div>
+                        </div>
+                        <div class="detail-3d-item">
+                            <span class="detail-icon">🎨</span>
+                            <div class="detail-text">프로젝트</div>
+                        </div>
+                        <div class="detail-3d-item">
+                            <span class="detail-icon">🏆</span>
+                            <div class="detail-text">포트폴리오</div>
+                        </div>
+                    </div>
+
+                    <div class="instructor-section">
+                        <div class="instructor-avatar" style="background: linear-gradient(135deg, #667eea, #764ba2);">이</div>
+                        <div class="instructor-info">
+                            <h4>이애니 디렉터</h4>
+                            <p>크리에이티브 디렉터 8년 경력</p>
+                        </div>
+                    </div>
+
+                    <button class="register-3d-btn">등록하기</button>
+                </div>
+            </div>
+
+            <div class="workshop-card">
+                <div class="card-3d-header" style="background: linear-gradient(135deg, #a8edea, #fed6e3);">
+                    <div class="card-icon">⚡</div>
+                </div>
+                <div class="card-content">
+                    <div class="workshop-level">고급자</div>
+                    <h3 class="workshop-title">전문가 레벨 3D 구현</h3>
+                    <p class="workshop-description">WebGL과 CSS의 결합, 복잡한 3D 씬 구성, 성능 최적화까지 마스터하는 전문가 과정입니다.</p>
+                    
+                    <div class="workshop-details">
+                        <div class="detail-3d-item">
+                            <span class="detail-icon">⏰</span>
+                            <div class="detail-text">8시간</div>
+                        </div>
+                        <div class="detail-3d-item">
+                            <span class="detail-icon">👥</span>
+                            <div class="detail-text">8명</div>
+                        </div>
+                        <div class="detail-3d-item">
+                            <span class="detail-icon">🔧</span>
+                            <div class="detail-text">고급 도구</div>
+                        </div>
+                        <div class="detail-3d-item">
+                            <span class="detail-icon">🎓</span>
+                            <div class="detail-text">인증서</div>
+                        </div>
+                    </div>
+
+                    <div class="instructor-section">
+                        <div class="instructor-avatar" style="background: linear-gradient(135deg, #ff9a9e, #fecfef);">박</div>
+                        <div class="instructor-info">
+                            <h4>박마스터 전문가</h4>
+                            <p>3D 웹 기술 리드 12년 경력</p>
+                        </div>
+                    </div>
+
+                    <button class="register-3d-btn">등록하기</button>
+                </div>
+            </div>
+
+            <div class="workshop-card">
+                <div class="card-3d-header" style="background: linear-gradient(135deg, #ffecd2, #fcb69f);">
+                    <div class="card-icon">🎪</div>
+                </div>
+                <div class="card-content">
+                    <div class="workshop-level">통합 과정</div>
+                    <h3 class="workshop-title">3D 웹 프로젝트 완성</h3>
+                    <p class="workshop-description">실제 상용 서비스 수준의 3D 웹사이트를 처음부터 끝까지 완성하는 종합 프로젝트 과정입니다.</p>
+                    
+                    <div class="workshop-details">
+                        <div class="detail-3d-item">
+                            <span class="detail-icon">⏰</span>
+                            <div class="detail-text">3일</div>
+                        </div>
+                        <div class="detail-3d-item">
+                            <span class="detail-icon">👥</span>
+                            <div class="detail-text">10명</div>
+                        </div>
+                        <div class="detail-3d-item">
+                            <span class="detail-icon">🌟</span>
+                            <div class="detail-text">완성 작품</div>
+                        </div>
+                        <div class="detail-3d-item">
+                            <span class="detail-icon">🤝</span>
+                            <div class="detail-text">1:1 멘토링</div>
+                        </div>
+                    </div>
+
+                    <div class="instructor-section">
+                        <div class="instructor-avatar" style="background: linear-gradient(135deg, #89f7fe, #66a6ff);">최</div>
+                        <div class="instructor-info">
+                            <h4>최프로젝트 매니저</h4>
+                            <p>풀스택 개발 15년 경력</p>
+                        </div>
+                    </div>
+
+                    <button class="register-3d-btn">등록하기</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="workshop-showcase">
+            <div class="showcase-stage">
+                <div class="stage-element">🎯</div>
+                <div class="stage-element">💻</div>
+                <div class="stage-element">🚀</div>
+                <div class="stage-element">⚡</div>
+            </div>
+        </div>
+
+        <div class="stats-3d">
+            <div class="stat-cube">
+                <div class="stat-face front">
+                    <div class="stat-number">250+</div>
+                    <div class="stat-label">수강생</div>
+                </div>
+                <div class="stat-face back">
+                    <div class="stat-number">250+</div>
+                    <div class="stat-label">수강생</div>
+                </div>
+                <div class="stat-face left">
+                    <div class="stat-number">250+</div>
+                    <div class="stat-label">수강생</div>
+                </div>
+                <div class="stat-face right">
+                    <div class="stat-number">250+</div>
+                    <div class="stat-label">수강생</div>
+                </div>
+                <div class="stat-face top">
+                    <div class="stat-number">250+</div>
+                    <div class="stat-label">수강생</div>
+                </div>
+                <div class="stat-face bottom">
+                    <div class="stat-number">250+</div>
+                    <div class="stat-label">수강생</div>
+                </div>
+            </div>
+
+            <div class="stat-cube">
+                <div class="stat-face front">
+                    <div class="stat-number">15</div>
+                    <div class="stat-label">워크샵</div>
+                </div>
+                <div class="stat-face back">
+                    <div class="stat-number">15</div>
+                    <div class="stat-label">워크샵</div>
+                </div>
+                <div class="stat-face left">
+                    <div class="stat-number">15</div>
+                    <div class="stat-label">워크샵</div>
+                </div>
+                <div class="stat-face right">
+                    <div class="stat-number">15</div>
+                    <div class="stat-label">워크샵</div>
+                </div>
+                <div class="stat-face top">
+                    <div class="stat-number">15</div>
+                    <div class="stat-label">워크샵</div>
+                </div>
+                <div class="stat-face bottom">
+                    <div class="stat-number">15</div>
+                    <div class="stat-label">워크샵</div>
+                </div>
+            </div>
+
+            <div class="stat-cube">
+                <div class="stat-face front">
+                    <div class="stat-number">4.9</div>
+                    <div class="stat-label">평점</div>
+                </div>
+                <div class="stat-face back">
+                    <div class="stat-number">4.9</div>
+                    <div class="stat-label">평점</div>
+                </div>
+                <div class="stat-face left">
+                    <div class="stat-number">4.9</div>
+                    <div class="stat-label">평점</div>
+                </div>
+                <div class="stat-face right">
+                    <div class="stat-number">4.9</div>
+                    <div class="stat-label">평점</div>
+                </div>
+                <div class="stat-face top">
+                    <div class="stat-number">4.9</div>
+                    <div class="stat-label">평점</div>
+                </div>
+                <div class="stat-face bottom">
+                    <div class="stat-number">4.9</div>
+                    <div class="stat-label">평점</div>
+                </div>
+            </div>
+
+            <div class="stat-cube">
+                <div class="stat-face front">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">만족도</div>
+                </div>
+                <div class="stat-face back">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">만족도</div>
+                </div>
+                <div class="stat-face left">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">만족도</div>
+                </div>
+                <div class="stat-face right">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">만족도</div>
+                </div>
+                <div class="stat-face top">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">만족도</div>
+                </div>
+                <div class="stat-face bottom">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">만족도</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

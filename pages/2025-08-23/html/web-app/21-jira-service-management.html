@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jira Service Management - IT Service Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f4f5f7;
+            color: #172b4d;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Header */
+        .top-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 48px;
+            background: #0747a6;
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            z-index: 1000;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            margin-right: 24px;
+        }
+
+        .atlassian-logo {
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-size: 14px;
+            color: #0747a6;
+            font-weight: bold;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 16px;
+            flex: 1;
+        }
+
+        .header-nav a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 3px;
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+
+        .header-nav a.active,
+        .header-nav a:hover {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-search {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 3px;
+            color: white;
+            font-size: 12px;
+            width: 200px;
+        }
+
+        .header-search::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: white;
+            border-right: 1px solid #dfe1e6;
+            padding: 60px 0 0 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            padding: 16px;
+            border-bottom: 1px solid #f4f5f7;
+        }
+
+        .sidebar-section h3 {
+            font-size: 11px;
+            font-weight: 600;
+            color: #6b778c;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 2px;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 6px 12px;
+            color: #42526e;
+            text-decoration: none;
+            border-radius: 3px;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-nav a:hover {
+            background: #f4f5f7;
+            color: #172b4d;
+        }
+
+        .sidebar-nav a.active {
+            background: #deebff;
+            color: #0052cc;
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+
+        .nav-count {
+            margin-left: auto;
+            background: #dfe1e6;
+            color: #6b778c;
+            padding: 1px 6px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding-top: 48px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-header {
+            background: white;
+            padding: 16px 24px;
+            border-bottom: 1px solid #dfe1e6;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .content-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: #172b4d;
+        }
+
+        .content-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: 1px solid #dfe1e6;
+            background: white;
+            border-radius: 3px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn:hover {
+            background: #f4f5f7;
+        }
+
+        .btn-primary {
+            background: #0052cc;
+            color: white;
+            border-color: #0052cc;
+        }
+
+        .btn-primary:hover {
+            background: #0747a6;
+        }
+
+        .content-filters {
+            padding: 12px 24px;
+            background: white;
+            border-bottom: 1px solid #dfe1e6;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-select {
+            padding: 4px 8px;
+            border: 1px solid #dfe1e6;
+            border-radius: 3px;
+            font-size: 11px;
+            background: white;
+        }
+
+        .filter-badge {
+            background: #deebff;
+            color: #0052cc;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Tickets Table */
+        .tickets-container {
+            flex: 1;
+            background: white;
+            overflow: auto;
+        }
+
+        .tickets-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .tickets-table th {
+            background: #f4f5f7;
+            padding: 8px 12px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: #6b778c;
+            border-bottom: 1px solid #dfe1e6;
+            position: sticky;
+            top: 0;
+        }
+
+        .tickets-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #f4f5f7;
+            font-size: 12px;
+            vertical-align: top;
+        }
+
+        .tickets-table tr:hover {
+            background: #fafbfc;
+        }
+
+        .ticket-key {
+            color: #0052cc;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .ticket-key:hover {
+            text-decoration: underline;
+        }
+
+        .ticket-summary {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .priority-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 2px;
+            display: inline-block;
+            margin-right: 4px;
+        }
+
+        .priority-critical {
+            background: #de350b;
+        }
+
+        .priority-high {
+            background: #ff8b00;
+        }
+
+        .priority-medium {
+            background: #ffab00;
+        }
+
+        .priority-low {
+            background: #36b37e;
+        }
+
+        .status-badge {
+            padding: 2px 8px;
+            border-radius: 11px;
+            font-size: 10px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-todo {
+            background: #dfe1e6;
+            color: #42526e;
+        }
+
+        .status-progress {
+            background: #deebff;
+            color: #0052cc;
+        }
+
+        .status-waiting {
+            background: #fff4e6;
+            color: #974f0c;
+        }
+
+        .status-done {
+            background: #e3fcef;
+            color: #006644;
+        }
+
+        .assignee-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 12px;
+            background: #0052cc;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .sla-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-right: 4px;
+        }
+
+        .sla-green {
+            background: #36b37e;
+        }
+
+        .sla-yellow {
+            background: #ffab00;
+        }
+
+        .sla-red {
+            background: #de350b;
+        }
+
+        /* Quick Actions Panel */
+        .quick-actions {
+            position: fixed;
+            right: 16px;
+            bottom: 16px;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 8px 24px rgba(23,43,77,0.32);
+            padding: 16px;
+            width: 280px;
+            display: none;
+        }
+
+        .quick-actions.active {
+            display: block;
+        }
+
+        .quick-actions h3 {
+            font-size: 14px;
+            margin-bottom: 12px;
+            color: #172b4d;
+        }
+
+        .action-item {
+            padding: 8px 12px;
+            border: 1px solid #dfe1e6;
+            border-radius: 3px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .action-item:hover {
+            background: #f4f5f7;
+        }
+
+        .action-title {
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .action-desc {
+            font-size: 11px;
+            color: #6b778c;
+        }
+
+        /* Metrics Cards */
+        .metrics-row {
+            display: flex;
+            gap: 16px;
+            padding: 16px 24px;
+            background: #f4f5f7;
+        }
+
+        .metric-card {
+            flex: 1;
+            background: white;
+            padding: 16px;
+            border-radius: 6px;
+            border: 1px solid #dfe1e6;
+        }
+
+        .metric-title {
+            font-size: 11px;
+            color: #6b778c;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #172b4d;
+            margin-bottom: 4px;
+        }
+
+        .metric-change {
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .metric-up {
+            color: #36b37e;
+        }
+
+        .metric-down {
+            color: #de350b;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-header">
+        <div class="header-brand">
+            <div class="atlassian-logo">A</div>
+            <span>Jira Service Management</span>
+        </div>
+        <div class="header-nav">
+            <a href="#" class="active">Queues</a>
+            <a href="#">Requests</a>
+            <a href="#">Changes</a>
+            <a href="#">Problems</a>
+            <a href="#">Knowledge</a>
+            <a href="#">Reports</a>
+        </div>
+        <div class="header-right">
+            <input type="text" class="header-search" placeholder="Search issues...">
+            <button class="btn">⚙️</button>
+            <div style="width: 28px; height: 28px; border-radius: 14px; background: #36b37e; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 500;">JD</div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <h3>Queues</h3>
+                <ul class="sidebar-nav">
+                    <li><a href="#" class="active">🏠 IT Service Desk <span class="nav-count">23</span></a></li>
+                    <li><a href="#">🔧 Hardware Support <span class="nav-count">8</span></a></li>
+                    <li><a href="#">💻 Software Support <span class="nav-count">15</span></a></li>
+                    <li><a href="#">🔒 Security Team <span class="nav-count">4</span></a></li>
+                    <li><a href="#">🌐 Network Issues <span class="nav-count">6</span></a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h3>My Work</h3>
+                <ul class="sidebar-nav">
+                    <li><a href="#">📋 Assigned to me <span class="nav-count">12</span></a></li>
+                    <li><a href="#">👀 Watching <span class="nav-count">28</span></a></li>
+                    <li><a href="#">🕒 Recently viewed <span class="nav-count">7</span></a></li>
+                    <li><a href="#">⭐ Starred</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h3>Request Types</h3>
+                <ul class="sidebar-nav">
+                    <li><a href="#">🎫 Get IT help <span class="nav-count">18</span></a></li>
+                    <li><a href="#">👤 New user account <span class="nav-count">5</span></a></li>
+                    <li><a href="#">🔑 Password reset <span class="nav-count">12</span></a></li>
+                    <li><a href="#">📱 Mobile device setup <span class="nav-count">3</span></a></li>
+                    <li><a href="#">🖥️ Hardware request <span class="nav-count">7</span></a></li>
+                    <li><a href="#">📊 Software access <span class="nav-count">9</span></a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h3>Reports</h3>
+                <ul class="sidebar-nav">
+                    <li><a href="#">📈 SLA Performance</a></li>
+                    <li><a href="#">⏱️ Resolution Time</a></li>
+                    <li><a href="#">👥 Agent Workload</a></li>
+                    <li><a href="#">📊 Customer Satisfaction</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="content-header">
+                <h1 class="content-title">IT Service Desk</h1>
+                <div class="content-actions">
+                    <button class="btn" onclick="toggleQuickActions()">⚡ Actions</button>
+                    <button class="btn">📤 Export</button>
+                    <button class="btn">⚙️ Configure</button>
+                    <button class="btn btn-primary">➕ Create Issue</button>
+                </div>
+            </div>
+
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <div class="metric-title">Open Issues</div>
+                    <div class="metric-value">47</div>
+                    <div class="metric-change metric-up">↗ +3 from yesterday</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Avg Resolution Time</div>
+                    <div class="metric-value">2.4h</div>
+                    <div class="metric-change metric-down">↘ -0.3h from last week</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">SLA Breaches</div>
+                    <div class="metric-value">3</div>
+                    <div class="metric-change metric-down">↘ -2 from yesterday</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Customer Satisfaction</div>
+                    <div class="metric-value">4.6/5</div>
+                    <div class="metric-change metric-up">↗ +0.1 from last month</div>
+                </div>
+            </div>
+
+            <div class="content-filters">
+                <div class="filter-group">
+                    <label>Status:</label>
+                    <select class="filter-select" onchange="filterByStatus(this.value)">
+                        <option value="">All</option>
+                        <option value="todo">To Do</option>
+                        <option value="progress">In Progress</option>
+                        <option value="waiting">Waiting</option>
+                        <option value="done">Done</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Priority:</label>
+                    <select class="filter-select" onchange="filterByPriority(this.value)">
+                        <option value="">All</option>
+                        <option value="critical">Critical</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Assignee:</label>
+                    <select class="filter-select">
+                        <option value="">All</option>
+                        <option value="me">Assigned to me</option>
+                        <option value="unassigned">Unassigned</option>
+                    </select>
+                </div>
+                <div class="filter-badge" onclick="clearFilters()">
+                    🔍 Active filters: 2 ✕
+                </div>
+            </div>
+
+            <div class="tickets-container">
+                <table class="tickets-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">Key</th>
+                            <th style="width: 350px;">Summary</th>
+                            <th style="width: 100px;">Status</th>
+                            <th style="width: 80px;">Priority</th>
+                            <th style="width: 100px;">Assignee</th>
+                            <th style="width: 80px;">Reporter</th>
+                            <th style="width: 100px;">Request Type</th>
+                            <th style="width: 80px;">SLA</th>
+                            <th style="width: 100px;">Created</th>
+                            <th style="width: 100px;">Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tickets-tbody">
+                        <tr onclick="selectTicket(this)" data-status="progress" data-priority="critical">
+                            <td><a href="#" class="ticket-key">SD-1024</a></td>
+                            <td class="ticket-summary">Critical server outage in production environment</td>
+                            <td><span class="status-badge status-progress">In Progress</span></td>
+                            <td><span class="priority-icon priority-critical"></span>Critical</td>
+                            <td><div class="assignee-avatar">JD</div></td>
+                            <td>Sarah Chen</td>
+                            <td>Incident</td>
+                            <td><span class="sla-indicator sla-red"></span>Breached</td>
+                            <td>2h ago</td>
+                            <td>45m ago</td>
+                        </tr>
+                        <tr onclick="selectTicket(this)" data-status="todo" data-priority="high">
+                            <td><a href="#" class="ticket-key">SD-1023</a></td>
+                            <td class="ticket-summary">New employee laptop setup - Marketing department</td>
+                            <td><span class="status-badge status-todo">To Do</span></td>
+                            <td><span class="priority-icon priority-high"></span>High</td>
+                            <td><div class="assignee-avatar">MJ</div></td>
+                            <td>HR Team</td>
+                            <td>Hardware Request</td>
+                            <td><span class="sla-indicator sla-green"></span>On Track</td>
+                            <td>3h ago</td>
+                            <td>3h ago</td>
+                        </tr>
+                        <tr onclick="selectTicket(this)" data-status="waiting" data-priority="medium">
+                            <td><a href="#" class="ticket-key">SD-1022</a></td>
+                            <td class="ticket-summary">VPN connection issues for remote workers</td>
+                            <td><span class="status-badge status-waiting">Waiting</span></td>
+                            <td><span class="priority-icon priority-medium"></span>Medium</td>
+                            <td><div class="assignee-avatar">AL</div></td>
+                            <td>Alex Rodriguez</td>
+                            <td>Network Issue</td>
+                            <td><span class="sla-indicator sla-yellow"></span>At Risk</td>
+                            <td>5h ago</td>
+                            <td>2h ago</td>
+                        </tr>
+                        <tr onclick="selectTicket(this)" data-status="progress" data-priority="medium">
+                            <td><a href="#" class="ticket-key">SD-1021</a></td>
+                            <td class="ticket-summary">Software license renewal for Adobe Creative Suite</td>
+                            <td><span class="status-badge status-progress">In Progress</span></td>
+                            <td><span class="priority-icon priority-medium"></span>Medium</td>
+                            <td><div class="assignee-avatar">LP</div></td>
+                            <td>Finance Dept</td>
+                            <td>Software Access</td>
+                            <td><span class="sla-indicator sla-green"></span>On Track</td>
+                            <td>1d ago</td>
+                            <td>4h ago</td>
+                        </tr>
+                        <tr onclick="selectTicket(this)" data-status="todo" data-priority="low">
+                            <td><a href="#" class="ticket-key">SD-1020</a></td>
+                            <td class="ticket-summary">Password reset request - multiple failed attempts</td>
+                            <td><span class="status-badge status-todo">To Do</span></td>
+                            <td><span class="priority-icon priority-low"></span>Low</td>
+                            <td><div class="assignee-avatar">JD</div></td>
+                            <td>Emma Davis</td>
+                            <td>Password Reset</td>
+                            <td><span class="sla-indicator sla-green"></span>On Track</td>
+                            <td>1d ago</td>
+                            <td>1d ago</td>
+                        </tr>
+                        <tr onclick="selectTicket(this)" data-status="done" data-priority="medium">
+                            <td><a href="#" class="ticket-key">SD-1019</a></td>
+                            <td class="ticket-summary">Email configuration for new Office 365 account</td>
+                            <td><span class="status-badge status-done">Done</span></td>
+                            <td><span class="priority-icon priority-medium"></span>Medium</td>
+                            <td><div class="assignee-avatar">MJ</div></td>
+                            <td>David Wong</td>
+                            <td>User Account</td>
+                            <td><span class="sla-indicator sla-green"></span>Met</td>
+                            <td>2d ago</td>
+                            <td>1d ago</td>
+                        </tr>
+                        <tr onclick="selectTicket(this)" data-status="progress" data-priority="high">
+                            <td><a href="#" class="ticket-key">SD-1018</a></td>
+                            <td class="ticket-summary">Printer network connectivity issues - Floor 3</td>
+                            <td><span class="status-badge status-progress">In Progress</span></td>
+                            <td><span class="priority-icon priority-high"></span>High</td>
+                            <td><div class="assignee-avatar">AL</div></td>
+                            <td>Operations</td>
+                            <td>Hardware Support</td>
+                            <td><span class="sla-indicator sla-yellow"></span>At Risk</td>
+                            <td>2d ago</td>
+                            <td>6h ago</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="quick-actions" id="quickActions">
+        <h3>Quick Actions</h3>
+        <div class="action-item" onclick="performAction('bulk-assign')">
+            <div class="action-title">Bulk Assign</div>
+            <div class="action-desc">Assign multiple tickets to agents</div>
+        </div>
+        <div class="action-item" onclick="performAction('bulk-update')">
+            <div class="action-title">Bulk Update</div>
+            <div class="action-desc">Update status, priority, or labels</div>
+        </div>
+        <div class="action-item" onclick="performAction('sla-breach')">
+            <div class="action-title">SLA Breach Alert</div>
+            <div class="action-desc">View tickets at risk of SLA breach</div>
+        </div>
+        <div class="action-item" onclick="performAction('escalate')">
+            <div class="action-title">Escalate Issues</div>
+            <div class="action-desc">Escalate critical unresolved issues</div>
+        </div>
+        <div class="action-item" onclick="performAction('report')">
+            <div class="action-title">Generate Report</div>
+            <div class="action-desc">Create performance and metrics report</div>
+        </div>
+    </div>
+
+    <script>
+        let selectedTickets = [];
+        let activeFilters = {};
+
+        function selectTicket(row) {
+            // Toggle selection
+            if (row.classList.contains('selected')) {
+                row.classList.remove('selected');
+                row.style.background = '';
+                const index = selectedTickets.indexOf(row);
+                if (index > -1) selectedTickets.splice(index, 1);
+            } else {
+                row.classList.add('selected');
+                row.style.background = '#e3fcef';
+                selectedTickets.push(row);
+            }
+            
+            updateQuickActions();
+        }
+
+        function updateQuickActions() {
+            const actionsPanel = document.getElementById('quickActions');
+            const isVisible = selectedTickets.length > 0;
+            
+            if (isVisible) {
+                actionsPanel.classList.add('active');
+            } else {
+                actionsPanel.classList.remove('active');
+            }
+        }
+
+        function toggleQuickActions() {
+            const actionsPanel = document.getElementById('quickActions');
+            actionsPanel.classList.toggle('active');
+        }
+
+        function filterByStatus(status) {
+            activeFilters.status = status;
+            applyFilters();
+        }
+
+        function filterByPriority(priority) {
+            activeFilters.priority = priority;
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const rows = document.querySelectorAll('#tickets-tbody tr');
+            
+            rows.forEach(row => {
+                let show = true;
+                
+                if (activeFilters.status && row.dataset.status !== activeFilters.status) {
+                    show = false;
+                }
+                
+                if (activeFilters.priority && row.dataset.priority !== activeFilters.priority) {
+                    show = false;
+                }
+                
+                row.style.display = show ? 'table-row' : 'none';
+            });
+        }
+
+        function clearFilters() {
+            activeFilters = {};
+            document.querySelectorAll('.filter-select').forEach(select => {
+                select.value = '';
+            });
+            
+            document.querySelectorAll('#tickets-tbody tr').forEach(row => {
+                row.style.display = 'table-row';
+            });
+            
+            document.querySelector('.filter-badge').style.display = 'none';
+        }
+
+        function performAction(action) {
+            console.log(`Performing action: ${action} on ${selectedTickets.length} tickets`);
+            
+            switch(action) {
+                case 'bulk-assign':
+                    alert(`Assigning ${selectedTickets.length} tickets to agent...`);
+                    break;
+                case 'bulk-update':
+                    alert(`Updating ${selectedTickets.length} tickets...`);
+                    break;
+                case 'sla-breach':
+                    showSLABreachTickets();
+                    break;
+                case 'escalate':
+                    alert(`Escalating ${selectedTickets.length} critical tickets...`);
+                    break;
+                case 'report':
+                    generateReport();
+                    break;
+            }
+            
+            document.getElementById('quickActions').classList.remove('active');
+        }
+
+        function showSLABreachTickets() {
+            // Filter to show only SLA at risk or breached tickets
+            const rows = document.querySelectorAll('#tickets-tbody tr');
+            rows.forEach(row => {
+                const slaIndicator = row.querySelector('.sla-indicator');
+                const isAtRisk = slaIndicator.classList.contains('sla-yellow') || 
+                               slaIndicator.classList.contains('sla-red');
+                row.style.display = isAtRisk ? 'table-row' : 'none';
+            });
+        }
+
+        function generateReport() {
+            const reportData = {
+                totalTickets: document.querySelectorAll('#tickets-tbody tr').length,
+                selectedTickets: selectedTickets.length,
+                timestamp: new Date().toISOString()
+            };
+            
+            console.log('Generating report:', reportData);
+            alert('Report generated successfully!');
+        }
+
+        // Search functionality
+        document.querySelector('.header-search').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#tickets-tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? 'table-row' : 'none';
+            });
+        });
+
+        // Auto-refresh simulation
+        setInterval(() => {
+            const metrics = document.querySelectorAll('.metric-value');
+            metrics.forEach(metric => {
+                if (metric.textContent === '47') {
+                    const change = Math.random() > 0.5 ? 1 : -1;
+                    const newValue = parseInt(metric.textContent) + change;
+                    metric.textContent = newValue;
+                    
+                    const changeEl = metric.parentNode.querySelector('.metric-change');
+                    changeEl.className = `metric-change ${change > 0 ? 'metric-up' : 'metric-down'}`;
+                    changeEl.innerHTML = `${change > 0 ? '↗' : '↘'} ${Math.abs(change)} from last update`;
+                }
+            });
+        }, 30000);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Jira Service Management loaded');
+        });
+    </script>
+</body>
+</html>

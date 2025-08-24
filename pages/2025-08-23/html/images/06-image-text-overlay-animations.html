@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image with Text Overlay Animations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .hero-section {
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            cursor: pointer;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        .showcase-section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+
+        .image-card {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            height: 300px;
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            opacity: 0;
+            transition: all 0.5s ease;
+            padding: 40px;
+        }
+
+        .image-card:hover .card-overlay {
+            opacity: 1;
+        }
+
+        .image-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .overlay-content h3 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            transform: translateY(30px);
+            transition: transform 0.5s ease 0.1s;
+        }
+
+        .overlay-content p {
+            font-size: 1rem;
+            opacity: 0.9;
+            transform: translateY(30px);
+            transition: transform 0.5s ease 0.2s;
+        }
+
+        .image-card:hover .overlay-content h3,
+        .image-card:hover .overlay-content p {
+            transform: translateY(0);
+        }
+
+        .slide-animation {
+            position: relative;
+            height: 400px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            background: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&w=1200&q=80') center/cover;
+        }
+
+        .slide-overlay {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: left 0.8s ease;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .slide-animation:hover .slide-overlay {
+            left: 0;
+        }
+
+        .slide-content h3 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            transform: translateX(-50px);
+            opacity: 0;
+            transition: all 0.5s ease 0.3s;
+        }
+
+        .slide-content p {
+            font-size: 1.2rem;
+            transform: translateX(-50px);
+            opacity: 0;
+            transition: all 0.5s ease 0.5s;
+        }
+
+        .slide-animation:hover .slide-content h3,
+        .slide-animation:hover .slide-content p {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .split-animation {
+            position: relative;
+            height: 400px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            background: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&w=1200&q=80') center/cover;
+        }
+
+        .split-left, .split-right {
+            position: absolute;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95), rgba(118, 75, 162, 0.95));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.6s ease;
+            padding: 30px;
+        }
+
+        .split-left {
+            left: -50%;
+        }
+
+        .split-right {
+            right: -50%;
+        }
+
+        .split-animation:hover .split-left {
+            left: 0;
+        }
+
+        .split-animation:hover .split-right {
+            right: 0;
+        }
+
+        .split-content {
+            text-align: center;
+            transform: scale(0.8);
+            opacity: 0;
+            transition: all 0.4s ease 0.2s;
+        }
+
+        .split-animation:hover .split-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .scale-animation {
+            position: relative;
+            height: 350px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            background: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&w=1200&q=80') center/cover;
+        }
+
+        .scale-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 80%;
+            height: 80%;
+            background: rgba(102, 126, 234, 0.95);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s ease;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .scale-animation:hover .scale-overlay {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .rotate-animation {
+            position: relative;
+            height: 350px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            background: url('https://images.unsplash.com/photo-1520637736862-4d197d17c86a?ixlib=rb-4.0.3&w=1200&q=80') center/cover;
+        }
+
+        .rotate-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9));
+            transform: rotate(-90deg);
+            transform-origin: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.6s ease;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .rotate-animation:hover .rotate-overlay {
+            transform: rotate(0deg);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: #667eea;
+            font-weight: 300;
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .showcase-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .image-card {
+                height: 250px;
+            }
+            
+            .slide-animation,
+            .split-animation,
+            .scale-animation,
+            .rotate-animation {
+                height: 250px;
+            }
+            
+            .overlay-content h3,
+            .slide-content h3 {
+                font-size: 1.5rem;
+            }
+        }
+
+        .typewriter {
+            overflow: hidden;
+            border-right: .15em solid orange;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: .15em;
+            animation: typing 3.5s steps(30, end), blink-caret .75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: orange }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1>Text Overlay Animations</h1>
+            <p>Discover creative ways to animate text overlays on images for stunning visual storytelling</p>
+        </div>
+        <div class="scroll-down">
+            <div>↓ Scroll to explore</div>
+        </div>
+    </section>
+
+    <section class="showcase-section">
+        <h2 class="section-title">Hover Effects Gallery</h2>
+        
+        <div class="showcase-grid">
+            <div class="image-card">
+                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&w=400&q=80" alt="Mountain">
+                <div class="card-overlay">
+                    <div class="overlay-content">
+                        <h3>Mountain Adventure</h3>
+                        <p>Discover breathtaking peaks and endless horizons</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="image-card">
+                <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&w=400&q=80" alt="Desert">
+                <div class="card-overlay">
+                    <div class="overlay-content">
+                        <h3>Desert Dreams</h3>
+                        <p>Journey through golden sands and ancient mysteries</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="image-card">
+                <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&w=400&q=80" alt="City">
+                <div class="card-overlay">
+                    <div class="overlay-content">
+                        <h3>Urban Pulse</h3>
+                        <p>Feel the heartbeat of the modern metropolis</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Advanced Animation Techniques</h2>
+
+        <div class="slide-animation">
+            <div class="slide-overlay">
+                <div class="slide-content">
+                    <h3 class="typewriter">Slide Animation</h3>
+                    <p>Text slides in from the side with smooth transitions</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="split-animation">
+            <div class="split-left">
+                <div class="split-content">
+                    <h3>Split Effect</h3>
+                </div>
+            </div>
+            <div class="split-right">
+                <div class="split-content">
+                    <p>Text splits from both sides creating dramatic reveal</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="scale-animation">
+            <div class="scale-overlay">
+                <div>
+                    <h3>Scale Animation</h3>
+                    <p>Content grows from center with scaling effect</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="rotate-animation">
+            <div class="rotate-overlay">
+                <div>
+                    <h3>Rotate Overlay</h3>
+                    <p>Overlay rotates into view for dynamic presentation</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.querySelector('.scroll-down').addEventListener('click', () => {
+            document.querySelector('.showcase-section').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.image-card, .slide-animation, .split-animation, .scale-animation, .rotate-animation').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(50px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+
+        let mouseX = 0;
+        let mouseY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        document.querySelectorAll('.image-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                const rect = card.getBoundingClientRect();
+                const cardX = rect.left + rect.width / 2;
+                const cardY = rect.top + rect.height / 2;
+                
+                const angleX = (mouseY - cardY) / 10;
+                const angleY = (cardX - mouseX) / 10;
+                
+                card.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) translateZ(10px)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+            });
+        });
+    </script>
+</body>
+</html>

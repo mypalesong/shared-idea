@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Board - Trello Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0079bf 0%, #005a8b 100%);
+            color: #172b4d;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .board-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            background: none;
+            border: none;
+            outline: none;
+            min-width: 200px;
+            padding: 6px 8px;
+            border-radius: 3px;
+            cursor: text;
+        }
+        
+        .board-title:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .visibility-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .header-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 3px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #dfe1e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #172b4d;
+            cursor: pointer;
+            margin-left: 4px;
+        }
+        
+        .board-container {
+            flex: 1;
+            display: flex;
+            padding: 8px;
+            gap: 8px;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+        
+        .list {
+            min-width: 260px;
+            max-width: 260px;
+            background: #ebecf0;
+            border-radius: 3px;
+            max-height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .list-header {
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .list-title {
+            font-size: 14px;
+            font-weight: 600;
+            background: none;
+            border: none;
+            outline: none;
+            flex: 1;
+            padding: 6px 8px;
+            border-radius: 3px;
+            cursor: text;
+        }
+        
+        .list-title:hover {
+            background: #ddd;
+        }
+        
+        .list-menu {
+            background: none;
+            border: none;
+            color: #6b778c;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 3px;
+            font-size: 16px;
+        }
+        
+        .list-menu:hover {
+            background: #ddd;
+        }
+        
+        .cards-container {
+            flex: 1;
+            padding: 0 8px 8px;
+            overflow-y: auto;
+            min-height: 0;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 3px;
+            padding: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+        
+        .card:hover {
+            background: #f4f5f7;
+        }
+        
+        .card.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+        
+        .card-labels {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .label {
+            height: 8px;
+            min-width: 40px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .label-green { background: #61bd4f; }
+        .label-yellow { background: #f2d600; }
+        .label-orange { background: #ff9f1a; }
+        .label-red { background: #eb5a46; }
+        .label-purple { background: #c377e0; }
+        .label-blue { background: #0079bf; }
+        
+        .card-title {
+            font-size: 13px;
+            line-height: 1.3;
+            margin-bottom: 4px;
+            word-wrap: break-word;
+        }
+        
+        .card-badges {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        
+        .badge {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            font-size: 11px;
+            color: #6b778c;
+        }
+        
+        .card-members {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            display: flex;
+            gap: 2px;
+        }
+        
+        .member-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .add-card {
+            padding: 8px;
+            color: #6b778c;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .add-card:hover {
+            background: #ddd;
+            color: #172b4d;
+        }
+        
+        .add-list {
+            min-width: 260px;
+            max-width: 260px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            padding: 12px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        
+        .add-list:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .card-edit {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            width: 400px;
+            max-width: 90vw;
+        }
+        
+        .card-edit.show {
+            display: block;
+        }
+        
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 999;
+        }
+        
+        .overlay.show {
+            display: block;
+        }
+        
+        .edit-title {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            padding: 8px;
+            border-radius: 3px;
+            background: #f4f5f7;
+        }
+        
+        .edit-description {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            margin-bottom: 12px;
+            padding: 8px;
+            border-radius: 3px;
+            background: #f4f5f7;
+            resize: vertical;
+            min-height: 60px;
+        }
+        
+        .edit-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .btn-primary {
+            background: #0079bf;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #dfe1e6;
+            color: #172b4d;
+        }
+        
+        .filter-bar {
+            position: absolute;
+            top: 60px;
+            right: 16px;
+            background: white;
+            border-radius: 3px;
+            padding: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 100;
+        }
+        
+        .filter-bar.show {
+            display: block;
+        }
+        
+        .filter-section {
+            margin-bottom: 12px;
+        }
+        
+        .filter-title {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #5e6c84;
+        }
+        
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        
+        .filter-option:hover {
+            background: #f4f5f7;
+        }
+        
+        .filter-checkbox {
+            width: 12px;
+            height: 12px;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <input class="board-title" value="Product Development Board" />
+            <div class="visibility-badge">
+                🌟 Starred
+            </div>
+            <div class="visibility-badge">
+                👥 Team Visible
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="header-btn" onclick="toggleFilter()">Filter</button>
+            <button class="header-btn">📋 Menu</button>
+            <div class="user-avatar">JS</div>
+            <div class="user-avatar">MK</div>
+            <div class="user-avatar">ED</div>
+            <div class="user-avatar">+</div>
+        </div>
+    </div>
+    
+    <div class="filter-bar" id="filterBar">
+        <div class="filter-section">
+            <div class="filter-title">LABELS</div>
+            <div class="filter-option">
+                <input type="checkbox" class="filter-checkbox" />
+                <div class="label label-green"></div>
+                <span>High Priority</span>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" class="filter-checkbox" />
+                <div class="label label-yellow"></div>
+                <span>Medium Priority</span>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" class="filter-checkbox" />
+                <div class="label label-red"></div>
+                <span>Bug</span>
+            </div>
+        </div>
+        <div class="filter-section">
+            <div class="filter-title">MEMBERS</div>
+            <div class="filter-option">
+                <input type="checkbox" class="filter-checkbox" />
+                <div class="member-avatar">JS</div>
+                <span>John Smith</span>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" class="filter-checkbox" />
+                <div class="member-avatar">MK</div>
+                <span>Mike Kim</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="board-container">
+        <div class="list">
+            <div class="list-header">
+                <input class="list-title" value="📋 Backlog" />
+                <button class="list-menu">⋯</button>
+            </div>
+            <div class="cards-container">
+                <div class="card" onclick="openCardEdit(this)">
+                    <div class="card-labels">
+                        <div class="label label-green"></div>
+                        <div class="label label-blue"></div>
+                    </div>
+                    <div class="card-title">Implement user authentication system</div>
+                    <div class="card-badges">
+                        <div class="badge">💬 3</div>
+                        <div class="badge">📎 2</div>
+                        <div class="badge">✅ 2/5</div>
+                    </div>
+                    <div class="card-members">
+                        <div class="member-avatar">JS</div>
+                        <div class="member-avatar">MK</div>
+                    </div>
+                </div>
+                
+                <div class="card" onclick="openCardEdit(this)">
+                    <div class="card-labels">
+                        <div class="label label-yellow"></div>
+                    </div>
+                    <div class="card-title">Design new landing page layout</div>
+                    <div class="card-badges">
+                        <div class="badge">💬 1</div>
+                        <div class="badge">🗓️ Dec 25</div>
+                    </div>
+                    <div class="card-members">
+                        <div class="member-avatar">ED</div>
+                    </div>
+                </div>
+                
+                <div class="card" onclick="openCardEdit(this)">
+                    <div class="card-labels">
+                        <div class="label label-red"></div>
+                    </div>
+                    <div class="card-title">Fix mobile responsive issues</div>
+                    <div class="card-badges">
+                        <div class="badge">💬 5</div>
+                        <div class="badge">⚠️ High</div>
+                    </div>
+                </div>
+                
+                <div class="card" onclick="openCardEdit(this)">
+                    <div class="card-title">Research competitor analysis</div>
+                    <div class="card-badges">
+                        <div class="badge">✅ 1/3</div>
+                    </div>
+                    <div class="card-members">
+                        <div class="member-avatar">AR</div>
+                    </div>
+                </div>
+            </div>
+            <div class="add-card" onclick="addCard(this)">+ Add a card</div>
+        </div>
+        
+        <div class="list">
+            <div class="list-header">
+                <input class="list-title" value="🚀 In Progress" />
+                <button class="list-menu">⋯</button>
+            </div>
+            <div class="cards-container">
+                <div class="card" onclick="openCardEdit(this)">
+                    <div class="card-labels">
+                        <div class="label label-orange"></div>
+                        <div class="label label-purple"></div>
+                    </div>
+                    <div class="card-title">Database optimization for better performance</div>
+                    <div class="card-badges">
+                        <div class="badge">💬 8</div>
+                        <div class="badge">📎 1</div>
+                        <div class="badge">✅ 3/4</div>
+                        <div class="badge">🗓️ Today</div>
+                    </div>
+                    <div class="card-members">
+                        <div class="member-avatar">MK</div>
+                    </div>
+                </div>
+                
+                <div class="card" onclick="openCardEdit(this)">
+                    <div class="card-labels">
+                        <div class="label label-blue"></div>
+                    </div>
+                    <div class="card-title">API integration with third-party services</div>
+                    <div class="card-badges">
+                        <div class="badge">💬 2</div>
+                        <div class="badge">✅ 1/2</div>
+                    </div>
+                    <div class="card-members">
+                        <div class="member-avatar">JS</div>
+                        <div class="member-avatar">TH</div>
+                    </div>
+                </div>
+            </div>
+            <div class="add-card" onclick="addCard(this)">+ Add a card</div>
+        </div>
+        
+        <div class="list">
+            <div class="list-header">
+                <input class="list-title" value="👀 Review" />
+                <button class="list-menu">⋯</button>
+            </div>
+            <div class="cards-container">
+                <div class="card" onclick="openCardEdit(this)">
+                    <div class="card-labels">
+                        <div class="label label-green"></div>
+                    </div>
+                    <div class="card-title">Code review: Payment gateway implementation</div>
+                    <div class="card-badges">
+                        <div class="badge">💬 4</div>
+                        <div class="badge">👀 Review</div>
+                    </div>
+                    <div class="card-members">
+                        <div class="member-avatar">ED</div>
+                        <div class="member-avatar">AR</div>
+                    </div>
+                </div>
+                
+                <div class="card" onclick="openCardEdit(this)">
+                    <div class="card-title">Testing new user onboarding flow</div>
+                    <div class="card-badges">
+                        <div class="badge">✅ 5/5</div>
+                    </div>
+                </div>
+            </div>
+            <div class="add-card" onclick="addCard(this)">+ Add a card</div>
+        </div>
+        
+        <div class="list">
+            <div class="list-header">
+                <input class="list-title" value="✅ Done" />
+                <button class="list-menu">⋯</button>
+            </div>
+            <div class="cards-container">
+                <div class="card" onclick="openCardEdit(this)">
+                    <div class="card-labels">
+                        <div class="label label-blue"></div>
+                    </div>
+                    <div class="card-title">Set up CI/CD pipeline</div>
+                    <div class="card-badges">
+                        <div class="badge">💬 2</div>
+                        <div class="badge">✅ 3/3</div>
+                    </div>
+                    <div class="card-members">
+                        <div class="member-avatar">MK</div>
+                    </div>
+                </div>
+                
+                <div class="card" onclick="openCardEdit(this)">
+                    <div class="card-title">Update project documentation</div>
+                    <div class="card-badges">
+                        <div class="badge">📎 3</div>
+                    </div>
+                </div>
+            </div>
+            <div class="add-card" onclick="addCard(this)">+ Add a card</div>
+        </div>
+        
+        <div class="add-list" onclick="addList()">
+            + Add another list
+        </div>
+    </div>
+    
+    <div class="overlay" id="overlay" onclick="closeCardEdit()"></div>
+    <div class="card-edit" id="cardEdit">
+        <input class="edit-title" id="editTitle" placeholder="Card title..." />
+        <textarea class="edit-description" id="editDescription" placeholder="Add a more detailed description..."></textarea>
+        <div class="edit-buttons">
+            <button class="btn btn-primary" onclick="saveCard()">Save</button>
+            <button class="btn btn-secondary" onclick="closeCardEdit()">Cancel</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentCard = null;
+        
+        function toggleFilter() {
+            const filterBar = document.getElementById('filterBar');
+            filterBar.classList.toggle('show');
+        }
+        
+        function openCardEdit(card) {
+            currentCard = card;
+            const title = card.querySelector('.card-title').textContent;
+            const overlay = document.getElementById('overlay');
+            const cardEdit = document.getElementById('cardEdit');
+            const editTitle = document.getElementById('editTitle');
+            const editDescription = document.getElementById('editDescription');
+            
+            editTitle.value = title;
+            editDescription.value = 'Click to add description...';
+            
+            overlay.classList.add('show');
+            cardEdit.classList.add('show');
+            
+            editTitle.focus();
+        }
+        
+        function closeCardEdit() {
+            const overlay = document.getElementById('overlay');
+            const cardEdit = document.getElementById('cardEdit');
+            
+            overlay.classList.remove('show');
+            cardEdit.classList.remove('show');
+            currentCard = null;
+        }
+        
+        function saveCard() {
+            if (currentCard) {
+                const title = document.getElementById('editTitle').value;
+                currentCard.querySelector('.card-title').textContent = title || 'Untitled Card';
+            }
+            closeCardEdit();
+        }
+        
+        function addCard(addButton) {
+            const cardsContainer = addButton.parentNode.querySelector('.cards-container');
+            const newCard = document.createElement('div');
+            newCard.className = 'card';
+            newCard.onclick = () => openCardEdit(newCard);
+            newCard.innerHTML = `
+                <div class="card-title">New Card</div>
+                <div class="card-badges">
+                    <div class="badge">💬 0</div>
+                </div>
+            `;
+            cardsContainer.appendChild(newCard);
+        }
+        
+        function addList() {
+            const boardContainer = document.querySelector('.board-container');
+            const addListButton = document.querySelector('.add-list');
+            
+            const newList = document.createElement('div');
+            newList.className = 'list';
+            newList.innerHTML = `
+                <div class="list-header">
+                    <input class="list-title" value="New List" />
+                    <button class="list-menu">⋯</button>
+                </div>
+                <div class="cards-container"></div>
+                <div class="add-card" onclick="addCard(this)">+ Add a card</div>
+            `;
+            
+            boardContainer.insertBefore(newList, addListButton);
+        }
+        
+        // Close filter when clicking outside
+        document.addEventListener('click', function(e) {
+            const filterBar = document.getElementById('filterBar');
+            const filterButton = e.target.closest('.header-btn');
+            
+            if (!filterBar.contains(e.target) && !filterButton) {
+                filterBar.classList.remove('show');
+            }
+        });
+        
+        // Make cards draggable
+        document.addEventListener('DOMContentLoaded', function() {
+            let draggedCard = null;
+            
+            document.querySelectorAll('.card').forEach(card => {
+                card.draggable = true;
+                
+                card.addEventListener('dragstart', function(e) {
+                    draggedCard = this;
+                    this.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+                
+                card.addEventListener('dragend', function() {
+                    this.classList.remove('dragging');
+                    draggedCard = null;
+                });
+            });
+            
+            document.querySelectorAll('.cards-container').forEach(container => {
+                container.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                });
+                
+                container.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    if (draggedCard) {
+                        this.appendChild(draggedCard);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

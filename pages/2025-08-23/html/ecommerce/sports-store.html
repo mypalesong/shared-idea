@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitZone - 스포츠 & 피트니스 스토어</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: #1a237e;
+            color: white;
+            padding: 1rem 0;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00bcd4;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: #00bcd4;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #1a237e, #3f51b5, #00bcd4);
+            color: white;
+            padding: 120px 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #ff6f00;
+            color: white;
+            padding: 18px 35px;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.3s;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .btn:hover {
+            background: #e65100;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255,111,0,0.3);
+        }
+        
+        .categories {
+            padding: 80px 0;
+            background: #f5f5f5;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 3rem;
+            color: #1a237e;
+            font-weight: bold;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            border-top: 5px solid #00bcd4;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .category-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .category-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1a237e;
+        }
+        
+        .products {
+            padding: 80px 0;
+        }
+        
+        .product-filter {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 10px 20px;
+            background: #e0e0e0;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background: #1a237e;
+            color: white;
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+        }
+        
+        .product-img {
+            height: 250px;
+            background: linear-gradient(45deg, #e3f2fd, #bbdefb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a237e;
+            font-size: 1.2rem;
+            position: relative;
+        }
+        
+        .discount-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ff6f00;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+        }
+        
+        .brand {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+        
+        .product-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .rating {
+            color: #ffc107;
+            margin-bottom: 1rem;
+        }
+        
+        .product-price {
+            font-size: 1.8rem;
+            color: #1a237e;
+            font-weight: bold;
+        }
+        
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 1.2rem;
+            margin-right: 0.5rem;
+        }
+        
+        .features {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #1a237e, #3f51b5);
+            color: white;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+        
+        .feature {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .feature-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: #00bcd4;
+        }
+        
+        .feature h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .newsletter {
+            padding: 60px 0;
+            background: #00bcd4;
+            color: white;
+            text-align: center;
+        }
+        
+        .newsletter h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .newsletter p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .newsletter-form {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .newsletter-form input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 30px;
+            outline: none;
+            font-size: 1rem;
+        }
+        
+        .newsletter-form button {
+            background: #ff6f00;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .newsletter-form button:hover {
+            background: #e65100;
+        }
+        
+        footer {
+            background: #0d1421;
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #00bcd4;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: #00bcd4;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .social-link {
+            width: 45px;
+            height: 45px;
+            background: #1a237e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        
+        .social-link:hover {
+            background: #00bcd4;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">FitZone</div>
+            <ul>
+                <li><a href="#home">홈</a></li>
+                <li><a href="#categories">카테고리</a></li>
+                <li><a href="#products">상품</a></li>
+                <li><a href="#fitness">피트니스 가이드</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>운동하는 모든 순간</h1>
+            <p>프로부터 초보자까지, 당신의 피트니스 여정을 함께합니다</p>
+            <a href="#products" class="btn">지금 쇼핑하기</a>
+        </div>
+    </section>
+
+    <section id="categories" class="categories">
+        <div class="container">
+            <h2 class="section-title">스포츠 카테고리</h2>
+            <div class="category-grid">
+                <div class="category-card">
+                    <div class="category-icon">🏃‍♂️</div>
+                    <h3>러닝 & 조깅</h3>
+                    <p>러닝화, 운동복, 액세서리</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">💪</div>
+                    <h3>헬스 & 웨이트</h3>
+                    <p>덤벨, 바벨, 헬스 용품</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🧘‍♀️</div>
+                    <h3>요가 & 필라테스</h3>
+                    <p>매트, 블록, 스트랩</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🏊‍♂️</div>
+                    <h3>수영</h3>
+                    <p>수영복, 물안경, 수영용품</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🚴‍♂️</div>
+                    <h3>자전거</h3>
+                    <p>자전거, 헬멧, 사이클링 용품</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">⚽</div>
+                    <h3>구기종목</h3>
+                    <p>축구, 농구, 배구, 테니스</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="products" class="products">
+        <div class="container">
+            <h2 class="section-title">인기 상품</h2>
+            <div class="product-filter">
+                <button class="filter-btn active">전체</button>
+                <button class="filter-btn">러닝</button>
+                <button class="filter-btn">헬스</button>
+                <button class="filter-btn">요가</button>
+                <button class="filter-btn">수영</button>
+            </div>
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-img">
+                        <div class="discount-badge">25% OFF</div>
+                        나이키 에어맥스 이미지
+                    </div>
+                    <div class="product-info">
+                        <div class="brand">NIKE</div>
+                        <h3>에어맥스 270 러닝화</h3>
+                        <div class="rating">★★★★★ (4.8)</div>
+                        <div class="product-price">
+                            <span class="original-price">180,000원</span>
+                            135,000원
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">아디다스 운동복 이미지</div>
+                    <div class="product-info">
+                        <div class="brand">ADIDAS</div>
+                        <h3>클라이마쿨 운동복 세트</h3>
+                        <div class="rating">★★★★☆ (4.6)</div>
+                        <div class="product-price">89,000원</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">
+                        <div class="discount-badge">30% OFF</div>
+                        덤벨 세트 이미지
+                    </div>
+                    <div class="product-info">
+                        <div class="brand">REEBOK</div>
+                        <h3>조절식 덤벨 세트</h3>
+                        <div class="rating">★★★★★ (4.9)</div>
+                        <div class="product-price">
+                            <span class="original-price">250,000원</span>
+                            175,000원
+                        </div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">요가매트 이미지</div>
+                    <div class="product-info">
+                        <div class="brand">MANDUKA</div>
+                        <h3>프로 요가매트 6mm</h3>
+                        <div class="rating">★★★★☆ (4.7)</div>
+                        <div class="product-price">120,000원</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">스포츠 물통 이미지</div>
+                    <div class="product-info">
+                        <div class="brand">HYDRO FLASK</div>
+                        <h3>스테인리스 보온병 1L</h3>
+                        <div class="rating">★★★★★ (4.8)</div>
+                        <div class="product-price">65,000원</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-img">
+                        <div class="discount-badge">20% OFF</div>
+                        헬스장갑 이미지
+                    </div>
+                    <div class="product-info">
+                        <div class="brand">UNDER ARMOUR</div>
+                        <h3>트레이닝 글러브</h3>
+                        <div class="rating">★★★★☆ (4.5)</div>
+                        <div class="product-price">
+                            <span class="original-price">45,000원</span>
+                            36,000원
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">왜 FitZone을 선택하나요?</h2>
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">🚛</div>
+                    <h3>빠른 배송</h3>
+                    <p>당일 오후 2시 이전 주문 시 당일발송<br>전국 무료배송 서비스 제공</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🏆</div>
+                    <h3>정품 보장</h3>
+                    <p>100% 정품만을 취급하며<br>브랜드 공식 인증 판매점입니다</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">👥</div>
+                    <h3>전문 상담</h3>
+                    <p>운동 전문가의 1:1 상담으로<br>맞춤형 제품을 추천해드립니다</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="newsletter">
+        <div class="container">
+            <h2>운동 팁 & 특가 소식</h2>
+            <p>전문 트레이너의 운동 팁과 특별 할인 소식을 받아보세요</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="이메일 주소를 입력하세요">
+                <button type="submit">구독하기</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>고객지원</h3>
+                    <ul>
+                        <li><a href="#">주문/배송 조회</a></li>
+                        <li><a href="#">교환/반품</a></li>
+                        <li><a href="#">사이즈 가이드</a></li>
+                        <li><a href="#">1:1 문의</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>운동 가이드</h3>
+                    <ul>
+                        <li><a href="#">초보자 가이드</a></li>
+                        <li><a href="#">운동 프로그램</a></li>
+                        <li><a href="#">영양 정보</a></li>
+                        <li><a href="#">부상 예방</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>브랜드</h3>
+                    <ul>
+                        <li><a href="#">나이키</a></li>
+                        <li><a href="#">아디다스</a></li>
+                        <li><a href="#">언더아머</a></li>
+                        <li><a href="#">리복</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>소셜 미디어</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-link">f</a>
+                        <a href="#" class="social-link">i</a>
+                        <a href="#" class="social-link">y</a>
+                        <a href="#" class="social-link">t</a>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; padding-top: 2rem; border-top: 1px solid #333; color: #999;">
+                <p>&copy; 2025 FitZone. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

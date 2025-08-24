@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Data Analyzer Enterprise</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1e40af;
+            --primary-light: #3b82f6;
+            --secondary-color: #f1f5f9;
+            --accent-color: #059669;
+            --danger-color: #dc2626;
+            --warning-color: #d97706;
+            --info-color: #0891b2;
+            --success-color: #16a34a;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-color: #cbd5e1;
+            --border-light: #e2e8f0;
+            --hover-color: #f8fafc;
+            --hover-dark: #e2e8f0;
+            --background-color: #ffffff;
+            --panel-bg: #f8fafc;
+            --sidebar-bg: #ffffff;
+            --header-bg: #0f172a;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --font-xs: 0.6875rem;
+            --font-sm: 0.75rem;
+            --font-base: 0.8125rem;
+            --font-lg: 0.875rem;
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.375rem;
+            --spacing-md: 0.5rem;
+            --spacing-lg: 0.75rem;
+            --spacing-xl: 1rem;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', system-ui, sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--text-primary);
+            line-height: 1.4;
+            font-size: var(--font-base);
+            font-weight: 400;
+            letter-spacing: -0.01em;
+        }
+
+        .header {
+            background: var(--header-bg);
+            color: white;
+            padding: var(--spacing-sm) var(--spacing-xl);
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 100%;
+        }
+
+        .header h1 {
+            font-size: var(--font-lg);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .header h1::before {
+            content: '⚡';
+            font-size: 1.1em;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border: none;
+            border-radius: 0.25rem;
+            font-size: var(--font-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            min-height: 28px;
+        }
+
+        .btn-primary {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary {
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--hover-color);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.3);
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--accent-color);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+        }
+
+        .main-container {
+            display: flex;
+            height: calc(100vh - 48px);
+            gap: 0;
+        }
+
+        .left-panel {
+            flex: 1;
+            background-color: var(--sidebar-bg);
+            border-right: 2px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .right-panel {
+            flex: 1;
+            background-color: var(--panel-bg);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--background-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 36px;
+            gap: var(--spacing-md);
+        }
+
+        .panel-title {
+            font-size: var(--font-base);
+            font-weight: 700;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-xs) 2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.25rem;
+            font-size: var(--font-sm);
+            background-color: var(--background-color);
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(30, 64, 175, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-sm);
+        }
+
+        .json-tree {
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Consolas', monospace;
+            font-size: var(--font-xs);
+            line-height: 1.3;
+            font-weight: 500;
+        }
+
+        .tree-node {
+            margin: 0;
+            position: relative;
+        }
+
+        .tree-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 1px var(--spacing-xs);
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            word-break: break-all;
+            min-height: 16px;
+            font-size: var(--font-xs);
+        }
+
+        .tree-item:hover {
+            background-color: var(--hover-dark);
+        }
+
+        .tree-item.selected {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        .tree-item.has-children {
+            font-weight: 500;
+        }
+
+        .tree-indent {
+            width: 12px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .tree-toggle {
+            width: 10px;
+            height: 10px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: var(--text-secondary);
+            transition: transform 0.1s ease;
+        }
+
+        .tree-toggle:hover {
+            color: var(--text-primary);
+            transform: scale(1.2);
+        }
+
+        .tree-key {
+            color: #6366f1;
+            font-weight: 600;
+            margin-right: var(--spacing-xs);
+        }
+
+        .tree-value {
+            color: var(--text-primary);
+        }
+
+        .tree-value.string {
+            color: #059669;
+        }
+
+        .tree-value.number {
+            color: #dc2626;
+        }
+
+        .tree-value.boolean {
+            color: #2563eb;
+        }
+
+        .tree-value.null {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .tree-children {
+            margin-left: 12px;
+            border-left: 1px solid var(--border-light);
+            padding-left: var(--spacing-xs);
+        }
+
+        .details-table {
+            width: 100%;
+            background-color: var(--background-color);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .details-table-header {
+            background: linear-gradient(135deg, var(--primary-color), #1e40af);
+            color: white;
+            padding: 1rem;
+            font-weight: 600;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            background-color: var(--background-color);
+        }
+
+        .detail-key {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-value {
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            word-break: break-all;
+        }
+
+        .detail-value.empty {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--background-color);
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow-lg);
+            max-width: 90vw;
+            max-height: 90vh;
+            width: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .textarea {
+            width: 100%;
+            height: 300px;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.875rem;
+            resize: vertical;
+        }
+
+        .stats-bar {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--hover-color);
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .badge.secondary {
+            background-color: var(--text-secondary);
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border-color);
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .no-data {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .no-data-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .header-controls {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <h1>JSON Data Analyzer Enterprise</h1>
+            <div class="header-controls">
+                <div class="search-container">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" id="globalSearch" placeholder="Search keys and values...">
+                </div>
+                <label class="toggle-switch" title="Hide empty values">
+                    <input type="checkbox" id="hideEmpty" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+                <span style="font-size: 0.875rem;">Hide Empty</span>
+                <button class="btn btn-primary" onclick="showRawDataModal()">
+                    📝 Raw Data
+                </button>
+                <button class="btn btn-primary" onclick="showDiffModal()">
+                    🔄 Compare
+                </button>
+                <button class="btn btn-primary" onclick="showAnalyticsPanel()">
+                    📊 Analytics
+                </button>
+                <button class="btn btn-primary" onclick="validateJSON()">
+                    ✅ Validate
+                </button>
+                <button class="btn btn-primary" onclick="exportData()">
+                    💾 Export
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="left-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">🗂️ JSON Structure</h2>
+                <div style="display: flex; gap: var(--spacing-sm); align-items: center;">
+                    <select id="sortOrder" class="btn btn-secondary" style="padding: 2px 6px; font-size: var(--font-xs);">
+                        <option value="none">Natural Order</option>
+                        <option value="asc">Sort A→Z</option>
+                        <option value="desc">Sort Z→A</option>
+                        <option value="type">Group by Type</option>
+                    </select>
+                    <span class="badge" id="nodeCount">0 nodes</span>
+                </div>
+            </div>
+            <div class="stats-bar">
+                <div style="display: flex; gap: 1rem;">
+                    <div class="stat-item">
+                        <span>Objects: <strong id="objectCount">0</strong></span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Arrays: <strong id="arrayCount">0</strong></span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Properties: <strong id="propertyCount">0</strong></span>
+                    </div>
+                </div>
+                <div>
+                    <span>Size: <strong id="dataSize">0 KB</strong></span>
+                </div>
+            </div>
+            <div class="panel-content" id="jsonTree">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Loading JSON data...
+                </div>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="panel-header">
+                <h2 class="panel-title" id="detailTitle">📋 Property Details</h2>
+                <div style="display: flex; gap: var(--spacing-sm); align-items: center;">
+                    <select id="detailSortOrder" class="btn btn-secondary" style="padding: 2px 6px; font-size: var(--font-xs);">
+                        <option value="none">Natural Order</option>
+                        <option value="asc">Sort A→Z</option>
+                        <option value="desc">Sort Z→A</option>
+                        <option value="type">Group by Type</option>
+                        <option value="length">Sort by Length</option>
+                    </select>
+                    <button class="btn btn-secondary" onclick="clearSelection()" style="padding: 2px 6px; font-size: var(--font-xs);">Clear</button>
+                </div>
+            </div>
+            <div class="panel-content" id="detailPanel">
+                <div class="no-data">
+                    <div class="no-data-icon">📋</div>
+                    <h3>No Property Selected</h3>
+                    <p>Click on a property in the JSON tree to view its details</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Raw Data Modal -->
+    <div class="modal" id="rawDataModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Load Raw JSON Data</h3>
+                <button class="modal-close" onclick="closeModal('rawDataModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <textarea class="textarea" id="rawDataInput" placeholder="Paste your JSON data here..."></textarea>
+                <div style="margin-top: 1rem; display: flex; gap: 0.5rem; justify-content: flex-end;">
+                    <button class="btn btn-secondary" onclick="closeModal('rawDataModal')">Cancel</button>
+                    <button class="btn btn-primary" onclick="loadRawData()">Load Data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Modal -->
+    <div class="modal" id="analyticsModal">
+        <div class="modal-content" style="width: 90vw; max-width: 1200px;">
+            <div class="modal-header">
+                <h3 class="modal-title">📊 Data Analytics & Schema Insights</h3>
+                <button class="modal-close" onclick="closeModal('analyticsModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="analyticsContent">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Analyzing data structure...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Validation Modal -->
+    <div class="modal" id="validationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">✅ JSON Validation Results</h3>
+                <button class="modal-close" onclick="closeModal('validationModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="validationResults">
+            </div>
+        </div>
+    </div>
+
+    <!-- Diff Modal -->
+    <div class="modal" id="diffModal">
+        <div class="modal-content" style="width: 90vw; max-width: 1200px;">
+            <div class="modal-header">
+                <h3 class="modal-title">JSON Comparison</h3>
+                <button class="modal-close" onclick="closeModal('diffModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">JSON 1:</label>
+                        <textarea class="textarea" id="diffInput1" placeholder="First JSON data..."></textarea>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">JSON 2:</label>
+                        <textarea class="textarea" id="diffInput2" placeholder="Second JSON data..."></textarea>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                    <button class="btn btn-secondary" onclick="closeModal('diffModal')">Cancel</button>
+                    <button class="btn btn-primary" onclick="performDiff()">Compare</button>
+                </div>
+                <div id="diffResults" style="margin-top: 1rem;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let jsonData = null;
+        let filteredData = null;
+        let selectedPath = null;
+        let hideEmptyValues = true;
+        let currentSortOrder = 'none';
+        let detailSortOrder = 'none';
+        let performanceMetrics = {
+            loadTime: 0,
+            renderTime: 0,
+            filterTime: 0,
+            searchTime: 0
+        };
+
+        async function loadInitialData() {
+            const startTime = performance.now();
+            try {
+                const response = await fetch('./data/data.json');
+                const data = await response.json();
+                performanceMetrics.loadTime = performance.now() - startTime;
+                
+                jsonData = data;
+                updateStats();
+                
+                const renderStart = performance.now();
+                renderJsonTree();
+                performanceMetrics.renderTime = performance.now() - renderStart;
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('jsonTree').innerHTML = `
+                    <div class="no-data">
+                        <div class="no-data-icon">❌</div>
+                        <h3>Error Loading Data</h3>
+                        <p>Could not load data/data.json</p>
+                    </div>
+                `;
+            }
+        }
+
+        function updateStats() {
+            if (!jsonData) return;
+
+            const stats = analyzeData(jsonData);
+            document.getElementById('nodeCount').textContent = `${stats.totalNodes} nodes`;
+            document.getElementById('objectCount').textContent = stats.objects;
+            document.getElementById('arrayCount').textContent = stats.arrays;
+            document.getElementById('propertyCount').textContent = stats.properties;
+            
+            const sizeInBytes = JSON.stringify(jsonData).length;
+            const sizeInKB = (sizeInBytes / 1024).toFixed(2);
+            document.getElementById('dataSize').textContent = `${sizeInKB} KB`;
+        }
+
+        function analyzeData(obj, stats = { objects: 0, arrays: 0, properties: 0, totalNodes: 0 }) {
+            if (obj === null || obj === undefined) {
+                stats.totalNodes++;
+                return stats;
+            }
+
+            if (Array.isArray(obj)) {
+                stats.arrays++;
+                stats.totalNodes++;
+                obj.forEach(item => analyzeData(item, stats));
+            } else if (typeof obj === 'object') {
+                stats.objects++;
+                stats.totalNodes++;
+                Object.keys(obj).forEach(key => {
+                    stats.properties++;
+                    analyzeData(obj[key], stats);
+                });
+            } else {
+                stats.totalNodes++;
+            }
+
+            return stats;
+        }
+
+        function shouldHideValue(value) {
+            if (!hideEmptyValues) return false;
+            
+            if (value === null || value === undefined || value === '') return true;
+            if (Array.isArray(value) && value.length === 0) return true;
+            if (typeof value === 'object' && Object.keys(value).length === 0) return true;
+            if (value === false || value === 'False' || value === 'false') return true;
+            
+            return false;
+        }
+
+        function renderJsonTree() {
+            const container = document.getElementById('jsonTree');
+            if (!jsonData) {
+                container.innerHTML = '<div class="no-data"><div class="no-data-icon">📄</div><h3>No Data</h3></div>';
+                return;
+            }
+
+            filteredData = hideEmptyValues ? filterEmptyValues(jsonData) : jsonData;
+            const treeHtml = renderNode(filteredData, '', 'root');
+            container.innerHTML = `<div class="json-tree">${treeHtml}</div>`;
+        }
+
+        function filterEmptyValues(obj, path = '') {
+            if (Array.isArray(obj)) {
+                const filtered = obj.filter(item => !shouldHideValue(item))
+                                   .map((item, index) => 
+                                       typeof item === 'object' && item !== null 
+                                           ? filterEmptyValues(item, `${path}[${index}]`)
+                                           : item
+                                   );
+                return filtered;
+            } else if (typeof obj === 'object' && obj !== null) {
+                const filtered = {};
+                Object.keys(obj).forEach(key => {
+                    const value = obj[key];
+                    if (!shouldHideValue(value)) {
+                        filtered[key] = typeof value === 'object' && value !== null 
+                            ? filterEmptyValues(value, `${path}.${key}`)
+                            : value;
+                    }
+                });
+                return filtered;
+            }
+            
+            return obj;
+        }
+
+        function renderNode(value, key, path, level = 0) {
+            const indent = '  '.repeat(level);
+            const hasKey = key !== '';
+            
+            if (value === null || value === undefined) {
+                return `
+                    <div class="tree-node">
+                        <div class="tree-item" onclick="selectNode('${path}', '${key}')">
+                            <span class="tree-indent" style="width: ${level * 20}px;"></span>
+                            ${hasKey ? `<span class="tree-key">${key}:</span>` : ''}
+                            <span class="tree-value null">${value === null ? 'null' : 'undefined'}</span>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (Array.isArray(value)) {
+                const isExpanded = level < 2;
+                const children = value.map((item, index) => 
+                    renderNode(item, `[${index}]`, `${path}[${index}]`, level + 1)
+                ).join('');
+                
+                return `
+                    <div class="tree-node">
+                        <div class="tree-item has-children" onclick="toggleNode(this); selectNode('${path}', '${key}')">
+                            <span class="tree-indent" style="width: ${level * 20}px;">
+                                <button class="tree-toggle">${isExpanded ? '▼' : '▶'}</button>
+                            </span>
+                            ${hasKey ? `<span class="tree-key">${key}:</span>` : ''}
+                            <span class="tree-value">Array[${value.length}]</span>
+                        </div>
+                        <div class="tree-children" style="${isExpanded ? '' : 'display: none;'}">
+                            ${children}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (typeof value === 'object') {
+                const keys = Object.keys(value);
+                const isExpanded = level < 2;
+                const children = keys.map(objKey => 
+                    renderNode(value[objKey], objKey, `${path}.${objKey}`, level + 1)
+                ).join('');
+                
+                return `
+                    <div class="tree-node">
+                        <div class="tree-item has-children" onclick="toggleNode(this); selectNode('${path}', '${key}')">
+                            <span class="tree-indent" style="width: ${level * 20}px;">
+                                <button class="tree-toggle">${isExpanded ? '▼' : '▶'}</button>
+                            </span>
+                            ${hasKey ? `<span class="tree-key">${key}:</span>` : ''}
+                            <span class="tree-value">Object{${keys.length}}</span>
+                        </div>
+                        <div class="tree-children" style="${isExpanded ? '' : 'display: none;'}">
+                            ${children}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            const valueClass = typeof value === 'string' ? 'string' :
+                              typeof value === 'number' ? 'number' :
+                              typeof value === 'boolean' ? 'boolean' : '';
+            
+            const displayValue = typeof value === 'string' ? `"${value}"` : String(value);
+            
+            return `
+                <div class="tree-node">
+                    <div class="tree-item" onclick="selectNode('${path}', '${key}')">
+                        <span class="tree-indent" style="width: ${level * 20}px;"></span>
+                        ${hasKey ? `<span class="tree-key">${key}:</span>` : ''}
+                        <span class="tree-value ${valueClass}">${displayValue}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleNode(element) {
+            event.stopPropagation();
+            const children = element.parentElement.querySelector('.tree-children');
+            const toggle = element.querySelector('.tree-toggle');
+            
+            if (children) {
+                const isHidden = children.style.display === 'none';
+                children.style.display = isHidden ? '' : 'none';
+                toggle.textContent = isHidden ? '▼' : '▶';
+            }
+        }
+
+        function selectNode(path, key) {
+            document.querySelectorAll('.tree-item.selected').forEach(item => {
+                item.classList.remove('selected');
+            });
+            event.target.closest('.tree-item').classList.add('selected');
+            
+            selectedPath = path;
+            showNodeDetails(path, key);
+        }
+
+        function showNodeDetails(path, key) {
+            const value = getValueByPath(filteredData || jsonData, path);
+            const title = key || 'Root';
+            
+            document.getElementById('detailTitle').textContent = `Details: ${title}`;
+            
+            if (typeof value === 'object' && value !== null) {
+                renderObjectDetails(value, title);
+            } else {
+                renderSimpleValue(value, title, path);
+            }
+        }
+
+        function getValueByPath(obj, path) {
+            if (path === 'root') return obj;
+            
+            return path.split('.').slice(1).reduce((current, key) => {
+                if (key.includes('[') && key.includes(']')) {
+                    const arrayKey = key.substring(0, key.indexOf('['));
+                    const index = parseInt(key.substring(key.indexOf('[') + 1, key.indexOf(']')));
+                    return arrayKey ? current[arrayKey][index] : current[index];
+                }
+                return current[key];
+            }, obj);
+        }
+
+        function renderObjectDetails(obj, title) {
+            if (Array.isArray(obj)) {
+                renderArrayDetails(obj, title);
+                return;
+            }
+            
+            let entries = Object.entries(obj);
+            
+            // Apply hide empty filter to right panel
+            if (hideEmptyValues) {
+                entries = entries.filter(([key, value]) => !shouldHideValue(value));
+            }
+            
+            // Apply sorting
+            entries = sortEntries(entries, detailSortOrder);
+            
+            const html = `
+                <div class="details-table">
+                    <div class="details-table-header">
+                        ${title} (${entries.length} properties)
+                    </div>
+                    <div class="details-grid">
+                        ${entries.map(([key, value]) => `
+                            <div class="detail-item">
+                                <div class="detail-key">${key}</div>
+                                <div class="detail-value ${shouldHideValue(value) ? 'empty' : ''}">
+                                    ${formatDetailValue(value)}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('detailPanel').innerHTML = html;
+        }
+
+        function renderArrayDetails(arr, title) {
+            const html = `
+                <div class="details-table">
+                    <div class="details-table-header">
+                        ${title} (${arr.length} items)
+                    </div>
+                    <div class="details-grid">
+                        ${arr.map((item, index) => `
+                            <div class="detail-item">
+                                <div class="detail-key">Index ${index}</div>
+                                <div class="detail-value">
+                                    ${formatDetailValue(item)}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('detailPanel').innerHTML = html;
+        }
+
+        function renderSimpleValue(value, title, path) {
+            const html = `
+                <div class="details-table">
+                    <div class="details-table-header">
+                        ${title}
+                    </div>
+                    <div style="padding: 1.5rem;">
+                        <div class="detail-item">
+                            <div class="detail-key">Value</div>
+                            <div class="detail-value">
+                                ${formatDetailValue(value)}
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-key">Type</div>
+                            <div class="detail-value">
+                                ${Array.isArray(value) ? 'Array' : typeof value}
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-key">Path</div>
+                            <div class="detail-value">
+                                ${path}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('detailPanel').innerHTML = html;
+        }
+
+        function formatDetailValue(value) {
+            if (value === null) return '<span class="empty">null</span>';
+            if (value === undefined) return '<span class="empty">undefined</span>';
+            if (value === '') return '<span class="empty">empty string</span>';
+            if (Array.isArray(value)) {
+                if (value.length === 0) return '<span class="empty">empty array</span>';
+                return `Array[${value.length}]: [${value.slice(0, 3).map(formatSimpleValue).join(', ')}${value.length > 3 ? '...' : ''}]`;
+            }
+            if (typeof value === 'object') {
+                const keys = Object.keys(value);
+                if (keys.length === 0) return '<span class="empty">empty object</span>';
+                return `Object{${keys.length}}: {${keys.slice(0, 3).join(', ')}${keys.length > 3 ? '...' : ''}}`;
+            }
+            
+            return formatSimpleValue(value);
+        }
+
+        function formatSimpleValue(value) {
+            if (typeof value === 'string') return `"${value}"`;
+            return String(value);
+        }
+
+        function clearSelection() {
+            document.querySelectorAll('.tree-item.selected').forEach(item => {
+                item.classList.remove('selected');
+            });
+            selectedPath = null;
+            document.getElementById('detailTitle').textContent = 'Property Details';
+            document.getElementById('detailPanel').innerHTML = `
+                <div class="no-data">
+                    <div class="no-data-icon">📋</div>
+                    <h3>No Property Selected</h3>
+                    <p>Click on a property in the JSON tree to view its details</p>
+                </div>
+            `;
+        }
+
+        function showRawDataModal() {
+            document.getElementById('rawDataModal').style.display = 'flex';
+        }
+
+        function showDiffModal() {
+            document.getElementById('diffModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function loadRawData() {
+            const rawData = document.getElementById('rawDataInput').value;
+            if (!rawData.trim()) return;
+            
+            try {
+                const parsedData = JSON.parse(rawData);
+                jsonData = parsedData;
+                updateStats();
+                renderJsonTree();
+                closeModal('rawDataModal');
+                document.getElementById('rawDataInput').value = '';
+            } catch (error) {
+                alert('Invalid JSON format: ' + error.message);
+            }
+        }
+
+        function performDiff() {
+            const json1 = document.getElementById('diffInput1').value;
+            const json2 = document.getElementById('diffInput2').value;
+            
+            if (!json1.trim() || !json2.trim()) {
+                alert('Please provide both JSON inputs');
+                return;
+            }
+            
+            try {
+                const data1 = JSON.parse(json1);
+                const data2 = JSON.parse(json2);
+                
+                const diff = generateDiff(data1, data2);
+                displayDiffResults(diff);
+            } catch (error) {
+                alert('Invalid JSON format: ' + error.message);
+            }
+        }
+
+        function generateDiff(obj1, obj2, path = '') {
+            const diff = { added: [], removed: [], modified: [] };
+            
+            const keys1 = new Set(typeof obj1 === 'object' && obj1 !== null ? Object.keys(obj1) : []);
+            const keys2 = new Set(typeof obj2 === 'object' && obj2 !== null ? Object.keys(obj2) : []);
+            
+            // Find removed keys
+            keys1.forEach(key => {
+                if (!keys2.has(key)) {
+                    diff.removed.push({
+                        path: path ? `${path}.${key}` : key,
+                        value: obj1[key]
+                    });
+                }
+            });
+            
+            // Find added keys
+            keys2.forEach(key => {
+                if (!keys1.has(key)) {
+                    diff.added.push({
+                        path: path ? `${path}.${key}` : key,
+                        value: obj2[key]
+                    });
+                }
+            });
+            
+            // Find modified keys
+            keys1.forEach(key => {
+                if (keys2.has(key)) {
+                    const val1 = obj1[key];
+                    const val2 = obj2[key];
+                    
+                    if (typeof val1 === 'object' && typeof val2 === 'object' && val1 !== null && val2 !== null) {
+                        const subDiff = generateDiff(val1, val2, path ? `${path}.${key}` : key);
+                        diff.added.push(...subDiff.added);
+                        diff.removed.push(...subDiff.removed);
+                        diff.modified.push(...subDiff.modified);
+                    } else if (JSON.stringify(val1) !== JSON.stringify(val2)) {
+                        diff.modified.push({
+                            path: path ? `${path}.${key}` : key,
+                            oldValue: val1,
+                            newValue: val2
+                        });
+                    }
+                }
+            });
+            
+            return diff;
+        }
+
+        function displayDiffResults(diff) {
+            const html = `
+                <div class="details-table">
+                    <div class="details-table-header">
+                        Comparison Results
+                    </div>
+                    <div style="padding: 1rem;">
+                        ${diff.added.length > 0 ? `
+                            <h4 style="color: var(--accent-color); margin-bottom: 0.5rem;">➕ Added (${diff.added.length})</h4>
+                            <div class="details-grid" style="margin-bottom: 1rem;">
+                                ${diff.added.map(item => `
+                                    <div class="detail-item" style="border-left: 3px solid var(--accent-color);">
+                                        <div class="detail-key">${item.path}</div>
+                                        <div class="detail-value">${formatDetailValue(item.value)}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        
+                        ${diff.removed.length > 0 ? `
+                            <h4 style="color: var(--danger-color); margin-bottom: 0.5rem;">➖ Removed (${diff.removed.length})</h4>
+                            <div class="details-grid" style="margin-bottom: 1rem;">
+                                ${diff.removed.map(item => `
+                                    <div class="detail-item" style="border-left: 3px solid var(--danger-color);">
+                                        <div class="detail-key">${item.path}</div>
+                                        <div class="detail-value">${formatDetailValue(item.value)}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        
+                        ${diff.modified.length > 0 ? `
+                            <h4 style="color: var(--warning-color); margin-bottom: 0.5rem;">📝 Modified (${diff.modified.length})</h4>
+                            <div class="details-grid">
+                                ${diff.modified.map(item => `
+                                    <div class="detail-item" style="border-left: 3px solid var(--warning-color);">
+                                        <div class="detail-key">${item.path}</div>
+                                        <div class="detail-value">
+                                            <div><strong>Old:</strong> ${formatDetailValue(item.oldValue)}</div>
+                                            <div><strong>New:</strong> ${formatDetailValue(item.newValue)}</div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        
+                        ${diff.added.length === 0 && diff.removed.length === 0 && diff.modified.length === 0 ? `
+                            <div class="no-data">
+                                <div class="no-data-icon">✅</div>
+                                <h3>No Differences Found</h3>
+                                <p>The JSON objects are identical</p>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('diffResults').innerHTML = html;
+        }
+
+        // Sorting functions
+        function sortEntries(entries, sortOrder) {
+            switch (sortOrder) {
+                case 'asc':
+                    return entries.sort(([a], [b]) => a.localeCompare(b));
+                case 'desc':
+                    return entries.sort(([a], [b]) => b.localeCompare(a));
+                case 'type':
+                    return entries.sort(([, a], [, b]) => {
+                        const typeA = getValueType(a);
+                        const typeB = getValueType(b);
+                        return typeA.localeCompare(typeB);
+                    });
+                case 'length':
+                    return entries.sort(([, a], [, b]) => {
+                        const lengthA = getValueLength(a);
+                        const lengthB = getValueLength(b);
+                        return lengthB - lengthA;
+                    });
+                default:
+                    return entries;
+            }
+        }
+
+        function getValueType(value) {
+            if (value === null) return 'null';
+            if (Array.isArray(value)) return 'array';
+            return typeof value;
+        }
+
+        function getValueLength(value) {
+            if (Array.isArray(value)) return value.length;
+            if (typeof value === 'object' && value !== null) return Object.keys(value).length;
+            if (typeof value === 'string') return value.length;
+            return 0;
+        }
+
+        function sortObjectKeys(obj, sortOrder) {
+            if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return obj;
+            
+            const entries = Object.entries(obj);
+            const sortedEntries = sortEntries(entries, sortOrder);
+            
+            const sortedObj = {};
+            sortedEntries.forEach(([key, value]) => {
+                sortedObj[key] = typeof value === 'object' && value !== null && !Array.isArray(value) 
+                    ? sortObjectKeys(value, sortOrder)
+                    : value;
+            });
+            
+            return sortedObj;
+        }
+
+        // Advanced Analytics
+        function showAnalyticsPanel() {
+            if (!jsonData) return;
+            
+            document.getElementById('analyticsModal').style.display = 'flex';
+            generateAnalytics();
+        }
+
+        function generateAnalytics() {
+            const startTime = performance.now();
+            
+            const analytics = {
+                schema: inferSchema(jsonData),
+                patterns: findPatterns(jsonData),
+                statistics: calculateStatistics(jsonData),
+                validation: validateDataQuality(jsonData),
+                performance: performanceMetrics
+            };
+            
+            const analysisTime = performance.now() - startTime;
+            analytics.performance.analysisTime = analysisTime;
+            
+            displayAnalytics(analytics);
+        }
+
+        function inferSchema(obj, depth = 0) {
+            if (depth > 10) return { type: 'too_deep' };
+            
+            if (obj === null) return { type: 'null' };
+            if (Array.isArray(obj)) {
+                const itemTypes = obj.slice(0, 10).map(item => inferSchema(item, depth + 1));
+                return {
+                    type: 'array',
+                    length: obj.length,
+                    itemTypes: [...new Set(itemTypes.map(t => JSON.stringify(t)))].map(t => JSON.parse(t))
+                };
+            }
+            if (typeof obj === 'object') {
+                const properties = {};
+                Object.entries(obj).forEach(([key, value]) => {
+                    properties[key] = inferSchema(value, depth + 1);
+                });
+                return { type: 'object', properties };
+            }
+            
+            return { type: typeof obj };
+        }
+
+        function findPatterns(obj, patterns = {}) {
+            patterns.emails = patterns.emails || [];
+            patterns.urls = patterns.urls || [];
+            patterns.dates = patterns.dates || [];
+            patterns.ids = patterns.ids || [];
+            patterns.emptyValues = patterns.emptyValues || 0;
+            
+            if (typeof obj === 'string') {
+                if (/^[\w\.-]+@[\w\.-]+\.\w+$/.test(obj)) patterns.emails.push(obj);
+                if (/^https?:\/\//.test(obj)) patterns.urls.push(obj);
+                if (/^\d{4}-\d{2}-\d{2}/.test(obj)) patterns.dates.push(obj);
+                if (/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(obj)) patterns.ids.push(obj);
+            }
+            
+            if (shouldHideValue(obj)) patterns.emptyValues++;
+            
+            if (Array.isArray(obj)) {
+                obj.forEach(item => findPatterns(item, patterns));
+            } else if (typeof obj === 'object' && obj !== null) {
+                Object.values(obj).forEach(value => findPatterns(value, patterns));
+            }
+            
+            return patterns;
+        }
+
+        function calculateStatistics(obj) {
+            const stats = {
+                totalKeys: 0,
+                uniqueKeys: new Set(),
+                dataTypes: {},
+                depths: [],
+                arrayLengths: [],
+                stringLengths: []
+            };
+            
+            function analyze(obj, depth = 0) {
+                stats.depths.push(depth);
+                
+                if (Array.isArray(obj)) {
+                    stats.arrayLengths.push(obj.length);
+                    stats.dataTypes.array = (stats.dataTypes.array || 0) + 1;
+                    obj.forEach(item => analyze(item, depth + 1));
+                } else if (typeof obj === 'object' && obj !== null) {
+                    stats.dataTypes.object = (stats.dataTypes.object || 0) + 1;
+                    Object.entries(obj).forEach(([key, value]) => {
+                        stats.totalKeys++;
+                        stats.uniqueKeys.add(key);
+                        analyze(value, depth + 1);
+                    });
+                } else {
+                    const type = typeof obj;
+                    stats.dataTypes[type] = (stats.dataTypes[type] || 0) + 1;
+                    if (typeof obj === 'string') {
+                        stats.stringLengths.push(obj.length);
+                    }
+                }
+            }
+            
+            analyze(obj);
+            
+            return {
+                ...stats,
+                uniqueKeys: stats.uniqueKeys.size,
+                maxDepth: Math.max(...stats.depths),
+                avgDepth: stats.depths.reduce((a, b) => a + b, 0) / stats.depths.length,
+                avgArrayLength: stats.arrayLengths.length > 0 
+                    ? stats.arrayLengths.reduce((a, b) => a + b, 0) / stats.arrayLengths.length 
+                    : 0,
+                avgStringLength: stats.stringLengths.length > 0
+                    ? stats.stringLengths.reduce((a, b) => a + b, 0) / stats.stringLengths.length
+                    : 0
+            };
+        }
+
+        function validateDataQuality(obj) {
+            const issues = {
+                emptyValues: 0,
+                inconsistentTypes: [],
+                missingRequired: [],
+                duplicateKeys: [],
+                longStrings: [],
+                deepNesting: []
+            };
+            
+            function validate(obj, path = '', depth = 0) {
+                if (depth > 15) issues.deepNesting.push(path);
+                
+                if (shouldHideValue(obj)) issues.emptyValues++;
+                
+                if (typeof obj === 'string' && obj.length > 1000) {
+                    issues.longStrings.push({ path, length: obj.length });
+                }
+                
+                if (Array.isArray(obj)) {
+                    obj.forEach((item, index) => validate(item, `${path}[${index}]`, depth + 1));
+                } else if (typeof obj === 'object' && obj !== null) {
+                    Object.entries(obj).forEach(([key, value]) => {
+                        validate(value, path ? `${path}.${key}` : key, depth + 1);
+                    });
+                }
+            }
+            
+            validate(obj);
+            
+            return issues;
+        }
+
+        function displayAnalytics(analytics) {
+            const html = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                    <!-- Schema Overview -->
+                    <div class="details-table">
+                        <div class="details-table-header">🏗️ Schema Overview</div>
+                        <div style="padding: 1rem;">
+                            <div style="font-family: monospace; font-size: var(--font-xs); background: var(--panel-bg); padding: var(--spacing-md); border-radius: 0.25rem; white-space: pre-wrap;">${JSON.stringify(analytics.schema, null, 2)}</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Statistics -->
+                    <div class="details-table">
+                        <div class="details-table-header">📊 Statistics</div>
+                        <div class="details-grid" style="padding: 1rem;">
+                            <div class="detail-item">
+                                <div class="detail-key">Total Keys</div>
+                                <div class="detail-value">${analytics.statistics.totalKeys.toLocaleString()}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-key">Unique Keys</div>
+                                <div class="detail-value">${analytics.statistics.uniqueKeys}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-key">Max Depth</div>
+                                <div class="detail-value">${analytics.statistics.maxDepth}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-key">Avg Depth</div>
+                                <div class="detail-value">${analytics.statistics.avgDepth.toFixed(2)}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Data Types -->
+                    <div class="details-table">
+                        <div class="details-table-header">🏷️ Data Types</div>
+                        <div class="details-grid" style="padding: 1rem;">
+                            ${Object.entries(analytics.statistics.dataTypes).map(([type, count]) => `
+                                <div class="detail-item">
+                                    <div class="detail-key">${type}</div>
+                                    <div class="detail-value">${count.toLocaleString()}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <!-- Patterns -->
+                    <div class="details-table">
+                        <div class="details-table-header">🔍 Detected Patterns</div>
+                        <div class="details-grid" style="padding: 1rem;">
+                            <div class="detail-item">
+                                <div class="detail-key">Email Addresses</div>
+                                <div class="detail-value">${analytics.patterns.emails.length}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-key">URLs</div>
+                                <div class="detail-value">${analytics.patterns.urls.length}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-key">Dates</div>
+                                <div class="detail-value">${analytics.patterns.dates.length}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-key">UUIDs</div>
+                                <div class="detail-value">${analytics.patterns.ids.length}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Data Quality -->
+                    <div class="details-table">
+                        <div class="details-table-header">⚠️ Data Quality</div>
+                        <div class="details-grid" style="padding: 1rem;">
+                            <div class="detail-item">
+                                <div class="detail-key">Empty Values</div>
+                                <div class="detail-value ${analytics.validation.emptyValues > 0 ? 'empty' : ''}">${analytics.validation.emptyValues}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-key">Long Strings</div>
+                                <div class="detail-value ${analytics.validation.longStrings.length > 0 ? 'empty' : ''}">${analytics.validation.longStrings.length}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-key">Deep Nesting</div>
+                                <div class="detail-value ${analytics.validation.deepNesting.length > 0 ? 'empty' : ''}">${analytics.validation.deepNesting.length}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Performance -->
+                    <div class="details-table">
+                        <div class="details-table-header">⚡ Performance</div>
+                        <div class="details-grid" style="padding: 1rem;">
+                            <div class="detail-item">
+                                <div class="detail-key">Load Time</div>
+                                <div class="detail-value">${analytics.performance.loadTime.toFixed(2)}ms</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-key">Render Time</div>
+                                <div class="detail-value">${analytics.performance.renderTime.toFixed(2)}ms</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-key">Analysis Time</div>
+                                <div class="detail-value">${analytics.performance.analysisTime.toFixed(2)}ms</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('analyticsContent').innerHTML = html;
+        }
+
+        // JSON Validation
+        function validateJSON() {
+            if (!jsonData) return;
+            
+            document.getElementById('validationModal').style.display = 'flex';
+            
+            const validation = performAdvancedValidation(jsonData);
+            displayValidationResults(validation);
+        }
+
+        function performAdvancedValidation(data) {
+            const results = {
+                isValid: true,
+                errors: [],
+                warnings: [],
+                suggestions: []
+            };
+            
+            try {
+                // Test if data can be stringified and parsed
+                const stringified = JSON.stringify(data);
+                JSON.parse(stringified);
+                
+                // Check for circular references
+                const seen = new WeakSet();
+                function checkCircular(obj) {
+                    if (obj !== null && typeof obj === 'object') {
+                        if (seen.has(obj)) {
+                            results.errors.push('Circular reference detected');
+                            results.isValid = false;
+                            return;
+                        }
+                        seen.add(obj);
+                        
+                        if (Array.isArray(obj)) {
+                            obj.forEach(checkCircular);
+                        } else {
+                            Object.values(obj).forEach(checkCircular);
+                        }
+                    }
+                }
+                checkCircular(data);
+                
+                // Additional validations
+                const quality = validateDataQuality(data);
+                if (quality.emptyValues > 0) {
+                    results.warnings.push(`Found ${quality.emptyValues} empty values`);
+                }
+                if (quality.longStrings.length > 0) {
+                    results.warnings.push(`Found ${quality.longStrings.length} very long strings`);
+                }
+                if (quality.deepNesting.length > 0) {
+                    results.warnings.push(`Found ${quality.deepNesting.length} deeply nested structures`);
+                }
+                
+                // Performance suggestions
+                const size = JSON.stringify(data).length;
+                if (size > 1024 * 1024) { // > 1MB
+                    results.suggestions.push('Consider data pagination for large datasets');
+                }
+                
+                if (results.errors.length === 0 && results.warnings.length === 0) {
+                    results.suggestions.push('JSON structure is well-formed and optimized');
+                }
+                
+            } catch (error) {
+                results.isValid = false;
+                results.errors.push(`JSON validation error: ${error.message}`);
+            }
+            
+            return results;
+        }
+
+        function displayValidationResults(validation) {
+            const html = `
+                <div class="details-table">
+                    <div class="details-table-header" style="background: ${validation.isValid ? 'var(--success-color)' : 'var(--danger-color)'};">
+                        ${validation.isValid ? '✅' : '❌'} JSON Validation ${validation.isValid ? 'Passed' : 'Failed'}
+                    </div>
+                    <div style="padding: 1rem;">
+                        ${validation.errors.length > 0 ? `
+                            <div style="margin-bottom: 1rem;">
+                                <h4 style="color: var(--danger-color); margin-bottom: 0.5rem;">❌ Errors (${validation.errors.length})</h4>
+                                ${validation.errors.map(error => `
+                                    <div style="padding: 0.5rem; background: rgba(220, 38, 38, 0.1); border-left: 3px solid var(--danger-color); margin-bottom: 0.25rem;">
+                                        ${error}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        
+                        ${validation.warnings.length > 0 ? `
+                            <div style="margin-bottom: 1rem;">
+                                <h4 style="color: var(--warning-color); margin-bottom: 0.5rem;">⚠️ Warnings (${validation.warnings.length})</h4>
+                                ${validation.warnings.map(warning => `
+                                    <div style="padding: 0.5rem; background: rgba(217, 119, 6, 0.1); border-left: 3px solid var(--warning-color); margin-bottom: 0.25rem;">
+                                        ${warning}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        
+                        ${validation.suggestions.length > 0 ? `
+                            <div>
+                                <h4 style="color: var(--info-color); margin-bottom: 0.5rem;">💡 Suggestions (${validation.suggestions.length})</h4>
+                                ${validation.suggestions.map(suggestion => `
+                                    <div style="padding: 0.5rem; background: rgba(8, 145, 178, 0.1); border-left: 3px solid var(--info-color); margin-bottom: 0.25rem;">
+                                        ${suggestion}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('validationResults').innerHTML = html;
+        }
+
+        function exportData() {
+            if (!jsonData) return;
+            
+            const dataStr = JSON.stringify(jsonData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'exported-data.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // Event Listeners
+        document.getElementById('hideEmpty').addEventListener('change', function() {
+            hideEmptyValues = this.checked;
+            renderJsonTree();
+            if (selectedPath) {
+                showNodeDetails(selectedPath, selectedPath.split('.').pop());
+            }
+        });
+
+        document.getElementById('sortOrder').addEventListener('change', function() {
+            currentSortOrder = this.value;
+            if (currentSortOrder !== 'none') {
+                const startTime = performance.now();
+                filteredData = sortObjectKeys(filteredData || jsonData, currentSortOrder);
+                performanceMetrics.filterTime = performance.now() - startTime;
+            } else {
+                filteredData = hideEmptyValues ? filterEmptyValues(jsonData) : jsonData;
+            }
+            renderJsonTree();
+        });
+
+        document.getElementById('detailSortOrder').addEventListener('change', function() {
+            detailSortOrder = this.value;
+            if (selectedPath) {
+                showNodeDetails(selectedPath, selectedPath.split('.').pop());
+            }
+        });
+
+        document.getElementById('globalSearch').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            if (!searchTerm) {
+                renderJsonTree();
+                return;
+            }
+            
+            // Simple search implementation - highlight matching nodes
+            const treeItems = document.querySelectorAll('.tree-item');
+            treeItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    item.style.backgroundColor = '#fef3c7';
+                    item.style.border = '1px solid #f59e0b';
+                } else {
+                    item.style.backgroundColor = '';
+                    item.style.border = '';
+                }
+            });
+        });
+
+        // Close modals on click outside
+        window.addEventListener('click', function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+
+        // Initialize
+        loadInitialData();
+    </script>
+</body>
+</html>

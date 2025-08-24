@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n8n Docker 설치 및 활용 가이드</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+        
+        .section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #ff6b6b;
+        }
+        
+        .section h2 {
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section h3 {
+            color: #333;
+            margin: 20px 0 10px 0;
+            font-size: 1.3em;
+        }
+        
+        .icon {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            position: relative;
+        }
+        
+        .code-block::before {
+            content: attr(data-lang);
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: #4a5568;
+            color: #a0aec0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+        
+        .highlight {
+            background: #ffd93d;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .warning::before {
+            content: "⚠️ ";
+            font-weight: bold;
+        }
+        
+        .info {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .info::before {
+            content: "💡 ";
+            font-weight: bold;
+        }
+        
+        .step {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .workflow-example {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .workflow-example h3 {
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .node {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            margin: 5px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        
+        .arrow {
+            display: inline-block;
+            margin: 0 10px;
+            font-size: 1.2em;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 n8n Docker 설치 및 활용 가이드</h1>
+            <p>워크플로우 자동화의 모든 것을 한 페이지에서!</p>
+        </div>
+        
+        <div class="content">
+            <!-- Docker 설치 섹션 -->
+            <div class="section">
+                <h2><span class="icon">🐳</span>Docker Desktop 설치</h2>
+                
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Docker Desktop 다운로드</strong>
+                    <p>공식 사이트에서 운영체제에 맞는 버전 다운로드</p>
+                    <div class="code-block" data-lang="URL">
+https://www.docker.com/products/docker-desktop/
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>설치 및 실행</strong>
+                    <ul>
+                        <li>다운로드한 파일 실행</li>
+                        <li>설치 마법사 따라 진행</li>
+                        <li>시스템 재시작 (필요시)</li>
+                        <li>Docker Desktop 실행</li>
+                    </ul>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>설치 확인</strong>
+                    <div class="code-block" data-lang="CMD">
+docker --version
+docker-compose --version
+                    </div>
+                </div>
+                
+                <div class="warning">
+                    <strong>Windows 사용자:</strong> WSL 2 백엔드 활성화 필요<br>
+                    <strong>Mac 사용자:</strong> Apple Silicon(M1/M2) vs Intel 버전 확인
+                </div>
+            </div>
+            
+            <!-- n8n 설치 섹션 -->
+            <div class="section">
+                <h2><span class="icon">⚡</span>n8n Docker 설치</h2>
+                
+                <h3>🚀 빠른 시작 (단일 컨테이너)</h3>
+                <div class="code-block" data-lang="Docker">
+# n8n 컨테이너 실행
+docker run -it --rm \
+  --name n8n \
+  -p 5678:5678 \
+  -v ~/.n8n:/home/node/.n8n \
+  n8nio/n8n
+                </div>
+                
+                <h3>🔧 Docker Compose 설정</h3>
+                <div class="code-block" data-lang="YAML">
+# docker-compose.yml
+version: '3.8'
+services:
+  n8n:
+    image: n8nio/n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=password
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./shared:/home/node/shared
+
+volumes:
+  n8n_data:
+                </div>
+                
+                <div class="code-block" data-lang="CMD">
+# Docker Compose로 실행
+docker-compose up -d
+
+# 로그 확인
+docker-compose logs -f n8n
+
+# 중지
+docker-compose down
+                </div>
+                
+                <div class="info">
+                    접속 URL: <strong>http://localhost:5678</strong><br>
+                    기본 인증: admin / password
+                </div>
+            </div>
+            
+            <!-- 기본 사용법 섹션 -->
+            <div class="section full-width">
+                <h2><span class="icon">📚</span>n8n 기본 사용법</h2>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <h3>🎯 핵심 개념</h3>
+                        <ul>
+                            <li><strong>워크플로우:</strong> 자동화 프로세스</li>
+                            <li><strong>노드:</strong> 개별 작업 단위</li>
+                            <li><strong>트리거:</strong> 워크플로우 시작점</li>
+                            <li><strong>연결:</strong> 노드 간 데이터 흐름</li>
+                        </ul>
+                        
+                        <h3>⚙️ 주요 노드 타입</h3>
+                        <ul>
+                            <li><strong>Trigger:</strong> Webhook, Cron, Manual</li>
+                            <li><strong>Regular:</strong> HTTP Request, Function</li>
+                            <li><strong>Credentials:</strong> API 키 관리</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3>🔧 환경 변수 설정</h3>
+                        <div class="code-block" data-lang="ENV">
+# .env 파일
+N8N_BASIC_AUTH_ACTIVE=true
+N8N_BASIC_AUTH_USER=your_username
+N8N_BASIC_AUTH_PASSWORD=your_password
+N8N_HOST=0.0.0.0
+N8N_PORT=5678
+N8N_PROTOCOL=http
+WEBHOOK_URL=http://localhost:5678
+N8N_ENCRYPTION_KEY=your_encryption_key
+                        </div>
+                        
+                        <h3>📁 데이터 지속성</h3>
+                        <div class="code-block" data-lang="Docker">
+# 볼륨 마운트
+-v ~/.n8n:/home/node/.n8n
+-v ./workflows:/home/node/workflows
+-v ./credentials:/home/node/credentials
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 워크플로우 예제 섹션 -->
+            <div class="section full-width">
+                <h2><span class="icon">🎨</span>실용적인 워크플로우 예제</h2>
+                
+                <div class="workflow-example">
+                    <h3>📧 이메일 알림 자동화</h3>
+                    <div>
+                        <span class="node">🕐 Cron Trigger</span>
+                        <span class="arrow">→</span>
+                        <span class="node">🌐 HTTP Request</span>
+                        <span class="arrow">→</span>
+                        <span class="node">🔍 IF 조건</span>
+                        <span class="arrow">→</span>
+                        <span class="node">📧 Gmail</span>
+                    </div>
+                    <p style="margin-top: 15px;">매일 오전 9시에 서비스 상태를 확인하고 문제가 있으면 이메일 발송</p>
+                </div>
+                
+                <div class="workflow-example">
+                    <h3>💬 슬랙 봇 통합</h3>
+                    <div>
+                        <span class="node">🎣 Webhook</span>
+                        <span class="arrow">→</span>
+                        <span class="node">⚙️ Function</span>
+                        <span class="arrow">→</span>
+                        <span class="node">🗄️ Database</span>
+                        <span class="arrow">→</span>
+                        <span class="node">💬 Slack</span>
+                    </div>
+                    <p style="margin-top: 15px;">외부 이벤트를 받아 데이터를 처리하고 슬랙 채널에 알림</p>
+                </div>
+                
+                <div class="workflow-example">
+                    <h3>📊 데이터 동기화</h3>
+                    <div>
+                        <span class="node">🕐 Schedule</span>
+                        <span class="arrow">→</span>
+                        <span class="node">📊 Google Sheets</span>
+                        <span class="arrow">→</span>
+                        <span class="node">🔄 Transform</span>
+                        <span class="arrow">→</span>
+                        <span class="node">🗄️ PostgreSQL</span>
+                    </div>
+                    <p style="margin-top: 15px;">구글 시트 데이터를 정기적으로 데이터베이스와 동기화</p>
+                </div>
+            </div>
+            
+            <!-- 고급 설정 섹션 -->
+            <div class="section">
+                <h2><span class="icon">🔧</span>고급 설정</h2>
+                
+                <h3>🔒 보안 설정</h3>
+                <div class="code-block" data-lang="YAML">
+# HTTPS 설정
+environment:
+  - N8N_PROTOCOL=https
+  - N8N_SSL_KEY=/path/to/key.pem
+  - N8N_SSL_CERT=/path/to/cert.pem
+                </div>
+                
+                <h3>📈 성능 최적화</h3>
+                <ul>
+                    <li>메모리 제한: <code>--memory=2g</code></li>
+                    <li>CPU 제한: <code>--cpus=2</code></li>
+                    <li>로그 레벨: <code>N8N_LOG_LEVEL=info</code></li>
+                </ul>
+                
+                <h3>🔄 백업 및 복원</h3>
+                <div class="code-block" data-lang="CMD">
+# 데이터 백업
+docker cp n8n:/home/node/.n8n ./backup/
+
+# 데이터 복원  
+docker cp ./backup/.n8n n8n:/home/node/
+                </div>
+            </div>
+            
+            <!-- 문제해결 섹션 -->
+            <div class="section">
+                <h2><span class="icon">🔍</span>문제해결</h2>
+                
+                <h3>❌ 일반적인 문제</h3>
+                <ul>
+                    <li><strong>포트 충돌:</strong> 5678 포트 변경</li>
+                    <li><strong>권한 오류:</strong> 볼륨 권한 확인</li>
+                    <li><strong>메모리 부족:</strong> Docker 메모리 증설</li>
+                </ul>
+                
+                <h3>🔍 디버깅 명령어</h3>
+                <div class="code-block" data-lang="CMD">
+# 컨테이너 상태 확인
+docker ps -a
+
+# 로그 확인
+docker logs n8n
+
+# 컨테이너 내부 접속
+docker exec -it n8n /bin/sh
+
+# 리소스 사용량
+docker stats n8n
+                </div>
+                
+                <div class="info">
+                    <strong>도움말:</strong><br>
+                    • 공식 문서: https://docs.n8n.io<br>
+                    • 커뮤니티: https://community.n8n.io<br>
+                    • GitHub: https://github.com/n8n-io/n8n
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 코드 블록 복사 기능
+        document.addEventListener('DOMContentLoaded', function() {
+            const codeBlocks = document.querySelectorAll('.code-block');
+            
+            codeBlocks.forEach(block => {
+                block.addEventListener('click', function() {
+                    const text = this.textContent;
+                    navigator.clipboard.writeText(text.trim()).then(() => {
+                        const originalBg = this.style.backgroundColor;
+                        this.style.backgroundColor = '#4a5568';
+                        setTimeout(() => {
+                            this.style.backgroundColor = originalBg;
+                        }, 200);
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

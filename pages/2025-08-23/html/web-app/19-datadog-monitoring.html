@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Monitoring - DataDog Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f5f5;
+            color: #4a4a4a;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-size: 13px;
+        }
+        
+        .header {
+            background: #632ca6;
+            color: white;
+            padding: 0 20px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo {
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 0;
+        }
+        
+        .nav-tab {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 16px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        
+        .nav-tab:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-tab.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+            border-bottom: 2px solid #00cfb8;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .search-box {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 6px 12px;
+            color: white;
+            width: 250px;
+            font-size: 13px;
+            outline: none;
+        }
+        
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .time-range {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            color: white;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .user-menu {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #00cfb8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .main-container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 240px;
+            background: #2e3338;
+            color: #b8bcc8;
+            padding: 16px 0;
+            overflow-y: auto;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 24px;
+        }
+        
+        .sidebar-title {
+            font-size: 11px;
+            color: #777a80;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 12px;
+            padding: 0 16px;
+            letter-spacing: 0.5px;
+        }
+        
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #b8bcc8;
+        }
+        
+        .sidebar-item:hover {
+            background: #3a3f45;
+            color: white;
+        }
+        
+        .sidebar-item.active {
+            background: #632ca6;
+            color: white;
+        }
+        
+        .sidebar-icon {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f5f5f5;
+        }
+        
+        .page-header {
+            margin-bottom: 24px;
+        }
+        
+        .page-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #4a4a4a;
+            margin-bottom: 8px;
+        }
+        
+        .page-subtitle {
+            font-size: 14px;
+            color: #777a80;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .widget {
+            background: white;
+            border: 1px solid #e0e0e3;
+            border-radius: 6px;
+            padding: 16px;
+            position: relative;
+            transition: box-shadow 0.2s;
+        }
+        
+        .widget:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .widget.small { grid-column: span 3; }
+        .widget.medium { grid-column: span 6; }
+        .widget.large { grid-column: span 9; }
+        .widget.full { grid-column: span 12; }
+        
+        .widget-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .widget-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a4a4a;
+        }
+        
+        .widget-menu {
+            background: none;
+            border: none;
+            color: #777a80;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        
+        .widget-menu:hover {
+            background: #f0f0f0;
+        }
+        
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #4a4a4a;
+            margin-bottom: 8px;
+        }
+        
+        .metric-change {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .metric-up {
+            color: #00cfb8;
+        }
+        
+        .metric-down {
+            color: #ff6b6b;
+        }
+        
+        .metric-stable {
+            color: #777a80;
+        }
+        
+        .chart-container {
+            height: 120px;
+            background: linear-gradient(135deg, rgba(99, 44, 166, 0.1) 0%, rgba(0, 207, 184, 0.1) 100%);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chart-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70%;
+            background: linear-gradient(135deg, #632ca6 0%, #00cfb8 100%);
+            border-radius: 4px 4px 0 0;
+            animation: chartGrow 1s ease-out;
+        }
+        
+        @keyframes chartGrow {
+            0% { height: 0%; }
+            100% { height: 70%; }
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
+        }
+        
+        .status-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .status-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: white;
+        }
+        
+        .status-healthy { background: #00cfb8; }
+        .status-warning { background: #ffa500; }
+        .status-critical { background: #ff6b6b; }
+        .status-unknown { background: #777a80; }
+        
+        .status-label {
+            font-size: 11px;
+            color: #777a80;
+            margin-bottom: 4px;
+        }
+        
+        .status-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: #4a4a4a;
+        }
+        
+        .log-container {
+            background: #2e3338;
+            border-radius: 6px;
+            padding: 16px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 12px;
+            overflow-y: auto;
+            max-height: 200px;
+        }
+        
+        .log-entry {
+            margin-bottom: 4px;
+            padding: 2px 4px;
+            border-radius: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .log-info { color: #b8bcc8; }
+        .log-warn { color: #ffa500; background: rgba(255, 165, 0, 0.1); }
+        .log-error { color: #ff6b6b; background: rgba(255, 107, 107, 0.1); }
+        .log-debug { color: #777a80; }
+        
+        .alert-item {
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            border-left: 4px solid #ff6b6b;
+            border-radius: 4px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+        }
+        
+        .alert-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+        
+        .alert-title {
+            font-weight: 600;
+            color: #c53030;
+            font-size: 13px;
+        }
+        
+        .alert-time {
+            font-size: 11px;
+            color: #a0aec0;
+        }
+        
+        .alert-message {
+            font-size: 12px;
+            color: #4a4a4a;
+            line-height: 1.4;
+        }
+        
+        .filter-bar {
+            background: white;
+            border: 1px solid #e0e0e3;
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-label {
+            font-size: 12px;
+            color: #777a80;
+            font-weight: 500;
+        }
+        
+        .filter-select {
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 12px;
+            color: #4a4a4a;
+            outline: none;
+        }
+        
+        .realtime-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #00cfb8;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #00cfb8;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f0f0f0;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">🐕 Datadog</div>
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="switchTab(this)">Dashboards</button>
+                <button class="nav-tab" onclick="switchTab(this)">Infrastructure</button>
+                <button class="nav-tab" onclick="switchTab(this)">APM</button>
+                <button class="nav-tab" onclick="switchTab(this)">Logs</button>
+                <button class="nav-tab" onclick="switchTab(this)">Monitors</button>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <input class="search-box" placeholder="Search metrics, logs, traces..." />
+            <select class="time-range" onchange="updateTimeRange(this)">
+                <option value="1h">Past 1 Hour</option>
+                <option value="4h" selected>Past 4 Hours</option>
+                <option value="1d">Past 1 Day</option>
+                <option value="1w">Past 1 Week</option>
+            </select>
+            <div class="user-menu">JD</div>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Overview</div>
+                <div class="sidebar-item active">
+                    <div class="sidebar-icon">📊</div>
+                    <span>System Overview</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">🖥️</div>
+                    <span>Host Map</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">🌐</div>
+                    <span>Network Map</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Infrastructure</div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">💾</div>
+                    <span>Containers</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">⚙️</div>
+                    <span>Processes</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">🔧</div>
+                    <span>Kubernetes</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Applications</div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">⚡</div>
+                    <span>APM</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">📝</div>
+                    <span>Logs</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">🔍</div>
+                    <span>Traces</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Alerting</div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">🚨</div>
+                    <span>Monitors</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">📞</div>
+                    <span>Incidents</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="page-header">
+                <h1 class="page-title">System Overview Dashboard</h1>
+                <p class="page-subtitle">Real-time monitoring of your infrastructure and applications</p>
+            </div>
+            
+            <div class="filter-bar">
+                <div class="filter-item">
+                    <div class="filter-label">Environment:</div>
+                    <select class="filter-select">
+                        <option value="production">Production</option>
+                        <option value="staging">Staging</option>
+                        <option value="development">Development</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <div class="filter-label">Service:</div>
+                    <select class="filter-select">
+                        <option value="all">All Services</option>
+                        <option value="web">Web App</option>
+                        <option value="api">API Gateway</option>
+                        <option value="db">Database</option>
+                    </select>
+                </div>
+                <div style="margin-left: auto;">
+                    <div class="realtime-indicator">
+                        <div class="pulse-dot"></div>
+                        <span>Live</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="widget small">
+                    <div class="widget-header">
+                        <div class="widget-title">CPU Usage</div>
+                        <button class="widget-menu">⋯</button>
+                    </div>
+                    <div class="metric-value">67.2%</div>
+                    <div class="metric-change metric-up">
+                        <span>↗️</span>
+                        <span>+5.3% from 1h ago</span>
+                    </div>
+                </div>
+                
+                <div class="widget small">
+                    <div class="widget-header">
+                        <div class="widget-title">Memory Usage</div>
+                        <button class="widget-menu">⋯</button>
+                    </div>
+                    <div class="metric-value">78.9%</div>
+                    <div class="metric-change metric-down">
+                        <span>↘️</span>
+                        <span>-2.1% from 1h ago</span>
+                    </div>
+                </div>
+                
+                <div class="widget small">
+                    <div class="widget-header">
+                        <div class="widget-title">Disk I/O</div>
+                        <button class="widget-menu">⋯</button>
+                    </div>
+                    <div class="metric-value">234 MB/s</div>
+                    <div class="metric-change metric-stable">
+                        <span>→</span>
+                        <span>No change</span>
+                    </div>
+                </div>
+                
+                <div class="widget small">
+                    <div class="widget-header">
+                        <div class="widget-title">Network</div>
+                        <button class="widget-menu">⋯</button>
+                    </div>
+                    <div class="metric-value">1.2 Gbps</div>
+                    <div class="metric-change metric-up">
+                        <span>↗️</span>
+                        <span>+12% from 1h ago</span>
+                    </div>
+                </div>
+                
+                <div class="widget medium">
+                    <div class="widget-header">
+                        <div class="widget-title">Response Times</div>
+                        <button class="widget-menu">⋯</button>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-line"></div>
+                    </div>
+                </div>
+                
+                <div class="widget medium">
+                    <div class="widget-header">
+                        <div class="widget-title">Service Health Status</div>
+                        <button class="widget-menu">⋯</button>
+                    </div>
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <div class="status-icon status-healthy">✓</div>
+                            <div class="status-label">Web App</div>
+                            <div class="status-value">Healthy</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-icon status-healthy">✓</div>
+                            <div class="status-label">API Gateway</div>
+                            <div class="status-value">Healthy</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-icon status-warning">⚠</div>
+                            <div class="status-label">Database</div>
+                            <div class="status-value">Warning</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-icon status-healthy">✓</div>
+                            <div class="status-label">Cache</div>
+                            <div class="status-value">Healthy</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-icon status-critical">✗</div>
+                            <div class="status-label">Queue</div>
+                            <div class="status-value">Critical</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-icon status-healthy">✓</div>
+                            <div class="status-label">CDN</div>
+                            <div class="status-value">Healthy</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="widget medium">
+                    <div class="widget-header">
+                        <div class="widget-title">Recent Logs</div>
+                        <button class="widget-menu">⋯</button>
+                    </div>
+                    <div class="log-container">
+                        <div class="log-entry log-info">[2025-08-23 14:32:15] INFO: Application started successfully</div>
+                        <div class="log-entry log-info">[2025-08-23 14:32:18] INFO: Database connection established</div>
+                        <div class="log-entry log-warn">[2025-08-23 14:32:25] WARN: High memory usage detected: 82%</div>
+                        <div class="log-entry log-info">[2025-08-23 14:32:30] INFO: Cache cleared successfully</div>
+                        <div class="log-entry log-error">[2025-08-23 14:32:35] ERROR: Queue connection timeout</div>
+                        <div class="log-entry log-info">[2025-08-23 14:32:40] INFO: Auto-scaling triggered</div>
+                        <div class="log-entry log-debug">[2025-08-23 14:32:45] DEBUG: Performance metrics collected</div>
+                        <div class="log-entry log-warn">[2025-08-23 14:32:50] WARN: Disk space below 20%</div>
+                    </div>
+                </div>
+                
+                <div class="widget medium">
+                    <div class="widget-header">
+                        <div class="widget-title">Active Alerts</div>
+                        <button class="widget-menu">⋯</button>
+                    </div>
+                    <div class="alert-item">
+                        <div class="alert-header">
+                            <div class="alert-title">Queue Connection Failure</div>
+                            <div class="alert-time">2 min ago</div>
+                        </div>
+                        <div class="alert-message">
+                            Message queue service is unreachable. Job processing has been halted.
+                        </div>
+                    </div>
+                    <div class="alert-item">
+                        <div class="alert-header">
+                            <div class="alert-title">High Database CPU Usage</div>
+                            <div class="alert-time">5 min ago</div>
+                        </div>
+                        <div class="alert-message">
+                            Database CPU usage exceeded 85% threshold. Consider optimizing queries.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function switchTab(tab) {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            
+            // Simulate loading new content
+            const content = document.querySelector('.content');
+            content.style.opacity = '0.5';
+            setTimeout(() => {
+                content.style.opacity = '1';
+            }, 300);
+        }
+        
+        function updateTimeRange(select) {
+            const timeRange = select.value;
+            console.log('Time range updated to:', timeRange);
+            
+            // Simulate chart updates
+            document.querySelectorAll('.chart-line').forEach(chart => {
+                chart.style.animation = 'none';
+                chart.offsetHeight; // Trigger reflow
+                chart.style.animation = 'chartGrow 0.5s ease-out';
+            });
+        }
+        
+        // Simulate real-time metric updates
+        function updateMetrics() {
+            const metricValues = document.querySelectorAll('.metric-value');
+            metricValues.forEach((metric, index) => {
+                if (index === 0) { // CPU Usage
+                    const currentValue = parseFloat(metric.textContent);
+                    const newValue = (currentValue + (Math.random() - 0.5) * 5).toFixed(1);
+                    metric.textContent = Math.max(0, Math.min(100, newValue)) + '%';
+                }
+            });
+        }
+        
+        // Add new log entries
+        function addLogEntry() {
+            const logContainer = document.querySelector('.log-container');
+            const logTypes = ['info', 'warn', 'error', 'debug'];
+            const logMessages = [
+                'User session created',
+                'Cache miss detected',
+                'Database query executed',
+                'API request processed',
+                'Memory usage spike',
+                'Network latency increased'
+            ];
+            
+            const logType = logTypes[Math.floor(Math.random() * logTypes.length)];
+            const message = logMessages[Math.floor(Math.random() * logMessages.length)];
+            const timestamp = new Date().toISOString().replace('T', ' ').substr(0, 19);
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${logType}`;
+            logEntry.textContent = `[${timestamp}] ${logType.toUpperCase()}: ${message}`;
+            
+            logContainer.insertBefore(logEntry, logContainer.firstChild);
+            
+            // Remove old entries
+            const entries = logContainer.querySelectorAll('.log-entry');
+            if (entries.length > 15) {
+                entries[entries.length - 1].remove();
+            }
+        }
+        
+        // Update metrics every 5 seconds
+        setInterval(updateMetrics, 5000);
+        
+        // Add log entry every 10 seconds
+        setInterval(addLogEntry, 10000);
+        
+        // Animate charts on page load
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.chart-line').forEach(chart => {
+                chart.style.animation = 'chartGrow 1s ease-out';
+            });
+        });
+    </script>
+</body>
+</html>

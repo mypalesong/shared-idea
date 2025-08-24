@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Analytics Dashboard</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+</head>
+<body>
+    <div class="analytics-app">
+        <!-- Main Header -->
+        <header class="main-header">
+            <div class="header-brand">
+                <div class="brand-logo">
+                    <i class="fas fa-chart-network"></i>
+                </div>
+                <div class="brand-info">
+                    <h1>JSON Analytics Dashboard</h1>
+                    <span class="version">Enterprise v4.2.1</span>
+                </div>
+            </div>
+            
+            <div class="header-controls">
+                <div class="control-group">
+                    <button id="refreshBtn" class="btn btn-ghost" title="Refresh Data">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button id="settingsBtn" class="btn btn-ghost" title="Settings">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <button id="fullscreenBtn" class="btn btn-ghost" title="Fullscreen">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+                
+                <div class="user-profile">
+                    <div class="avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-info">
+                        <span class="name">Data Analyst</span>
+                        <span class="role">Enterprise User</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Sidebar -->
+        <aside class="nav-sidebar">
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <h3>Data Sources</h3>
+                    <a href="#" class="nav-item active" data-view="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" class="nav-item" data-view="import">
+                        <i class="fas fa-upload"></i>
+                        <span>Import Data</span>
+                    </a>
+                    <a href="#" class="nav-item" data-view="explorer">
+                        <i class="fas fa-search"></i>
+                        <span>Data Explorer</span>
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <h3>Analytics</h3>
+                    <a href="#" class="nav-item" data-view="structure">
+                        <i class="fas fa-sitemap"></i>
+                        <span>Structure Analysis</span>
+                    </a>
+                    <a href="#" class="nav-item" data-view="patterns">
+                        <i class="fas fa-project-diagram"></i>
+                        <span>Pattern Mining</span>
+                    </a>
+                    <a href="#" class="nav-item" data-view="relationships">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Relationships</span>
+                    </a>
+                    <a href="#" class="nav-item" data-view="anomalies">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Anomaly Detection</span>
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <h3>Visualization</h3>
+                    <a href="#" class="nav-item" data-view="charts">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Charts & Graphs</span>
+                    </a>
+                    <a href="#" class="nav-item" data-view="network">
+                        <i class="fas fa-network-wired"></i>
+                        <span>Network View</span>
+                    </a>
+                    <a href="#" class="nav-item" data-view="treemap">
+                        <i class="fas fa-th-large"></i>
+                        <span>Tree Map</span>
+                    </a>
+                </div>
+                
+                <div class="nav-section">
+                    <h3>Tools</h3>
+                    <a href="#" class="nav-item" data-view="query">
+                        <i class="fas fa-code"></i>
+                        <span>Query Builder</span>
+                    </a>
+                    <a href="#" class="nav-item" data-view="export">
+                        <i class="fas fa-download"></i>
+                        <span>Export & Reports</span>
+                    </a>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="data-status">
+                    <div class="status-indicator">
+                        <div class="indicator active"></div>
+                        <span id="dataStatus">Ready</span>
+                    </div>
+                    <div class="data-info">
+                        <span id="recordCount">0 records</span>
+                        <span id="fileSize">0 MB</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard View -->
+            <div id="dashboardView" class="view active">
+                <div class="view-header">
+                    <h2>Analytics Dashboard</h2>
+                    <div class="view-actions">
+                        <div class="search-bar">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="globalSearch" placeholder="Search across all data...">
+                        </div>
+                        <button id="autoRefreshBtn" class="btn btn-outline">
+                            <i class="fas fa-clock"></i>
+                            Auto Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Key Metrics -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-value" id="totalNodes">0</div>
+                            <div class="metric-label">Total Nodes</div>
+                            <div class="metric-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span id="nodesChange">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-value" id="uniqueKeys">0</div>
+                            <div class="metric-label">Unique Keys</div>
+                            <div class="metric-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span id="keysChange">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-value" id="maxDepth">0</div>
+                            <div class="metric-label">Max Depth</div>
+                            <div class="metric-change neutral">
+                                <i class="fas fa-minus"></i>
+                                <span id="depthChange">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-value" id="dataComplexity">Low</div>
+                            <div class="metric-label">Complexity Score</div>
+                            <div class="metric-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span id="complexityChange">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="charts-grid">
+                    <div class="chart-panel">
+                        <div class="panel-header">
+                            <h3>Data Type Distribution</h3>
+                            <div class="panel-actions">
+                                <button class="btn btn-sm btn-ghost">
+                                    <i class="fas fa-expand-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="typeChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-panel">
+                        <div class="panel-header">
+                            <h3>Key Frequency Analysis</h3>
+                            <div class="panel-actions">
+                                <button class="btn btn-sm btn-ghost">
+                                    <i class="fas fa-expand-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="frequencyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Table -->
+                <div class="data-table-panel">
+                    <div class="panel-header">
+                        <h3>Data Preview</h3>
+                        <div class="panel-actions">
+                            <div class="view-modes">
+                                <button class="btn btn-sm active" data-mode="table">
+                                    <i class="fas fa-table"></i>
+                                </button>
+                                <button class="btn btn-sm" data-mode="tree">
+                                    <i class="fas fa-sitemap"></i>
+                                </button>
+                                <button class="btn btn-sm" data-mode="json">
+                                    <i class="fas fa-code"></i>
+                                </button>
+                            </div>
+                            <button id="exportTableBtn" class="btn btn-sm btn-primary">
+                                <i class="fas fa-download"></i>
+                                Export
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-container" id="dataTableContainer">
+                        <div class="empty-state">
+                            <i class="fas fa-table"></i>
+                            <h4>No Data Loaded</h4>
+                            <p>Import JSON data to see the preview table</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Import Data View -->
+            <div id="importView" class="view">
+                <div class="view-header">
+                    <h2>Import Data Sources</h2>
+                </div>
+                
+                <div class="import-grid">
+                    <div class="import-card">
+                        <div class="card-header">
+                            <i class="fas fa-file-upload"></i>
+                            <h3>File Upload</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="upload-area" id="uploadArea">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <h4>Drop JSON files here</h4>
+                                <p>or click to browse</p>
+                                <button class="btn btn-primary">Choose Files</button>
+                            </div>
+                            <div class="upload-options">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="validateJson" checked>
+                                    <span>Validate JSON syntax</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="autoAnalyze" checked>
+                                    <span>Auto-analyze on import</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="import-card">
+                        <div class="card-header">
+                            <i class="fas fa-link"></i>
+                            <h3>URL Import</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="url-form">
+                                <input type="url" id="urlInput" placeholder="https://api.example.com/data.json" class="form-input">
+                                <div class="url-options">
+                                    <select id="httpMethod" class="form-select">
+                                        <option value="GET">GET</option>
+                                        <option value="POST">POST</option>
+                                    </select>
+                                    <button id="addHeaderBtn" class="btn btn-ghost btn-sm">Add Headers</button>
+                                </div>
+                                <button id="importUrlBtn" class="btn btn-primary">Import from URL</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="import-card">
+                        <div class="card-header">
+                            <i class="fas fa-database"></i>
+                            <h3>Database Connection</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="db-form">
+                                <select id="dbType" class="form-select">
+                                    <option value="mongodb">MongoDB</option>
+                                    <option value="postgresql">PostgreSQL</option>
+                                    <option value="mysql">MySQL</option>
+                                    <option value="elasticsearch">Elasticsearch</option>
+                                </select>
+                                <input type="text" id="connectionString" placeholder="Connection string..." class="form-input">
+                                <button id="connectDbBtn" class="btn btn-primary">Connect</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="import-card">
+                        <div class="card-header">
+                            <i class="fas fa-edit"></i>
+                            <h3>Raw JSON Input</h3>
+                        </div>
+                        <div class="card-content">
+                            <textarea id="rawJsonInput" placeholder="Paste your JSON data here..." class="json-editor"></textarea>
+                            <div class="editor-actions">
+                                <button id="formatJsonBtn" class="btn btn-ghost">Format JSON</button>
+                                <button id="validateJsonBtn" class="btn btn-ghost">Validate</button>
+                                <button id="importRawBtn" class="btn btn-primary">Import</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Explorer View -->
+            <div id="explorerView" class="view">
+                <div class="view-header">
+                    <h2>Data Explorer</h2>
+                    <div class="explorer-tools">
+                        <div class="breadcrumb" id="breadcrumb">
+                            <span class="crumb active">Root</span>
+                        </div>
+                        <div class="explorer-actions">
+                            <button id="backBtn" class="btn btn-ghost" disabled>
+                                <i class="fas fa-arrow-left"></i>
+                                Back
+                            </button>
+                            <button id="homeBtn" class="btn btn-ghost">
+                                <i class="fas fa-home"></i>
+                                Root
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="explorer-layout">
+                    <div class="explorer-tree">
+                        <div class="tree-header">
+                            <h3>Structure Tree</h3>
+                            <div class="tree-controls">
+                                <button id="expandAllTree" class="btn btn-sm btn-ghost">
+                                    <i class="fas fa-plus-square"></i>
+                                </button>
+                                <button id="collapseAllTree" class="btn btn-sm btn-ghost">
+                                    <i class="fas fa-minus-square"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="tree-content" id="treeContent">
+                            <div class="empty-state">
+                                <i class="fas fa-sitemap"></i>
+                                <p>No data structure to display</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="explorer-details">
+                        <div class="details-header">
+                            <h3 id="detailsTitle">Node Details</h3>
+                            <div class="details-actions">
+                                <button id="copyPathBtn" class="btn btn-sm btn-ghost">
+                                    <i class="fas fa-copy"></i>
+                                    Copy Path
+                                </button>
+                                <button id="copyValueBtn" class="btn btn-sm btn-ghost">
+                                    <i class="fas fa-clipboard"></i>
+                                    Copy Value
+                                </button>
+                            </div>
+                        </div>
+                        <div class="details-content" id="detailsContent">
+                            <div class="empty-state">
+                                <i class="fas fa-info-circle"></i>
+                                <p>Select a node to view details</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Query Builder View -->
+            <div id="queryView" class="view">
+                <div class="view-header">
+                    <h2>Query Builder</h2>
+                    <div class="query-actions">
+                        <button id="saveQueryBtn" class="btn btn-ghost">
+                            <i class="fas fa-save"></i>
+                            Save Query
+                        </button>
+                        <button id="loadQueryBtn" class="btn btn-ghost">
+                            <i class="fas fa-folder-open"></i>
+                            Load Query
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="query-builder-layout">
+                    <div class="query-panel">
+                        <div class="panel-header">
+                            <h3>Query Builder</h3>
+                            <div class="query-mode">
+                                <button class="mode-btn active" data-mode="visual">Visual</button>
+                                <button class="mode-btn" data-mode="code">Code</button>
+                            </div>
+                        </div>
+                        <div class="query-content">
+                            <div class="visual-query" id="visualQuery">
+                                <div class="query-conditions">
+                                    <div class="condition-group">
+                                        <h4>Filters</h4>
+                                        <button id="addConditionBtn" class="btn btn-outline btn-sm">
+                                            <i class="fas fa-plus"></i>
+                                            Add Condition
+                                        </button>
+                                        <div id="conditionsContainer"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="code-query" id="codeQuery" style="display: none;">
+                                <textarea id="queryCodeEditor" class="code-editor" placeholder="Enter JSONPath, JMESPath, or custom query..."></textarea>
+                            </div>
+                        </div>
+                        <div class="query-footer">
+                            <button id="executeQueryBtn" class="btn btn-primary">
+                                <i class="fas fa-play"></i>
+                                Execute Query
+                            </button>
+                            <button id="clearQueryBtn" class="btn btn-ghost">
+                                <i class="fas fa-trash"></i>
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="results-panel">
+                        <div class="panel-header">
+                            <h3>Query Results</h3>
+                            <div class="results-info">
+                                <span id="resultsCount">0 results</span>
+                                <span id="queryTime">0ms</span>
+                            </div>
+                        </div>
+                        <div class="results-content" id="resultsContent">
+                            <div class="empty-state">
+                                <i class="fas fa-search"></i>
+                                <p>Execute a query to see results</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Hidden file inputs -->
+    <input type="file" id="fileInput" multiple accept=".json" style="display: none;">
+    
+    <!-- Context Menu -->
+    <div id="contextMenu" class="context-menu">
+        <div class="menu-item" data-action="copy-path">
+            <i class="fas fa-copy"></i>
+            <span>Copy Path</span>
+        </div>
+        <div class="menu-item" data-action="copy-value">
+            <i class="fas fa-clipboard"></i>
+            <span>Copy Value</span>
+        </div>
+        <div class="menu-separator"></div>
+        <div class="menu-item" data-action="analyze-node">
+            <i class="fas fa-chart-line"></i>
+            <span>Analyze Node</span>
+        </div>
+        <div class="menu-item" data-action="export-node">
+            <i class="fas fa-download"></i>
+            <span>Export Node</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

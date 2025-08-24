@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Viewer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>JSON Data Viewer</h1>
+            <div class="controls">
+                <button id="loadBtn" class="btn btn-primary">Load JSON</button>
+                <label class="filter-option">
+                    <input type="checkbox" id="filterEmpty" checked>
+                    <span>Hide empty values ([], "", false, null)</span>
+                </label>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search keys or values...">
+                </div>
+                <button id="expandAll" class="btn">Expand All</button>
+                <button id="collapseAll" class="btn">Collapse All</button>
+            </div>
+        </header>
+        
+        <main>
+            <div class="stats" id="stats"></div>
+            <div class="split-container">
+                <div class="left-panel">
+                    <div id="jsonViewer" class="json-viewer"></div>
+                </div>
+                <div class="right-panel">
+                    <div class="detail-header">
+                        <h3 id="detailTitle">Select an object to view details</h3>
+                        <button id="closeDetail" class="btn btn-close">×</button>
+                    </div>
+                    <div id="detailViewer" class="detail-viewer">
+                        <div class="empty-state">
+                            Click on any object key in the left panel to view its contents here
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

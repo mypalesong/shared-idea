@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neomorphism Code - Soft UI Development</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', 'Arial', sans-serif;
+            background: #e0e5ec;
+            color: #444;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .hero {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: 5rem;
+            font-weight: 700;
+            color: #444;
+            margin-bottom: 2rem;
+            text-shadow: 
+                2px 2px 4px rgba(255, 255, 255, 0.8),
+                -2px -2px 4px rgba(174, 174, 192, 0.4);
+            animation: softFloat 6s ease-in-out infinite;
+        }
+        
+        .hero p {
+            font-size: 1.4rem;
+            color: #666;
+            margin-bottom: 3rem;
+            font-weight: 400;
+        }
+        
+        .neo-button {
+            display: inline-block;
+            padding: 18px 40px;
+            background: #e0e5ec;
+            color: #444;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 
+                9px 9px 16px rgba(163, 177, 198, 0.6),
+                -9px -9px 16px rgba(255, 255, 255, 0.5);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .neo-button:hover {
+            box-shadow: 
+                6px 6px 12px rgba(163, 177, 198, 0.6),
+                -6px -6px 12px rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .neo-button:active {
+            box-shadow: 
+                inset 6px 6px 12px rgba(163, 177, 198, 0.6),
+                inset -6px -6px 12px rgba(255, 255, 255, 0.5);
+            transform: translateY(0);
+        }
+        
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .neo-shape {
+            position: absolute;
+            border-radius: 20px;
+            background: #e0e5ec;
+            box-shadow: 
+                6px 6px 12px rgba(163, 177, 198, 0.6),
+                -6px -6px 12px rgba(255, 255, 255, 0.5);
+            animation: floatSoft 8s ease-in-out infinite;
+        }
+        
+        .shape-1 {
+            width: 100px;
+            height: 100px;
+            top: 20%;
+            left: 10%;
+            border-radius: 50%;
+            animation-delay: 0s;
+        }
+        
+        .shape-2 {
+            width: 80px;
+            height: 80px;
+            top: 30%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+        
+        .shape-3 {
+            width: 60px;
+            height: 120px;
+            bottom: 30%;
+            left: 20%;
+            border-radius: 30px;
+            animation-delay: 4s;
+        }
+        
+        .shape-4 {
+            width: 90px;
+            height: 90px;
+            bottom: 20%;
+            right: 25%;
+            border-radius: 50%;
+            animation-delay: 6s;
+        }
+        
+        .content-section {
+            padding: 100px 0;
+        }
+        
+        .section-title {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            color: #444;
+            font-weight: 600;
+            text-shadow: 
+                2px 2px 4px rgba(255, 255, 255, 0.8),
+                -2px -2px 4px rgba(174, 174, 192, 0.4);
+        }
+        
+        .neo-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+        
+        .neo-card {
+            background: #e0e5ec;
+            padding: 3rem;
+            border-radius: 25px;
+            box-shadow: 
+                12px 12px 24px rgba(163, 177, 198, 0.6),
+                -12px -12px 24px rgba(255, 255, 255, 0.5);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .neo-card:hover {
+            box-shadow: 
+                18px 18px 36px rgba(163, 177, 198, 0.6),
+                -18px -18px 36px rgba(255, 255, 255, 0.5);
+            transform: translateY(-5px);
+        }
+        
+        .neo-icon {
+            width: 80px;
+            height: 80px;
+            background: #e0e5ec;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #667;
+            margin-bottom: 2rem;
+            box-shadow: 
+                inset 8px 8px 16px rgba(163, 177, 198, 0.6),
+                inset -8px -8px 16px rgba(255, 255, 255, 0.5);
+        }
+        
+        .neo-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #444;
+            font-weight: 600;
+        }
+        
+        .neo-card p {
+            color: #666;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+        
+        .skills-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #e0e5ec 0%, #d5dae1 100%);
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+        
+        .skill-item {
+            text-align: center;
+            padding: 2rem;
+            background: #e0e5ec;
+            border-radius: 20px;
+            box-shadow: 
+                8px 8px 16px rgba(163, 177, 198, 0.6),
+                -8px -8px 16px rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .skill-item:hover {
+            box-shadow: 
+                inset 4px 4px 8px rgba(163, 177, 198, 0.6),
+                inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+        }
+        
+        .skill-progress {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #e0e5ec;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #667;
+            box-shadow: 
+                inset 6px 6px 12px rgba(163, 177, 198, 0.6),
+                inset -6px -6px 12px rgba(255, 255, 255, 0.5);
+            position: relative;
+        }
+        
+        .skill-progress::before {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            opacity: 0.1;
+            animation: skillPulse 3s ease-in-out infinite;
+        }
+        
+        .skill-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 0.5rem;
+        }
+        
+        .skill-level {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .neo-dashboard {
+            background: #e0e5ec;
+            padding: 3rem;
+            border-radius: 30px;
+            box-shadow: 
+                15px 15px 30px rgba(163, 177, 198, 0.6),
+                -15px -15px 30px rgba(255, 255, 255, 0.5);
+            margin: 4rem 0;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .dashboard-title {
+            font-size: 2rem;
+            color: #444;
+            font-weight: 600;
+        }
+        
+        .dashboard-controls {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .neo-control {
+            width: 50px;
+            height: 50px;
+            background: #e0e5ec;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 
+                6px 6px 12px rgba(163, 177, 198, 0.6),
+                -6px -6px 12px rgba(255, 255, 255, 0.5);
+            color: #667;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .neo-control:hover {
+            box-shadow: 
+                4px 4px 8px rgba(163, 177, 198, 0.6),
+                -4px -4px 8px rgba(255, 255, 255, 0.5);
+        }
+        
+        .neo-control:active {
+            box-shadow: 
+                inset 4px 4px 8px rgba(163, 177, 198, 0.6),
+                inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+        }
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        
+        .stat-card {
+            background: #e0e5ec;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 
+                inset 8px 8px 16px rgba(163, 177, 198, 0.6),
+                inset -8px -8px 16px rgba(255, 255, 255, 0.5);
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #444;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .neo-slider {
+            margin: 2rem 0;
+        }
+        
+        .slider-track {
+            height: 8px;
+            background: #e0e5ec;
+            border-radius: 4px;
+            box-shadow: 
+                inset 4px 4px 8px rgba(163, 177, 198, 0.6),
+                inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+            position: relative;
+        }
+        
+        .slider-thumb {
+            width: 24px;
+            height: 24px;
+            background: #e0e5ec;
+            border-radius: 50%;
+            position: absolute;
+            top: -8px;
+            left: 60%;
+            box-shadow: 
+                4px 4px 8px rgba(163, 177, 198, 0.6),
+                -4px -4px 8px rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+        }
+        
+        .code-editor {
+            background: #e0e5ec;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 
+                12px 12px 24px rgba(163, 177, 198, 0.6),
+                -12px -12px 24px rgba(255, 255, 255, 0.5);
+            margin: 3rem 0;
+        }
+        
+        .editor-header {
+            background: #d5dae1;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 
+                inset 2px 2px 4px rgba(163, 177, 198, 0.6),
+                inset -2px -2px 4px rgba(255, 255, 255, 0.5);
+        }
+        
+        .editor-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            box-shadow: 
+                inset 2px 2px 4px rgba(163, 177, 198, 0.6),
+                inset -2px -2px 4px rgba(255, 255, 255, 0.5);
+        }
+        
+        .dot-close { background: #ff6b6b; }
+        .dot-minimize { background: #ffd93d; }
+        .dot-maximize { background: #6bcf7f; }
+        
+        .editor-content {
+            padding: 2rem;
+            font-family: 'Courier New', monospace;
+            color: #555;
+        }
+        
+        .code-line {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .line-number {
+            color: #999;
+            width: 40px;
+            text-align: right;
+            margin-right: 2rem;
+            font-size: 0.9rem;
+        }
+        
+        @keyframes softFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes floatSoft {
+            0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+            33% { transform: translateY(-15px) translateX(10px) rotate(5deg); }
+            66% { transform: translateY(5px) translateX(-5px) rotate(-3deg); }
+        }
+        
+        @keyframes skillPulse {
+            0%, 100% { opacity: 0.1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.1); }
+        }
+        
+        .neo-form {
+            background: #e0e5ec;
+            padding: 3rem;
+            border-radius: 25px;
+            box-shadow: 
+                12px 12px 24px rgba(163, 177, 198, 0.6),
+                -12px -12px 24px rgba(255, 255, 255, 0.5);
+            max-width: 500px;
+            margin: 4rem auto;
+        }
+        
+        .form-group {
+            margin-bottom: 2rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            color: #444;
+            font-weight: 600;
+        }
+        
+        .neo-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: #e0e5ec;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 
+                inset 6px 6px 12px rgba(163, 177, 198, 0.6),
+                inset -6px -6px 12px rgba(255, 255, 255, 0.5);
+            color: #444;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .neo-input:focus {
+            outline: none;
+            box-shadow: 
+                inset 8px 8px 16px rgba(163, 177, 198, 0.6),
+                inset -8px -8px 16px rgba(255, 255, 255, 0.5);
+        }
+        
+        .neo-input::placeholder {
+            color: #999;
+        }
+        
+        .floating-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #e0e5ec;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            box-shadow: 
+                8px 8px 16px rgba(163, 177, 198, 0.6),
+                -8px -8px 16px rgba(255, 255, 255, 0.5);
+            color: #444;
+            font-weight: 500;
+            transform: translateX(400px);
+            transition: transform 0.4s ease;
+            z-index: 1000;
+        }
+        
+        .floating-notification.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="hero">
+                <h1>Soft UI Code</h1>
+                <p>Neomorphism meets modern development</p>
+                <button class="neo-button" onclick="showNotification('Welcome to Soft UI!')">Explore Design</button>
+                
+                <div class="code-editor">
+                    <div class="editor-header">
+                        <div class="editor-dot dot-close"></div>
+                        <div class="editor-dot dot-minimize"></div>
+                        <div class="editor-dot dot-maximize"></div>
+                        <span style="color: #666; font-size: 0.9rem; margin-left: 1rem;">SoftUI.js</span>
+                    </div>
+                    <div class="editor-content">
+                        <div class="code-line">
+                            <span class="line-number">1</span>
+                            <span style="color: #667;">const softUI = {</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">2</span>
+                            <span style="color: #764ba2; margin-left: 20px;">shadows: 'gentle',</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">3</span>
+                            <span style="color: #764ba2; margin-left: 20px;">depth: 'subtle',</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">4</span>
+                            <span style="color: #764ba2; margin-left: 20px;">experience: 'seamless'</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">5</span>
+                            <span style="color: #667;">};</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="floating-elements">
+            <div class="neo-shape shape-1"></div>
+            <div class="neo-shape shape-2"></div>
+            <div class="neo-shape shape-3"></div>
+            <div class="neo-shape shape-4"></div>
+        </div>
+    </header>
+    
+    <section class="content-section">
+        <div class="container">
+            <h2 class="section-title">Development Services</h2>
+            
+            <div class="neo-dashboard">
+                <div class="dashboard-header">
+                    <h3 class="dashboard-title">Project Dashboard</h3>
+                    <div class="dashboard-controls">
+                        <button class="neo-control">⚙</button>
+                        <button class="neo-control">📊</button>
+                        <button class="neo-control">🔔</button>
+                    </div>
+                </div>
+                
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">24</div>
+                        <div class="stat-label">Active Projects</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">98%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">156</div>
+                        <div class="stat-label">Components</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">4.9</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                </div>
+                
+                <div class="neo-slider">
+                    <div class="slider-track">
+                        <div class="slider-thumb"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="neo-cards">
+                <div class="neo-card">
+                    <div class="neo-icon">🎨</div>
+                    <h3>UI/UX Design</h3>
+                    <p>Beautiful, intuitive interfaces crafted with neomorphic design principles. Soft shadows and subtle depth create engaging user experiences that feel natural and modern.</p>
+                </div>
+                
+                <div class="neo-card">
+                    <div class="neo-icon">⚛</div>
+                    <h3>React Development</h3>
+                    <p>Modern React applications with component-based architecture. Utilizing hooks, context, and state management for scalable and maintainable code.</p>
+                </div>
+                
+                <div class="neo-card">
+                    <div class="neo-icon">📱</div>
+                    <h3>Mobile Apps</h3>
+                    <p>Native and cross-platform mobile applications with soft UI elements. Smooth animations and gentle interactions that enhance mobile user experience.</p>
+                </div>
+                
+                <div class="neo-card">
+                    <div class="neo-icon">⚡</div>
+                    <h3>Performance</h3>
+                    <p>Optimized applications with minimal load times. Advanced techniques for rendering efficiency and smooth animations while maintaining visual quality.</p>
+                </div>
+                
+                <div class="neo-card">
+                    <div class="neo-icon">🔧</div>
+                    <h3>Custom Solutions</h3>
+                    <p>Tailored development solutions for unique business needs. From concept to deployment with focus on user-centric design and technical excellence.</p>
+                </div>
+                
+                <div class="neo-card">
+                    <div class="neo-icon">☁</div>
+                    <h3>Cloud Integration</h3>
+                    <p>Seamless cloud services integration with modern deployment practices. Scalable architecture that grows with your business needs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="skills-section">
+        <div class="container">
+            <h2 class="section-title">Technical Skills</h2>
+            
+            <div class="skills-grid">
+                <div class="skill-item">
+                    <div class="skill-progress">95%</div>
+                    <div class="skill-name">React</div>
+                    <div class="skill-level">Expert Level</div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-progress">90%</div>
+                    <div class="skill-name">TypeScript</div>
+                    <div class="skill-level">Advanced</div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-progress">88%</div>
+                    <div class="skill-name">Node.js</div>
+                    <div class="skill-level">Advanced</div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-progress">92%</div>
+                    <div class="skill-name">UI Design</div>
+                    <div class="skill-level">Expert Level</div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-progress">85%</div>
+                    <div class="skill-name">Flutter</div>
+                    <div class="skill-level">Advanced</div>
+                </div>
+                
+                <div class="skill-item">
+                    <div class="skill-progress">89%</div>
+                    <div class="skill-name">AWS</div>
+                    <div class="skill-level">Advanced</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="content-section">
+        <div class="container">
+            <div class="neo-form">
+                <h3 style="text-align: center; margin-bottom: 2rem; color: #444; font-weight: 600;">Get In Touch</h3>
+                
+                <form>
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" class="neo-input" placeholder="Your Name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="neo-input" placeholder="your@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="project">Project Type</label>
+                        <input type="text" id="project" class="neo-input" placeholder="Web App, Mobile, Design...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" class="neo-input" rows="4" placeholder="Tell us about your project..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="neo-button" style="width: 100%; text-align: center; padding: 1rem;">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <div class="floating-notification" id="notification">
+        Notification message
+    </div>
+    
+    <script>
+        // Smooth animations and interactions
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Interactive slider
+        const sliderThumb = document.querySelector('.slider-thumb');
+        let isDragging = false;
+        
+        sliderThumb.addEventListener('mousedown', (e) => {
+            isDragging = true;
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const slider = document.querySelector('.slider-track');
+                const rect = slider.getBoundingClientRect();
+                const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+                const percentage = (x / rect.width) * 100;
+                sliderThumb.style.left = percentage + '%';
+            }
+        });
+        
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+        
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe cards for animation
+        document.querySelectorAll('.neo-card, .skill-item').forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(30px)';
+            item.style.transition = 'all 0.8s ease';
+            item.style.transitionDelay = index * 0.1 + 's';
+            observer.observe(item);
+        });
+        
+        // Dashboard controls interaction
+        document.querySelectorAll('.neo-control').forEach(control => {
+            control.addEventListener('click', function() {
+                const messages = [
+                    'Settings updated!',
+                    'Analytics loaded!',
+                    'Notifications enabled!'
+                ];
+                const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                showNotification(randomMessage);
+            });
+        });
+        
+        // Form submission
+        document.querySelector('.neo-form form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('Message sent successfully!');
+            
+            // Reset form with smooth animation
+            this.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                this.reset();
+                this.style.transform = '';
+            }, 200);
+        });
+        
+        // Card hover effects
+        document.querySelectorAll('.neo-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transition = 'all 0.4s ease';
+                card.querySelector('.neo-icon').style.transform = 'scale(1.1) rotate(5deg)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.querySelector('.neo-icon').style.transform = '';
+            });
+        });
+        
+        // Skill progress animation
+        function animateSkillProgress() {
+            document.querySelectorAll('.skill-progress').forEach(progress => {
+                const percentage = progress.textContent;
+                const numericValue = parseInt(percentage);
+                
+                let current = 0;
+                const increment = numericValue / 100;
+                
+                const animation = setInterval(() => {
+                    current += increment;
+                    if (current >= numericValue) {
+                        progress.textContent = percentage;
+                        clearInterval(animation);
+                    } else {
+                        progress.textContent = Math.floor(current) + '%';
+                    }
+                }, 20);
+            });
+        }
+        
+        // Trigger skill animation when skills section is visible
+        const skillsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    setTimeout(animateSkillProgress, 500);
+                    skillsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        skillsObserver.observe(document.querySelector('.skills-section'));
+        
+        // Soft shadow effects on mouse movement
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            document.querySelectorAll('.neo-shape').forEach((shape, index) => {
+                const speed = (index + 1) * 0.02;
+                const x = (mouseX - 0.5) * 20 * speed;
+                const y = (mouseY - 0.5) * 20 * speed;
+                
+                shape.style.transform += ` translate(${x}px, ${y}px)`;
+            });
+        });
+        
+        // Floating elements interaction
+        document.querySelectorAll('.neo-shape').forEach(shape => {
+            shape.addEventListener('click', () => {
+                shape.style.transition = 'all 0.3s ease';
+                shape.style.transform = 'scale(1.2) rotate(180deg)';
+                
+                setTimeout(() => {
+                    shape.style.transform = '';
+                }, 300);
+                
+                showNotification('Shape activated!');
+            });
+        });
+        
+        // Dashboard stats counter
+        function animateCounters() {
+            document.querySelectorAll('.stat-number').forEach(stat => {
+                const finalValue = stat.textContent;
+                const isPercentage = finalValue.includes('%');
+                const isDecimal = finalValue.includes('.');
+                const numericValue = parseFloat(finalValue);
+                
+                let current = 0;
+                const increment = numericValue / 50;
+                
+                const counter = setInterval(() => {
+                    current += increment;
+                    if (current >= numericValue) {
+                        stat.textContent = finalValue;
+                        clearInterval(counter);
+                    } else {
+                        if (isDecimal) {
+                            stat.textContent = current.toFixed(1);
+                        } else {
+                            stat.textContent = Math.floor(current) + (isPercentage ? '%' : '');
+                        }
+                    }
+                }, 30);
+            });
+        }
+        
+        // Trigger counter animation when dashboard is visible
+        const dashboardObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    setTimeout(animateCounters, 300);
+                    dashboardObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        dashboardObserver.observe(document.querySelector('.neo-dashboard'));
+        
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

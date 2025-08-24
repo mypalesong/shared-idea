@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geometric Gathering - 기하학적 모임 인터페이스</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .geometric-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .geometric-shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: geometricFloat 12s ease-in-out infinite;
+        }
+
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-bottom: 50px solid #ffffff;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .square {
+            width: 60px;
+            height: 60px;
+            background: #ffffff;
+            transform: rotate(45deg);
+            top: 20%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .circle {
+            width: 80px;
+            height: 80px;
+            background: #ffffff;
+            border-radius: 50%;
+            bottom: 30%;
+            left: 15%;
+            animation-delay: 4s;
+        }
+
+        .hexagon {
+            width: 60px;
+            height: 34.64px;
+            background: #ffffff;
+            position: relative;
+            top: 60%;
+            right: 20%;
+            animation-delay: 6s;
+        }
+
+        .hexagon::before,
+        .hexagon::after {
+            content: "";
+            position: absolute;
+            width: 0;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+        }
+
+        .hexagon::before {
+            bottom: 100%;
+            border-bottom: 17.32px solid #ffffff;
+        }
+
+        .hexagon::after {
+            top: 100%;
+            border-top: 17.32px solid #ffffff;
+        }
+
+        .diamond {
+            width: 40px;
+            height: 40px;
+            background: #ffffff;
+            transform: rotate(45deg);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            bottom: 10%;
+            right: 30%;
+            animation-delay: 8s;
+        }
+
+        @keyframes geometricFloat {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.1;
+            }
+            33% {
+                transform: translateY(-30px) rotate(120deg);
+                opacity: 0.2;
+            }
+            66% {
+                transform: translateY(15px) rotate(240deg);
+                opacity: 0.15;
+            }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 80px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.1) 50%, transparent 60%);
+            border-radius: 50%;
+            animation: headerGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes headerGlow {
+            0%, 100% { transform: translateX(-50%) scale(1) rotate(0deg); }
+            50% { transform: translateX(-50%) scale(1.1) rotate(180deg); }
+        }
+
+        .header h1 {
+            font-size: 4.2rem;
+            font-weight: 900;
+            margin-bottom: 25px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .header p {
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .gatherings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 35px;
+            margin-bottom: 80px;
+        }
+
+        .gathering-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+        }
+
+        .gathering-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .gathering-card:hover::before {
+            opacity: 1;
+        }
+
+        .gathering-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .card-geometric-header {
+            height: 180px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .geometric-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                conic-gradient(from 0deg at 25% 25%, rgba(255, 255, 255, 0.1) 0deg, transparent 90deg, transparent 180deg, rgba(255, 255, 255, 0.05) 270deg),
+                conic-gradient(from 0deg at 75% 75%, rgba(255, 255, 255, 0.08) 0deg, transparent 90deg, transparent 180deg, rgba(255, 255, 255, 0.03) 270deg);
+            animation: patternRotate 8s linear infinite;
+        }
+
+        @keyframes patternRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .card-icon-geometric {
+            font-size: 4rem;
+            position: relative;
+            z-index: 2;
+            animation: iconPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .card-content {
+            padding: 35px;
+        }
+
+        .gathering-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .gathering-date {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gathering-date::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .gathering-card:hover .gathering-date::before {
+            left: 100%;
+        }
+
+        .gathering-participants {
+            display: flex;
+            align-items: center;
+            gap: -8px;
+        }
+
+        .participant-shape {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-left: -8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .participant-shape:hover {
+            transform: scale(1.1);
+            z-index: 5;
+        }
+
+        .participant-triangle {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        .participant-circle {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            border-radius: 50%;
+        }
+
+        .participant-square {
+            background: linear-gradient(135deg, #45b7d1, #3498db);
+            border-radius: 8px;
+        }
+
+        .participant-hexagon {
+            background: linear-gradient(135deg, #f7dc6f, #f1c40f);
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+        }
+
+        .gathering-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 18px;
+            line-height: 1.2;
+        }
+
+        .gathering-description {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .gathering-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-geometric {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-geometric::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0;
+            transition: all 0.5s ease;
+            animation: statRotate 4s linear infinite paused;
+        }
+
+        .gathering-card:hover .stat-geometric::before {
+            opacity: 1;
+            animation-play-state: running;
+        }
+
+        @keyframes statRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .stat-geometric:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .stat-icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .join-geometric-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .join-geometric-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .join-geometric-btn:hover::before {
+            left: 100%;
+        }
+
+        .join-geometric-btn:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .geometric-showcase {
+            text-align: center;
+            margin: 80px 0;
+            position: relative;
+        }
+
+        .showcase-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 60px;
+            color: white;
+        }
+
+        .shapes-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        .showcase-shape {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .showcase-shape::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            transform: translate(-50%, -50%);
+            transition: all 0.4s ease;
+        }
+
+        .showcase-shape:hover {
+            transform: scale(1.2) rotate(45deg);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .showcase-shape:hover::before {
+            width: 40px;
+            height: 40px;
+        }
+
+        .showcase-triangle {
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        .showcase-circle {
+            border-radius: 50%;
+        }
+
+        .showcase-square {
+            /* Default square shape */
+        }
+
+        .showcase-hexagon {
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+        }
+
+        .showcase-diamond {
+            transform: rotate(45deg);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        }
+
+        .showcase-star {
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 3.2rem;
+            }
+            
+            .gatherings-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            
+            .gathering-stats {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .shapes-container {
+                gap: 25px;
+            }
+            
+            .showcase-shape {
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .gathering-meta {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .shapes-container {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="geometric-background">
+        <div class="geometric-shape triangle"></div>
+        <div class="geometric-shape square"></div>
+        <div class="geometric-shape circle"></div>
+        <div class="geometric-shape hexagon"></div>
+        <div class="geometric-shape diamond"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Geometric Gathering</h1>
+            <p>기하학적 패턴과 모던 디자인이 만나는 창의적인 모임 공간에서 영감을 공유하세요</p>
+        </div>
+
+        <div class="gatherings-grid">
+            <div class="gathering-card">
+                <div class="card-geometric-header">
+                    <div class="geometric-pattern"></div>
+                    <div class="card-icon-geometric">△</div>
+                </div>
+                <div class="card-content">
+                    <div class="gathering-meta">
+                        <div class="gathering-date">8월 25일 오후 3:00</div>
+                        <div class="gathering-participants">
+                            <div class="participant-shape participant-triangle">김</div>
+                            <div class="participant-shape participant-circle">이</div>
+                            <div class="participant-shape participant-square">박</div>
+                            <div class="participant-shape participant-hexagon">최</div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="gathering-title">기하학 디자인 워크샵</h3>
+                    <p class="gathering-description">기하학적 패턴과 형태를 활용한 모던 디자인 기법을 배우고 실제 프로젝트에 적용하는 집중 워크샵입니다.</p>
+                    
+                    <div class="gathering-stats">
+                        <div class="stat-geometric">
+                            <span class="stat-icon">⏱️</span>
+                            <div class="stat-value">4시간</div>
+                            <div class="stat-label">진행시간</div>
+                        </div>
+                        <div class="stat-geometric">
+                            <span class="stat-icon">👥</span>
+                            <div class="stat-value">24명</div>
+                            <div class="stat-label">참여자</div>
+                        </div>
+                        <div class="stat-geometric">
+                            <span class="stat-icon">🎯</span>
+                            <div class="stat-value">중급</div>
+                            <div class="stat-label">난이도</div>
+                        </div>
+                    </div>
+
+                    <button class="join-geometric-btn">참여하기</button>
+                </div>
+            </div>
+
+            <div class="gathering-card">
+                <div class="card-geometric-header">
+                    <div class="geometric-pattern"></div>
+                    <div class="card-icon-geometric">●</div>
+                </div>
+                <div class="card-content">
+                    <div class="gathering-meta">
+                        <div class="gathering-date">8월 27일 오후 6:30</div>
+                        <div class="gathering-participants">
+                            <div class="participant-shape participant-circle">정</div>
+                            <div class="participant-shape participant-triangle">한</div>
+                            <div class="participant-shape participant-hexagon">윤</div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="gathering-title">미니멀 아트 세미나</h3>
+                    <p class="gathering-description">단순한 기하학적 형태로 강력한 메시지를 전달하는 미니멀 아트의 철학과 실무 기법을 탐구합니다.</p>
+                    
+                    <div class="gathering-stats">
+                        <div class="stat-geometric">
+                            <span class="stat-icon">⏱️</span>
+                            <div class="stat-value">2시간</div>
+                            <div class="stat-label">진행시간</div>
+                        </div>
+                        <div class="stat-geometric">
+                            <span class="stat-icon">👥</span>
+                            <div class="stat-value">18명</div>
+                            <div class="stat-label">참여자</div>
+                        </div>
+                        <div class="stat-geometric">
+                            <span class="stat-icon">🎯</span>
+                            <div class="stat-value">초급</div>
+                            <div class="stat-label">난이도</div>
+                        </div>
+                    </div>
+
+                    <button class="join-geometric-btn">참여하기</button>
+                </div>
+            </div>
+
+            <div class="gathering-card">
+                <div class="card-geometric-header">
+                    <div class="geometric-pattern"></div>
+                    <div class="card-icon-geometric">■</div>
+                </div>
+                <div class="card-content">
+                    <div class="gathering-meta">
+                        <div class="gathering-date">8월 29일 오후 2:00</div>
+                        <div class="gathering-participants">
+                            <div class="participant-shape participant-square">조</div>
+                            <div class="participant-shape participant-hexagon">강</div>
+                            <div class="participant-shape participant-circle">신</div>
+                            <div class="participant-shape participant-triangle">오</div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="gathering-title">패턴 디자인 마스터클래스</h3>
+                    <p class="gathering-description">복잡한 기하학적 패턴을 체계적으로 구성하고 디지털 매체에 효과적으로 적용하는 고급 기법을 학습합니다.</p>
+                    
+                    <div class="gathering-stats">
+                        <div class="stat-geometric">
+                            <span class="stat-icon">⏱️</span>
+                            <div class="stat-value">6시간</div>
+                            <div class="stat-label">진행시간</div>
+                        </div>
+                        <div class="stat-geometric">
+                            <span class="stat-icon">👥</span>
+                            <div class="stat-value">15명</div>
+                            <div class="stat-label">참여자</div>
+                        </div>
+                        <div class="stat-geometric">
+                            <span class="stat-icon">🎯</span>
+                            <div class="stat-label">고급</div>
+                        </div>
+                    </div>
+
+                    <button class="join-geometric-btn">참여하기</button>
+                </div>
+            </div>
+
+            <div class="gathering-card">
+                <div class="card-geometric-header">
+                    <div class="geometric-pattern"></div>
+                    <div class="card-icon-geometric">⬢</div>
+                </div>
+                <div class="card-content">
+                    <div class="gathering-meta">
+                        <div class="gathering-date">8월 31일 오후 4:00</div>
+                        <div class="gathering-participants">
+                            <div class="participant-shape participant-hexagon">송</div>
+                            <div class="participant-shape participant-square">임</div>
+                            <div class="participant-shape participant-triangle">황</div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="gathering-title">3D 기하학 모델링</h3>
+                    <p class="gathering-description">3차원 공간에서 기하학적 형태를 활용한 조형 예술과 디지털 모델링 기법을 실습합니다.</p>
+                    
+                    <div class="gathering-stats">
+                        <div class="stat-geometric">
+                            <span class="stat-icon">⏱️</span>
+                            <div class="stat-value">5시간</div>
+                            <div class="stat-label">진행시간</div>
+                        </div>
+                        <div class="stat-geometric">
+                            <span class="stat-icon">👥</span>
+                            <div class="stat-value">12명</div>
+                            <div class="stat-label">참여자</div>
+                        </div>
+                        <div class="stat-geometric">
+                            <span class="stat-icon">🎯</span>
+                            <div class="stat-value">전문</div>
+                            <div class="stat-label">난이도</div>
+                        </div>
+                    </div>
+
+                    <button class="join-geometric-btn">참여하기</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="geometric-showcase">
+            <h2 class="showcase-title">기하학적 영감의 형태들</h2>
+            <div class="shapes-container">
+                <div class="showcase-shape showcase-triangle"></div>
+                <div class="showcase-shape showcase-circle"></div>
+                <div class="showcase-shape showcase-square"></div>
+                <div class="showcase-shape showcase-hexagon"></div>
+                <div class="showcase-shape showcase-diamond"></div>
+                <div class="showcase-shape showcase-star"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

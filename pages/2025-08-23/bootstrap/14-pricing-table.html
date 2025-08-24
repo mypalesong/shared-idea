@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>요금제 - TechCorp SaaS Solutions</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            line-height: 1.6;
+            background-color: #f8fafc;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 120px 0 80px;
+            text-align: center;
+        }
+        .pricing-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+            position: relative;
+            height: 100%;
+        }
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+        .pricing-card.popular {
+            border-color: #667eea;
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+            transform: scale(1.05);
+        }
+        .pricing-card.popular:hover {
+            transform: scale(1.05) translateY(-5px);
+        }
+        .popular-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        .plan-description {
+            color: #718096;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+        .price-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .price-amount {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #1a202c;
+            line-height: 1;
+        }
+        .price-currency {
+            font-size: 1.5rem;
+            vertical-align: top;
+        }
+        .price-period {
+            color: #718096;
+            font-size: 1rem;
+            margin-left: 0.5rem;
+        }
+        .original-price {
+            color: #a0aec0;
+            text-decoration: line-through;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .discount-badge {
+            background: #fed7d7;
+            color: #e53e3e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 2.5rem;
+        }
+        .features-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f7fafc;
+            display: flex;
+            align-items: center;
+        }
+        .features-list li:last-child {
+            border-bottom: none;
+        }
+        .feature-check {
+            color: #38a169;
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+        .feature-cross {
+            color: #cbd5e0;
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+        .btn-plan {
+            width: 100%;
+            padding: 15px;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        .btn-plan-basic {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            color: #4a5568;
+        }
+        .btn-plan-basic:hover {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+        .btn-plan-popular {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+        }
+        .btn-plan-popular:hover {
+            background: linear-gradient(135deg, #5a6fd8, #6b4190);
+            color: white;
+            transform: translateY(-2px);
+        }
+        .btn-plan-enterprise {
+            background: #1a202c;
+            border: 2px solid #1a202c;
+            color: white;
+        }
+        .btn-plan-enterprise:hover {
+            background: #2d3748;
+            border-color: #2d3748;
+            color: white;
+        }
+        .toggle-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .billing-toggle {
+            background: #f7fafc;
+            border-radius: 50px;
+            padding: 0.5rem;
+            display: inline-flex;
+            position: relative;
+        }
+        .toggle-option {
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            background: transparent;
+            border: none;
+            color: #718096;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .toggle-option.active {
+            background: white;
+            color: #1a202c;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .comparison-table {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: 4rem;
+        }
+        .table-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .faq-section {
+            background: white;
+            margin-top: 4rem;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        .accordion-button {
+            font-weight: 600;
+            color: #1a202c;
+        }
+        .accordion-button:not(.collapsed) {
+            background-color: #f8faff;
+            color: #667eea;
+            border-color: #e0e4ff;
+        }
+        .money-back {
+            background: #f0fff4;
+            border: 2px solid #9ae6b4;
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #276749;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#" style="color: #667eea;">
+                <i class="bi bi-cpu me-2"></i>TechCorp
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">홈</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">서비스</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active fw-bold" href="#">요금제</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">회사소개</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">연락처</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-4">성장에 맞는 완벽한 요금제</h1>
+            <p class="lead mb-0">스타트업부터 대기업까지, 모든 규모의 비즈니스에 최적화된 솔루션을 제공합니다.</p>
+        </div>
+    </section>
+
+    <section class="py-5">
+        <div class="container">
+            <div class="toggle-section">
+                <h3 class="mb-4">요금제를 선택하세요</h3>
+                <div class="billing-toggle">
+                    <button class="toggle-option active" onclick="showMonthly()">월간 결제</button>
+                    <button class="toggle-option" onclick="showYearly()">연간 결제 <small class="text-success ms-1">(20% 할인)</small></button>
+                </div>
+            </div>
+
+            <div class="row align-items-stretch" id="monthlyPricing">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="pricing-card">
+                        <div class="plan-name">스타터</div>
+                        <div class="plan-description">개인 및 소규모 팀을 위한 기본 플랜</div>
+                        <div class="price-section">
+                            <span class="price-amount">
+                                <span class="price-currency">₩</span>29,000
+                            </span>
+                            <span class="price-period">/ 월</span>
+                        </div>
+                        <ul class="features-list">
+                            <li><i class="bi bi-check-circle feature-check"></i>최대 5명 사용자</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>10GB 저장공간</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>기본 분석 도구</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>이메일 지원</li>
+                            <li><i class="bi bi-x-circle feature-cross"></i>고급 보안 기능</li>
+                            <li><i class="bi bi-x-circle feature-cross"></i>API 접근</li>
+                            <li><i class="bi bi-x-circle feature-cross"></i>우선 고객 지원</li>
+                        </ul>
+                        <button class="btn btn-plan btn-plan-basic">14일 무료 체험</button>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="pricing-card popular">
+                        <div class="popular-badge">가장 인기</div>
+                        <div class="plan-name">프로페셔널</div>
+                        <div class="plan-description">성장하는 비즈니스를 위한 완벽한 솔루션</div>
+                        <div class="price-section">
+                            <span class="price-amount">
+                                <span class="price-currency">₩</span>79,000
+                            </span>
+                            <span class="price-period">/ 월</span>
+                        </div>
+                        <ul class="features-list">
+                            <li><i class="bi bi-check-circle feature-check"></i>최대 25명 사용자</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>100GB 저장공간</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>고급 분석 및 리포트</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>24/7 이메일 지원</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>고급 보안 기능</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>API 무제한 접근</li>
+                            <li><i class="bi bi-x-circle feature-cross"></i>전담 고객 매니저</li>
+                        </ul>
+                        <button class="btn btn-plan btn-plan-popular">14일 무료 체험</button>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="pricing-card">
+                        <div class="plan-name">엔터프라이즈</div>
+                        <div class="plan-description">대기업을 위한 맞춤형 솔루션</div>
+                        <div class="price-section">
+                            <span class="price-amount">
+                                <span class="price-currency">₩</span>199,000
+                            </span>
+                            <span class="price-period">/ 월</span>
+                        </div>
+                        <ul class="features-list">
+                            <li><i class="bi bi-check-circle feature-check"></i>무제한 사용자</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>무제한 저장공간</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>맞춤형 분석 대시보드</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>24/7 전화 지원</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>엔터프라이즈 보안</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>화이트라벨 솔루션</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>전담 고객 매니저</li>
+                        </ul>
+                        <button class="btn btn-plan btn-plan-enterprise">상담 문의</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row align-items-stretch" id="yearlyPricing" style="display: none;">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="pricing-card">
+                        <div class="plan-name">스타터</div>
+                        <div class="plan-description">개인 및 소규모 팀을 위한 기본 플랜</div>
+                        <div class="price-section">
+                            <div class="original-price">₩348,000</div>
+                            <span class="price-amount">
+                                <span class="price-currency">₩</span>278,400
+                            </span>
+                            <span class="price-period">/ 년</span>
+                            <span class="discount-badge">20% 할인</span>
+                        </div>
+                        <ul class="features-list">
+                            <li><i class="bi bi-check-circle feature-check"></i>최대 5명 사용자</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>10GB 저장공간</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>기본 분석 도구</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>이메일 지원</li>
+                            <li><i class="bi bi-x-circle feature-cross"></i>고급 보안 기능</li>
+                            <li><i class="bi bi-x-circle feature-cross"></i>API 접근</li>
+                            <li><i class="bi bi-x-circle feature-cross"></i>우선 고객 지원</li>
+                        </ul>
+                        <button class="btn btn-plan btn-plan-basic">14일 무료 체험</button>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="pricing-card popular">
+                        <div class="popular-badge">가장 인기</div>
+                        <div class="plan-name">프로페셔널</div>
+                        <div class="plan-description">성장하는 비즈니스를 위한 완벽한 솔루션</div>
+                        <div class="price-section">
+                            <div class="original-price">₩948,000</div>
+                            <span class="price-amount">
+                                <span class="price-currency">₩</span>758,400
+                            </span>
+                            <span class="price-period">/ 년</span>
+                            <span class="discount-badge">20% 할인</span>
+                        </div>
+                        <ul class="features-list">
+                            <li><i class="bi bi-check-circle feature-check"></i>최대 25명 사용자</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>100GB 저장공간</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>고급 분석 및 리포트</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>24/7 이메일 지원</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>고급 보안 기능</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>API 무제한 접근</li>
+                            <li><i class="bi bi-x-circle feature-cross"></i>전담 고객 매니저</li>
+                        </ul>
+                        <button class="btn btn-plan btn-plan-popular">14일 무료 체험</button>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="pricing-card">
+                        <div class="plan-name">엔터프라이즈</div>
+                        <div class="plan-description">대기업을 위한 맞춤형 솔루션</div>
+                        <div class="price-section">
+                            <div class="original-price">₩2,388,000</div>
+                            <span class="price-amount">
+                                <span class="price-currency">₩</span>1,910,400
+                            </span>
+                            <span class="price-period">/ 년</span>
+                            <span class="discount-badge">20% 할인</span>
+                        </div>
+                        <ul class="features-list">
+                            <li><i class="bi bi-check-circle feature-check"></i>무제한 사용자</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>무제한 저장공간</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>맞춤형 분석 대시보드</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>24/7 전화 지원</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>엔터프라이즈 보안</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>화이트라벨 솔루션</li>
+                            <li><i class="bi bi-check-circle feature-check"></i>전담 고객 매니저</li>
+                        </ul>
+                        <button class="btn btn-plan btn-plan-enterprise">상담 문의</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="money-back">
+                <i class="bi bi-shield-check fs-4 me-2"></i>
+                <strong>30일 무조건 환불 보장</strong> - 만족하지 않으시면 전액 환불해드립니다.
+            </div>
+
+            <div class="comparison-table">
+                <div class="table-header">
+                    <h3 class="mb-0">상세 기능 비교</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">기능</th>
+                                <th scope="col" class="text-center">스타터</th>
+                                <th scope="col" class="text-center">프로페셔널</th>
+                                <th scope="col" class="text-center">엔터프라이즈</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="fw-semibold">사용자 수</td>
+                                <td class="text-center">5명</td>
+                                <td class="text-center">25명</td>
+                                <td class="text-center">무제한</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">저장공간</td>
+                                <td class="text-center">10GB</td>
+                                <td class="text-center">100GB</td>
+                                <td class="text-center">무제한</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">API 호출</td>
+                                <td class="text-center">1,000/월</td>
+                                <td class="text-center">무제한</td>
+                                <td class="text-center">무제한</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">고객 지원</td>
+                                <td class="text-center">이메일</td>
+                                <td class="text-center">이메일 + 채팅</td>
+                                <td class="text-center">전화 + 전담 매니저</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">SLA 보장</td>
+                                <td class="text-center">99.5%</td>
+                                <td class="text-center">99.9%</td>
+                                <td class="text-center">99.99%</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold">맞춤형 통합</td>
+                                <td class="text-center"><i class="bi bi-x-lg text-danger"></i></td>
+                                <td class="text-center"><i class="bi bi-check-lg text-success"></i></td>
+                                <td class="text-center"><i class="bi bi-check-lg text-success"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="faq-section">
+                <h3 class="text-center mb-4">자주 묻는 질문</h3>
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                무료 체험 기간 동안 모든 기능을 사용할 수 있나요?
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                네, 14일 무료 체험 기간 동안 선택한 요금제의 모든 기능을 제한 없이 사용하실 수 있습니다. 신용카드 정보가 필요하지만 체험 기간 중 취소하시면 과금되지 않습니다.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                요금제를 중간에 변경할 수 있나요?
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                언제든지 요금제를 업그레이드하거나 다운그레이드할 수 있습니다. 업그레이드 시 즉시 적용되며, 다운그레이드는 다음 결제 주기부터 적용됩니다.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                데이터 백업은 어떻게 되나요?
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                모든 데이터는 매일 자동으로 백업되며, 30일간 보관됩니다. 프로페셔널 이상 요금제에서는 수동 백업 기능도 제공합니다.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <h2 class="text-white mb-4">아직 확신이 서지 않으시나요?</h2>
+                    <p class="text-white-50 lead mb-4">전문가와 1:1 상담을 통해 귀하의 비즈니스에 최적화된 솔루션을 찾아보세요.</p>
+                    <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        <button class="btn btn-light btn-lg px-4">무료 상담 예약</button>
+                        <button class="btn btn-outline-light btn-lg px-4">데모 영상 보기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="mb-3"><i class="bi bi-cpu me-2"></i>TechCorp</h5>
+                    <p class="text-muted">혁신적인 IT 솔루션으로 고객의 성공을 함께 만들어갑니다.</p>
+                </div>
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-md-3 mb-4">
+                            <h6 class="mb-3">요금제</h6>
+                            <ul class="list-unstyled">
+                                <li><a href="#" class="text-muted text-decoration-none">스타터</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">프로페셔널</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">엔터프라이즈</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <h6 class="mb-3">지원</h6>
+                            <ul class="list-unstyled">
+                                <li><a href="#" class="text-muted text-decoration-none">고객센터</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">문서</a></li>
+                                <li><a href="#" class="text-muted text-decoration-none">커뮤니티</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <h6 class="mb-3">연락처</h6>
+                            <p class="text-muted mb-1"><i class="bi bi-phone me-2"></i>02-1234-5678</p>
+                            <p class="text-muted"><i class="bi bi-envelope me-2"></i>sales@techcorp.co.kr</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center">
+                <p class="text-muted mb-0">&copy; 2024 TechCorp. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showMonthly() {
+            document.getElementById('monthlyPricing').style.display = 'flex';
+            document.getElementById('yearlyPricing').style.display = 'none';
+            
+            // Toggle active state
+            document.querySelectorAll('.toggle-option').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+        
+        function showYearly() {
+            document.getElementById('monthlyPricing').style.display = 'none';
+            document.getElementById('yearlyPricing').style.display = 'flex';
+            
+            // Toggle active state
+            document.querySelectorAll('.toggle-option').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issue Tracker - Linear Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .header {
+            background: #161b22;
+            border-bottom: 1px solid #21262d;
+            padding: 0 16px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #e6edf3;
+        }
+        
+        .logo-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #5e6ad2 0%, #8b5fbf 100%);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #7d8590;
+            font-size: 14px;
+        }
+        
+        .breadcrumb-item {
+            color: #e6edf3;
+            text-decoration: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        
+        .breadcrumb-item:hover {
+            background: #21262d;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .header-btn {
+            background: #21262d;
+            border: 1px solid #30363d;
+            color: #e6edf3;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .header-btn:hover {
+            background: #30363d;
+            border-color: #484f58;
+        }
+        
+        .header-btn.primary {
+            background: #238636;
+            border-color: #238636;
+        }
+        
+        .header-btn.primary:hover {
+            background: #2ea043;
+        }
+        
+        .user-menu {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #5e6ad2 0%, #8b5fbf 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .main-container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 240px;
+            background: #0d1117;
+            border-right: 1px solid #21262d;
+            padding: 16px 0;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-section {
+            padding: 0 16px 16px;
+        }
+        
+        .sidebar-title {
+            font-size: 11px;
+            color: #7d8590;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+        
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 1px;
+            font-size: 13px;
+            color: #e6edf3;
+            transition: all 0.2s;
+        }
+        
+        .sidebar-item:hover {
+            background: #161b22;
+        }
+        
+        .sidebar-item.active {
+            background: #1f2937;
+            color: #58a6ff;
+        }
+        
+        .sidebar-icon {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.8;
+        }
+        
+        .sidebar-badge {
+            background: #21262d;
+            color: #7d8590;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-size: 10px;
+            margin-left: auto;
+        }
+        
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .content-header {
+            background: #0d1117;
+            padding: 16px 24px;
+            border-bottom: 1px solid #21262d;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #e6edf3;
+        }
+        
+        .content-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .search-input {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 6px 12px;
+            color: #e6edf3;
+            font-size: 13px;
+            width: 240px;
+            outline: none;
+        }
+        
+        .search-input:focus {
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+        }
+        
+        .filter-dropdown {
+            position: relative;
+        }
+        
+        .filter-btn {
+            background: #161b22;
+            border: 1px solid #30363d;
+            color: #e6edf3;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        
+        .filter-btn:hover {
+            background: #21262d;
+            border-color: #484f58;
+        }
+        
+        .filter-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 8px;
+            margin-top: 4px;
+            min-width: 200px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            display: none;
+            z-index: 100;
+        }
+        
+        .filter-menu.show {
+            display: block;
+        }
+        
+        .filter-section {
+            margin-bottom: 12px;
+        }
+        
+        .filter-section-title {
+            font-size: 11px;
+            color: #7d8590;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+        
+        .filter-option:hover {
+            background: #21262d;
+        }
+        
+        .filter-checkbox {
+            width: 12px;
+            height: 12px;
+            border: 1px solid #484f58;
+            border-radius: 2px;
+            background: #0d1117;
+        }
+        
+        .filter-checkbox.checked {
+            background: #238636;
+            border-color: #238636;
+        }
+        
+        .issue-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .issue-group {
+            border-bottom: 1px solid #21262d;
+        }
+        
+        .group-header {
+            background: #161b22;
+            padding: 8px 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #7d8590;
+            font-weight: 600;
+        }
+        
+        .group-toggle {
+            background: none;
+            border: none;
+            color: #7d8590;
+            cursor: pointer;
+            font-size: 10px;
+            padding: 2px;
+            border-radius: 2px;
+            transition: background 0.2s;
+        }
+        
+        .group-toggle:hover {
+            background: #21262d;
+        }
+        
+        .issue-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 24px;
+            border-bottom: 1px solid rgba(33, 38, 45, 0.5);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .issue-item:hover {
+            background: #161b22;
+        }
+        
+        .issue-item.selected {
+            background: #1f2937;
+            border-left: 3px solid #58a6ff;
+            padding-left: 21px;
+        }
+        
+        .issue-priority {
+            width: 16px;
+            height: 16px;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .priority-urgent { background: #da3633; }
+        .priority-high { background: #fd7e14; }
+        .priority-medium { background: #8b5cf6; }
+        .priority-low { background: #57d193; }
+        
+        .issue-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #7d8590;
+            min-width: 60px;
+            flex-shrink: 0;
+        }
+        
+        .issue-title {
+            flex: 1;
+            font-size: 14px;
+            color: #e6edf3;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .issue-labels {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        
+        .issue-label {
+            background: #1f2937;
+            color: #e6edf3;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+        
+        .label-bug { background: #7c2d12; color: #fed7aa; }
+        .label-feature { background: #1e40af; color: #bfdbfe; }
+        .label-improvement { background: #166534; color: #bbf7d0; }
+        
+        .issue-assignee {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .issue-status {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+        
+        .status-todo { background: #6b7280; }
+        .status-progress { background: #f59e0b; }
+        .status-review { background: #8b5cf6; }
+        .status-done { background: #10b981; }
+        
+        .issue-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .issue-modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 24px;
+            width: 600px;
+            max-width: 90vw;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #e6edf3;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: #7d8590;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .close-btn:hover {
+            background: #21262d;
+            color: #e6edf3;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #e6edf3;
+            margin-bottom: 6px;
+        }
+        
+        .form-input {
+            width: 100%;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #e6edf3;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .form-input:focus {
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+        }
+        
+        .form-select {
+            width: 100%;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #e6edf3;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        
+        .btn-primary {
+            background: #238636;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2ea043;
+        }
+        
+        .btn-secondary {
+            background: #21262d;
+            color: #e6edf3;
+            border-color: #30363d;
+        }
+        
+        .btn-secondary:hover {
+            background: #30363d;
+        }
+        
+        .quick-add {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            background: #238636;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(35, 134, 54, 0.4);
+            transition: all 0.2s;
+        }
+        
+        .quick-add:hover {
+            background: #2ea043;
+            transform: scale(1.05);
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #0d1117;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #484f58;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">
+                <div class="logo-icon">L</div>
+                <span>Linear</span>
+            </div>
+            <div class="breadcrumb">
+                <a href="#" class="breadcrumb-item">Frontend Team</a>
+                <span>/</span>
+                <span class="breadcrumb-item">Issues</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="header-btn">
+                <span>⚡</span>
+                <span>Command</span>
+                <kbd>⌘K</kbd>
+            </button>
+            <button class="header-btn primary" onclick="openIssueModal()">
+                <span>+</span>
+                <span>New Issue</span>
+            </button>
+            <div class="user-menu">JS</div>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Views</div>
+                <div class="sidebar-item active">
+                    <div class="sidebar-icon">📝</div>
+                    <span>All issues</span>
+                    <span class="sidebar-badge">24</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">👤</div>
+                    <span>My issues</span>
+                    <span class="sidebar-badge">6</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">⭐</div>
+                    <span>Created by me</span>
+                    <span class="sidebar-badge">8</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">🔥</div>
+                    <span>Urgent</span>
+                    <span class="sidebar-badge">3</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Projects</div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">🚀</div>
+                    <span>Website Redesign</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">📱</div>
+                    <span>Mobile App</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">🛠️</div>
+                    <span>Infrastructure</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Teams</div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">⚡</div>
+                    <span>Frontend</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">🔧</div>
+                    <span>Backend</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon">🎨</div>
+                    <span>Design</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="content-header">
+                <div class="page-title">All Issues</div>
+                <div class="content-controls">
+                    <input class="search-input" placeholder="Search issues..." />
+                    <div class="filter-dropdown">
+                        <button class="filter-btn" onclick="toggleFilter()">
+                            <span>🔍</span>
+                            <span>Filter</span>
+                        </button>
+                        <div class="filter-menu" id="filterMenu">
+                            <div class="filter-section">
+                                <div class="filter-section-title">Status</div>
+                                <div class="filter-option">
+                                    <div class="filter-checkbox"></div>
+                                    <span>Todo</span>
+                                </div>
+                                <div class="filter-option">
+                                    <div class="filter-checkbox checked"></div>
+                                    <span>In Progress</span>
+                                </div>
+                                <div class="filter-option">
+                                    <div class="filter-checkbox"></div>
+                                    <span>In Review</span>
+                                </div>
+                            </div>
+                            <div class="filter-section">
+                                <div class="filter-section-title">Priority</div>
+                                <div class="filter-option">
+                                    <div class="filter-checkbox"></div>
+                                    <span>Urgent</span>
+                                </div>
+                                <div class="filter-option">
+                                    <div class="filter-checkbox checked"></div>
+                                    <span>High</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="header-btn">📊 View</button>
+                </div>
+            </div>
+            
+            <div class="issue-list">
+                <div class="issue-group">
+                    <div class="group-header">
+                        <button class="group-toggle">▼</button>
+                        <span>🔥 Urgent Priority</span>
+                        <span>(3)</span>
+                    </div>
+                    
+                    <div class="issue-item" onclick="selectIssue(this)">
+                        <div class="issue-priority priority-urgent">!</div>
+                        <div class="issue-id">FE-134</div>
+                        <div class="issue-title">Critical performance issue on homepage</div>
+                        <div class="issue-labels">
+                            <div class="issue-label label-bug">Bug</div>
+                        </div>
+                        <div class="issue-assignee">JM</div>
+                        <div class="issue-status status-progress"></div>
+                    </div>
+                    
+                    <div class="issue-item" onclick="selectIssue(this)">
+                        <div class="issue-priority priority-urgent">!</div>
+                        <div class="issue-id">FE-133</div>
+                        <div class="issue-title">Login system security vulnerability</div>
+                        <div class="issue-labels">
+                            <div class="issue-label label-bug">Bug</div>
+                        </div>
+                        <div class="issue-assignee">SM</div>
+                        <div class="issue-status status-review"></div>
+                    </div>
+                    
+                    <div class="issue-item" onclick="selectIssue(this)">
+                        <div class="issue-priority priority-urgent">!</div>
+                        <div class="issue-id">FE-132</div>
+                        <div class="issue-title">Database connection timeout in production</div>
+                        <div class="issue-labels">
+                            <div class="issue-label label-bug">Bug</div>
+                        </div>
+                        <div class="issue-assignee">TK</div>
+                        <div class="issue-status status-todo"></div>
+                    </div>
+                </div>
+                
+                <div class="issue-group">
+                    <div class="group-header">
+                        <button class="group-toggle">▼</button>
+                        <span>⚡ High Priority</span>
+                        <span>(8)</span>
+                    </div>
+                    
+                    <div class="issue-item selected" onclick="selectIssue(this)">
+                        <div class="issue-priority priority-high">▲</div>
+                        <div class="issue-id">FE-131</div>
+                        <div class="issue-title">Implement new user dashboard design</div>
+                        <div class="issue-labels">
+                            <div class="issue-label label-feature">Feature</div>
+                            <div class="issue-label label-improvement">Enhancement</div>
+                        </div>
+                        <div class="issue-assignee">AL</div>
+                        <div class="issue-status status-progress"></div>
+                    </div>
+                    
+                    <div class="issue-item" onclick="selectIssue(this)">
+                        <div class="issue-priority priority-high">▲</div>
+                        <div class="issue-id">FE-130</div>
+                        <div class="issue-title">Mobile responsive layout improvements</div>
+                        <div class="issue-labels">
+                            <div class="issue-label label-improvement">Enhancement</div>
+                        </div>
+                        <div class="issue-assignee">MR</div>
+                        <div class="issue-status status-review"></div>
+                    </div>
+                    
+                    <div class="issue-item" onclick="selectIssue(this)">
+                        <div class="issue-priority priority-high">▲</div>
+                        <div class="issue-id">FE-129</div>
+                        <div class="issue-title">API rate limiting implementation</div>
+                        <div class="issue-labels">
+                            <div class="issue-label label-feature">Feature</div>
+                        </div>
+                        <div class="issue-assignee">CW</div>
+                        <div class="issue-status status-done"></div>
+                    </div>
+                    
+                    <div class="issue-item" onclick="selectIssue(this)">
+                        <div class="issue-priority priority-high">▲</div>
+                        <div class="issue-id">FE-128</div>
+                        <div class="issue-title">Dark mode theme support</div>
+                        <div class="issue-labels">
+                            <div class="issue-label label-feature">Feature</div>
+                        </div>
+                        <div class="issue-assignee">ED</div>
+                        <div class="issue-status status-todo"></div>
+                    </div>
+                </div>
+                
+                <div class="issue-group">
+                    <div class="group-header">
+                        <button class="group-toggle">▶</button>
+                        <span>📝 Medium Priority</span>
+                        <span>(13)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <button class="quick-add" onclick="openIssueModal()">+</button>
+    
+    <div class="issue-modal" id="issueModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Create New Issue</div>
+                <button class="close-btn" onclick="closeIssueModal()">×</button>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Title</label>
+                <input class="form-input" id="issueTitle" placeholder="Issue title..." />
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea class="form-input" id="issueDescription" rows="4" placeholder="Describe the issue..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Priority</label>
+                <select class="form-select" id="issuePriority">
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Assignee</label>
+                <select class="form-select" id="issueAssignee">
+                    <option value="">Unassigned</option>
+                    <option value="jm">John Miller</option>
+                    <option value="sm">Sarah Martinez</option>
+                    <option value="tk">Tom Kim</option>
+                    <option value="al">Alex Lee</option>
+                    <option value="mr">Mike Rodriguez</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Labels</label>
+                <select class="form-select" id="issueLabel">
+                    <option value="">No label</option>
+                    <option value="bug">Bug</option>
+                    <option value="feature">Feature</option>
+                    <option value="improvement">Improvement</option>
+                </select>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeIssueModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="createIssue()">Create Issue</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let issueCounter = 135;
+        
+        function toggleFilter() {
+            const filterMenu = document.getElementById('filterMenu');
+            filterMenu.classList.toggle('show');
+        }
+        
+        function selectIssue(issueElement) {
+            document.querySelectorAll('.issue-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            issueElement.classList.add('selected');
+        }
+        
+        function openIssueModal() {
+            document.getElementById('issueModal').classList.add('show');
+        }
+        
+        function closeIssueModal() {
+            document.getElementById('issueModal').classList.remove('show');
+            // Reset form
+            document.getElementById('issueTitle').value = '';
+            document.getElementById('issueDescription').value = '';
+            document.getElementById('issuePriority').value = 'medium';
+            document.getElementById('issueAssignee').value = '';
+            document.getElementById('issueLabel').value = '';
+        }
+        
+        function createIssue() {
+            const title = document.getElementById('issueTitle').value;
+            const priority = document.getElementById('issuePriority').value;
+            const assignee = document.getElementById('issueAssignee').value;
+            const label = document.getElementById('issueLabel').value;
+            
+            if (!title.trim()) {
+                alert('Issue title is required');
+                return;
+            }
+            
+            // Find appropriate group based on priority
+            let targetGroup;
+            if (priority === 'urgent') {
+                targetGroup = document.querySelector('.issue-group:first-child');
+            } else if (priority === 'high') {
+                targetGroup = document.querySelector('.issue-group:nth-child(2)');
+            } else {
+                targetGroup = document.querySelector('.issue-group:last-child');
+                // Expand collapsed group if needed
+                const toggle = targetGroup.querySelector('.group-toggle');
+                if (toggle.textContent === '▶') {
+                    toggle.click();
+                }
+            }
+            
+            const newIssue = document.createElement('div');
+            newIssue.className = 'issue-item';
+            newIssue.onclick = () => selectIssue(newIssue);
+            
+            const priorityClasses = {
+                'urgent': 'priority-urgent',
+                'high': 'priority-high', 
+                'medium': 'priority-medium',
+                'low': 'priority-low'
+            };
+            
+            const prioritySymbols = {
+                'urgent': '!',
+                'high': '▲',
+                'medium': '■',
+                'low': '▼'
+            };
+            
+            const labelClasses = {
+                'bug': 'label-bug',
+                'feature': 'label-feature',
+                'improvement': 'label-improvement'
+            };
+            
+            const assigneeInitials = assignee ? assignee.toUpperCase() : 'UN';
+            
+            newIssue.innerHTML = `
+                <div class="issue-priority ${priorityClasses[priority]}">${prioritySymbols[priority]}</div>
+                <div class="issue-id">FE-${issueCounter}</div>
+                <div class="issue-title">${title}</div>
+                <div class="issue-labels">
+                    ${label ? `<div class="issue-label ${labelClasses[label]}">${label}</div>` : ''}
+                </div>
+                <div class="issue-assignee">${assigneeInitials}</div>
+                <div class="issue-status status-todo"></div>
+            `;
+            
+            targetGroup.appendChild(newIssue);
+            issueCounter++;
+            closeIssueModal();
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('issueModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeIssueModal();
+            }
+        });
+        
+        // Close filter when clicking outside
+        document.addEventListener('click', function(e) {
+            const filterDropdown = e.target.closest('.filter-dropdown');
+            if (!filterDropdown) {
+                document.getElementById('filterMenu').classList.remove('show');
+            }
+        });
+        
+        // Toggle group collapse
+        document.querySelectorAll('.group-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const group = this.closest('.issue-group');
+                const issues = group.querySelectorAll('.issue-item');
+                
+                if (this.textContent === '▼') {
+                    this.textContent = '▶';
+                    issues.forEach(issue => issue.style.display = 'none');
+                } else {
+                    this.textContent = '▼';
+                    issues.forEach(issue => issue.style.display = 'flex');
+                }
+            });
+        });
+        
+        // Filter checkbox toggle
+        document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('click', function() {
+                this.classList.toggle('checked');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataPro Dashboard - SaaS 관리 콘솔</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #374151;
+        }
+        .sidebar {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            padding: 0;
+        }
+        .top-navbar {
+            background: white;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar-brand {
+            padding: 1.5rem;
+            border-bottom: 1px solid #475569;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        .sidebar-brand:hover {
+            color: white;
+        }
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+        .sidebar-nav-item {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            margin: 0.25rem 1rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .sidebar-nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        .sidebar-nav-item.active {
+            background: #3b82f6;
+            color: white;
+        }
+        .card-metric {
+            background: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .metric-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .metric-change {
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+        .metric-change.positive {
+            background: #dcfce7;
+            color: #15803d;
+        }
+        .metric-change.negative {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .table thead {
+            background: #f9fafb;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e5e7eb;
+        }
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-active {
+            background: #dcfce7;
+            color: #15803d;
+        }
+        .status-inactive {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+        .status-pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        .dropdown-toggle::after {
+            display: none;
+        }
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.4rem;
+            border-radius: 10px;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="#" class="sidebar-brand">
+            <i class="bi bi-graph-up me-3 fs-4"></i>
+            <span class="fw-bold fs-5">DataPro</span>
+        </a>
+        <nav class="sidebar-nav">
+            <a href="#" class="sidebar-nav-item active">
+                <i class="bi bi-speedometer2 me-3"></i>대시보드
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <i class="bi bi-bar-chart me-3"></i>분석
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <i class="bi bi-people me-3"></i>고객 관리
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <i class="bi bi-receipt me-3"></i>주문 관리
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <i class="bi bi-box me-3"></i>제품 관리
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <i class="bi bi-credit-card me-3"></i>결제 관리
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <i class="bi bi-chat-dots me-3"></i>고객 지원
+            </a>
+            <a href="#" class="sidebar-nav-item">
+                <i class="bi bi-gear me-3"></i>설정
+            </a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <nav class="top-navbar d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <button class="btn btn-link d-md-none me-3" id="sidebarToggle">
+                    <i class="bi bi-list fs-4"></i>
+                </button>
+                <h4 class="mb-0 fw-bold">대시보드</h4>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="input-group" style="width: 300px;">
+                    <span class="input-group-text bg-transparent border-end-0">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" class="form-control border-start-0" placeholder="검색...">
+                </div>
+                <div class="position-relative">
+                    <button class="btn btn-link position-relative">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+                        <div class="user-avatar me-2"></div>
+                        <span class="fw-medium">관리자</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>프로필</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>설정</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>로그아웃</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="p-4">
+            <div class="row mb-4">
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="card-metric">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <div class="metric-value text-primary">₩2.4M</div>
+                                <div class="metric-label">이번 달 매출</div>
+                            </div>
+                            <i class="bi bi-currency-dollar fs-2 text-primary"></i>
+                        </div>
+                        <span class="metric-change positive">
+                            <i class="bi bi-arrow-up"></i> +12.5%
+                        </span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="card-metric">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <div class="metric-value text-success">1,234</div>
+                                <div class="metric-label">신규 고객</div>
+                            </div>
+                            <i class="bi bi-person-plus fs-2 text-success"></i>
+                        </div>
+                        <span class="metric-change positive">
+                            <i class="bi bi-arrow-up"></i> +8.2%
+                        </span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="card-metric">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <div class="metric-value text-warning">567</div>
+                                <div class="metric-label">주문 수</div>
+                            </div>
+                            <i class="bi bi-bag fs-2 text-warning"></i>
+                        </div>
+                        <span class="metric-change negative">
+                            <i class="bi bi-arrow-down"></i> -3.1%
+                        </span>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="card-metric">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <div class="metric-value text-info">89.2%</div>
+                                <div class="metric-label">고객 만족도</div>
+                            </div>
+                            <i class="bi bi-heart fs-2 text-info"></i>
+                        </div>
+                        <span class="metric-change positive">
+                            <i class="bi bi-arrow-up"></i> +2.3%
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-lg-8">
+                    <div class="chart-container">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="fw-bold mb-0">매출 추이</h5>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-primary active">7일</button>
+                                <button class="btn btn-outline-primary">30일</button>
+                                <button class="btn btn-outline-primary">90일</button>
+                            </div>
+                        </div>
+                        <div style="height: 300px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <div class="text-center text-muted">
+                                <i class="bi bi-bar-chart fs-1 mb-2"></i>
+                                <p>차트 영역<br><small>실제 구현시 Chart.js 등 사용</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="chart-container">
+                        <h5 class="fw-bold mb-4">트래픽 소스</h5>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-medium">직접 방문</span>
+                                <span class="text-muted">45%</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-primary" style="width: 45%"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-medium">검색 엔진</span>
+                                <span class="text-muted">30%</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-success" style="width: 30%"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-medium">소셜 미디어</span>
+                                <span class="text-muted">15%</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-warning" style="width: 15%"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-medium">기타</span>
+                                <span class="text-muted">10%</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-info" style="width: 10%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="p-3 border-bottom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold mb-0">최근 주문</h5>
+                        <button class="btn btn-sm btn-primary">전체 보기</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>주문번호</th>
+                                <th>고객</th>
+                                <th>제품</th>
+                                <th>금액</th>
+                                <th>상태</th>
+                                <th>주문일</th>
+                                <th>액션</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="fw-medium">#ORD-001</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="user-avatar me-3"></div>
+                                        <div>
+                                            <div class="fw-medium">김민수</div>
+                                            <div class="text-muted small">kim@example.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>프리미엄 플랜</td>
+                                <td class="fw-bold">₩99,000</td>
+                                <td><span class="status-badge status-active">완료</span></td>
+                                <td>2024-01-15</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                            <i class="bi bi-three-dots"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#">상세보기</a></li>
+                                            <li><a class="dropdown-item" href="#">수정</a></li>
+                                            <li><a class="dropdown-item text-danger" href="#">삭제</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fw-medium">#ORD-002</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="user-avatar me-3"></div>
+                                        <div>
+                                            <div class="fw-medium">이영희</div>
+                                            <div class="text-muted small">lee@example.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>스탠다드 플랜</td>
+                                <td class="fw-bold">₩49,000</td>
+                                <td><span class="status-badge status-pending">처리중</span></td>
+                                <td>2024-01-14</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                            <i class="bi bi-three-dots"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#">상세보기</a></li>
+                                            <li><a class="dropdown-item" href="#">수정</a></li>
+                                            <li><a class="dropdown-item text-danger" href="#">삭제</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fw-medium">#ORD-003</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="user-avatar me-3"></div>
+                                        <div>
+                                            <div class="fw-medium">박진우</div>
+                                            <div class="text-muted small">park@example.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>베이직 플랜</td>
+                                <td class="fw-bold">₩19,000</td>
+                                <td><span class="status-badge status-inactive">취소</span></td>
+                                <td>2024-01-13</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                            <i class="bi bi-three-dots"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#">상세보기</a></li>
+                                            <li><a class="dropdown-item" href="#">수정</a></li>
+                                            <li><a class="dropdown-item text-danger" href="#">삭제</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('show');
+        });
+    </script>
+</body>
+</html>

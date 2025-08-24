@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Analytics Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-brand">
+                <i class="fas fa-table"></i>
+                <h1>Table Analytics Dashboard</h1>
+                <span class="version">v2.0</span>
+            </div>
+            <div class="header-stats">
+                <div class="stat-badge">
+                    <span class="stat-value" id="totalRows">0</span>
+                    <span class="stat-label">Rows</span>
+                </div>
+                <div class="stat-badge">
+                    <span class="stat-value" id="totalColumns">0</span>
+                    <span class="stat-label">Columns</span>
+                </div>
+                <div class="stat-badge">
+                    <span class="stat-value" id="dataSize">0 KB</span>
+                    <span class="stat-label">Size</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="exportData" class="btn btn-outline">
+                    <i class="fas fa-download"></i> Export
+                </button>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle">
+                        <i class="fas fa-plus"></i> New Analysis
+                    </button>
+                    <div class="dropdown-menu">
+                        <button onclick="createChart()">
+                            <i class="fas fa-chart-bar"></i> Create Chart
+                        </button>
+                        <button onclick="createPivot()">
+                            <i class="fas fa-table"></i> Pivot Table
+                        </button>
+                        <button onclick="runQuery()">
+                            <i class="fas fa-search"></i> SQL Query
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Control Bar -->
+        <div class="control-bar">
+            <div class="control-section">
+                <div class="data-source-controls">
+                    <select id="dataSourceType" class="form-control">
+                        <option value="file">Load JSON File</option>
+                        <option value="raw">Raw JSON Input</option>
+                        <option value="url">From URL</option>
+                        <option value="sample">Sample Data</option>
+                    </select>
+                    <button id="loadDataBtn" class="btn btn-secondary">
+                        <i class="fas fa-upload"></i> Load
+                    </button>
+                    <button id="compareBtn" class="btn btn-accent">
+                        <i class="fas fa-code-compare"></i> Compare
+                    </button>
+                </div>
+            </div>
+
+            <div class="control-section">
+                <div class="view-controls">
+                    <div class="btn-group" role="group">
+                        <button id="tableViewBtn" class="btn btn-sm active">
+                            <i class="fas fa-table"></i> Table
+                        </button>
+                        <button id="chartViewBtn" class="btn btn-sm">
+                            <i class="fas fa-chart-bar"></i> Charts
+                        </button>
+                        <button id="rawViewBtn" class="btn btn-sm">
+                            <i class="fas fa-code"></i> Raw
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-section">
+                <div class="filter-controls">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="globalSearch" placeholder="Search all data...">
+                        <button id="advancedFilter" class="btn-icon">
+                            <i class="fas fa-filter"></i>
+                        </button>
+                    </div>
+                    
+                    <label class="checkbox-control">
+                        <input type="checkbox" id="hideEmptyValues" checked>
+                        <span>Hide empty values</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Table View -->
+            <div id="tableView" class="view-panel active">
+                <div class="data-explorer">
+                    <!-- Left Sidebar - Schema Explorer -->
+                    <aside class="schema-sidebar">
+                        <div class="sidebar-header">
+                            <h3><i class="fas fa-sitemap"></i> Data Schema</h3>
+                            <button id="refreshSchema" class="btn-icon">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="schema-content">
+                            <div class="schema-tree" id="schemaTree">
+                                <div class="empty-state">
+                                    <i class="fas fa-database"></i>
+                                    <p>Load data to explore schema</p>
+                                </div>
+                            </div>
+                            
+                            <div class="schema-stats" id="schemaStats">
+                                <!-- Schema statistics will be populated here -->
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- Main Data Table -->
+                    <div class="table-container">
+                        <div class="table-header">
+                            <div class="table-controls">
+                                <div class="table-info">
+                                    <span id="tableTitle">Data Table</span>
+                                    <small id="tableDescription">Select a path to view tabular data</small>
+                                </div>
+                                
+                                <div class="table-actions">
+                                    <button id="addColumn" class="btn btn-sm">
+                                        <i class="fas fa-plus"></i> Column
+                                    </button>
+                                    <button id="sortData" class="btn btn-sm">
+                                        <i class="fas fa-sort"></i> Sort
+                                    </button>
+                                    <button id="filterData" class="btn btn-sm">
+                                        <i class="fas fa-filter"></i> Filter
+                                    </button>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm dropdown-toggle">
+                                            <i class="fas fa-cog"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <button onclick="exportTable()">Export Table</button>
+                                            <button onclick="createView()">Create View</button>
+                                            <button onclick="transformData()">Transform</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="table-filters" id="activeFilters">
+                                <!-- Active filters will appear here -->
+                            </div>
+                        </div>
+                        
+                        <div class="table-viewport">
+                            <div id="dataTable" class="data-table">
+                                <div class="table-empty-state">
+                                    <i class="fas fa-table"></i>
+                                    <h3>No Data Selected</h3>
+                                    <p>Select a data path from the schema explorer to view as table</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="table-footer">
+                            <div class="pagination-info">
+                                Showing <span id="rowStart">0</span> to <span id="rowEnd">0</span> 
+                                of <span id="rowTotal">0</span> rows
+                            </div>
+                            <div class="pagination-controls">
+                                <button id="prevPage" class="btn btn-sm" disabled>
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <span id="currentPage">1</span> / <span id="totalPages">1</span>
+                                <button id="nextPage" class="btn btn-sm" disabled>
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart View -->
+            <div id="chartView" class="view-panel">
+                <div class="chart-dashboard">
+                    <div class="chart-sidebar">
+                        <div class="sidebar-header">
+                            <h3><i class="fas fa-chart-bar"></i> Chart Builder</h3>
+                        </div>
+                        
+                        <div class="chart-config">
+                            <div class="config-group">
+                                <label>Chart Type</label>
+                                <select id="chartType" class="form-control">
+                                    <option value="bar">Bar Chart</option>
+                                    <option value="line">Line Chart</option>
+                                    <option value="pie">Pie Chart</option>
+                                    <option value="scatter">Scatter Plot</option>
+                                    <option value="doughnut">Doughnut Chart</option>
+                                </select>
+                            </div>
+                            
+                            <div class="config-group">
+                                <label>X-Axis</label>
+                                <select id="xAxis" class="form-control">
+                                    <option value="">Select field...</option>
+                                </select>
+                            </div>
+                            
+                            <div class="config-group">
+                                <label>Y-Axis</label>
+                                <select id="yAxis" class="form-control">
+                                    <option value="">Select field...</option>
+                                </select>
+                            </div>
+                            
+                            <div class="config-group">
+                                <label>Aggregation</label>
+                                <select id="aggregation" class="form-control">
+                                    <option value="count">Count</option>
+                                    <option value="sum">Sum</option>
+                                    <option value="avg">Average</option>
+                                    <option value="min">Minimum</option>
+                                    <option value="max">Maximum</option>
+                                </select>
+                            </div>
+                            
+                            <button id="generateChart" class="btn btn-primary full-width">
+                                <i class="fas fa-chart-line"></i> Generate Chart
+                            </button>
+                        </div>
+                        
+                        <div class="chart-templates">
+                            <h4>Quick Templates</h4>
+                            <div class="template-grid">
+                                <button class="template-btn" onclick="applyTemplate('distribution')">
+                                    <i class="fas fa-chart-bar"></i>
+                                    Distribution
+                                </button>
+                                <button class="template-btn" onclick="applyTemplate('trend')">
+                                    <i class="fas fa-chart-line"></i>
+                                    Trend
+                                </button>
+                                <button class="template-btn" onclick="applyTemplate('correlation')">
+                                    <i class="fas fa-project-diagram"></i>
+                                    Correlation
+                                </button>
+                                <button class="template-btn" onclick="applyTemplate('summary')">
+                                    <i class="fas fa-chart-pie"></i>
+                                    Summary
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-content">
+                        <div class="chart-tabs">
+                            <div class="tab-list">
+                                <button class="tab-btn active" data-tab="chart1">Chart 1</button>
+                                <button class="add-tab-btn" id="addChartTab">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-viewport">
+                            <div id="chartContainer" class="chart-container">
+                                <canvas id="mainChart"></canvas>
+                                <div class="chart-overlay">
+                                    <div class="chart-empty-state">
+                                        <i class="fas fa-chart-line"></i>
+                                        <h3>Create Your First Chart</h3>
+                                        <p>Select data fields and chart type to visualize your data</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-insights" id="chartInsights">
+                            <!-- Data insights will appear here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Raw View -->
+            <div id="rawView" class="view-panel">
+                <div class="raw-editor">
+                    <div class="editor-toolbar">
+                        <div class="toolbar-group">
+                            <button id="formatJson" class="btn btn-sm">
+                                <i class="fas fa-indent"></i> Format
+                            </button>
+                            <button id="minifyJson" class="btn btn-sm">
+                                <i class="fas fa-compress"></i> Minify
+                            </button>
+                            <button id="validateJson" class="btn btn-sm">
+                                <i class="fas fa-check-circle"></i> Validate
+                            </button>
+                        </div>
+                        
+                        <div class="toolbar-group">
+                            <button id="copyRaw" class="btn btn-sm">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                            <button id="saveRaw" class="btn btn-sm">
+                                <i class="fas fa-save"></i> Save
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="editor-content">
+                        <textarea id="rawJsonEditor" class="raw-editor-textarea" placeholder="Raw JSON data will appear here..."></textarea>
+                    </div>
+                    
+                    <div class="editor-status">
+                        <div class="status-info">
+                            <span id="jsonStatus">Ready</span>
+                            <span id="jsonSize">0 bytes</span>
+                            <span id="jsonLines">0 lines</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Comparison Mode -->
+        <div id="comparisonMode" class="comparison-overlay hidden">
+            <div class="comparison-container">
+                <div class="comparison-header">
+                    <h2><i class="fas fa-code-compare"></i> Data Comparison</h2>
+                    <button id="closeComparison" class="btn btn-outline">
+                        <i class="fas fa-times"></i> Close
+                    </button>
+                </div>
+                
+                <div class="comparison-controls">
+                    <div class="comparison-input">
+                        <label>First Dataset</label>
+                        <div class="input-group">
+                            <input type="file" id="compareFile1" accept=".json">
+                            <button id="comparePaste1" class="btn btn-sm">Paste JSON</button>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-input">
+                        <label>Second Dataset</label>
+                        <div class="input-group">
+                            <input type="file" id="compareFile2" accept=".json">
+                            <button id="comparePaste2" class="btn btn-sm">Paste JSON</button>
+                        </div>
+                    </div>
+                    
+                    <button id="runComparison" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Compare
+                    </button>
+                </div>
+                
+                <div class="comparison-results">
+                    <div class="comparison-panel">
+                        <h3>Dataset 1</h3>
+                        <div id="compareData1" class="comparison-data"></div>
+                    </div>
+                    
+                    <div class="comparison-panel">
+                        <h3>Differences</h3>
+                        <div id="compareDiff" class="comparison-differences"></div>
+                    </div>
+                    
+                    <div class="comparison-panel">
+                        <h3>Dataset 2</h3>
+                        <div id="compareData2" class="comparison-data"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modals -->
+        <div id="queryModal" class="modal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-search"></i> SQL-like Query Builder</h3>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="query-builder">
+                            <div class="query-editor">
+                                <label>Query</label>
+                                <textarea id="sqlQuery" placeholder="SELECT * FROM data WHERE..."></textarea>
+                            </div>
+                            
+                            <div class="query-examples">
+                                <h4>Examples:</h4>
+                                <div class="example-queries">
+                                    <button class="example-btn" onclick="insertQuery('SELECT * FROM data LIMIT 10')">
+                                        Show first 10 rows
+                                    </button>
+                                    <button class="example-btn" onclick="insertQuery('SELECT COUNT(*) FROM data')">
+                                        Count rows
+                                    </button>
+                                    <button class="example-btn" onclick="insertQuery('SELECT * FROM data WHERE column = &quot;value&quot;')">
+                                        Filter by value
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="executeQuery" class="btn btn-primary">
+                            <i class="fas fa-play"></i> Execute
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="filterModal" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-filter"></i> Advanced Filters</h3>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="filterBuilder" class="filter-builder">
+                            <!-- Dynamic filter controls will be added here -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="clearFilters" class="btn btn-outline">Clear All</button>
+                        <button id="applyFilters" class="btn btn-primary">Apply Filters</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
