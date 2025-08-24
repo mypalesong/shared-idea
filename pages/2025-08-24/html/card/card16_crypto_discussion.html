@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>블록체인 토론회 초대장</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #000011;
+            color: #00ff88;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            width: 720px;
+            height: 520px;
+            background: linear-gradient(135deg, #001122 0%, #000033 50%, #001100 100%);
+            border: 2px solid #00ff88;
+            position: relative;
+            overflow: hidden;
+            animation: cardGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes cardGlow {
+            0%, 100% { 
+                box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+                border-color: #00ff88;
+            }
+            50% { 
+                box-shadow: 0 0 60px rgba(0, 255, 136, 0.6), 0 0 90px rgba(0, 255, 136, 0.3);
+                border-color: #88ff00;
+            }
+        }
+
+        .cyber-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px);
+            background-size: 25px 25px;
+            animation: gridFlow 20s linear infinite;
+        }
+
+        @keyframes gridFlow {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(25px, 25px); }
+        }
+
+        .blockchain-nodes {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #00ff88;
+            animation: nodeConnect ease-in-out infinite;
+        }
+
+        .node-1 { top: 100px; left: 150px; animation-duration: 3s; animation-delay: 0s; }
+        .node-2 { top: 200px; right: 200px; animation-duration: 4s; animation-delay: -1s; }
+        .node-3 { bottom: 180px; left: 100px; animation-duration: 5s; animation-delay: -2s; }
+        .node-4 { bottom: 120px; right: 150px; animation-duration: 3.5s; animation-delay: -1.5s; }
+        .node-5 { top: 150px; left: 300px; animation-duration: 4.5s; animation-delay: -0.5s; }
+
+        @keyframes nodeConnect {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 15px #00ff88;
+                background: #00ff88;
+            }
+            25% { 
+                transform: scale(1.5);
+                box-shadow: 0 0 25px #00ff88, 0 0 35px #88ff00;
+                background: #88ff00;
+            }
+            50% { 
+                transform: scale(1.2);
+                box-shadow: 0 0 20px #88ff00;
+                background: #ffff00;
+            }
+            75% { 
+                transform: scale(1.3);
+                box-shadow: 0 0 30px #ffff00, 0 0 40px #00ff88;
+                background: #00ffff;
+            }
+        }
+
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent,
+                rgba(0, 255, 136, 0.6),
+                rgba(136, 255, 0, 0.4),
+                transparent);
+            animation: dataFlow 3s ease-in-out infinite;
+        }
+
+        .line-1 {
+            top: 104px;
+            left: 158px;
+            width: 200px;
+            transform: rotate(25deg);
+            animation-delay: 0s;
+        }
+
+        .line-2 {
+            top: 180px;
+            right: 250px;
+            width: 150px;
+            transform: rotate(-45deg);
+            animation-delay: -1s;
+        }
+
+        .line-3 {
+            bottom: 150px;
+            left: 150px;
+            width: 250px;
+            transform: rotate(15deg);
+            animation-delay: -2s;
+        }
+
+        @keyframes dataFlow {
+            0%, 100% { 
+                background: linear-gradient(90deg, 
+                    transparent,
+                    rgba(0, 255, 136, 0.3),
+                    transparent);
+            }
+            50% { 
+                background: linear-gradient(90deg, 
+                    transparent,
+                    rgba(0, 255, 136, 0.8),
+                    rgba(136, 255, 0, 0.6),
+                    transparent);
+            }
+        }
+
+        .crypto-symbol {
+            position: absolute;
+            font-size: 2rem;
+            color: rgba(0, 255, 136, 0.4);
+            animation: symbolFloat ease-in-out infinite;
+        }
+
+        .symbol-1 { top: 60px; left: 80px; animation-duration: 6s; animation-delay: 0s; }
+        .symbol-2 { top: 120px; right: 100px; animation-duration: 5s; animation-delay: -2s; }
+        .symbol-3 { bottom: 200px; left: 200px; animation-duration: 7s; animation-delay: -4s; }
+        .symbol-4 { bottom: 80px; right: 80px; animation-duration: 4s; animation-delay: -1s; }
+
+        @keyframes symbolFloat {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.4;
+            }
+            25% { 
+                transform: translateY(-15px) rotate(90deg);
+                opacity: 0.7;
+            }
+            50% { 
+                transform: translateY(-25px) rotate(180deg);
+                opacity: 0.9;
+            }
+            75% { 
+                transform: translateY(-10px) rotate(270deg);
+                opacity: 0.5;
+            }
+        }
+
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+            width: 80%;
+        }
+
+        .title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 4.5rem;
+            font-weight: 700;
+            color: #00ff88;
+            margin-bottom: 20px;
+            text-shadow: 
+                0 0 10px #00ff88,
+                0 0 20px #00ff88,
+                0 0 30px #00ff88;
+            animation: titleCyber 3s ease-in-out infinite;
+        }
+
+        @keyframes titleCyber {
+            0%, 100% { 
+                text-shadow: 
+                    0 0 10px #00ff88,
+                    0 0 20px #00ff88,
+                    0 0 30px #00ff88;
+            }
+            50% { 
+                text-shadow: 
+                    0 0 20px #00ff88,
+                    0 0 40px #00ff88,
+                    0 0 60px #00ff88,
+                    0 0 80px #88ff00;
+            }
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            color: #88ff00;
+            margin-bottom: 40px;
+            letter-spacing: 4px;
+            animation: subtitleGlitch 2s ease-in-out infinite;
+        }
+
+        @keyframes subtitleGlitch {
+            0%, 100% { 
+                opacity: 1;
+                transform: translate(0);
+                color: #88ff00;
+            }
+            10% { 
+                opacity: 0.8;
+                transform: translate(-2px, 1px);
+                color: #00ffff;
+            }
+            20% { 
+                opacity: 0.9;
+                transform: translate(2px, -1px);
+                color: #ffff00;
+            }
+        }
+
+        .blockchain-event {
+            background: rgba(0, 255, 136, 0.05);
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+            animation: eventSlide 2s ease-out 1s both;
+        }
+
+        @keyframes eventSlide {
+            0% { 
+                opacity: 0; 
+                transform: translateY(50px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+
+        .event-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.2rem;
+            color: #00ffff;
+            margin-bottom: 15px;
+            font-weight: 600;
+            text-shadow: 0 0 15px #00ffff;
+        }
+
+        .discussion-topic {
+            font-size: 1.1rem;
+            color: #ffffff;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .crypto-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+            color: #00ff88;
+            animation: detailCyber 4s ease-in-out infinite;
+        }
+
+        .detail-item:nth-child(1) { animation-delay: 0s; }
+        .detail-item:nth-child(2) { animation-delay: -1s; }
+        .detail-item:nth-child(3) { animation-delay: -2s; }
+        .detail-item:nth-child(4) { animation-delay: -3s; }
+
+        @keyframes detailCyber {
+            0%, 100% { 
+                color: #00ff88;
+                text-shadow: none;
+            }
+            50% { 
+                color: #88ff00;
+                text-shadow: 0 0 10px #88ff00;
+            }
+        }
+
+        .detail-icon {
+            margin-right: 12px;
+            font-size: 1.2rem;
+            color: #00ffff;
+        }
+
+        .hash-pattern {
+            position: absolute;
+            font-family: 'Rajdhani', monospace;
+            font-size: 12px;
+            color: rgba(0, 255, 136, 0.2);
+            animation: hashScroll 10s linear infinite;
+        }
+
+        .hash-1 {
+            top: 30px;
+            left: 0;
+            animation-delay: 0s;
+        }
+
+        .hash-2 {
+            bottom: 30px;
+            right: 0;
+            animation-delay: -5s;
+            animation-direction: reverse;
+        }
+
+        @keyframes hashScroll {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100vw); }
+        }
+
+        .digital-wallet {
+            position: absolute;
+            bottom: 40px;
+            left: 50px;
+            font-size: 2.5rem;
+            animation: walletPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes walletPulse {
+            0%, 100% { 
+                transform: scale(1);
+                filter: drop-shadow(0 0 15px rgba(0, 255, 136, 0.6));
+            }
+            50% { 
+                transform: scale(1.1);
+                filter: drop-shadow(0 0 25px rgba(0, 255, 136, 0.8));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="cyber-grid"></div>
+        
+        <div class="blockchain-nodes node-1"></div>
+        <div class="blockchain-nodes node-2"></div>
+        <div class="blockchain-nodes node-3"></div>
+        <div class="blockchain-nodes node-4"></div>
+        <div class="blockchain-nodes node-5"></div>
+        
+        <div class="connection-line line-1"></div>
+        <div class="connection-line line-2"></div>
+        <div class="connection-line line-3"></div>
+        
+        <div class="crypto-symbol symbol-1">₿</div>
+        <div class="crypto-symbol symbol-2">Ξ</div>
+        <div class="crypto-symbol symbol-3">◈</div>
+        <div class="crypto-symbol symbol-4">⟠</div>
+        
+        <div class="hash-pattern hash-1">0x3f4a2b8c9e1d7a5f8b2c4e6d9a1b3c5e7f9d2a4b6c8e0f1a3c5e7f9d2a4b6c8e0f1a3c5e7f9</div>
+        <div class="hash-pattern hash-2">f9d2a4b6c8e0f1a3c5e7f9d2a4b6c8e0f1a3c5e7f9d2a4b6c8e0f1a3c5e7f9d2a4b6c8e0f1a3</div>
+        
+        <div class="digital-wallet">💎</div>
+        
+        <div class="content">
+            <h1 class="title">BLOCKCHAIN</h1>
+            <p class="subtitle">암호화폐 & DeFi 토론회</p>
+            
+            <div class="blockchain-event">
+                <div class="event-title">Web3 혁신과 미래 금융</div>
+                <div class="discussion-topic">
+                    블록체인 기술의 현재와 미래 전망<br>
+                    NFT, DeFi, 메타버스 생태계 심층 분석
+                </div>
+                
+                <div class="crypto-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">🔗</span>
+                        <span>블록체인 전문가 패널</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📅</span>
+                        <span>2025년 12월 20일 오후 7시</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🏢</span>
+                        <span>코엑스 블록체인센터</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📧</span>
+                        <span>blockchain.seoul@gmail.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

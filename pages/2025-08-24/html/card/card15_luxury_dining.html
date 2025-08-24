@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고급 다이닝 클럽 초대장</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif KR', serif;
+            background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+            color: #f5f5f5;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            width: 700px;
+            height: 500px;
+            background: linear-gradient(135deg, #f8f8f8 0%, #e8e8e8 100%);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+        }
+
+        .marble-texture {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at top left, rgba(180, 180, 180, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba(160, 160, 160, 0.2) 0%, transparent 50%),
+                linear-gradient(45deg, 
+                    rgba(200, 200, 200, 0.1) 0%,
+                    rgba(220, 220, 220, 0.05) 25%,
+                    rgba(240, 240, 240, 0.1) 50%,
+                    rgba(200, 200, 200, 0.05) 75%,
+                    rgba(180, 180, 180, 0.1) 100%);
+            animation: marbleShift 20s ease-in-out infinite;
+        }
+
+        @keyframes marbleShift {
+            0%, 100% { transform: translateX(0px) translateY(0px); }
+            25% { transform: translateX(5px) translateY(-3px); }
+            50% { transform: translateX(-3px) translateY(5px); }
+            75% { transform: translateX(3px) translateY(-2px); }
+        }
+
+        .gold-accents {
+            position: absolute;
+            background: linear-gradient(45deg, #d4af37, #f7d794);
+            animation: goldShimmer 4s ease-in-out infinite;
+        }
+
+        .accent-top {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            animation-delay: 0s;
+        }
+
+        .accent-bottom {
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            animation-delay: -2s;
+        }
+
+        .accent-left {
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 100%;
+            animation-delay: -1s;
+        }
+
+        .accent-right {
+            top: 0;
+            right: 0;
+            width: 8px;
+            height: 100%;
+            animation-delay: -3s;
+        }
+
+        @keyframes goldShimmer {
+            0%, 100% { 
+                background: linear-gradient(45deg, #d4af37, #f7d794);
+                opacity: 0.8;
+            }
+            50% { 
+                background: linear-gradient(45deg, #f7d794, #d4af37, #ffecb3);
+                opacity: 1;
+            }
+        }
+
+        .elegant-frame {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            right: 30px;
+            bottom: 30px;
+            border: 2px solid #d4af37;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+        }
+
+        .elegant-frame::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .ornamental-corner {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #d4af37;
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .corner-tl {
+            top: 50px;
+            left: 50px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .corner-tr {
+            top: 50px;
+            right: 50px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .corner-bl {
+            bottom: 50px;
+            left: 50px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .corner-br {
+            bottom: 50px;
+            right: 50px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+            width: 80%;
+            color: #2c2c2c;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: #d4af37;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            animation: titleElegant 3s ease-out;
+        }
+
+        @keyframes titleElegant {
+            0% { 
+                opacity: 0; 
+                transform: translateY(-20px) scale(0.9);
+                letter-spacing: -3px;
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+                letter-spacing: normal;
+            }
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            color: #555;
+            margin-bottom: 35px;
+            letter-spacing: 3px;
+            animation: subtitleFade 2s ease-out 1s both;
+        }
+
+        @keyframes subtitleFade {
+            0% { opacity: 0; transform: translateY(15px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .dining-card {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            padding: 30px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+            animation: cardElevate 2s ease-out 1.5s both;
+        }
+
+        @keyframes cardElevate {
+            0% { 
+                opacity: 0; 
+                transform: translateY(30px) scale(0.98);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+                box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            }
+        }
+
+        .restaurant-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #2c2c2c;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .cuisine-type {
+            font-size: 1.1rem;
+            color: #d4af37;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .dining-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            color: #2c2c2c;
+            animation: detailLuxury 1.5s ease-out both;
+        }
+
+        .detail-item:nth-child(1) { animation-delay: 2s; }
+        .detail-item:nth-child(2) { animation-delay: 2.2s; }
+        .detail-item:nth-child(3) { animation-delay: 2.4s; }
+        .detail-item:nth-child(4) { animation-delay: 2.6s; }
+
+        @keyframes detailLuxury {
+            0% { 
+                opacity: 0; 
+                transform: translateX(-15px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateX(0);
+            }
+        }
+
+        .detail-icon {
+            color: #d4af37;
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+
+        .champagne-glass {
+            position: absolute;
+            top: 80px;
+            left: 80px;
+            font-size: 3rem;
+            animation: champagneBubble 5s ease-in-out infinite;
+        }
+
+        @keyframes champagneBubble {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg);
+                filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3));
+            }
+            50% { 
+                transform: translateY(-15px) rotate(5deg);
+                filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.6));
+            }
+        }
+
+        .cutlery {
+            position: absolute;
+            bottom: 80px;
+            right: 80px;
+            font-size: 2.5rem;
+            color: #d4af37;
+            animation: cutleryShine 4s ease-in-out infinite;
+        }
+
+        @keyframes cutleryShine {
+            0%, 100% { 
+                opacity: 0.7;
+                transform: rotate(0deg);
+            }
+            50% { 
+                opacity: 1;
+                transform: rotate(10deg);
+                text-shadow: 0 0 15px rgba(212, 175, 55, 0.8);
+            }
+        }
+
+        .luxury-pattern {
+            position: absolute;
+            width: 100px;
+            height: 2px;
+            background: repeating-linear-gradient(
+                90deg,
+                #d4af37 0px,
+                #d4af37 10px,
+                transparent 10px,
+                transparent 20px
+            );
+            animation: patternMove 8s linear infinite;
+        }
+
+        .pattern-top {
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .pattern-bottom {
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation-direction: reverse;
+        }
+
+        @keyframes patternMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 40px 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="marble-texture"></div>
+        
+        <div class="gold-accents accent-top"></div>
+        <div class="gold-accents accent-bottom"></div>
+        <div class="gold-accents accent-left"></div>
+        <div class="gold-accents accent-right"></div>
+        
+        <div class="elegant-frame"></div>
+        
+        <div class="ornamental-corner corner-tl"></div>
+        <div class="ornamental-corner corner-tr"></div>
+        <div class="ornamental-corner corner-bl"></div>
+        <div class="ornamental-corner corner-br"></div>
+        
+        <div class="luxury-pattern pattern-top"></div>
+        <div class="luxury-pattern pattern-bottom"></div>
+        
+        <div class="champagne-glass">🥂</div>
+        <div class="cutlery">🍴</div>
+        
+        <div class="content">
+            <h1 class="title">LUXE DINING</h1>
+            <p class="subtitle">고급 미식 동호회</p>
+            
+            <div class="dining-card">
+                <div class="restaurant-name">Le Bernardin Seoul</div>
+                <div class="cuisine-type">French Fine Dining Experience</div>
+                
+                <div class="dining-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">👨‍🍳</span>
+                        <span>미슐랭 3스타 셰프</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📅</span>
+                        <span>2025년 12월 15일 오후 7시</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🏢</span>
+                        <span>시그니엘 서울 79층</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">💎</span>
+                        <span>luxury.dining.kr@gmail.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

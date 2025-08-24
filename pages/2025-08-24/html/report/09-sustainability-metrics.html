@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지속가능성 지표 보고서 | ESG Sustainability Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #2c3e50;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #2d5a27, #4a7c59);
+            color: white;
+            padding: 80px 50px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(76, 175, 80, 0.3) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.5; }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+        
+        .hero-title {
+            font-size: 4em;
+            font-weight: 100;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.6em;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+        
+        .esg-badges {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .esg-badge {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 20px;
+            border: 2px solid rgba(255,255,255,0.2);
+            text-align: center;
+            min-width: 150px;
+        }
+        
+        .badge-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .badge-label {
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        
+        .badge-score {
+            font-size: 2em;
+            font-weight: bold;
+            color: #76ff03;
+            margin-top: 10px;
+        }
+        
+        .main-content {
+            padding: 60px 50px;
+        }
+        
+        .carbon-neutral-banner {
+            background: linear-gradient(135deg, #4caf50, #388e3c);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .carbon-neutral-banner::before {
+            content: '🌱';
+            position: absolute;
+            font-size: 100px;
+            opacity: 0.2;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            animation: sway 3s ease-in-out infinite;
+        }
+        
+        @keyframes sway {
+            0%, 100% { transform: translateY(-50%) rotate(-5deg); }
+            50% { transform: translateY(-50%) rotate(5deg); }
+        }
+        
+        .banner-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .banner-title {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            font-weight: 300;
+        }
+        
+        .banner-subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+        }
+        
+        .metrics-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .sustainability-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .sustainability-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+        }
+        
+        .sustainability-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #4caf50, #76ff03);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+        
+        .card-icon {
+            font-size: 3.5em;
+            opacity: 0.7;
+            color: #4caf50;
+        }
+        
+        .card-trend {
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        
+        .trend-excellent {
+            background: linear-gradient(135deg, #4caf50, #76ff03);
+            color: white;
+        }
+        
+        .trend-good {
+            background: linear-gradient(135deg, #2196f3, #03a9f4);
+            color: white;
+        }
+        
+        .trend-warning {
+            background: linear-gradient(135deg, #ff9800, #ffc107);
+            color: #2d3436;
+        }
+        
+        .card-title {
+            font-size: 1.3em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .card-value {
+            font-size: 3.5em;
+            font-weight: bold;
+            color: #4caf50;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
+        }
+        
+        .card-description {
+            color: #7f8c8d;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .card-progress {
+            background: #ecf0f1;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #76ff03);
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+        
+        .progress-label {
+            font-size: 0.9em;
+            color: #636e72;
+            text-align: right;
+        }
+        
+        .section {
+            margin-bottom: 60px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 2.8em;
+            color: #2c3e50;
+            font-weight: 200;
+        }
+        
+        .section-icon {
+            font-size: 3em;
+            color: #4caf50;
+        }
+        
+        .environmental-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+        
+        .environmental-card {
+            background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
+            border: 2px solid #4caf50;
+            border-radius: 20px;
+            padding: 35px;
+            position: relative;
+        }
+        
+        .env-card-title {
+            font-size: 1.5em;
+            color: #2e7d32;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .env-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .env-metric {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .env-metric-value {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 8px;
+        }
+        
+        .env-metric-label {
+            font-size: 0.9em;
+            color: #5d4037;
+        }
+        
+        .certification-section {
+            background: linear-gradient(135deg, #1e88e5, #1976d2);
+            color: white;
+            border-radius: 25px;
+            padding: 50px;
+            margin-bottom: 60px;
+            position: relative;
+        }
+        
+        .cert-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .cert-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .cert-badge {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .cert-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .cert-status {
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+        
+        .renewable-energy {
+            background: linear-gradient(135deg, #ff7043, #ff5722);
+            color: white;
+            border-radius: 25px;
+            padding: 50px;
+            margin-bottom: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .renewable-energy::before {
+            content: '☀️';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.2;
+            right: 50px;
+            top: 20px;
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .energy-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .energy-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-top: 35px;
+        }
+        
+        .energy-stat {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .energy-value {
+            font-size: 2.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffff8d;
+        }
+        
+        .energy-label {
+            opacity: 0.9;
+        }
+        
+        .waste-management {
+            background: white;
+            border-radius: 25px;
+            padding: 50px;
+            margin-bottom: 60px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+        }
+        
+        .waste-chart {
+            display: flex;
+            justify-content: space-around;
+            align-items: end;
+            height: 300px;
+            margin: 40px 0;
+            background: linear-gradient(to top, #e8f5e8, #f1f8e9);
+            border-radius: 15px;
+            padding: 30px;
+        }
+        
+        .waste-bar {
+            background: linear-gradient(to top, #4caf50, #76ff03);
+            border-radius: 10px 10px 0 0;
+            min-width: 80px;
+            position: relative;
+            display: flex;
+            align-items: end;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .waste-label {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #2c3e50;
+            font-size: 0.9em;
+            text-align: center;
+            width: 120px;
+        }
+        
+        .social-impact {
+            background: linear-gradient(135deg, #9c27b0, #673ab7);
+            color: white;
+            border-radius: 25px;
+            padding: 50px;
+            margin-bottom: 60px;
+        }
+        
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .impact-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .impact-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .impact-description {
+            line-height: 1.6;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .impact-metric {
+            font-size: 2em;
+            font-weight: bold;
+            color: #e1bee7;
+        }
+        
+        .future-goals {
+            background: white;
+            border-radius: 25px;
+            padding: 50px;
+            margin-bottom: 60px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+        }
+        
+        .goals-timeline {
+            margin-top: 40px;
+            position: relative;
+            padding-left: 50px;
+        }
+        
+        .goals-timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, #4caf50, #76ff03);
+        }
+        
+        .goal-item {
+            position: relative;
+            margin-bottom: 40px;
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 5px solid #4caf50;
+        }
+        
+        .goal-item::before {
+            content: '';
+            position: absolute;
+            left: -45px;
+            top: 30px;
+            width: 20px;
+            height: 20px;
+            background: #4caf50;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 0 3px #f8f9fa;
+        }
+        
+        .goal-year {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #4caf50;
+            margin-bottom: 10px;
+        }
+        
+        .goal-description {
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+        
+        .footer {
+            background: #2d5a27;
+            color: white;
+            padding: 50px;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 25px;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+        }
+        
+        .sustainability-statement {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+            font-style: italic;
+            opacity: 0.9;
+        }
+        
+        @media (max-width: 1024px) {
+            .environmental-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .esg-badges {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 40px 20px;
+            }
+            
+            .hero-title {
+                font-size: 2.5em;
+            }
+            
+            .metrics-dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">지속가능성 지표 보고서</h1>
+                <p class="hero-subtitle">ESG 경영을 통한 지속가능한 미래 창조</p>
+                <div class="esg-badges">
+                    <div class="esg-badge">
+                        <span class="badge-icon">🌍</span>
+                        <div class="badge-label">Environmental</div>
+                        <div class="badge-score">A+</div>
+                    </div>
+                    <div class="esg-badge">
+                        <span class="badge-icon">👥</span>
+                        <div class="badge-label">Social</div>
+                        <div class="badge-score">A</div>
+                    </div>
+                    <div class="esg-badge">
+                        <span class="badge-icon">⚖️</span>
+                        <div class="badge-label">Governance</div>
+                        <div class="badge-score">A+</div>
+                    </div>
+                    <div class="esg-badge">
+                        <span class="badge-icon">🏆</span>
+                        <div class="badge-label">ESG 종합</div>
+                        <div class="badge-score">A+</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="main-content">
+            <div class="carbon-neutral-banner">
+                <div class="banner-content">
+                    <h2 class="banner-title">2030 탄소중립 달성 목표</h2>
+                    <p class="banner-subtitle">현재 진행률 68% | 2024년 탄소배출량 32% 감소 달성</p>
+                </div>
+            </div>
+            
+            <section class="metrics-dashboard">
+                <div class="sustainability-card">
+                    <div class="card-header">
+                        <span class="card-icon">🌿</span>
+                        <span class="card-trend trend-excellent">▼ 32%</span>
+                    </div>
+                    <h3 class="card-title">탄소 배출량 (CO₂)</h3>
+                    <div class="card-value">42,580톤</div>
+                    <p class="card-description">
+                        재생에너지 전환과 에너지 효율화로 전년 대비 32% 감소. 
+                        2030년 탄소중립 목표 달성을 위한 순조로운 진행.
+                    </p>
+                    <div class="card-progress">
+                        <div class="progress-fill" style="width: 68%;"></div>
+                    </div>
+                    <div class="progress-label">탄소중립 달성률: 68%</div>
+                </div>
+                
+                <div class="sustainability-card">
+                    <div class="card-header">
+                        <span class="card-icon">💧</span>
+                        <span class="card-trend trend-excellent">▼ 25%</span>
+                    </div>
+                    <h3 class="card-title">용수 사용량</h3>
+                    <div class="card-value">185만톤</div>
+                    <p class="card-description">
+                        용수 재활용 시스템 구축과 절약 기술 도입으로 
+                        용수 사용량 대폭 감소. 물 부족 지역에 대한 기여.
+                    </p>
+                    <div class="card-progress">
+                        <div class="progress-fill" style="width: 85%;"></div>
+                    </div>
+                    <div class="progress-label">재활용율: 85%</div>
+                </div>
+                
+                <div class="sustainability-card">
+                    <div class="card-header">
+                        <span class="card-icon">♻️</span>
+                        <span class="card-trend trend-excellent">▲ 45%</span>
+                    </div>
+                    <h3 class="card-title">폐기물 재활용률</h3>
+                    <div class="card-value">92.5%</div>
+                    <p class="card-description">
+                        순환경제 구현을 위한 폐기물 제로화 프로그램으로 
+                        재활용율이 업계 최고 수준 달성.
+                    </p>
+                    <div class="card-progress">
+                        <div class="progress-fill" style="width: 92.5%;"></div>
+                    </div>
+                    <div class="progress-label">목표 달성률: 96%</div>
+                </div>
+                
+                <div class="sustainability-card">
+                    <div class="card-header">
+                        <span class="card-icon">⚡</span>
+                        <span class="card-trend trend-excellent">▲ 52%</span>
+                    </div>
+                    <h3 class="card-title">재생에너지 비율</h3>
+                    <div class="card-value">67%</div>
+                    <p class="card-description">
+                        태양광, 풍력 등 재생에너지 설비 확대로 
+                        전체 에너지 사용량의 67% 재생에너지 달성.
+                    </p>
+                    <div class="card-progress">
+                        <div class="progress-fill" style="width: 67%;"></div>
+                    </div>
+                    <div class="progress-label">2025년 목표: 75%</div>
+                </div>
+                
+                <div class="sustainability-card">
+                    <div class="card-header">
+                        <span class="card-icon">🌱</span>
+                        <span class="card-trend trend-good">▲ 28%</span>
+                    </div>
+                    <h3 class="card-title">생물다양성 지수</h3>
+                    <div class="card-value">8.7</div>
+                    <p class="card-description">
+                        공장 주변 생태계 복원과 보전 활동으로 
+                        생물다양성 지수가 지속적으로 개선되고 있음.
+                    </p>
+                    <div class="card-progress">
+                        <div class="progress-fill" style="width: 87%;"></div>
+                    </div>
+                    <div class="progress-label">생태계 건강도: 우수</div>
+                </div>
+                
+                <div class="sustainability-card">
+                    <div class="card-header">
+                        <span class="card-icon">🏭</span>
+                        <span class="card-trend trend-warning">▼ 12%</span>
+                    </div>
+                    <h3 class="card-title">대기오염물질</h3>
+                    <div class="card-value">24.8톤</div>
+                    <p class="card-description">
+                        최신 방지시설 도입과 청정 연료 사용으로 
+                        NOx, SOx 등 대기오염물질 배출량 지속 감소.
+                    </p>
+                    <div class="card-progress">
+                        <div class="progress-fill" style="width: 78%;"></div>
+                    </div>
+                    <div class="progress-label">법정 기준 대비: 22% 수준</div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <div class="section-header">
+                    <span class="section-icon">🌍</span>
+                    <h2 class="section-title">환경 성과 상세 분석</h2>
+                </div>
+                <div class="environmental-grid">
+                    <div class="environmental-card">
+                        <h4 class="env-card-title">기후 변화 대응</h4>
+                        <div class="env-metrics">
+                            <div class="env-metric">
+                                <div class="env-metric-value">-32%</div>
+                                <div class="env-metric-label">온실가스 감축</div>
+                            </div>
+                            <div class="env-metric">
+                                <div class="env-metric-value">67%</div>
+                                <div class="env-metric-label">재생에너지</div>
+                            </div>
+                            <div class="env-metric">
+                                <div class="env-metric-value">-18%</div>
+                                <div class="env-metric-label">에너지 소비</div>
+                            </div>
+                            <div class="env-metric">
+                                <div class="env-metric-value">A+</div>
+                                <div class="env-metric-label">CDP 평가</div>
+                            </div>
+                        </div>
+                        <p>파리협정 1.5°C 목표에 부합하는 탄소감축 경로를 통해 2030년 탄소중립 달성 추진</p>
+                    </div>
+                    
+                    <div class="environmental-card">
+                        <h4 class="env-card-title">자원 순환 경제</h4>
+                        <div class="env-metrics">
+                            <div class="env-metric">
+                                <div class="env-metric-value">92.5%</div>
+                                <div class="env-metric-label">재활용률</div>
+                            </div>
+                            <div class="env-metric">
+                                <div class="env-metric-value">-25%</div>
+                                <div class="env-metric-label">용수 사용</div>
+                            </div>
+                            <div class="env-metric">
+                                <div class="env-metric-value">85%</div>
+                                <div class="env-metric-label">용수 재활용</div>
+                            </div>
+                            <div class="env-metric">
+                                <div class="env-metric-value">Zero</div>
+                                <div class="env-metric-label">매립 폐기물</div>
+                            </div>
+                        </div>
+                        <p>순환경제 모델 구축을 통해 폐기물 제로화와 자원 효율성 극대화를 실현</p>
+                    </div>
+                    
+                    <div class="environmental-card">
+                        <h4 class="env-card-title">생태계 보전</h4>
+                        <div class="env-metrics">
+                            <div class="env-metric">
+                                <div class="env-metric-value">150ha</div>
+                                <div class="env-metric-label">생태 복원지</div>
+                            </div>
+                            <div class="env-metric">
+                                <div class="env-metric-value">28종</div>
+                                <div class="env-metric-label">보호 동식물</div>
+                            </div>
+                            <div class="env-metric">
+                                <div class="env-metric-value">-78%</div>
+                                <div class="env-metric-label">토양 오염</div>
+                            </div>
+                            <div class="env-metric">
+                                <div class="env-metric-value">5개</div>
+                                <div class="env-metric-label">생태 공원</div>
+                            </div>
+                        </div>
+                        <p>공장 주변 생태계 복원과 생물다양성 증진을 위한 장기 보전 프로그램 운영</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="certification-section">
+                <h2 class="section-title" style="color: white;">
+                    <span>🏅</span> 환경 인증 및 수상 현황
+                </h2>
+                <div class="cert-grid">
+                    <div class="cert-card">
+                        <span class="cert-badge">🌿</span>
+                        <div class="cert-name">ISO 14001</div>
+                        <div class="cert-status">환경경영시스템 인증</div>
+                    </div>
+                    <div class="cert-card">
+                        <span class="cert-badge">⭐</span>
+                        <div class="cert-name">ISO 50001</div>
+                        <div class="cert-status">에너지경영시스템 인증</div>
+                    </div>
+                    <div class="cert-card">
+                        <span class="cert-badge">🏆</span>
+                        <div class="cert-name">RE100</div>
+                        <div class="cert-status">재생에너지 이니셔티브 가입</div>
+                    </div>
+                    <div class="cert-card">
+                        <span class="cert-badge">💚</span>
+                        <div class="cert-name">Green Factory</div>
+                        <div class="cert-status">환경부 인증</div>
+                    </div>
+                    <div class="cert-card">
+                        <span class="cert-badge">🌟</span>
+                        <div class="cert-name">CDP A List</div>
+                        <div class="cert-status">기후변화 대응 최우수</div>
+                    </div>
+                    <div class="cert-card">
+                        <span class="cert-badge">🌱</span>
+                        <div class="cert-name">K-EV100</div>
+                        <div class="cert-status">전기차 전환 이니셔티브</div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="renewable-energy">
+                <div class="energy-content">
+                    <h2 class="section-title" style="color: white;">
+                        <span>☀️</span> 재생에너지 전환 성과
+                    </h2>
+                    <div class="energy-stats">
+                        <div class="energy-stat">
+                            <div class="energy-value">45MW</div>
+                            <div class="energy-label">태양광 발전 용량</div>
+                        </div>
+                        <div class="energy-stat">
+                            <div class="energy-value">23MW</div>
+                            <div class="energy-label">풍력 발전 용량</div>
+                        </div>
+                        <div class="energy-stat">
+                            <div class="energy-value">67%</div>
+                            <div class="energy-label">재생에너지 비율</div>
+                        </div>
+                        <div class="energy-stat">
+                            <div class="energy-value">8.2억원</div>
+                            <div class="energy-label">연간 전기료 절감</div>
+                        </div>
+                        <div class="energy-stat">
+                            <div class="energy-value">15,800톤</div>
+                            <div class="energy-label">CO₂ 감축량</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="waste-management">
+                <h2 class="section-title">
+                    <span>♻️</span> 폐기물 관리 및 자원순환
+                </h2>
+                <div class="waste-chart">
+                    <div class="waste-bar" style="height: 85%;">
+                        85%
+                        <div class="waste-label">재활용</div>
+                    </div>
+                    <div class="waste-bar" style="height: 7.5%;">
+                        7.5%
+                        <div class="waste-label">소각<br>(에너지 회수)</div>
+                    </div>
+                    <div class="waste-bar" style="height: 7.5%;">
+                        7.5%
+                        <div class="waste-label">생물학적<br>처리</div>
+                    </div>
+                    <div class="waste-bar" style="height: 0%; min-height: 20px;">
+                        0%
+                        <div class="waste-label">매립</div>
+                    </div>
+                </div>
+                <p style="text-align: center; font-size: 1.1em; color: #2e7d32; font-weight: 600;">
+                    매립 폐기물 제로 달성 | 순환경제 모델 완전 구현
+                </p>
+            </section>
+            
+            <section class="social-impact">
+                <h2 class="section-title" style="color: white;">
+                    <span>👥</span> 사회적 가치 창출
+                </h2>
+                <div class="impact-grid">
+                    <div class="impact-card">
+                        <h4 class="impact-title">지역사회 투자</h4>
+                        <p class="impact-description">
+                            교육, 문화, 복지 분야에 대한 지속적 투자로 
+                            지역사회와 상생하는 동반성장 실현
+                        </p>
+                        <div class="impact-metric">25억원/년</div>
+                    </div>
+                    <div class="impact-card">
+                        <h4 class="impact-title">일자리 창출</h4>
+                        <p class="impact-description">
+                            녹색 전환과 디지털 혁신 과정에서 
+                            새로운 양질의 일자리 창출
+                        </p>
+                        <div class="impact-metric">850개</div>
+                    </div>
+                    <div class="impact-card">
+                        <h4 class="impact-title">협력사 동반성장</h4>
+                        <p class="impact-description">
+                            중소 협력사의 ESG 역량 강화와 
+                            지속가능한 공급망 구축 지원
+                        </p>
+                        <div class="impact-metric">180개사</div>
+                    </div>
+                    <div class="impact-card">
+                        <h4 class="impact-title">직원 만족도</h4>
+                        <p class="impact-description">
+                            안전하고 건강한 근무환경 조성과 
+                            다양성 존중 문화로 높은 만족도 달성
+                        </p>
+                        <div class="impact-metric">4.6/5.0</div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="future-goals">
+                <h2 class="section-title">
+                    <span>🎯</span> 미래 목표 및 로드맵
+                </h2>
+                <div class="goals-timeline">
+                    <div class="goal-item">
+                        <div class="goal-year">2025년</div>
+                        <p class="goal-description">
+                            재생에너지 비율 75% 달성, 용수 사용량 추가 15% 절감, 
+                            Scope 3 탄소배출량 측정 및 관리 체계 구축
+                        </p>
+                    </div>
+                    <div class="goal-item">
+                        <div class="goal-year">2027년</div>
+                        <p class="goal-description">
+                            재생에너지 100% 전환 완료, 폐기물 재활용률 95% 달성, 
+                            공급망 전체 ESG 평가 시스템 도입
+                        </p>
+                    </div>
+                    <div class="goal-item">
+                        <div class="goal-year">2030년</div>
+                        <p class="goal-description">
+                            탄소중립 달성, 물 사용량 50% 절감, 생물다양성 Net Positive 실현, 
+                            순환경제 완전 구현으로 지속가능한 미래 선도
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <footer class="footer">
+            <div class="footer-content">
+                <div>
+                    <strong>Sustainability Management Office</strong><br>
+                    지속가능경영 전담 조직 | ESG 통합 관리 체계 운영
+                </div>
+                <div class="footer-links">
+                    <a href="#">ESG 보고서</a>
+                    <a href="#">환경 데이터</a>
+                    <a href="#">지속가능성 정책</a>
+                    <a href="#">이해관계자 소통</a>
+                </div>
+            </div>
+            <div class="sustainability-statement">
+                "우리는 환경을 보호하고 사회적 가치를 창출하며, 투명한 거버넌스를 통해 
+                지속가능한 미래를 만들어 나가겠습니다. 
+                모든 이해관계자와 함께 더 나은 세상을 위해 노력하겠습니다."
+                <br><br><strong>- Global Manufacturing Corporation CEO -</strong>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

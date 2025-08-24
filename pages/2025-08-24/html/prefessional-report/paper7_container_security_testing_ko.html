@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컨테이너 오케스트레이션 플랫폼의 보안 테스트: Kubernetes 환경 취약점 분석 및 대응</title>
+    <style>
+        @page { size: A4; margin: 20mm; }
+        body { font-family: 'Malgun Gothic', 'Nanum Gothic', sans-serif; line-height: 1.8; max-width: 210mm; margin: 0 auto; padding: 30px 40px; font-size: 11pt; background: white; }
+        h1 { font-size: 18pt; text-align: center; margin-bottom: 15px; font-weight: bold; padding: 0 20px; color: #1a1a1a; }
+        .authors { text-align: center; font-style: italic; margin-bottom: 25px; font-size: 11pt; color: #444; }
+        .abstract { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 20px; margin: 25px 0; font-size: 10.5pt; border-radius: 4px; }
+        .abstract h2 { font-size: 13pt; margin-top: 0; color: white; }
+        .two-column { column-count: 2; column-gap: 30px; text-align: justify; padding: 0 10px; }
+        h2 { font-size: 14pt; margin-top: 20px; margin-bottom: 12px; break-after: avoid; color: #6c5ce7; }
+        h3 { font-size: 12pt; margin-top: 15px; margin-bottom: 10px; font-weight: bold; color: #5f3dc4; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 10pt; break-inside: avoid; background: white; }
+        th, td { border: 1px solid #bbb; padding: 8px 10px; text-align: left; }
+        th { background: #f1f0fe; font-weight: bold; color: #5f3dc4; }
+        .security-alert { background: #fff0f0; border-left: 4px solid #dc3545; padding: 12px 15px; margin: 15px 0; font-size: 10pt; }
+        .vulnerability-code { background: #f8f9fa; border: 1px solid #dee2e6; padding: 10px; margin: 15px 0; font-family: 'Courier New', monospace; font-size: 9.5pt; border-radius: 4px; }
+        .references { font-size: 10pt; margin-top: 30px; padding: 0 10px; }
+        .references h2 { font-size: 13pt; color: #6c5ce7; }
+        .ref-item { margin: 8px 0; padding-left: 25px; text-indent: -25px; line-height: 1.6; }
+        p { margin: 10px 0; text-indent: 1em; }
+        .cve-critical { color: #dc3545; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>컨테이너 오케스트레이션 플랫폼의 보안 테스트:<br>Kubernetes 환경 취약점 분석 및 대응</h1>
+    <div class="authors">[성명] 박사<br>사이버보안 연구센터<br>2025 한국정보보호학회 학술대회</div>
+
+    <div class="abstract">
+        <h2>초록</h2>
+        컨테이너 오케스트레이션 플랫폼의 급속한 확산은 새로운 보안 위협을 야기했다. 본 논문은 Kubernetes 환경에서 발생할 수 있는 다양한 보안 취약점을 체계적으로 분석하고 자동화된 보안 테스트 프레임워크를 제안한다. RBAC 오설정, 컨테이너 탈출, 시크릿 유출, 네트워크 정책 우회 등 핵심 취약점을 검출하는 통합 스캐닝 도구를 개발했다. 금융권과 공공기관의 23개 Kubernetes 클러스터를 분석한 결과, 평균 142개의 보안 취약점을 발견했으며, 이 중 67%가 자동 수정 가능한 설정 오류였다. Zero Trust 보안 모델 적용으로 보안 사고를 91% 감소시켰다.
+    </div>
+
+    <div class="two-column">
+        <h2>1. 서론</h2>
+        <p>Docker와 Kubernetes로 대표되는 컨테이너 기술은 현대 애플리케이션 배포의 표준이 되었다. CNCF 조사에 따르면 2024년 기준 96%의 기업이 컨테이너를 프로덕션에서 사용하고 있으며, 89%가 Kubernetes를 오케스트레이션 도구로 채택했다.</p>
+        <p>하지만 컨테이너 환경의 복잡성과 동적 특성은 전통적인 보안 경계를 모호하게 만들었다. 특히 Kubernetes의 광범위한 기능과 설정 옵션은 잘못된 구성으로 인한 보안 취약점을 양산하고 있다.</p>
+
+        <h2>2. Kubernetes 보안 위협 모델</h2>
+        <table>
+            <thead>
+                <tr><th>위협 범주</th><th>대표 취약점</th><th>CVSS 점수</th><th>발견 빈도</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>API Server</td><td>인증 우회</td><td>9.8</td><td>23%</td></tr>
+                <tr><td>RBAC</td><td>과도한 권한</td><td>7.5</td><td>67%</td></tr>
+                <tr><td>Container Runtime</td><td>컨테이너 탈출</td><td>8.8</td><td>12%</td></tr>
+                <tr><td>Network Policy</td><td>트래픽 우회</td><td>6.2</td><td>89%</td></tr>
+                <tr><td>Secrets</td><td>평문 저장</td><td>8.1</td><td>45%</td></tr>
+            </tbody>
+        </table>
+
+        <h3>2.1 컨테이너 이미지 스캐닝</h3>
+        <p>컨테이너 이미지에 포함된 알려진 취약점(CVE)을 검출한다. Trivy, Clair, Snyk 등 도구를 통합하여 다층적 스캐닝을 수행한다.</p>
+
+        <div class="security-alert">
+            <strong>발견된 주요 취약점:</strong><br>
+            • <span class="cve-critical">CVE-2024-1234</span>: OpenSSL 원격 코드 실행<br>
+            • <span class="cve-critical">CVE-2024-5678</span>: Apache Log4j 임의 코드 실행<br>
+            • <span class="cve-critical">CVE-2024-9012</span>: Linux Kernel 권한 상승<br>
+        </div>
+
+        <h2>3. RBAC 정책 분석</h2>
+        <p>Kubernetes의 Role-Based Access Control 설정을 자동으로 분석하여 과도한 권한 부여를 탐지한다. 최소 권한 원칙(Principle of Least Privilege)을 위반하는 설정을 식별한다.</p>
+
+        <div class="vulnerability-code">
+            # 취약한 RBAC 설정 예시
+            apiVersion: rbac.authorization.k8s.io/v1
+            kind: ClusterRole
+            metadata:
+              name: dangerous-role
+            rules:
+            - apiGroups: ["*"]
+              resources: ["*"]  # 모든 리소스에 대한 접근
+              verbs: ["*"]      # 모든 작업 허용
+        </div>
+
+        <h3>3.1 권한 상승 경로 분석</h3>
+        <p>그래프 이론을 활용하여 권한 상승 가능한 경로를 자동으로 탐지한다. 일반 사용자가 클러스터 관리자 권한을 획득할 수 있는 모든 경로를 시각화한다.</p>
+
+        <h2>4. 네트워크 보안 검증</h2>
+        <p>Kubernetes NetworkPolicy의 효과성을 검증하고 마이크로세그멘테이션이 올바르게 구현되었는지 확인한다.</p>
+
+        <table>
+            <thead>
+                <tr><th>네트워크 정책</th><th>적용률</th><th>효과성</th><th>우회 가능성</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Ingress 제한</td><td>78%</td><td>높음</td><td>12%</td></tr>
+                <tr><td>Egress 제한</td><td>34%</td><td>중간</td><td>23%</td></tr>
+                <tr><td>Pod-to-Pod</td><td>45%</td><td>높음</td><td>8%</td></tr>
+                <tr><td>Namespace 격리</td><td>89%</td><td>높음</td><td>5%</td></tr>
+            </tbody>
+        </table>
+
+        <h2>5. 시크릿 관리 보안</h2>
+        <p>Kubernetes Secrets의 안전한 사용을 검증한다. 평문 저장, 부적절한 마운트, 로그 유출 등의 문제를 탐지한다.</p>
+
+        <div class="security-alert">
+            <strong>시크릿 보안 체크리스트:</strong><br>
+            • etcd 암호화 활성화 여부<br>
+            • 시크릿 볼륨 권한 설정<br>
+            • 환경변수를 통한 시크릿 노출 방지<br>
+            • 시크릿 회전(Rotation) 정책<br>
+        </div>
+
+        <h2>6. 런타임 보안 모니터링</h2>
+        <p>Falco, Sysdig 등 런타임 보안 도구를 통해 실시간으로 의심스러운 활동을 탐지한다. 비정상적인 시스템 콜, 파일 접근, 네트워크 연결을 모니터링한다.</p>
+
+        <h3>6.1 이상 행위 탐지</h3>
+        <table>
+            <thead>
+                <tr><th>이상 행위</th><th>탐지 정확도</th><th>오탐률</th><th>대응 시간</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>권한 상승 시도</td><td>96%</td><td>2.1%</td><td>3초</td></tr>
+                <tr><td>비인가 파일 접근</td><td>93%</td><td>4.3%</td></tr>
+                <tr><td>외부 통신 시도</td><td>89%</td><td>6.7%</td></tr>
+                <tr><td>크립토 마이닝</td><td>99%</td><td>0.5%</td><td>1초</td></tr>
+            </tbody>
+        </table>
+
+        <h2>7. 컨테이너 탈출 테스트</h2>
+        <p>컨테이너에서 호스트 시스템으로 탈출 가능한 취약점을 체계적으로 테스트한다. Privileged 컨테이너, Docker socket 마운트, 커널 취약점 등을 검사한다.</p>
+
+        <h2>8. 실제 적용 결과</h2>
+        <h3>8.1 금융권 Kubernetes 클러스터</h3>
+        <table>
+            <thead>
+                <tr><th>보안 지표</th><th>적용 전</th><th>적용 후</th><th>개선율</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>취약점 수</td><td>142개</td><td>23개</td><td>84%↓</td></tr>
+                <tr><td>Critical 취약점</td><td>18개</td><td>2개</td><td>89%↓</td></tr>
+                <tr><td>보안 사고</td><td>월 3.2건</td><td>월 0.3건</td><td>91%↓</td></tr>
+                <tr><td>평균 탐지 시간</td><td>4.7시간</td><td>23분</td><td>92%↓</td></tr>
+            </tbody>
+        </table>
+
+        <h3>8.2 공공기관 보안 강화</h3>
+        <p>정부기관의 Kubernetes 클러스터에 Zero Trust 보안 모델을 적용하여 모든 통신을 암호화하고 지속적인 검증을 수행했다. 내부 위협을 89% 감소시키고 컴플라이언스 준수율을 98%까지 향상시켰다.</p>
+
+        <h2>9. 자동화된 보안 파이프라인</h2>
+        <p>GitOps 워크플로우에 보안 검사를 통합하여 코드 커밋부터 배포까지 전 과정에서 자동으로 보안 테스트를 수행한다. 정책 위반 시 자동으로 배포를 차단하고 알림을 발송한다.</p>
+
+        <h2>10. 결론</h2>
+        <p>본 연구에서 제안한 Kubernetes 보안 테스트 프레임워크는 컨테이너 오케스트레이션 환경의 보안을 크게 향상시켰다. 특히 자동화된 취약점 탐지와 실시간 모니터링을 통해 보안 사고를 사전에 예방할 수 있었다. 향후 서비스 메시와 서버리스 컴퓨팅 환경으로 확장할 계획이다.</p>
+    </div>
+
+    <div class="references">
+        <h2>참고문헌</h2>
+        <div class="ref-item">[1] 김보안, 이시큐어 (2024). "컨테이너 오케스트레이션 보안 위협 분석." 정보보호학회지, 34(2), 123-140.</div>
+        <div class="ref-item">[2] Smith, J., et al. (2023). "Kubernetes Security: Best Practices and Threat Analysis." IEEE Security & Privacy, 21(4), 45-58.</div>
+        <div class="ref-item">[3] 박쿠버, 정네티스 (2024). "RBAC 정책 자동 검증 도구 개발." 소프트웨어공학회지, 29(1), 67-84.</div>
+    </div>
+</body>
+</html>

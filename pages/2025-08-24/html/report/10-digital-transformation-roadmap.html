@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>디지털 전환 로드맵 | Digital Transformation Strategy 2025-2030</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        .cyber-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(0, 255, 127, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: cyber-pulse 10s ease-in-out infinite;
+        }
+        
+        @keyframes cyber-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .hero-section {
+            padding: 100px 50px;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.05), rgba(255, 0, 255, 0.05));
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(0,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)" /></svg>');
+            animation: grid-move 20s linear infinite;
+        }
+        
+        @keyframes grid-move {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(10px) translateY(10px); }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-title {
+            font-size: 4.5em;
+            font-weight: 100;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #00ff7f);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 3s ease-in-out infinite;
+        }
+        
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .hero-subtitle {
+            font-size: 1.8em;
+            opacity: 0.8;
+            margin-bottom: 50px;
+            color: #00ffff;
+        }
+        
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+        
+        .hero-stat {
+            background: rgba(0, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .hero-stat:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+        }
+        
+        .stat-value {
+            font-size: 3em;
+            font-weight: bold;
+            color: #00ff7f;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0, 255, 127, 0.5);
+        }
+        
+        .stat-label {
+            color: #ffffff;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            padding: 80px 50px;
+        }
+        
+        .section {
+            margin-bottom: 100px;
+            position: relative;
+        }
+        
+        .section::before {
+            content: '';
+            position: absolute;
+            left: -50px;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, #00ffff, transparent);
+            opacity: 0.5;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 50px;
+            padding: 30px;
+            background: rgba(0, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        
+        .section-icon {
+            font-size: 3.5em;
+            color: #00ffff;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+        
+        .section-title {
+            font-size: 3em;
+            font-weight: 200;
+            color: #ffffff;
+        }
+        
+        .current-state {
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1));
+            border-radius: 25px;
+            padding: 50px;
+            margin-bottom: 60px;
+            border: 1px solid rgba(255, 0, 255, 0.3);
+        }
+        
+        .state-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .state-card {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .state-title {
+            font-size: 1.4em;
+            color: #ff00ff;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .state-description {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .state-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .state-metric:last-child {
+            border-bottom: none;
+        }
+        
+        .metric-label {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .metric-value {
+            color: #00ff7f;
+            font-weight: bold;
+        }
+        
+        .transformation-matrix {
+            background: linear-gradient(135deg, rgba(0, 255, 127, 0.1), rgba(0, 255, 255, 0.1));
+            border-radius: 25px;
+            padding: 50px;
+            margin-bottom: 60px;
+            border: 1px solid rgba(0, 255, 127, 0.3);
+        }
+        
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .matrix-card {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 35px;
+            border: 1px solid rgba(0, 255, 127, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .matrix-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00ff7f, #00ffff);
+        }
+        
+        .matrix-title {
+            font-size: 1.5em;
+            color: #00ff7f;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .matrix-phases {
+            list-style: none;
+        }
+        
+        .matrix-phases li {
+            padding: 12px 0;
+            color: rgba(255, 255, 255, 0.8);
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .matrix-phases li::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            color: #00ffff;
+            font-weight: bold;
+        }
+        
+        .roadmap-timeline {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 25px;
+            padding: 50px;
+            margin-bottom: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .roadmap-timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50px;
+            right: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, #00ffff, #ff00ff, #00ff7f, #00ffff);
+            background-size: 200% 100%;
+            animation: timeline-flow 5s linear infinite;
+        }
+        
+        @keyframes timeline-flow {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .timeline-items {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .timeline-item {
+            background: rgba(0, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            flex: 1;
+            min-width: 300px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            position: relative;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: #00ffff;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+        }
+        
+        .timeline-year {
+            font-size: 2em;
+            font-weight: bold;
+            color: #00ffff;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .timeline-title {
+            font-size: 1.3em;
+            color: #ffffff;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .timeline-goals {
+            list-style: none;
+        }
+        
+        .timeline-goals li {
+            padding: 8px 0;
+            color: rgba(255, 255, 255, 0.8);
+            position: relative;
+            padding-left: 20px;
+            font-size: 0.95em;
+        }
+        
+        .timeline-goals li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #00ff7f;
+            font-weight: bold;
+        }
+        
+        .technology-stack {
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1));
+            border-radius: 25px;
+            padding: 50px;
+            margin-bottom: 60px;
+            border: 1px solid rgba(255, 0, 255, 0.3);
+        }
+        
+        .tech-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .tech-category {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 35px;
+            border: 1px solid rgba(255, 0, 255, 0.3);
+        }
+        
+        .tech-category-title {
+            font-size: 1.4em;
+            color: #ff00ff;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .tech-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .tech-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 3px solid #ff00ff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .tech-name {
+            color: #ffffff;
+            font-weight: 500;
+        }
+        
+        .tech-status {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .status-deployed {
+            background: #00ff7f;
+            color: #000000;
+        }
+        
+        .status-pilot {
+            background: #00ffff;
+            color: #000000;
+        }
+        
+        .status-planned {
+            background: #ff00ff;
+            color: #ffffff;
+        }
+        
+        .roi-analysis {
+            background: linear-gradient(135deg, rgba(0, 255, 127, 0.15), rgba(0, 255, 255, 0.15));
+            border-radius: 25px;
+            padding: 50px;
+            margin-bottom: 60px;
+            border: 1px solid rgba(0, 255, 127, 0.4);
+        }
+        
+        .roi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .roi-card {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(0, 255, 127, 0.3);
+        }
+        
+        .roi-value {
+            font-size: 3.2em;
+            font-weight: bold;
+            color: #00ff7f;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0, 255, 127, 0.5);
+        }
+        
+        .roi-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95em;
+        }
+        
+        .challenges-risks {
+            background: linear-gradient(135deg, rgba(255, 69, 0, 0.1), rgba(255, 0, 255, 0.1));
+            border-radius: 25px;
+            padding: 50px;
+            margin-bottom: 60px;
+            border: 1px solid rgba(255, 69, 0, 0.3);
+        }
+        
+        .challenges-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 40px;
+        }
+        
+        .challenge-section {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 35px;
+            border: 1px solid rgba(255, 69, 0, 0.3);
+        }
+        
+        .challenge-title {
+            font-size: 1.5em;
+            color: #ff4500;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+        
+        .challenge-list {
+            list-style: none;
+        }
+        
+        .challenge-list li {
+            padding: 12px 0;
+            color: rgba(255, 255, 255, 0.8);
+            position: relative;
+            padding-left: 25px;
+            line-height: 1.5;
+        }
+        
+        .challenge-list li::before {
+            content: '⚠️';
+            position: absolute;
+            left: 0;
+            top: 12px;
+        }
+        
+        .success-metrics {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 25px;
+            padding: 50px;
+            margin-bottom: 60px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .metrics-category {
+            background: rgba(0, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        
+        .metrics-title {
+            font-size: 1.3em;
+            color: #00ffff;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .metrics-list {
+            list-style: none;
+        }
+        
+        .metrics-list li {
+            padding: 8px 0;
+            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .metrics-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .metric-target {
+            color: #00ff7f;
+            font-weight: bold;
+        }
+        
+        .footer {
+            background: rgba(0, 0, 0, 0.95);
+            color: #ffffff;
+            padding: 60px 50px;
+            text-align: center;
+            border-top: 1px solid rgba(0, 255, 255, 0.3);
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .footer-links a {
+            color: #00ffff;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: all 0.3s;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+        
+        .digital-vision {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            font-style: italic;
+            opacity: 0.9;
+        }
+        
+        @media (max-width: 1024px) {
+            .challenges-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline-items {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 40px 20px;
+            }
+            
+            .hero-title {
+                font-size: 2.5em;
+            }
+            
+            .section-title {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="cyber-background"></div>
+        
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">디지털 전환 로드맵</h1>
+                <p class="hero-subtitle">Digital Transformation Strategy 2025-2030</p>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="stat-value">Industry 4.0</div>
+                        <div class="stat-label">스마트 팩토리 구현</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="stat-value">AI/ML</div>
+                        <div class="stat-label">인공지능 기반 자동화</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="stat-value">IoT</div>
+                        <div class="stat-label">사물인터넷 통합</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="stat-value">Cloud Native</div>
+                        <div class="stat-label">클라우드 우선 아키텍처</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="main-content">
+            <section class="section">
+                <div class="section-header">
+                    <span class="section-icon">🏭</span>
+                    <h2 class="section-title">현재 디지털 성숙도</h2>
+                </div>
+                <div class="current-state">
+                    <div class="state-grid">
+                        <div class="state-card">
+                            <h3 class="state-title">생산 시스템</h3>
+                            <p class="state-description">
+                                MES, ERP 시스템 구축 완료. 실시간 생산 모니터링과 
+                                데이터 수집 기반 구축. IoT 센서 네트워크 80% 구축.
+                            </p>
+                            <div class="state-metric">
+                                <span class="metric-label">디지털화율</span>
+                                <span class="metric-value">78%</span>
+                            </div>
+                            <div class="state-metric">
+                                <span class="metric-label">자동화율</span>
+                                <span class="metric-value">65%</span>
+                            </div>
+                            <div class="state-metric">
+                                <span class="metric-label">실시간 모니터링</span>
+                                <span class="metric-value">85%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="state-card">
+                            <h3 class="state-title">데이터 인프라</h3>
+                            <p class="state-description">
+                                데이터 웨어하우스 구축, 빅데이터 플랫폼 운영 중. 
+                                AI/ML 파이프라인 구축 단계. 클라우드 전환 진행.
+                            </p>
+                            <div class="state-metric">
+                                <span class="metric-label">데이터 품질</span>
+                                <span class="metric-value">82%</span>
+                            </div>
+                            <div class="state-metric">
+                                <span class="metric-label">클라우드 전환</span>
+                                <span class="metric-value">45%</span>
+                            </div>
+                            <div class="state-metric">
+                                <span class="metric-label">API 통합</span>
+                                <span class="metric-value">72%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="state-card">
+                            <h3 class="state-title">인력 역량</h3>
+                            <p class="state-description">
+                                디지털 전환 교육 프로그램 운영. 
+                                데이터 사이언티스트, AI 엔지니어 양성 중.
+                            </p>
+                            <div class="state-metric">
+                                <span class="metric-label">디지털 리터러시</span>
+                                <span class="metric-value">68%</span>
+                            </div>
+                            <div class="state-metric">
+                                <span class="metric-label">전문 인력</span>
+                                <span class="metric-value">45명</span>
+                            </div>
+                            <div class="state-metric">
+                                <span class="metric-label">교육 참여율</span>
+                                <span class="metric-value">89%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="state-card">
+                            <h3 class="state-title">사이버 보안</h3>
+                            <p class="state-description">
+                                제로 트러스트 보안 모델 구축 중. 
+                                사이버 보안 운영센터(SOC) 운영.
+                            </p>
+                            <div class="state-metric">
+                                <span class="metric-label">보안 성숙도</span>
+                                <span class="metric-value">Level 3</span>
+                            </div>
+                            <div class="state-metric">
+                                <span class="metric-label">위협 탐지율</span>
+                                <span class="metric-value">94%</span>
+                            </div>
+                            <div class="state-metric">
+                                <span class="metric-label">취약점 대응</span>
+                                <span class="metric-value">48시간</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <div class="section-header">
+                    <span class="section-icon">🚀</span>
+                    <h2 class="section-title">디지털 전환 매트릭스</h2>
+                </div>
+                <div class="transformation-matrix">
+                    <div class="matrix-grid">
+                        <div class="matrix-card">
+                            <h3 class="matrix-title">스마트 제조 (Smart Manufacturing)</h3>
+                            <ul class="matrix-phases">
+                                <li>완전 자율 생산 시스템 구축</li>
+                                <li>AI 기반 품질 예측 및 제어</li>
+                                <li>디지털 트윈 기반 공장 운영</li>
+                                <li>예측 정비 고도화</li>
+                                <li>무인 물류 시스템 구축</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="matrix-card">
+                            <h3 class="matrix-title">데이터 드리븐 경영 (Data-Driven)</h3>
+                            <ul class="matrix-phases">
+                                <li>실시간 의사결정 대시보드</li>
+                                <li>예측 분석 기반 전략 수립</li>
+                                <li>고객 행동 패턴 분석</li>
+                                <li>공급망 최적화 알고리즘</li>
+                                <li>ESG 데이터 통합 관리</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="matrix-card">
+                            <h3 class="matrix-title">디지털 워크플레이스 (Digital Workplace)</h3>
+                            <ul class="matrix-phases">
+                                <li>완전 원격 협업 환경</li>
+                                <li>AR/VR 기반 교육 시스템</li>
+                                <li>AI 어시스턴트 업무 지원</li>
+                                <li>디지털 역량 강화 프로그램</li>
+                                <li>하이브리드 업무 환경</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="matrix-card">
+                            <h3 class="matrix-title">고객 경험 혁신 (CX Innovation)</h3>
+                            <ul class="matrix-phases">
+                                <li>AI 기반 개인화 서비스</li>
+                                <li>옴니채널 고객 접점</li>
+                                <li>실시간 고객 지원 시스템</li>
+                                <li>디지털 제품 포트폴리오</li>
+                                <li>구독 기반 서비스 모델</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <div class="section-header">
+                    <span class="section-icon">🗓️</span>
+                    <h2 class="section-title">5개년 로드맵</h2>
+                </div>
+                <div class="roadmap-timeline">
+                    <div class="timeline-items">
+                        <div class="timeline-item">
+                            <div class="timeline-year">2025</div>
+                            <h3 class="timeline-title">기반 구축 완료</h3>
+                            <ul class="timeline-goals">
+                                <li>IoT 센서 네트워크 100% 구축</li>
+                                <li>클라우드 전환 70% 완료</li>
+                                <li>AI/ML 플랫폼 구축</li>
+                                <li>사이버 보안 강화</li>
+                                <li>디지털 역량 교육 확산</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-year">2026</div>
+                            <h3 class="timeline-title">지능형 운영</h3>
+                            <ul class="timeline-goals">
+                                <li>AI 기반 생산 최적화</li>
+                                <li>예측 분석 고도화</li>
+                                <li>디지털 트윈 구축</li>
+                                <li>자동화 로봇 확대</li>
+                                <li>실시간 품질 관리</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-year">2027</div>
+                            <h3 class="timeline-title">자율화 달성</h3>
+                            <ul class="timeline-goals">
+                                <li>무인 생산 라인 구현</li>
+                                <li>완전 자율 물류 시스템</li>
+                                <li>AI 의사결정 지원</li>
+                                <li>블록체인 공급망 관리</li>
+                                <li>5G 전용망 구축</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-year">2028</div>
+                            <h3 class="timeline-title">생태계 확장</h3>
+                            <ul class="timeline-goals">
+                                <li>파트너사 디지털 연결</li>
+                                <li>고객 직접 연결 서비스</li>
+                                <li>순환경제 플랫폼</li>
+                                <li>메타버스 협업 환경</li>
+                                <li>양자 컴퓨팅 도입</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-year">2029</div>
+                            <h3 class="timeline-title">혁신 선도</h3>
+                            <ul class="timeline-goals">
+                                <li>완전 자율 공장 운영</li>
+                                <li>탄소중립 디지털 솔루션</li>
+                                <li>차세대 제조 기술</li>
+                                <li>글로벌 디지털 플랫폼</li>
+                                <li>지속가능한 디지털 전환</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-year">2030</div>
+                            <h3 class="timeline-title">미래 공장</h3>
+                            <ul class="timeline-goals">
+                                <li>완전 자율형 스마트 팩토리</li>
+                                <li>AGI 기반 운영 시스템</li>
+                                <li>탄소 네거티브 달성</li>
+                                <li>글로벌 베스트 프랙티스</li>
+                                <li>차세대 리더십 확보</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <div class="section-header">
+                    <span class="section-icon">🛠️</span>
+                    <h2 class="section-title">핵심 기술 스택</h2>
+                </div>
+                <div class="technology-stack">
+                    <div class="tech-categories">
+                        <div class="tech-category">
+                            <h3 class="tech-category-title">
+                                <span>🤖</span> 인공지능 / 머신러닝
+                            </h3>
+                            <div class="tech-list">
+                                <div class="tech-item">
+                                    <span class="tech-name">TensorFlow / PyTorch</span>
+                                    <span class="tech-status status-deployed">운영 중</span>
+                                </div>
+                                <div class="tech-item">
+                                    <span class="tech-name">MLOps Pipeline</span>
+                                    <span class="tech-status status-pilot">파일럿</span>
+                                </div>
+                                <div class="tech-item">
+                                    <span class="tech-name">Computer Vision</span>
+                                    <span class="tech-status status-deployed">운영 중</span>
+                                </div>
+                                <div class="tech-item">
+                                    <span class="tech-name">NLP / LLM</span>
+                                    <span class="tech-status status-planned">계획</span>
+                                </div>
+                                <div class="tech-item">
+                                    <span class="tech-name">Reinforcement Learning</span>
+                                    <span class="tech-status status-planned">계획</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tech-category">
+                            <h3 class="tech-category-title">
+                                <span>☁️</span> 클라우드 / 인프라
+                            </h3>
+                            <div class="tech-list">
+                                <div class="tech-item">
+                                    <span class="tech-name">AWS / Azure</span>
+                                    <span class="tech-status status-deployed">운영 중</span>
+                                </div>
+                                <div class="tech-item">
+                                    <span class="tech-name">Kubernetes</span>
+                                    <span class="tech-status status-deployed">운영 중</span>
+                                </div>
+                                <div class="tech-item">
+                                    <span class="tech-name">Docker Containers</span>
+                                    <span class="tech-status status-deployed">운영 중</span>
+                                </div>
+                                <div class="tech-item">
+                                    <span class="tech-name">Edge Computing</span>
+                                    <span class="tech-status status-pilot">파일럿</span>
+                                </div>
+                                <div class="tech-item">
+                                    <span class="tech-name">5G Private Network</span>
+                                    <span class="tech-status status-planned">계획</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tech-category">
+                            <h3 class="tech-category-title">
+                                <span>📊</span> 데이터 / 분석
+                            </h3>
+                            <div class="tech-list">
+                                <div class="tech-item">
+                                    <span class="tech-name">Apache Kafka</span>
+                                    <span class="tech-status status-deployed">운영 중</span>
+                                </div>
+                                <div class="tech-item">
+                                    <span class="tech-name">Elasticsearch</span>
+                                    <span class="tech-status status-deployed">운영 중</span>
+                                </div>
+                                <div class="tech-item">
+                                    <span class="tech-name">Apache Spark</span>
+                                    <span class="tech-status status-pilot">파일럿</span>
+                                </div>
+                                <div class="tech-item">
+                                    <span class="tech-name">Data Lake</span>
+                                    <span class="tech-status status-pilot">파일럿</span>
+                                </div>
+                                <div class="tech-item">
+                                    <span class="tech-name">Real-time Analytics</span>
+                                    <span class="tech-status status-deployed">운영 중</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tech-category">
+                            <h3 class="tech-category-title">
+                                <span>🌐</span> IoT / 연결성
+                            </h3>
+                            <div class="tech-list">
+                                <div class="tech-item">
+                                    <span class="tech-name">Industrial IoT Platform</span>
+                                    <span class="tech-status status-deployed">운영 중</span>
+                                </div>
+                                <div class="tech-item">
+                                    <span class="tech-name">Time Series Database</span>
+                                    <span class="tech-status status-deployed">운영 중</span>
+                                </div>
+                                <div class="tech-item">
+                                    <span class="tech-name">MQTT / CoAP</span>
+                                    <span class="tech-status status-deployed">운영 중</span>
+                                </div>
+                                <div class="tech-item">
+                                    <span class="tech-name">Digital Twin Platform</span>
+                                    <span class="tech-status status-pilot">파일럿</span>
+                                </div>
+                                <div class="tech-item">
+                                    <span class="tech-name">AR/VR Interface</span>
+                                    <span class="tech-status status-planned">계획</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <div class="section-header">
+                    <span class="section-icon">💰</span>
+                    <h2 class="section-title">투자 효과 분석</h2>
+                </div>
+                <div class="roi-analysis">
+                    <div class="roi-grid">
+                        <div class="roi-card">
+                            <div class="roi-value">450억원</div>
+                            <div class="roi-label">총 투자 계획 (5년)</div>
+                        </div>
+                        <div class="roi-card">
+                            <div class="roi-value">890억원</div>
+                            <div class="roi-label">예상 수익 창출</div>
+                        </div>
+                        <div class="roi-card">
+                            <div class="roi-value">198%</div>
+                            <div class="roi-label">투자 수익률 (ROI)</div>
+                        </div>
+                        <div class="roi-card">
+                            <div class="roi-value">2.8년</div>
+                            <div class="roi-label">투자 회수 기간</div>
+                        </div>
+                        <div class="roi-card">
+                            <div class="roi-value">35%</div>
+                            <div class="roi-label">생산성 향상</div>
+                        </div>
+                        <div class="roi-card">
+                            <div class="roi-value">28%</div>
+                            <div class="roi-label">운영 비용 절감</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <div class="section-header">
+                    <span class="section-icon">⚠️</span>
+                    <h2 class="section-title">도전과제 및 리스크</h2>
+                </div>
+                <div class="challenges-risks">
+                    <div class="challenges-grid">
+                        <div class="challenge-section">
+                            <h3 class="challenge-title">주요 도전과제</h3>
+                            <ul class="challenge-list">
+                                <li>레거시 시스템과 신기술 통합의 복잡성</li>
+                                <li>대규모 데이터 마이그레이션 및 품질 관리</li>
+                                <li>조직 문화 변화 관리 및 변화 저항</li>
+                                <li>디지털 역량을 갖춘 전문 인력 확보</li>
+                                <li>빠른 기술 발전에 따른 지속적 업그레이드</li>
+                                <li>글로벌 공급망 불안정성</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="challenge-section">
+                            <h3 class="challenge-title">잠재적 리스크</h3>
+                            <ul class="challenge-list">
+                                <li>사이버 보안 위협 증가 및 데이터 유출</li>
+                                <li>기술 의존도 증가로 인한 시스템 장애</li>
+                                <li>초기 투자 대비 기대 효과 지연</li>
+                                <li>규제 환경 변화 및 컴플라이언스 리스크</li>
+                                <li>기술 표준화 부족으로 인한 호환성 문제</li>
+                                <li>경쟁사 대비 디지털 전환 속도 지연</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <div class="section-header">
+                    <span class="section-icon">📈</span>
+                    <h2 class="section-title">성공 측정 지표</h2>
+                </div>
+                <div class="success-metrics">
+                    <div class="metrics-grid">
+                        <div class="metrics-category">
+                            <h3 class="metrics-title">운영 효율성</h3>
+                            <ul class="metrics-list">
+                                <li>
+                                    <span>설비 종합 효율 (OEE)</span>
+                                    <span class="metric-target">95% 이상</span>
+                                </li>
+                                <li>
+                                    <span>생산성 지수</span>
+                                    <span class="metric-target">+35%</span>
+                                </li>
+                                <li>
+                                    <span>다운타임 감소</span>
+                                    <span class="metric-target">-60%</span>
+                                </li>
+                                <li>
+                                    <span>품질 불량률</span>
+                                    <span class="metric-target">0.1% 미만</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="metrics-category">
+                            <h3 class="metrics-title">비용 절감</h3>
+                            <ul class="metrics-list">
+                                <li>
+                                    <span>운영비용 절감</span>
+                                    <span class="metric-target">-28%</span>
+                                </li>
+                                <li>
+                                    <span>에너지 효율성</span>
+                                    <span class="metric-target">-25%</span>
+                                </li>
+                                <li>
+                                    <span>재고 최적화</span>
+                                    <span class="metric-target">-20%</span>
+                                </li>
+                                <li>
+                                    <span>정비 비용</span>
+                                    <span class="metric-target">-40%</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="metrics-category">
+                            <h3 class="metrics-title">혁신 지표</h3>
+                            <ul class="metrics-list">
+                                <li>
+                                    <span>자동화율</span>
+                                    <span class="metric-target">95%</span>
+                                </li>
+                                <li>
+                                    <span>데이터 활용률</span>
+                                    <span class="metric-target">90%</span>
+                                </li>
+                                <li>
+                                    <span>AI 모델 정확도</span>
+                                    <span class="metric-target">98%</span>
+                                </li>
+                                <li>
+                                    <span>디지털 서비스 비중</span>
+                                    <span class="metric-target">40%</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="metrics-category">
+                            <h3 class="metrics-title">인력 역량</h3>
+                            <ul class="metrics-list">
+                                <li>
+                                    <span>디지털 리터러시</span>
+                                    <span class="metric-target">90% 이상</span>
+                                </li>
+                                <li>
+                                    <span>전문가 양성</span>
+                                    <span class="metric-target">200명</span>
+                                </li>
+                                <li>
+                                    <span>교육 프로그램 참여</span>
+                                    <span class="metric-target">100%</span>
+                                </li>
+                                <li>
+                                    <span>직원 만족도</span>
+                                    <span class="metric-target">4.5/5.0</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <footer class="footer">
+            <div class="footer-content">
+                <div>
+                    <strong>Digital Transformation Office</strong><br>
+                    최고디지털책임자(CDO) 직속 조직 | 미래 기술 혁신 선도
+                </div>
+                <div class="footer-links">
+                    <a href="#">디지털 전략</a>
+                    <a href="#">기술 로드맵</a>
+                    <a href="#">혁신 프로젝트</a>
+                    <a href="#">성과 지표</a>
+                </div>
+            </div>
+            <div class="digital-vision">
+                "우리는 디지털 기술을 통해 제조업의 패러다임을 혁신하고, 
+                지속가능한 미래를 창조하는 글로벌 리더가 되겠습니다. 
+                인공지능, IoT, 빅데이터를 활용하여 완전 자율화된 스마트 팩토리를 구현하고, 
+                모든 이해관계자에게 가치를 제공하겠습니다."
+                <br><br><strong>- Chief Digital Officer -</strong>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

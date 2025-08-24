@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Tab Example</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .portfolio-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        
+        .header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .tab-nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 0 20px;
+            background: #f8f9fa;
+            border-radius: 0 0 15px 15px;
+        }
+        
+        .tab-nav button {
+            background: transparent;
+            border: none;
+            padding: 15px 25px;
+            margin: 10px 5px;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #666;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tab-nav button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            transition: all 0.3s ease;
+            z-index: -1;
+        }
+        
+        .tab-nav button.active::before {
+            left: 0;
+        }
+        
+        .tab-nav button.active {
+            color: white;
+        }
+        
+        .tab-nav button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 40px;
+            min-height: 400px;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+        
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .project-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .skill-tag {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        .experience-item {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4ecdc4;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .contact-form {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4ecdc4;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 2em;
+        }
+        
+        h3 {
+            color: #4ecdc4;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="portfolio-container">
+        <div class="header">
+            <h1>김개발자</h1>
+            <p>풀스택 웹 개발자 포트폴리오</p>
+        </div>
+        
+        <div class="tab-nav">
+            <button class="tab-btn active" data-tab="projects">프로젝트</button>
+            <button class="tab-btn" data-tab="skills">기술 스택</button>
+            <button class="tab-btn" data-tab="experience">경력</button>
+            <button class="tab-btn" data-tab="contact">연락처</button>
+        </div>
+        
+        <div id="projects" class="tab-content active">
+            <h2>주요 프로젝트</h2>
+            <div class="project-grid">
+                <div class="project-card">
+                    <h3>전자상거래 플랫폼</h3>
+                    <p>React와 Node.js를 사용한 풀스택 전자상거래 웹사이트 개발</p>
+                    <div class="skill-tags">
+                        <span class="skill-tag">React</span>
+                        <span class="skill-tag">Node.js</span>
+                        <span class="skill-tag">MongoDB</span>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <h3>실시간 채팅 앱</h3>
+                    <p>Socket.io를 활용한 실시간 채팅 애플리케이션</p>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Socket.io</span>
+                        <span class="skill-tag">Express</span>
+                        <span class="skill-tag">Vue.js</span>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <h3>모바일 게임 앱</h3>
+                    <p>React Native로 개발한 크로스플랫폼 모바일 게임</p>
+                    <div class="skill-tags">
+                        <span class="skill-tag">React Native</span>
+                        <span class="skill-tag">Firebase</span>
+                        <span class="skill-tag">Redux</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="skills" class="tab-content">
+            <h2>기술 스택</h2>
+            <div class="project-grid">
+                <div class="project-card">
+                    <h3>프론트엔드</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">HTML5</span>
+                        <span class="skill-tag">CSS3</span>
+                        <span class="skill-tag">JavaScript</span>
+                        <span class="skill-tag">React</span>
+                        <span class="skill-tag">Vue.js</span>
+                        <span class="skill-tag">TypeScript</span>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <h3>백엔드</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Node.js</span>
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">Express</span>
+                        <span class="skill-tag">Django</span>
+                        <span class="skill-tag">REST API</span>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <h3>데이터베이스 & 도구</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">MongoDB</span>
+                        <span class="skill-tag">PostgreSQL</span>
+                        <span class="skill-tag">Git</span>
+                        <span class="skill-tag">Docker</span>
+                        <span class="skill-tag">AWS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="experience" class="tab-content">
+            <h2>경력 사항</h2>
+            <div class="experience-item">
+                <h3>시니어 개발자 - 테크스타트업 (2022-현재)</h3>
+                <p>• 웹 애플리케이션 아키텍처 설계 및 개발 리딩</p>
+                <p>• React 및 Node.js 기반 풀스택 개발</p>
+                <p>• 팀 내 기술 멘토링 및 코드 리뷰</p>
+            </div>
+            <div class="experience-item">
+                <h3>풀스택 개발자 - 중견 IT회사 (2020-2022)</h3>
+                <p>• 전자상거래 플랫폼 개발 및 유지보수</p>
+                <p>• 마이크로서비스 아키텍처 도입</p>
+                <p>• 성능 최적화로 로딩 시간 50% 단축</p>
+            </div>
+            <div class="experience-item">
+                <h3>주니어 개발자 - 스타트업 (2018-2020)</h3>
+                <p>• 웹 프론트엔드 개발</p>
+                <p>• RESTful API 설계 및 구현</p>
+                <p>• 모바일 반응형 웹 개발</p>
+            </div>
+        </div>
+        
+        <div id="contact" class="tab-content">
+            <h2>연락하기</h2>
+            <div class="contact-form">
+                <div class="form-group">
+                    <input type="text" placeholder="이름" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="이메일" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" placeholder="제목" required>
+                </div>
+                <div class="form-group">
+                    <textarea rows="6" placeholder="메시지를 입력하세요..." required></textarea>
+                </div>
+                <button class="submit-btn" onclick="alert('메시지가 전송되었습니다!')">메시지 보내기</button>
+            </div>
+            <div style="margin-top: 30px; text-align: center;">
+                <p>📧 Email: developer@example.com</p>
+                <p>📞 Phone: 010-1234-5678</p>
+                <p>💼 LinkedIn: linkedin.com/in/developer</p>
+                <p>🐱 GitHub: github.com/developer</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTab = button.getAttribute('data-tab');
+                    
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    button.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

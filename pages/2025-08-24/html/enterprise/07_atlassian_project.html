@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atlassian Jira Enterprise Project Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #f4f5f7;
+            color: #172b4d;
+        }
+        
+        .header {
+            background: #0052cc;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .atlassian-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .logo-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #0052cc, #2684ff);
+            border-radius: 4px;
+        }
+        
+        .header-nav {
+            display: flex;
+            gap: 32px;
+            margin-left: 40px;
+        }
+        
+        .header-nav a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 0;
+            transition: color 0.2s;
+        }
+        
+        .header-nav a:hover {
+            color: white;
+        }
+        
+        .header-actions {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .search-box {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            color: white;
+            font-size: 14px;
+            width: 200px;
+        }
+        
+        .search-box::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #36b37e;
+            cursor: pointer;
+        }
+        
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: calc(100vh - 56px);
+        }
+        
+        .sidebar {
+            background: white;
+            border-right: 1px solid #dfe1e6;
+            padding: 24px 0;
+        }
+        
+        .project-selector {
+            padding: 0 24px 24px;
+            border-bottom: 1px solid #dfe1e6;
+            margin-bottom: 24px;
+        }
+        
+        .current-project {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            background: #f4f5f7;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .project-avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #2684ff, #0052cc);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .project-info {
+            flex: 1;
+        }
+        
+        .project-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+        
+        .project-type {
+            font-size: 12px;
+            color: #6b778c;
+        }
+        
+        .nav-section {
+            margin-bottom: 32px;
+        }
+        
+        .nav-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b778c;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0 24px;
+            margin-bottom: 12px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 24px;
+            color: #172b4d;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        
+        .nav-item:hover {
+            background: #f4f5f7;
+        }
+        
+        .nav-item.active {
+            background: #e6f7ff;
+            color: #0052cc;
+            border-right: 2px solid #0052cc;
+        }
+        
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            background: currentColor;
+            border-radius: 2px;
+            opacity: 0.7;
+        }
+        
+        .content-area {
+            padding: 32px;
+            background: #f4f5f7;
+            overflow: auto;
+        }
+        
+        .page-header {
+            margin-bottom: 32px;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .page-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 3px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-weight: 500;
+        }
+        
+        .btn-primary {
+            background: #0052cc;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0747a6;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #172b4d;
+            border: 1px solid #dfe1e6;
+        }
+        
+        .btn-secondary:hover {
+            background: #f4f5f7;
+        }
+        
+        .board-header {
+            background: white;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .board-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .board-filters {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .filter-item {
+            padding: 6px 12px;
+            background: #f4f5f7;
+            border: 1px solid #dfe1e6;
+            border-radius: 3px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-item:hover {
+            background: #e4e6ea;
+        }
+        
+        .filter-item.active {
+            background: #0052cc;
+            color: white;
+            border-color: #0052cc;
+        }
+        
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+        
+        .kanban-column {
+            background: #f4f5f7;
+            border-radius: 6px;
+            padding: 16px;
+            min-height: 600px;
+        }
+        
+        .column-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #dfe1e6;
+        }
+        
+        .column-title {
+            font-weight: 600;
+            color: #172b4d;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+        
+        .issue-count {
+            background: #6b778c;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+        
+        .todo-header .issue-count {
+            background: #6b778c;
+        }
+        
+        .progress-header .issue-count {
+            background: #0052cc;
+        }
+        
+        .review-header .issue-count {
+            background: #ff8b00;
+        }
+        
+        .done-header .issue-count {
+            background: #36b37e;
+        }
+        
+        .issue-card {
+            background: white;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .issue-card:hover {
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+            transform: translateY(-1px);
+        }
+        
+        .issue-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .issue-key {
+            font-size: 12px;
+            color: #6b778c;
+            font-weight: 600;
+        }
+        
+        .issue-type {
+            width: 16px;
+            height: 16px;
+            border-radius: 2px;
+        }
+        
+        .type-story {
+            background: #36b37e;
+        }
+        
+        .type-bug {
+            background: #de350b;
+        }
+        
+        .type-task {
+            background: #0052cc;
+        }
+        
+        .type-epic {
+            background: #6554c0;
+        }
+        
+        .issue-title {
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            color: #172b4d;
+        }
+        
+        .issue-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .issue-priority {
+            width: 16px;
+            height: 16px;
+            border-radius: 2px;
+        }
+        
+        .priority-highest {
+            background: #de350b;
+        }
+        
+        .priority-high {
+            background: #ff8b00;
+        }
+        
+        .priority-medium {
+            background: #ffab00;
+        }
+        
+        .priority-low {
+            background: #36b37e;
+        }
+        
+        .issue-assignee {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #6b778c;
+        }
+        
+        .assignee-1 { background: linear-gradient(135deg, #36b37e, #2196f3); }
+        .assignee-2 { background: linear-gradient(135deg, #ff8b00, #ff5722); }
+        .assignee-3 { background: linear-gradient(135deg, #6554c0, #9c27b0); }
+        .assignee-4 { background: linear-gradient(135deg, #de350b, #e91e63); }
+        
+        .sprint-info {
+            background: white;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .sprint-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            margin-bottom: 12px;
+        }
+        
+        .sprint-name {
+            font-weight: 600;
+            color: #172b4d;
+        }
+        
+        .sprint-progress {
+            height: 8px;
+            background: #f4f5f7;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #36b37e, #2196f3);
+            width: 65%;
+            transition: width 0.3s;
+        }
+        
+        .sprint-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #6b778c;
+        }
+        
+        .quick-add {
+            background: white;
+            border: 2px dashed #dfe1e6;
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #6b778c;
+            font-size: 14px;
+        }
+        
+        .quick-add:hover {
+            border-color: #0052cc;
+            color: #0052cc;
+            background: #f4f5f7;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="atlassian-logo">
+            <div class="logo-icon"></div>
+            <span>Jira</span>
+        </div>
+        <nav class="header-nav">
+            <a href="#">Your work</a>
+            <a href="#">Projects</a>
+            <a href="#">Dashboards</a>
+            <a href="#">People</a>
+            <a href="#">Apps</a>
+        </nav>
+        <div class="header-actions">
+            <input type="text" class="search-box" placeholder="Search issues, boards, projects...">
+            <div class="user-avatar"></div>
+        </div>
+    </header>
+    
+    <div class="main-layout">
+        <aside class="sidebar">
+            <div class="project-selector">
+                <div class="current-project">
+                    <div class="project-avatar">EC</div>
+                    <div class="project-info">
+                        <div class="project-name">E-Commerce Platform</div>
+                        <div class="project-type">Software project</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-title">Planning</div>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon"></span>
+                    <span>Roadmap</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon"></span>
+                    <span>Backlog</span>
+                </a>
+                <a href="#" class="nav-item active">
+                    <span class="nav-icon"></span>
+                    <span>Active sprints</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-title">Development</div>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon"></span>
+                    <span>Code</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon"></span>
+                    <span>Releases</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-title">Operations</div>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon"></span>
+                    <span>Incidents</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon"></span>
+                    <span>Change requests</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-title">Reports</div>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon"></span>
+                    <span>Velocity chart</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon"></span>
+                    <span>Burndown chart</span>
+                </a>
+            </div>
+        </aside>
+        
+        <main class="content-area">
+            <div class="page-header">
+                <h1 class="page-title">Sprint 24.8 Board</h1>
+                <div class="page-actions">
+                    <button class="btn btn-primary">Create issue</button>
+                    <button class="btn btn-secondary">Import</button>
+                    <button class="btn btn-secondary">Export</button>
+                </div>
+            </div>
+            
+            <div class="sprint-info">
+                <div class="sprint-header">
+                    <span class="sprint-name">Sprint 24.8 - Mobile App Enhancement</span>
+                </div>
+                <div class="sprint-progress">
+                    <div class="progress-bar"></div>
+                </div>
+                <div class="sprint-stats">
+                    <span>65% complete</span>
+                    <span>5 days remaining</span>
+                    <span>23/35 story points</span>
+                </div>
+            </div>
+            
+            <div class="board-header">
+                <h2 class="board-title">Active Sprint</h2>
+                <div class="board-filters">
+                    <div class="filter-item active">All issues</div>
+                    <div class="filter-item">Only my issues</div>
+                    <div class="filter-item">Recently updated</div>
+                </div>
+            </div>
+            
+            <div class="kanban-board">
+                <div class="kanban-column">
+                    <div class="column-header todo-header">
+                        <span class="column-title">To Do</span>
+                        <span class="issue-count">8</span>
+                    </div>
+                    
+                    <div class="issue-card">
+                        <div class="issue-header">
+                            <span class="issue-key">EC-147</span>
+                            <div class="issue-type type-story"></div>
+                        </div>
+                        <div class="issue-title">사용자 프로필 페이지 UI/UX 개선</div>
+                        <div class="issue-footer">
+                            <div class="issue-priority priority-medium"></div>
+                            <div class="issue-assignee assignee-1"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="issue-card">
+                        <div class="issue-header">
+                            <span class="issue-key">EC-148</span>
+                            <div class="issue-type type-bug"></div>
+                        </div>
+                        <div class="issue-title">결제 시스템 오류 수정</div>
+                        <div class="issue-footer">
+                            <div class="issue-priority priority-highest"></div>
+                            <div class="issue-assignee assignee-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="issue-card">
+                        <div class="issue-header">
+                            <span class="issue-key">EC-149</span>
+                            <div class="issue-type type-task"></div>
+                        </div>
+                        <div class="issue-title">데이터베이스 백업 자동화</div>
+                        <div class="issue-footer">
+                            <div class="issue-priority priority-low"></div>
+                            <div class="issue-assignee assignee-3"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-add">+ Create issue</div>
+                </div>
+                
+                <div class="kanban-column">
+                    <div class="column-header progress-header">
+                        <span class="column-title">In Progress</span>
+                        <span class="issue-count">5</span>
+                    </div>
+                    
+                    <div class="issue-card">
+                        <div class="issue-header">
+                            <span class="issue-key">EC-144</span>
+                            <div class="issue-type type-story"></div>
+                        </div>
+                        <div class="issue-title">모바일 앱 푸시 알림 기능 구현</div>
+                        <div class="issue-footer">
+                            <div class="issue-priority priority-high"></div>
+                            <div class="issue-assignee assignee-1"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="issue-card">
+                        <div class="issue-header">
+                            <span class="issue-key">EC-145</span>
+                            <div class="issue-type type-task"></div>
+                        </div>
+                        <div class="issue-title">API 성능 최적화</div>
+                        <div class="issue-footer">
+                            <div class="issue-priority priority-medium"></div>
+                            <div class="issue-assignee assignee-4"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="issue-card">
+                        <div class="issue-header">
+                            <span class="issue-key">EC-146</span>
+                            <div class="issue-type type-epic"></div>
+                        </div>
+                        <div class="issue-title">장바구니 기능 리뉴얼</div>
+                        <div class="issue-footer">
+                            <div class="issue-priority priority-high"></div>
+                            <div class="issue-assignee assignee-2"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="kanban-column">
+                    <div class="column-header review-header">
+                        <span class="column-title">In Review</span>
+                        <span class="issue-count">4</span>
+                    </div>
+                    
+                    <div class="issue-card">
+                        <div class="issue-header">
+                            <span class="issue-key">EC-141</span>
+                            <div class="issue-type type-story"></div>
+                        </div>
+                        <div class="issue-title">검색 필터 기능 개선</div>
+                        <div class="issue-footer">
+                            <div class="issue-priority priority-medium"></div>
+                            <div class="issue-assignee assignee-3"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="issue-card">
+                        <div class="issue-header">
+                            <span class="issue-key">EC-142</span>
+                            <div class="issue-type type-bug"></div>
+                        </div>
+                        <div class="issue-title">로그인 세션 만료 문제</div>
+                        <div class="issue-footer">
+                            <div class="issue-priority priority-high"></div>
+                            <div class="issue-assignee assignee-1"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="issue-card">
+                        <div class="issue-header">
+                            <span class="issue-key">EC-143</span>
+                            <div class="issue-type type-task"></div>
+                        </div>
+                        <div class="issue-title">보안 취약점 점검</div>
+                        <div class="issue-footer">
+                            <div class="issue-priority priority-highest"></div>
+                            <div class="issue-assignee assignee-4"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="kanban-column">
+                    <div class="column-header done-header">
+                        <span class="column-title">Done</span>
+                        <span class="issue-count">12</span>
+                    </div>
+                    
+                    <div class="issue-card">
+                        <div class="issue-header">
+                            <span class="issue-key">EC-138</span>
+                            <div class="issue-type type-story"></div>
+                        </div>
+                        <div class="issue-title">상품 상세 페이지 반응형 대응</div>
+                        <div class="issue-footer">
+                            <div class="issue-priority priority-medium"></div>
+                            <div class="issue-assignee assignee-2"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="issue-card">
+                        <div class="issue-header">
+                            <span class="issue-key">EC-139</span>
+                            <div class="issue-type type-task"></div>
+                        </div>
+                        <div class="issue-title">단위 테스트 커버리지 개선</div>
+                        <div class="issue-footer">
+                            <div class="issue-priority priority-low"></div>
+                            <div class="issue-assignee assignee-3"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="issue-card">
+                        <div class="issue-header">
+                            <span class="issue-key">EC-140</span>
+                            <div class="issue-type type-bug"></div>
+                        </div>
+                        <div class="issue-title">이미지 업로드 실패 버그 수정</div>
+                        <div class="issue-footer">
+                            <div class="issue-priority priority-high"></div>
+                            <div class="issue-assignee assignee-1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

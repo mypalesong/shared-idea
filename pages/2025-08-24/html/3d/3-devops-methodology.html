@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>데브옵스 방법론 - DevOps Methodology</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 50%, #45B7D1 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 30px;
+        }
+        
+        .three-container {
+            width: 100%;
+            height: 400px;
+            margin: 30px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .content-section {
+            background: rgba(255,255,255,0.95);
+            padding: 40px;
+            margin: 30px 0;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .content-section h2 {
+            font-size: 2.5rem;
+            color: #FF6B6B;
+            margin-bottom: 25px;
+            border-left: 5px solid #FF6B6B;
+            padding-left: 20px;
+        }
+        
+        .content-section h3 {
+            font-size: 1.8rem;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+        
+        .content-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #4a5568;
+        }
+        
+        .devops-cycle {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .cycle-phase {
+            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 30px;
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .cycle-phase:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .cycle-phase h4 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        
+        .cycle-phase p {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .tool-category {
+            background: linear-gradient(135deg, #4ECDC4, #45B7D1);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .tool-category:hover {
+            transform: translateY(-5px);
+        }
+        
+        .tool-category h4 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+        
+        .tool-category ul {
+            list-style: none;
+        }
+        
+        .tool-category li {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .tool-category li::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .benefits-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .benefit {
+            background: linear-gradient(135deg, #FF6B6B, #E55353);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .benefit:hover {
+            transform: translateY(-10px);
+        }
+        
+        .benefit h4 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+        
+        .pipeline-visual {
+            background: linear-gradient(90deg, #FF6B6B, #4ECDC4, #45B7D1);
+            height: 10px;
+            border-radius: 5px;
+            margin: 20px 0;
+            position: relative;
+            animation: pipelineFlow 3s linear infinite;
+        }
+        
+        @keyframes pipelineFlow {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .pipeline-visual::before {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: white;
+            border-radius: 50%;
+            top: -10px;
+            left: 0;
+            animation: pipelineBall 3s linear infinite;
+        }
+        
+        @keyframes pipelineBall {
+            0% { left: -30px; }
+            100% { left: calc(100% - 0px); }
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 50px;
+            border-radius: 20px;
+        }
+        
+        footer p {
+            color: white;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>데브옵스 방법론</h1>
+            <p class="subtitle">개발과 운영의 경계를 허물어 지속적인 통합과 배포를 실현하는 문화</p>
+        </header>
+        
+        <div class="three-container" id="three-container"></div>
+        
+        <div class="content-section">
+            <h2>데브옵스란?</h2>
+            <p>데브옵스(DevOps)는 Development(개발)와 Operations(운영)의 합성어로, 소프트웨어 개발팀과 IT 운영팀 간의 협업과 커뮤니케이션을 강화하여 소프트웨어를 더 빠르고 안정적으로 배포하는 방법론입니다. 단순히 도구나 기술이 아닌 문화적 변화와 업무 방식의 혁신을 의미합니다.</p>
+            
+            <p>데브옵스의 핵심은 사일로(Silo) 현상을 해결하고, 개발부터 배포, 운영까지의 전체 라이프사이클을 하나의 통합된 프로세스로 관리하는 것입니다.</p>
+            
+            <div class="pipeline-visual"></div>
+        </div>
+        
+        <div class="content-section">
+            <h2>데브옵스 라이프사이클</h2>
+            <div class="devops-cycle">
+                <div class="cycle-phase">
+                    <h4>계획 (Plan)</h4>
+                    <p>프로젝트 요구사항 정의 및 계획 수립</p>
+                </div>
+                <div class="cycle-phase">
+                    <h4>코딩 (Code)</h4>
+                    <p>소스코드 개발 및 버전 관리</p>
+                </div>
+                <div class="cycle-phase">
+                    <h4>빌드 (Build)</h4>
+                    <p>코드 컴파일 및 패키징</p>
+                </div>
+                <div class="cycle-phase">
+                    <h4>테스트 (Test)</h4>
+                    <p>자동화된 테스트 실행</p>
+                </div>
+                <div class="cycle-phase">
+                    <h4>릴리즈 (Release)</h4>
+                    <p>배포 준비 및 승인</p>
+                </div>
+                <div class="cycle-phase">
+                    <h4>배포 (Deploy)</h4>
+                    <p>프로덕션 환경 배포</p>
+                </div>
+                <div class="cycle-phase">
+                    <h4>운영 (Operate)</h4>
+                    <p>시스템 운영 및 관리</p>
+                </div>
+                <div class="cycle-phase">
+                    <h4>모니터링 (Monitor)</h4>
+                    <p>성능 모니터링 및 피드백</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>주요 데브옵스 도구</h2>
+            <div class="tools-grid">
+                <div class="tool-category">
+                    <h4>버전 관리</h4>
+                    <ul>
+                        <li>Git</li>
+                        <li>GitHub / GitLab</li>
+                        <li>Bitbucket</li>
+                        <li>Azure DevOps</li>
+                    </ul>
+                </div>
+                <div class="tool-category">
+                    <h4>CI/CD</h4>
+                    <ul>
+                        <li>Jenkins</li>
+                        <li>GitHub Actions</li>
+                        <li>GitLab CI/CD</li>
+                        <li>Azure Pipelines</li>
+                    </ul>
+                </div>
+                <div class="tool-category">
+                    <h4>컨테이너화</h4>
+                    <ul>
+                        <li>Docker</li>
+                        <li>Kubernetes</li>
+                        <li>OpenShift</li>
+                        <li>Docker Compose</li>
+                    </ul>
+                </div>
+                <div class="tool-category">
+                    <h4>모니터링</h4>
+                    <ul>
+                        <li>Prometheus</li>
+                        <li>Grafana</li>
+                        <li>ELK Stack</li>
+                        <li>New Relic</li>
+                    </ul>
+                </div>
+                <div class="tool-category">
+                    <h4>클라우드 플랫폼</h4>
+                    <ul>
+                        <li>AWS</li>
+                        <li>Microsoft Azure</li>
+                        <li>Google Cloud</li>
+                        <li>Digital Ocean</li>
+                    </ul>
+                </div>
+                <div class="tool-category">
+                    <h4>인프라 관리</h4>
+                    <ul>
+                        <li>Terraform</li>
+                        <li>Ansible</li>
+                        <li>Chef</li>
+                        <li>Puppet</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>데브옵스의 주요 이점</h2>
+            <div class="benefits-container">
+                <div class="benefit">
+                    <h4>빠른 배포</h4>
+                    <p>CI/CD 파이프라인을 통해 개발부터 배포까지의 시간을 대폭 단축</p>
+                </div>
+                <div class="benefit">
+                    <h4>높은 품질</h4>
+                    <p>자동화된 테스트와 모니터링으로 소프트웨어 품질 향상</p>
+                </div>
+                <div class="benefit">
+                    <h4>안정성 증대</h4>
+                    <p>작은 단위의 빈번한 배포로 위험 요소 최소화</p>
+                </div>
+                <div class="benefit">
+                    <h4>협업 강화</h4>
+                    <p>개발팀과 운영팀 간의 소통과 협업 개선</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>데브옵스 도입 전략</h2>
+            <h3>1. 문화 변화</h3>
+            <p>데브옵스는 기술보다는 문화적 변화가 더 중요합니다. 팀 간의 사일로를 제거하고 협업을 장려하는 조직 문화를 구축해야 합니다.</p>
+            
+            <h3>2. 자동화 도입</h3>
+            <p>반복적인 작업들을 자동화하여 인적 오류를 줄이고 효율성을 높입니다. 빌드, 테스트, 배포 과정의 자동화가 핵심입니다.</p>
+            
+            <h3>3. 점진적 적용</h3>
+            <p>한 번에 모든 것을 바꾸려 하지 말고, 작은 프로젝트부터 시작하여 점진적으로 데브옵스 프랙티스를 확장해나가세요.</p>
+            
+            <h3>4. 측정과 개선</h3>
+            <p>배포 빈도, 변경 실패율, 복구 시간 등 주요 지표를 측정하고 지속적으로 개선해나가는 것이 중요합니다.</p>
+        </div>
+        
+        <footer>
+            <p>데브옵스는 단순한 도구나 기술이 아닌, 조직 전체의 협업 방식을 혁신하는 문화적 변화입니다.</p>
+        </footer>
+    </div>
+    
+    <script>
+        let scene, camera, renderer, devopsElements = [], pipelines = [];
+        
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            
+            const container = document.getElementById('three-container');
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            renderer.setClearColor(0xFF6B6B);
+            container.appendChild(renderer.domElement);
+            
+            // Create DevOps infinity loop
+            const curve = new THREE.CatmullRomCurve3([
+                new THREE.Vector3(-3, 1, 0),
+                new THREE.Vector3(-1, 2, 1),
+                new THREE.Vector3(1, 1, 0),
+                new THREE.Vector3(3, 0, -1),
+                new THREE.Vector3(1, -1, 0),
+                new THREE.Vector3(-1, -2, 1),
+                new THREE.Vector3(-3, -1, 0),
+                new THREE.Vector3(-1, 0, -1)
+            ]);
+            curve.closed = true;
+            
+            const tubeGeometry = new THREE.TubeGeometry(curve, 100, 0.1, 8, true);
+            const tubeMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0x4ECDC4,
+                transparent: true,
+                opacity: 0.8
+            });
+            const tube = new THREE.Mesh(tubeGeometry, tubeMaterial);
+            scene.add(tube);
+            
+            // Create moving elements along the pipeline
+            const elementColors = [0xFF6B6B, 0x4ECDC4, 0x45B7D1, 0x96CEB4, 0xFECA57];
+            const elementNames = ['Dev', 'Build', 'Test', 'Deploy', 'Ops'];
+            
+            for (let i = 0; i < 5; i++) {
+                const geometry = new THREE.SphereGeometry(0.2, 16, 16);
+                const material = new THREE.MeshPhongMaterial({ 
+                    color: elementColors[i],
+                    emissive: elementColors[i],
+                    emissiveIntensity: 0.2
+                });
+                const element = new THREE.Mesh(geometry, material);
+                
+                element.userData = {
+                    t: i / 5,
+                    name: elementNames[i],
+                    curve: curve
+                };
+                
+                scene.add(element);
+                devopsElements.push(element);
+            }
+            
+            // Create data flow particles
+            for (let i = 0; i < 30; i++) {
+                const particleGeometry = new THREE.SphereGeometry(0.05, 8, 8);
+                const particleMaterial = new THREE.MeshBasicMaterial({ 
+                    color: 0xffffff,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+                
+                particle.userData = {
+                    t: Math.random(),
+                    speed: 0.005 + Math.random() * 0.01,
+                    curve: curve
+                };
+                
+                scene.add(particle);
+                pipelines.push(particle);
+            }
+            
+            // Add floating text elements
+            const loader = new THREE.FontLoader();
+            
+            // Central DevOps text (simulated with geometry)
+            const centralGeometry = new THREE.RingGeometry(1, 1.2, 16);
+            const centralMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.9
+            });
+            const centralRing = new THREE.Mesh(centralGeometry, centralMaterial);
+            centralRing.position.set(0, 0, 0);
+            scene.add(centralRing);
+            
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(10, 10, 5);
+            scene.add(directionalLight);
+            
+            const pointLight = new THREE.PointLight(0x4ECDC4, 1, 100);
+            pointLight.position.set(0, 0, 5);
+            scene.add(pointLight);
+            
+            camera.position.set(0, 2, 8);
+            camera.lookAt(0, 0, 0);
+            
+            animate();
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const time = Date.now() * 0.001;
+            
+            // Animate DevOps elements moving along the infinity loop
+            devopsElements.forEach((element, index) => {
+                element.userData.t += 0.003;
+                if (element.userData.t > 1) element.userData.t = 0;
+                
+                const position = element.userData.curve.getPoint(element.userData.t);
+                element.position.copy(position);
+                element.rotation.y = time * 2;
+                element.rotation.x = time * 1.5;
+            });
+            
+            // Animate pipeline particles
+            pipelines.forEach(particle => {
+                particle.userData.t += particle.userData.speed;
+                if (particle.userData.t > 1) particle.userData.t = 0;
+                
+                const position = particle.userData.curve.getPoint(particle.userData.t);
+                particle.position.copy(position);
+                
+                // Add some randomness to particle positions
+                particle.position.x += Math.sin(time * 3 + particle.userData.t * 10) * 0.1;
+                particle.position.y += Math.cos(time * 3 + particle.userData.t * 10) * 0.1;
+            });
+            
+            // Camera rotation around the scene
+            camera.position.x = Math.sin(time * 0.1) * 8;
+            camera.position.z = Math.cos(time * 0.1) * 8;
+            camera.lookAt(0, 0, 0);
+            
+            renderer.render(scene, camera);
+        }
+        
+        window.addEventListener('resize', () => {
+            const container = document.getElementById('three-container');
+            camera.aspect = container.offsetWidth / container.offsetHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+        });
+        
+        init3D();
+    </script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>테크 밋업 초대장</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #000000;
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            width: 720px;
+            height: 520px;
+            background: #000000;
+            border: 2px solid #00ffff;
+            position: relative;
+            overflow: hidden;
+            animation: cardPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes cardPulse {
+            0%, 100% { 
+                border-color: #00ffff;
+                box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            }
+            50% { 
+                border-color: #00ff88;
+                box-shadow: 0 0 40px rgba(0, 255, 255, 0.6);
+            }
+        }
+
+        .neon-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: gridMove 15s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(40px, 40px); }
+        }
+
+        .neon-lines {
+            position: absolute;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                #00ffff 30%, 
+                #00ff88 50%, 
+                #00ffff 70%, 
+                transparent 100%);
+            height: 2px;
+            animation: neonFlow 4s ease-in-out infinite;
+        }
+
+        .line-1 {
+            top: 100px;
+            left: 0;
+            width: 100%;
+            animation-delay: 0s;
+        }
+
+        .line-2 {
+            top: 300px;
+            left: 0;
+            width: 100%;
+            animation-delay: -2s;
+        }
+
+        .line-3 {
+            top: 0;
+            left: 200px;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(0deg, 
+                transparent 0%, 
+                #00ffff 30%, 
+                #00ff88 50%, 
+                #00ffff 70%, 
+                transparent 100%);
+            animation-delay: -1s;
+        }
+
+        .line-4 {
+            top: 0;
+            right: 200px;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(0deg, 
+                transparent 0%, 
+                #00ffff 30%, 
+                #00ff88 50%, 
+                #00ffff 70%, 
+                transparent 100%);
+            animation-delay: -3s;
+        }
+
+        @keyframes neonFlow {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        .floating-code {
+            position: absolute;
+            color: #00ff88;
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            opacity: 0.6;
+            animation: codeFloat 20s linear infinite;
+        }
+
+        .code-1 { top: 50px; left: 50px; animation-delay: 0s; }
+        .code-2 { top: 150px; right: 80px; animation-delay: -5s; }
+        .code-3 { bottom: 100px; left: 100px; animation-delay: -10s; }
+        .code-4 { bottom: 200px; right: 120px; animation-delay: -15s; }
+
+        @keyframes codeFloat {
+            0% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+            25% { transform: translateY(-20px) rotate(90deg); opacity: 0.8; }
+            50% { transform: translateY(0px) rotate(180deg); opacity: 0.4; }
+            75% { transform: translateY(20px) rotate(270deg); opacity: 0.9; }
+            100% { transform: translateY(0px) rotate(360deg); opacity: 0.3; }
+        }
+
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+            width: 80%;
+        }
+
+        .title {
+            font-family: 'Orbitron', monospace;
+            font-size: 4rem;
+            font-weight: 900;
+            color: #00ffff;
+            margin-bottom: 20px;
+            text-shadow: 
+                0 0 10px #00ffff,
+                0 0 20px #00ffff,
+                0 0 40px #00ffff;
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            0% {
+                text-shadow: 
+                    0 0 10px #00ffff,
+                    0 0 20px #00ffff,
+                    0 0 40px #00ffff;
+            }
+            100% {
+                text-shadow: 
+                    0 0 20px #00ffff,
+                    0 0 30px #00ffff,
+                    0 0 60px #00ffff,
+                    0 0 80px #00ffff;
+            }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #00ff88;
+            margin-bottom: 40px;
+            letter-spacing: 3px;
+            animation: subtitleFlicker 3s ease-in-out infinite;
+        }
+
+        @keyframes subtitleFlicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+            25%, 75% { opacity: 0.9; }
+        }
+
+        .tech-details {
+            background: rgba(0, 255, 255, 0.05);
+            border: 1px solid #00ffff;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            animation: detailsSlide 2s ease-out 1s both;
+        }
+
+        @keyframes detailsSlide {
+            0% { 
+                opacity: 0; 
+                transform: translateY(50px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+
+        .tech-topic {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.8rem;
+            color: #00ff88;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .speaker {
+            font-size: 1.1rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .event-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            color: #cccccc;
+            animation: infoGlow 4s ease-in-out infinite;
+        }
+
+        .info-item:nth-child(1) { animation-delay: 0s; }
+        .info-item:nth-child(2) { animation-delay: -1s; }
+        .info-item:nth-child(3) { animation-delay: -2s; }
+        .info-item:nth-child(4) { animation-delay: -3s; }
+
+        @keyframes infoGlow {
+            0%, 100% { 
+                color: #cccccc;
+                text-shadow: none;
+            }
+            50% { 
+                color: #00ffff;
+                text-shadow: 0 0 10px #00ffff;
+            }
+        }
+
+        .info-icon {
+            color: #00ff88;
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .binary-rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .binary-digit {
+            position: absolute;
+            color: #00ff88;
+            font-family: 'Orbitron', monospace;
+            font-size: 16px;
+            animation: binaryFall linear infinite;
+            opacity: 0.3;
+        }
+
+        .binary-1 { left: 10%; animation-duration: 8s; animation-delay: -2s; }
+        .binary-2 { left: 20%; animation-duration: 6s; animation-delay: -4s; }
+        .binary-3 { left: 30%; animation-duration: 9s; animation-delay: -1s; }
+        .binary-4 { left: 50%; animation-duration: 7s; animation-delay: -3s; }
+        .binary-5 { left: 70%; animation-duration: 8s; animation-delay: -5s; }
+        .binary-6 { left: 85%; animation-duration: 6.5s; animation-delay: -2.5s; }
+
+        @keyframes binaryFall {
+            0% {
+                top: -20px;
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                top: 540px;
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="neon-grid"></div>
+        
+        <div class="neon-lines line-1"></div>
+        <div class="neon-lines line-2"></div>
+        <div class="neon-lines line-3"></div>
+        <div class="neon-lines line-4"></div>
+        
+        <div class="binary-rain">
+            <div class="binary-digit binary-1">1010101010</div>
+            <div class="binary-digit binary-2">1100110011</div>
+            <div class="binary-digit binary-3">0101010101</div>
+            <div class="binary-digit binary-4">1111000011</div>
+            <div class="binary-digit binary-5">0011110000</div>
+            <div class="binary-digit binary-6">1010011001</div>
+        </div>
+        
+        <div class="floating-code code-1">const future = async() => {</div>
+        <div class="floating-code code-2">await innovation.deploy();</div>
+        <div class="floating-code code-3">return nextGenTech;</div>
+        <div class="floating-code code-4">}; // Execute tomorrow</div>
+        
+        <div class="content">
+            <h1 class="title">TECH SUMMIT</h1>
+            <p class="subtitle">개발자 커뮤니티 밋업</p>
+            
+            <div class="tech-details">
+                <div class="tech-topic">AI & Machine Learning in 2025</div>
+                <div class="speaker">Keynote Speaker: 김테크 CTO</div>
+                
+                <div class="event-info">
+                    <div class="info-item">
+                        <span class="info-icon">📅</span>
+                        <span>2025년 10월 18일 오후 7시</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">📍</span>
+                        <span>구글 캠퍼스 서울</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">💻</span>
+                        <span>노트북 지참 권장</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">📧</span>
+                        <span>tech.summit.kr@gmail.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수채화 워크숍 초대장</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #f8f4e6 0%, #e8dcc0 100%);
+            color: #5a4a3a;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            width: 680px;
+            height: 480px;
+            background: #ffffff;
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+
+        .watercolor-splash {
+            position: absolute;
+            border-radius: 50%;
+            animation: splashExpand ease-out;
+            opacity: 0.6;
+        }
+
+        .splash-1 {
+            width: 200px;
+            height: 150px;
+            background: radial-gradient(ellipse, 
+                rgba(255, 182, 193, 0.4) 0%,
+                rgba(255, 182, 193, 0.2) 50%,
+                transparent 100%);
+            top: -50px;
+            left: -50px;
+            border-radius: 60% 40% 30% 70%;
+            animation-duration: 8s;
+            animation-delay: 0s;
+        }
+
+        .splash-2 {
+            width: 180px;
+            height: 120px;
+            background: radial-gradient(ellipse, 
+                rgba(173, 216, 230, 0.4) 0%,
+                rgba(173, 216, 230, 0.2) 50%,
+                transparent 100%);
+            top: 200px;
+            right: -40px;
+            border-radius: 50% 60% 40% 50%;
+            animation-duration: 10s;
+            animation-delay: -3s;
+        }
+
+        .splash-3 {
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle, 
+                rgba(255, 255, 224, 0.5) 0%,
+                rgba(255, 255, 224, 0.2) 60%,
+                transparent 100%);
+            bottom: -30px;
+            left: 100px;
+            border-radius: 40% 60% 50% 40%;
+            animation-duration: 12s;
+            animation-delay: -6s;
+        }
+
+        .splash-4 {
+            width: 140px;
+            height: 100px;
+            background: radial-gradient(ellipse, 
+                rgba(221, 160, 221, 0.3) 0%,
+                rgba(221, 160, 221, 0.15) 50%,
+                transparent 100%);
+            top: 100px;
+            left: 50px;
+            border-radius: 70% 30% 60% 40%;
+            animation-duration: 9s;
+            animation-delay: -4s;
+        }
+
+        @keyframes splashExpand {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg);
+                opacity: 0.3;
+            }
+            25% { 
+                transform: scale(1.2) rotate(90deg);
+                opacity: 0.6;
+            }
+            50% { 
+                transform: scale(0.9) rotate(180deg);
+                opacity: 0.4;
+            }
+            75% { 
+                transform: scale(1.1) rotate(270deg);
+                opacity: 0.7;
+            }
+        }
+
+        .brush-strokes {
+            position: absolute;
+            background: linear-gradient(45deg,
+                rgba(100, 149, 237, 0.2) 0%,
+                transparent 30%,
+                rgba(255, 182, 193, 0.2) 70%,
+                transparent 100%);
+            animation: brushMove 15s ease-in-out infinite;
+        }
+
+        .stroke-1 {
+            width: 300px;
+            height: 20px;
+            top: 80px;
+            left: -100px;
+            transform: rotate(25deg);
+            animation-delay: 0s;
+        }
+
+        .stroke-2 {
+            width: 250px;
+            height: 15px;
+            bottom: 120px;
+            right: -80px;
+            transform: rotate(-30deg);
+            animation-delay: -5s;
+        }
+
+        @keyframes brushMove {
+            0%, 100% { 
+                transform: translateX(0px) rotate(25deg);
+                opacity: 0.3;
+            }
+            50% { 
+                transform: translateX(30px) rotate(25deg);
+                opacity: 0.7;
+            }
+        }
+
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+            width: 85%;
+        }
+
+        .title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            font-weight: 700;
+            color: #8B4B8C;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            animation: titleBrush 3s ease-out;
+        }
+
+        @keyframes titleBrush {
+            0% { 
+                opacity: 0; 
+                transform: scale(0.5) rotate(-10deg);
+                filter: blur(5px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1) rotate(0deg);
+                filter: blur(0px);
+            }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #6B8E23;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            animation: subtitleFlow 2s ease-out 1s both;
+        }
+
+        @keyframes subtitleFlow {
+            0% { 
+                opacity: 0; 
+                transform: translateY(20px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+
+        .workshop-info {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(139, 75, 140, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            backdrop-filter: blur(5px);
+            animation: infoFloat 2s ease-out 1.5s both;
+        }
+
+        @keyframes infoFloat {
+            0% { 
+                opacity: 0; 
+                transform: translateY(30px) scale(0.95);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .workshop-theme {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            color: #4682B4;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+            color: #5a4a3a;
+            animation: detailBrush 1s ease-out both;
+        }
+
+        .detail-item:nth-child(1) { animation-delay: 2s; }
+        .detail-item:nth-child(2) { animation-delay: 2.2s; }
+        .detail-item:nth-child(3) { animation-delay: 2.4s; }
+        .detail-item:nth-child(4) { animation-delay: 2.6s; }
+
+        @keyframes detailBrush {
+            0% { 
+                opacity: 0; 
+                transform: translateX(-20px);
+                filter: blur(3px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateX(0);
+                filter: blur(0px);
+            }
+        }
+
+        .detail-icon {
+            color: #8B4B8C;
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        .paint-palette {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            width: 80px;
+            height: 60px;
+            z-index: 5;
+        }
+
+        .palette {
+            width: 100%;
+            height: 100%;
+            background: #f5f5f5;
+            border-radius: 50% 10% 50% 10%;
+            border: 2px solid #ddd;
+            position: relative;
+            animation: paletteRotate 8s linear infinite;
+        }
+
+        @keyframes paletteRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .paint-dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: dotPulse 3s ease-in-out infinite;
+        }
+
+        .dot-red { background: #FF6B6B; top: 10px; left: 20px; animation-delay: 0s; }
+        .dot-blue { background: #4ECDC4; top: 20px; right: 15px; animation-delay: -0.5s; }
+        .dot-yellow { background: #FFD93D; bottom: 15px; left: 25px; animation-delay: -1s; }
+        .dot-green { background: #6BCF7F; bottom: 25px; right: 20px; animation-delay: -1.5s; }
+
+        @keyframes dotPulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.5); opacity: 1; }
+        }
+
+        .artistic-frame {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            border: 3px solid rgba(139, 75, 140, 0.1);
+            border-radius: 20px;
+            pointer-events: none;
+            animation: frameGlow 6s ease-in-out infinite;
+        }
+
+        @keyframes frameGlow {
+            0%, 100% { 
+                border-color: rgba(139, 75, 140, 0.1);
+                box-shadow: none;
+            }
+            50% { 
+                border-color: rgba(139, 75, 140, 0.3);
+                box-shadow: inset 0 0 20px rgba(139, 75, 140, 0.1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="artistic-frame"></div>
+        
+        <div class="watercolor-splash splash-1"></div>
+        <div class="watercolor-splash splash-2"></div>
+        <div class="watercolor-splash splash-3"></div>
+        <div class="watercolor-splash splash-4"></div>
+        
+        <div class="brush-strokes stroke-1"></div>
+        <div class="brush-strokes stroke-2"></div>
+        
+        <div class="paint-palette">
+            <div class="palette">
+                <div class="paint-dot dot-red"></div>
+                <div class="paint-dot dot-blue"></div>
+                <div class="paint-dot dot-yellow"></div>
+                <div class="paint-dot dot-green"></div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <h1 class="title">Watercolor Dreams</h1>
+            <p class="subtitle">수채화 아트 워크숍</p>
+            
+            <div class="workshop-info">
+                <div class="workshop-theme">자연의 색감을 담다</div>
+                
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <span class="detail-icon">🎨</span>
+                        <span>초보자도 환영합니다</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📅</span>
+                        <span>2025년 10월 22일 오후 2시</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📍</span>
+                        <span>아뜰리에 봄빛 스튜디오</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">💌</span>
+                        <span>watercolor.art@gmail.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>칸반 방법론 - Kanban Methodology</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 50%, #6c5ce7 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 30px;
+        }
+        
+        .three-container {
+            width: 100%;
+            height: 400px;
+            margin: 30px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .content-section {
+            background: rgba(255,255,255,0.95);
+            padding: 40px;
+            margin: 30px 0;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .content-section h2 {
+            font-size: 2.5rem;
+            color: #0984e3;
+            margin-bottom: 25px;
+            border-left: 5px solid #0984e3;
+            padding-left: 20px;
+        }
+        
+        .content-section h3 {
+            font-size: 1.8rem;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+        
+        .content-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #4a5568;
+        }
+        
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            box-shadow: inset 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .kanban-column {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 300px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .kanban-column:hover {
+            transform: translateY(-5px);
+        }
+        
+        .column-header {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .todo-header { background: linear-gradient(135deg, #ff6b6b, #ee5a5a); }
+        .progress-header { background: linear-gradient(135deg, #feca57, #ff9ff3); }
+        .done-header { background: linear-gradient(135deg, #48dbfb, #0abde3); }
+        
+        .kanban-card {
+            background: #f8f9fa;
+            border-left: 4px solid #74b9ff;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .kanban-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .principles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .principle-card {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .principle-card:hover {
+            transform: translateY(-5px) rotate(1deg);
+        }
+        
+        .principle-card h4 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+        
+        .metrics-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .metric {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            flex: 1;
+            min-width: 200px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .metric:hover {
+            transform: translateY(-10px) scale(1.05);
+        }
+        
+        .metric h4 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .metric .number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .benefits-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .benefit-item {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #74b9ff;
+            transition: all 0.3s ease;
+        }
+        
+        .benefit-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .benefit-item h4 {
+            color: #0984e3;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .flow-visualization {
+            background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb);
+            height: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .flow-item {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: -10px;
+            animation: flowMove 4s linear infinite;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        @keyframes flowMove {
+            0% { left: -40px; }
+            100% { left: calc(100% + 40px); }
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 50px;
+            border-radius: 20px;
+        }
+        
+        footer p {
+            color: white;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>칸반 방법론</h1>
+            <p class="subtitle">시각적 워크플로우 관리를 통한 지속적인 개선</p>
+        </header>
+        
+        <div class="three-container" id="three-container"></div>
+        
+        <div class="content-section">
+            <h2>칸반이란?</h2>
+            <p>칸반(看板, Kanban)은 일본어로 '간판'을 의미하며, 토요타 생산 시스템에서 시작된 린(Lean) 방법론입니다. 소프트웨어 개발에서 칸반은 작업의 시각적 관리와 워크플로우 최적화를 통해 팀의 생산성을 향상시키는 방법론입니다.</p>
+            
+            <p>칸반의 핵심은 '작업을 시각화하고, 진행 중인 작업(WIP)을 제한하며, 흐름을 관리하는 것'입니다. 이를 통해 팀은 병목지점을 식별하고 지속적으로 프로세스를 개선할 수 있습니다.</p>
+            
+            <div class="flow-visualization">
+                <div class="flow-item" style="animation-delay: 0s;"></div>
+                <div class="flow-item" style="animation-delay: 1s;"></div>
+                <div class="flow-item" style="animation-delay: 2s;"></div>
+                <div class="flow-item" style="animation-delay: 3s;"></div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>칸반 보드</h2>
+            <p>칸반의 핵심 도구인 칸반 보드는 작업 흐름을 시각적으로 표현합니다. 기본적으로 'To Do', 'In Progress', 'Done' 세 개의 열로 구성되며, 팀의 필요에 따라 더 세분화할 수 있습니다.</p>
+            
+            <div class="kanban-board">
+                <div class="kanban-column">
+                    <div class="column-header todo-header">할 일 (To Do)</div>
+                    <div class="kanban-card">사용자 로그인 기능</div>
+                    <div class="kanban-card">상품 검색 API</div>
+                    <div class="kanban-card">결제 모듈 설계</div>
+                    <div class="kanban-card">모바일 UI 개선</div>
+                </div>
+                <div class="kanban-column">
+                    <div class="column-header progress-header">진행중 (In Progress)</div>
+                    <div class="kanban-card">장바구니 기능 개발</div>
+                    <div class="kanban-card">사용자 프로필 페이지</div>
+                </div>
+                <div class="kanban-column">
+                    <div class="column-header done-header">완료 (Done)</div>
+                    <div class="kanban-card">데이터베이스 설계</div>
+                    <div class="kanban-card">기본 레이아웃 구성</div>
+                    <div class="kanban-card">프로젝트 초기 설정</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>칸반의 핵심 원칙</h2>
+            <div class="principles-grid">
+                <div class="principle-card">
+                    <h4>작업 시각화</h4>
+                    <p>모든 작업 항목을 칸반 보드에 시각적으로 표현하여 팀 전체가 현재 상황을 한눈에 파악할 수 있도록 합니다.</p>
+                </div>
+                <div class="principle-card">
+                    <h4>WIP 제한</h4>
+                    <p>진행 중인 작업(Work In Progress)의 수를 제한하여 멀티태스킹을 줄이고 완료까지의 시간을 단축합니다.</p>
+                </div>
+                <div class="principle-card">
+                    <h4>흐름 관리</h4>
+                    <p>작업의 흐름을 지속적으로 모니터링하고 측정하여 병목지점을 식별하고 개선합니다.</p>
+                </div>
+                <div class="principle-card">
+                    <h4>명시적 정책</h4>
+                    <p>워크플로우의 각 단계에서 적용되는 규칙과 정의를 명확하게 정하고 팀원들이 공유합니다.</p>
+                </div>
+                <div class="principle-card">
+                    <h4>피드백 루프</h4>
+                    <p>정기적인 검토와 측정을 통해 지속적인 개선과 학습의 기회를 만듭니다.</p>
+                </div>
+                <div class="principle-card">
+                    <h4>협력적 진화</h4>
+                    <p>팀이 함께 실험하고 개선해나가며 점진적으로 프로세스를 발전시킵니다.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>칸반 메트릭스</h2>
+            <p>칸반에서는 다양한 메트릭을 통해 팀의 성과를 측정하고 개선 영역을 식별합니다.</p>
+            
+            <div class="metrics-container">
+                <div class="metric">
+                    <h4>리드타임</h4>
+                    <div class="number">7일</div>
+                    <p>요청부터 완료까지의 총 시간</p>
+                </div>
+                <div class="metric">
+                    <h4>사이클타임</h4>
+                    <div class="number">3일</div>
+                    <p>작업 시작부터 완료까지의 시간</p>
+                </div>
+                <div class="metric">
+                    <h4>처리율</h4>
+                    <div class="number">12개</div>
+                    <p>주당 완료된 작업 항목 수</p>
+                </div>
+                <div class="metric">
+                    <h4>WIP</h4>
+                    <div class="number">8개</div>
+                    <p>현재 진행 중인 작업 수</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>칸반의 이점</h2>
+            <div class="benefits-list">
+                <div class="benefit-item">
+                    <h4>투명성 향상</h4>
+                    <p>모든 팀원이 작업 현황을 실시간으로 파악할 수 있어 의사소통이 개선됩니다.</p>
+                </div>
+                <div class="benefit-item">
+                    <h4>유연성</h4>
+                    <p>기존 프로세스를 크게 변경하지 않고도 점진적으로 개선할 수 있습니다.</p>
+                </div>
+                <div class="benefit-item">
+                    <h4>병목 지점 식별</h4>
+                    <p>워크플로우의 문제점을 시각적으로 쉽게 발견하고 해결할 수 있습니다.</p>
+                </div>
+                <div class="benefit-item">
+                    <h4>집중력 향상</h4>
+                    <p>WIP 제한을 통해 멀티태스킹을 줄이고 작업의 완료에 집중할 수 있습니다.</p>
+                </div>
+                <div class="benefit-item">
+                    <h4>지속적 개선</h4>
+                    <p>데이터 기반의 의사결정을 통해 프로세스를 지속적으로 개선합니다.</p>
+                </div>
+                <div class="benefit-item">
+                    <h4>예측 가능성</h4>
+                    <p>과거 데이터를 바탕으로 향후 작업 완료 시기를 더 정확하게 예측할 수 있습니다.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>칸반 vs 스크럼</h2>
+            <h3>공통점</h3>
+            <p>둘 다 애자일 원칙을 기반으로 하며, 자기조직적 팀과 지속적인 개선을 추구합니다.</p>
+            
+            <h3>차이점</h3>
+            <p><strong>칸반</strong>은 지속적인 흐름에 중점을 두며, 고정된 스프린트 없이 작업이 완료되는 대로 새로운 작업을 시작합니다. 반면 <strong>스크럼</strong>은 정해진 스프린트 주기 내에서 계획, 실행, 검토의 반복적인 사이클을 따릅니다.</p>
+            
+            <p>칸반은 기존 프로세스에 점진적으로 적용할 수 있어 변화 관리 측면에서 저항이 적은 반면, 스크럼은 명확한 역할과 이벤트를 정의하여 더 구조적인 접근을 제공합니다.</p>
+        </div>
+        
+        <footer>
+            <p>칸반은 단순하지만 강력한 도구로, 팀의 생산성과 품질을 동시에 향상시키는 지속적인 개선의 문화를 만듭니다.</p>
+        </footer>
+    </div>
+    
+    <script>
+        let scene, camera, renderer, kanbanCards = [], flowElements = [];
+        
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            
+            const container = document.getElementById('three-container');
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            renderer.setClearColor(0x74b9ff);
+            container.appendChild(renderer.domElement);
+            
+            // Create Kanban board columns
+            const columnColors = [0xff6b6b, 0xfeca57, 0x48dbfb];
+            const columnPositions = [-4, 0, 4];
+            const columnNames = ['To Do', 'In Progress', 'Done'];
+            
+            columnPositions.forEach((x, columnIndex) => {
+                // Create column background
+                const columnGeometry = new THREE.PlaneGeometry(3, 6);
+                const columnMaterial = new THREE.MeshPhongMaterial({ 
+                    color: columnColors[columnIndex],
+                    transparent: true,
+                    opacity: 0.3,
+                    side: THREE.DoubleSide
+                });
+                const column = new THREE.Mesh(columnGeometry, columnMaterial);
+                column.position.set(x, 0, -0.1);
+                scene.add(column);
+                
+                // Create cards in each column
+                const cardCount = columnIndex === 0 ? 4 : columnIndex === 1 ? 2 : 3;
+                for (let i = 0; i < cardCount; i++) {
+                    const cardGeometry = new THREE.PlaneGeometry(2.5, 0.8);
+                    const cardMaterial = new THREE.MeshPhongMaterial({ 
+                        color: 0xffffff,
+                        side: THREE.DoubleSide
+                    });
+                    const card = new THREE.Mesh(cardGeometry, cardMaterial);
+                    
+                    card.position.set(
+                        x + (Math.random() - 0.5) * 0.5,
+                        2.5 - i * 1.2 + (Math.random() - 0.5) * 0.3,
+                        0
+                    );
+                    
+                    card.userData = {
+                        originalPosition: card.position.clone(),
+                        column: columnIndex,
+                        moving: false,
+                        targetColumn: columnIndex
+                    };
+                    
+                    scene.add(card);
+                    kanbanCards.push(card);
+                }
+            });
+            
+            // Create WIP limit indicators
+            columnPositions.forEach((x, index) => {
+                const limits = [8, 3, 999];
+                const limitGeometry = new THREE.RingGeometry(0.3, 0.4, 16);
+                const limitMaterial = new THREE.MeshBasicMaterial({ 
+                    color: limits[index] <= 5 ? 0xff6b6b : 0x00b894,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const limitIndicator = new THREE.Mesh(limitGeometry, limitMaterial);
+                limitIndicator.position.set(x, 3.5, 0.1);
+                scene.add(limitIndicator);
+            });
+            
+            // Create flow visualization particles
+            for (let i = 0; i < 20; i++) {
+                const particleGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+                const particleMaterial = new THREE.MeshBasicMaterial({ 
+                    color: Math.random() * 0xffffff,
+                    transparent: true,
+                    opacity: 0.7
+                });
+                const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+                
+                particle.position.set(
+                    -6 + Math.random() * 12,
+                    -4 + Math.random() * 2,
+                    -2 + Math.random() * 4
+                );
+                
+                particle.userData = {
+                    velocity: new THREE.Vector3(
+                        0.02 + Math.random() * 0.03,
+                        (Math.random() - 0.5) * 0.01,
+                        (Math.random() - 0.5) * 0.02
+                    ),
+                    originalColor: particle.material.color.clone()
+                };
+                
+                scene.add(particle);
+                flowElements.push(particle);
+            }
+            
+            // Create lead time visualization
+            const leadTimeGeometry = new THREE.BufferGeometry();
+            const leadTimePoints = [];
+            for (let i = 0; i <= 20; i++) {
+                leadTimePoints.push(
+                    -6 + (i / 20) * 12,
+                    -3 + Math.sin(i * 0.5) * 0.5,
+                    2
+                );
+            }
+            leadTimeGeometry.setAttribute('position', new THREE.Float32BufferAttribute(leadTimePoints, 3));
+            
+            const leadTimeMaterial = new THREE.LineBasicMaterial({ 
+                color: 0x6c5ce7,
+                linewidth: 3
+            });
+            const leadTimeLine = new THREE.Line(leadTimeGeometry, leadTimeMaterial);
+            scene.add(leadTimeLine);
+            
+            // Create cumulative flow diagram (3D representation)
+            const cfdGeometry = new THREE.BufferGeometry();
+            const cfdVertices = [];
+            const cfdColors = [];
+            
+            for (let i = 0; i < 30; i++) {
+                const x = -6 + (i / 30) * 12;
+                const todoHeight = 2 + Math.sin(i * 0.3) * 0.5;
+                const progressHeight = todoHeight + 1 + Math.sin(i * 0.4) * 0.3;
+                const doneHeight = progressHeight + 1.5 + Math.sin(i * 0.2) * 0.2;
+                
+                // Todo area
+                cfdVertices.push(x, -4, 1, x, -4 + todoHeight, 1);
+                cfdColors.push(1, 0.42, 0.42, 1, 0.42, 0.42);
+                
+                // In Progress area
+                cfdVertices.push(x, -4 + todoHeight, 1, x, -4 + progressHeight, 1);
+                cfdColors.push(0.99, 0.79, 0.34, 0.99, 0.79, 0.34);
+                
+                // Done area
+                cfdVertices.push(x, -4 + progressHeight, 1, x, -4 + doneHeight, 1);
+                cfdColors.push(0.28, 0.87, 0.96, 0.28, 0.87, 0.96);
+            }
+            
+            cfdGeometry.setAttribute('position', new THREE.Float32BufferAttribute(cfdVertices, 3));
+            cfdGeometry.setAttribute('color', new THREE.Float32BufferAttribute(cfdColors, 3));
+            
+            const cfdMaterial = new THREE.LineBasicMaterial({ 
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.6
+            });
+            const cfdLines = new THREE.LineSegments(cfdGeometry, cfdMaterial);
+            scene.add(cfdLines);
+            
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(10, 10, 5);
+            scene.add(directionalLight);
+            
+            const pointLight = new THREE.PointLight(0x74b9ff, 0.5, 100);
+            pointLight.position.set(0, 5, 3);
+            scene.add(pointLight);
+            
+            camera.position.set(0, 2, 10);
+            camera.lookAt(0, 0, 0);
+            
+            animate();
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const time = Date.now() * 0.001;
+            
+            // Animate Kanban cards with subtle movement
+            kanbanCards.forEach((card, index) => {
+                card.position.y = card.userData.originalPosition.y + Math.sin(time * 2 + index * 0.5) * 0.1;
+                card.rotation.z = Math.sin(time * 1.5 + index) * 0.05;
+                
+                // Occasionally move cards between columns
+                if (Math.random() < 0.002 && !card.userData.moving) {
+                    card.userData.moving = true;
+                    card.userData.targetColumn = (card.userData.column + 1) % 3;
+                    
+                    // Animate to new position
+                    const targetX = [-4, 0, 4][card.userData.targetColumn];
+                    const startX = card.position.x;
+                    let progress = 0;
+                    
+                    const moveCard = () => {
+                        progress += 0.02;
+                        if (progress < 1) {
+                            card.position.x = startX + (targetX - startX) * progress;
+                            card.position.z = Math.sin(progress * Math.PI) * 2;
+                            requestAnimationFrame(moveCard);
+                        } else {
+                            card.position.x = targetX;
+                            card.position.z = 0;
+                            card.userData.column = card.userData.targetColumn;
+                            card.userData.moving = false;
+                        }
+                    };
+                    moveCard();
+                }
+            });
+            
+            // Animate flow particles
+            flowElements.forEach(particle => {
+                particle.position.add(particle.userData.velocity);
+                particle.rotation.x += 0.02;
+                particle.rotation.y += 0.03;
+                
+                // Reset particles that move off screen
+                if (particle.position.x > 8) {
+                    particle.position.x = -8;
+                    particle.position.y = -4 + Math.random() * 2;
+                }
+                
+                // Color change based on position (representing different stages)
+                const hue = (particle.position.x + 8) / 16;
+                particle.material.color.setHSL(hue * 0.7, 0.8, 0.6);
+            });
+            
+            // Camera movement
+            camera.position.x = Math.sin(time * 0.1) * 8;
+            camera.position.z = 8 + Math.cos(time * 0.1) * 2;
+            camera.lookAt(0, 0, 0);
+            
+            renderer.render(scene, camera);
+        }
+        
+        window.addEventListener('resize', () => {
+            const container = document.getElementById('three-container');
+            camera.aspect = container.offsetWidth / container.offsetHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+        });
+        
+        init3D();
+    </script>
+</body>
+</html>

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Dashboard Tabs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+        
+        .dashboard-container {
+            display: flex;
+            height: 100vh;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: #1e293b;
+            border-right: 1px solid #334155;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            padding: 0 20px 30px;
+            border-bottom: 1px solid #334155;
+            margin-bottom: 20px;
+        }
+        
+        .logo h1 {
+            color: #38bdf8;
+            font-size: 1.5em;
+        }
+        
+        .tab-menu {
+            list-style: none;
+        }
+        
+        .tab-menu li {
+            margin-bottom: 5px;
+        }
+        
+        .tab-menu button {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            padding: 15px 20px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .tab-menu button:hover {
+            background: #334155;
+            color: #e2e8f0;
+        }
+        
+        .tab-menu button.active {
+            background: #1e40af;
+            color: #ffffff;
+        }
+        
+        .tab-menu button.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #38bdf8;
+        }
+        
+        .tab-icon {
+            font-size: 20px;
+        }
+        
+        .main-content {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h2 {
+            color: #e2e8f0;
+            font-size: 1.8em;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        .content-area {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeInUp 0.4s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #06b6d4);
+        }
+        
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #38bdf8;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9em;
+        }
+        
+        .chart-container {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .chart-title {
+            font-size: 1.2em;
+            color: #e2e8f0;
+        }
+        
+        .chart-placeholder {
+            height: 200px;
+            background: linear-gradient(45deg, #334155 25%, transparent 25%),
+                        linear-gradient(-45deg, #334155 25%, transparent 25%),
+                        linear-gradient(45deg, transparent 75%, #334155 75%),
+                        linear-gradient(-45deg, transparent 75%, #334155 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 1.1em;
+        }
+        
+        .data-table {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .table-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 15px 25px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+        
+        th {
+            background: #0f172a;
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        
+        tr:hover {
+            background: #334155;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        
+        .status-success {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+        
+        .status-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+        
+        .status-error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            background: #334155;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            padding: 12px;
+            color: #e2e8f0;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .breadcrumb {
+            margin-bottom: 20px;
+            color: #64748b;
+        }
+        
+        .breadcrumb a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .tab-menu {
+                display: flex;
+                overflow-x: auto;
+                padding: 0 20px;
+            }
+            
+            .tab-menu li {
+                margin-bottom: 0;
+                margin-right: 5px;
+                white-space: nowrap;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>🚀 DashBoard</h1>
+            </div>
+            <ul class="tab-menu">
+                <li>
+                    <button class="tab-btn active" data-tab="overview">
+                        <span class="tab-icon">📊</span>
+                        <span>Overview</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="tab-btn" data-tab="analytics">
+                        <span class="tab-icon">📈</span>
+                        <span>Analytics</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="tab-btn" data-tab="users">
+                        <span class="tab-icon">👥</span>
+                        <span>Users</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="tab-btn" data-tab="products">
+                        <span class="tab-icon">📦</span>
+                        <span>Products</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="tab-btn" data-tab="settings">
+                        <span class="tab-icon">⚙️</span>
+                        <span>Settings</span>
+                    </button>
+                </li>
+            </ul>
+        </aside>
+        
+        <main class="main-content">
+            <header class="header">
+                <h2 id="page-title">대시보드 개요</h2>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="showNotification()">알림</button>
+                    <button class="btn btn-primary">내보내기</button>
+                </div>
+            </header>
+            
+            <div class="content-area">
+                <div id="overview" class="tab-content active">
+                    <div class="breadcrumb">
+                        <a href="#">홈</a> / 대시보드 / 개요
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="total-users">12,543</div>
+                            <div class="stat-label">총 사용자</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="revenue">₩2,847,320</div>
+                            <div class="stat-label">이번 달 수익</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="orders">1,823</div>
+                            <div class="stat-label">주문 수</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="conversion">3.24%</div>
+                            <div class="stat-label">전환율</div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">월별 매출 추이</h3>
+                            <select onchange="updateChart()">
+                                <option>최근 6개월</option>
+                                <option>최근 1년</option>
+                            </select>
+                        </div>
+                        <div class="chart-placeholder">
+                            📊 차트 영역 (실제 구현시 Chart.js 등 사용)
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="analytics" class="tab-content">
+                    <div class="breadcrumb">
+                        <a href="#">홈</a> / 대시보드 / 분석
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">실시간 방문자</h3>
+                        </div>
+                        <div class="chart-placeholder">
+                            📈 실시간 데이터 차트
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">트래픽 소스</h3>
+                        </div>
+                        <div class="chart-placeholder">
+                            🥧 파이 차트 - 트래픽 소스 분석
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="users" class="tab-content">
+                    <div class="breadcrumb">
+                        <a href="#">홈</a> / 대시보드 / 사용자
+                    </div>
+                    
+                    <div class="data-table">
+                        <div class="table-header">
+                            <h3>사용자 목록</h3>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>이름</th>
+                                    <th>이메일</th>
+                                    <th>가입일</th>
+                                    <th>상태</th>
+                                    <th>마지막 로그인</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>김철수</td>
+                                    <td>kim@example.com</td>
+                                    <td>2024-01-15</td>
+                                    <td><span class="status-badge status-success">활성</span></td>
+                                    <td>2시간 전</td>
+                                </tr>
+                                <tr>
+                                    <td>이영희</td>
+                                    <td>lee@example.com</td>
+                                    <td>2024-01-20</td>
+                                    <td><span class="status-badge status-warning">대기</span></td>
+                                    <td>1일 전</td>
+                                </tr>
+                                <tr>
+                                    <td>박민수</td>
+                                    <td>park@example.com</td>
+                                    <td>2024-02-01</td>
+                                    <td><span class="status-badge status-error">비활성</span></td>
+                                    <td>7일 전</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div id="products" class="tab-content">
+                    <div class="breadcrumb">
+                        <a href="#">홈</a> / 대시보드 / 제품
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">847</div>
+                            <div class="stat-label">총 제품 수</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">23</div>
+                            <div class="stat-label">재고 부족</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">156</div>
+                            <div class="stat-label">신상품</div>
+                        </div>
+                    </div>
+                    
+                    <div class="data-table">
+                        <div class="table-header">
+                            <h3>인기 제품</h3>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>제품명</th>
+                                    <th>카테고리</th>
+                                    <th>판매량</th>
+                                    <th>재고</th>
+                                    <th>상태</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>스마트폰 케이스</td>
+                                    <td>액세서리</td>
+                                    <td>1,234</td>
+                                    <td>456</td>
+                                    <td><span class="status-badge status-success">판매중</span></td>
+                                </tr>
+                                <tr>
+                                    <td>블루투스 이어폰</td>
+                                    <td>오디오</td>
+                                    <td>892</td>
+                                    <td>12</td>
+                                    <td><span class="status-badge status-warning">재고부족</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div id="settings" class="tab-content">
+                    <div class="breadcrumb">
+                        <a href="#">홈</a> / 대시보드 / 설정
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">계정 설정</h3>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>회사명</label>
+                                <input type="text" value="테크컴퍼니">
+                            </div>
+                            <div class="form-group">
+                                <label>이메일</label>
+                                <input type="email" value="admin@company.com">
+                            </div>
+                            <div class="form-group">
+                                <label>시간대</label>
+                                <select>
+                                    <option>Asia/Seoul</option>
+                                    <option>UTC</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>알림 설정</label>
+                                <select>
+                                    <option>모든 알림</option>
+                                    <option>중요 알림만</option>
+                                    <option>알림 끄기</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="saveSettings()">설정 저장</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const pageTitle = document.getElementById('page-title');
+            
+            const titles = {
+                'overview': '대시보드 개요',
+                'analytics': '분석',
+                'users': '사용자 관리',
+                'products': '제품 관리',
+                'settings': '설정'
+            };
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTab = button.getAttribute('data-tab');
+                    
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    button.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                    pageTitle.textContent = titles[targetTab];
+                });
+            });
+            
+            // 실시간 데이터 시뮬레이션
+            setInterval(updateStats, 5000);
+        });
+        
+        function updateStats() {
+            const totalUsers = document.getElementById('total-users');
+            const revenue = document.getElementById('revenue');
+            const orders = document.getElementById('orders');
+            const conversion = document.getElementById('conversion');
+            
+            if (totalUsers) {
+                totalUsers.textContent = (12543 + Math.floor(Math.random() * 100)).toLocaleString();
+            }
+            if (revenue) {
+                revenue.textContent = '₩' + (2847320 + Math.floor(Math.random() * 100000)).toLocaleString();
+            }
+            if (orders) {
+                orders.textContent = (1823 + Math.floor(Math.random() * 50)).toLocaleString();
+            }
+            if (conversion) {
+                conversion.textContent = (3.24 + Math.random() * 0.5).toFixed(2) + '%';
+            }
+        }
+        
+        function updateChart() {
+            console.log('차트 업데이트');
+        }
+        
+        function saveSettings() {
+            showNotification('설정이 저장되었습니다!');
+        }
+        
+        function showNotification(message = '새로운 알림이 있습니다!') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #1e40af;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

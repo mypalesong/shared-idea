@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>독서토론회 초대장</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif KR', serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #f5f5f5;
+            overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            width: 600px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            animation: cardFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(0.5deg); }
+        }
+
+        .background-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-5deg);
+            font-size: 120px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.03);
+            font-family: 'Playfair Display', serif;
+            z-index: 1;
+            animation: breathe 8s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: translate(-50%, -50%) rotate(-5deg) scale(1); }
+            50% { transform: translate(-50%, -50%) rotate(-5deg) scale(1.05); }
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .header {
+            text-align: center;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #e8e8e8;
+            animation: titleSlide 2s ease-out;
+        }
+
+        @keyframes titleSlide {
+            0% { opacity: 0; transform: translateX(-50px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #b8b8b8;
+            letter-spacing: 3px;
+            animation: subtitleFade 2s ease-out 0.5s both;
+        }
+
+        @keyframes subtitleFade {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .details {
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        .book-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #d4af37;
+            margin-bottom: 15px;
+            animation: bookGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes bookGlow {
+            0%, 100% { text-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
+            50% { text-shadow: 0 0 20px rgba(212, 175, 55, 0.6), 0 0 30px rgba(212, 175, 55, 0.4); }
+        }
+
+        .info {
+            font-size: 1rem;
+            color: #c0c0c0;
+            margin-bottom: 8px;
+        }
+
+        .accent {
+            color: #d4af37;
+            font-weight: 600;
+        }
+
+        .decorative-line {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            margin: 20px auto;
+            animation: lineExpand 3s ease-in-out infinite;
+        }
+
+        @keyframes lineExpand {
+            0%, 100% { width: 60px; opacity: 0.6; }
+            50% { width: 120px; opacity: 1; }
+        }
+
+        .corner-decoration {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .corner-decoration::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(212, 175, 55, 0.6);
+        }
+
+        .corner-decoration.top-left {
+            top: 20px;
+            left: 20px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .corner-decoration.top-left::before {
+            top: -2px;
+            left: -2px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .corner-decoration.bottom-right {
+            bottom: 20px;
+            right: 20px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .corner-decoration.bottom-right::before {
+            bottom: -2px;
+            right: -2px;
+            border-left: none;
+            border-top: none;
+        }
+
+        .floating-quotes {
+            position: absolute;
+            font-size: 40px;
+            color: rgba(212, 175, 55, 0.2);
+            font-family: 'Playfair Display', serif;
+            animation: floatUpDown 5s ease-in-out infinite;
+        }
+
+        .quote-left {
+            top: 80px;
+            left: 80px;
+            animation-delay: -2s;
+        }
+
+        .quote-right {
+            bottom: 100px;
+            right: 100px;
+            transform: rotate(180deg);
+            animation-delay: -1s;
+        }
+
+        @keyframes floatUpDown {
+            0%, 100% { transform: translateY(0px); opacity: 0.2; }
+            50% { transform: translateY(-15px); opacity: 0.4; }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="background-text">BOOK</div>
+        
+        <div class="corner-decoration top-left"></div>
+        <div class="corner-decoration bottom-right"></div>
+        
+        <div class="floating-quotes quote-left">"</div>
+        <div class="floating-quotes quote-right">"</div>
+        
+        <div class="content">
+            <div class="header">
+                <h1 class="title">Literary Circle</h1>
+                <p class="subtitle">독서토론회</p>
+            </div>
+            
+            <div class="decorative-line"></div>
+            
+            <div class="details">
+                <div class="book-title">"1984" by George Orwell</div>
+                <div class="info"><span class="accent">일시:</span> 2025년 9월 15일 오후 7시</div>
+                <div class="info"><span class="accent">장소:</span> 북카페 리브로 3층</div>
+                <div class="info"><span class="accent">주제:</span> 디스토피아와 현대사회</div>
+                <div class="info"><span class="accent">RSVP:</span> book.circle.kr@gmail.com</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

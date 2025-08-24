@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>신규 기능 출시 안내</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f5f5f5; }
+        .container { max-width: 800px; margin: 20px auto; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #6f42c1 0%, #7c4dff 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; position: relative; }
+        .header::after { content: ""; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 10px solid #7c4dff; }
+        .header h1 { font-size: 28px; margin-bottom: 10px; font-weight: 300; }
+        .header .subtitle { font-size: 16px; opacity: 0.9; }
+        .content { padding: 40px; }
+        .notice-type { background: #7c4dff; color: white; padding: 8px 20px; border-radius: 20px; display: inline-block; margin-bottom: 20px; font-size: 14px; font-weight: 500; }
+        .release-badge { background: #28a745; color: white; padding: 4px 12px; border-radius: 12px; font-size: 12px; margin-left: 10px; animation: glow 2s ease-in-out infinite alternate; }
+        @keyframes glow { from { box-shadow: 0 0 5px #28a745; } to { box-shadow: 0 0 20px #28a745, 0 0 30px #28a745; } }
+        .main-message { font-size: 18px; margin-bottom: 30px; color: #2c3e50; line-height: 1.8; }
+        .feature-showcase { margin: 20px 0; }
+        .feature-card { background: #f8f4ff; border-left: 4px solid #7c4dff; padding: 25px; margin-bottom: 20px; border-radius: 0 8px 8px 0; position: relative; overflow: hidden; }
+        .feature-card::before { content: ""; position: absolute; top: -50%; right: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(124, 77, 255, 0.05) 0%, transparent 70%); }
+        .feature-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+        .feature-title { color: #6f42c1; font-size: 20px; font-weight: 600; }
+        .feature-type { background: #7c4dff; color: white; padding: 4px 12px; border-radius: 12px; font-size: 12px; }
+        .feature-description { color: #2c3e50; margin-bottom: 15px; line-height: 1.6; }
+        .feature-benefits { background: white; padding: 15px; border-radius: 6px; margin-top: 15px; }
+        .feature-benefits h5 { color: #6f42c1; margin-bottom: 10px; }
+        .benefit-list { list-style: none; padding: 0; }
+        .benefit-list li { padding: 5px 0; padding-left: 20px; position: relative; }
+        .benefit-list li:before { content: "✨"; position: absolute; left: 0; }
+        .feature-demo { background: #e8f5e8; border: 1px solid #28a745; border-radius: 6px; padding: 15px; margin-top: 15px; text-align: center; }
+        .feature-demo a { color: #28a745; text-decoration: none; font-weight: 600; }
+        .feature-demo a:hover { text-decoration: underline; }
+        .release-info { background: #fff3cd; border-left: 4px solid #ffc107; padding: 25px; margin: 20px 0; border-radius: 0 8px 8px 0; }
+        .release-info h3 { color: #856404; margin-bottom: 15px; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .info-item { background: white; padding: 15px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .info-label { font-weight: 600; color: #856404; margin-bottom: 5px; }
+        .how-to-use { background: #d1ecf1; border-radius: 8px; padding: 25px; margin: 20px 0; }
+        .how-to-use h3 { color: #0c5460; margin-bottom: 15px; }
+        .step-list { list-style: none; padding: 0; }
+        .step-list li { padding: 12px; margin-bottom: 10px; background: white; border-radius: 6px; padding-left: 35px; position: relative; }
+        .step-list li:before { content: ""; width: 20px; height: 20px; background: #007bff; border-radius: 50%; position: absolute; left: 8px; top: 50%; transform: translateY(-50%); color: white; text-align: center; line-height: 20px; font-size: 12px; font-weight: bold; }
+        .step-list li:nth-child(1):before { content: "1"; }
+        .step-list li:nth-child(2):before { content: "2"; }
+        .step-list li:nth-child(3):before { content: "3"; }
+        .step-list li:nth-child(4):before { content: "4"; }
+        .feedback-section { background: #f8f9fa; border-radius: 8px; padding: 25px; margin: 20px 0; text-align: center; }
+        .feedback-section h4 { color: #495057; margin-bottom: 15px; }
+        .feedback-button { display: inline-block; background: #7c4dff; color: white; padding: 12px 24px; border-radius: 25px; text-decoration: none; font-weight: 600; margin: 0 10px; }
+        .feedback-button:hover { background: #6f42c1; color: white; text-decoration: none; }
+        .contact-info { background: #e8f5e8; padding: 20px; border-radius: 6px; margin-top: 30px; }
+        .contact-info h4 { color: #27ae60; margin-bottom: 10px; }
+        .footer { text-align: center; padding: 20px; color: #7f8c8d; font-size: 14px; border-top: 1px solid #ecf0f1; }
+        .logo { float: right; font-weight: bold; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">Product Team</div>
+            <h1>신규 기능 출시 안내</h1>
+            <div class="subtitle">New Feature Release Notice</div>
+        </div>
+        
+        <div class="content">
+            <span class="notice-type">신규기능<span class="release-badge">출시</span></span>
+            
+            <div class="main-message">
+                사용자 편의성 향상을 위한 새로운 기능들이 출시되었습니다.<br>
+                더욱 효율적인 업무환경을 경험해 보세요!
+            </div>
+            
+            <div class="feature-showcase">
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <h3 class="feature-title">🎯 스마트 대시보드</h3>
+                        <span class="feature-type">신규</span>
+                    </div>
+                    <div class="feature-description">
+                        AI 기반 개인화된 대시보드로 업무에 필요한 정보를 한눈에 확인하고, 
+                        중요한 업무를 놓치지 않도록 도와드립니다.
+                    </div>
+                    <div class="feature-benefits">
+                        <h5>📈 주요 개선사항</h5>
+                        <ul class="benefit-list">
+                            <li>개인 맞춤형 위젯 구성</li>
+                            <li>실시간 업무 현황 모니터링</li>
+                            <li>스마트 알림 및 우선순위 표시</li>
+                            <li>모바일 최적화 반응형 디자인</li>
+                        </ul>
+                    </div>
+                    <div class="feature-demo">
+                        <a href="#dashboard-demo">📺 데모 영상 보기</a> | 
+                        <a href="#dashboard-guide">📖 사용 가이드</a>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <h3 class="feature-title">🔍 고급 검색 엔진</h3>
+                        <span class="feature-type">업그레이드</span>
+                    </div>
+                    <div class="feature-description">
+                        자연어 검색과 필터링 기능이 강화되어 원하는 정보를 더욱 빠르고 정확하게 찾을 수 있습니다.
+                    </div>
+                    <div class="feature-benefits">
+                        <h5>🔎 새로운 검색 기능</h5>
+                        <ul class="benefit-list">
+                            <li>자연어 기반 스마트 검색</li>
+                            <li>고급 필터 및 정렬 옵션</li>
+                            <li>검색 히스토리 및 즐겨찾기</li>
+                            <li>전문 파일 내용 검색 지원</li>
+                        </ul>
+                    </div>
+                    <div class="feature-demo">
+                        <a href="#search-demo">🔍 검색 체험하기</a>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-header">
+                        <h3 class="feature-title">💬 실시간 협업 도구</h3>
+                        <span class="feature-type">신규</span>
+                    </div>
+                    <div class="feature-description">
+                        팀원들과 실시간으로 소통하고 협업할 수 있는 통합 커뮤니케이션 플랫폼이 추가되었습니다.
+                    </div>
+                    <div class="feature-benefits">
+                        <h5>🤝 협업 기능</h5>
+                        <ul class="benefit-list">
+                            <li>실시간 채팅 및 화상회의</li>
+                            <li>문서 공동 편집</li>
+                            <li>프로젝트 진행상황 공유</li>
+                            <li>알림 및 멘션 기능</li>
+                        </ul>
+                    </div>
+                    <div class="feature-demo">
+                        <a href="#collab-tutorial">📚 협업 가이드</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="release-info">
+                <h3>📅 출시 정보</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">출시일</div>
+                        <div>2025년 8월 24일</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">버전</div>
+                        <div>v2.5.0</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">적용범위</div>
+                        <div>모든 사용자</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">다운타임</div>
+                        <div>없음</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="how-to-use">
+                <h3>🚀 새 기능 사용방법</h3>
+                <ul class="step-list">
+                    <li>브라우저를 새로고침하여 최신 버전으로 업데이트</li>
+                    <li>좌측 메뉴에서 '대시보드' 또는 '검색' 메뉴 확인</li>
+                    <li>우측 상단 '협업' 아이콘 클릭하여 새 기능 접근</li>
+                    <li>도움말 센터에서 상세 매뉴얼 확인</li>
+                </ul>
+            </div>
+            
+            <div class="feedback-section">
+                <h4>💭 새 기능에 대한 의견을 들려주세요</h4>
+                <a href="mailto:feedback@company.com" class="feedback-button">📝 피드백 보내기</a>
+                <a href="#survey" class="feedback-button">📊 만족도 조사</a>
+            </div>
+            
+            <div class="contact-info">
+                <h4>📞 신규 기능 문의</h4>
+                <div>제품팀: 내선 2300 | product@company.com</div>
+                <div>기능 사용 문의: 내선 1004 | helpdesk@company.com</div>
+                <div>기술 지원: tech-support@company.com</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            이 기능 출시 안내는 제품개발팀에서 발송되었습니다. | © 2025 Company Product Team
+        </div>
+    </div>
+</body>
+</html>

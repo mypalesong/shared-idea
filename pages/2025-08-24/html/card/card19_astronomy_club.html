@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>천문동호회 초대장</title>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: radial-gradient(ellipse at center, #0a0a2a 0%, #000000 100%);
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            width: 720px;
+            height: 520px;
+            background: linear-gradient(135deg, #000428 0%, #004e92 100%);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            animation: cardGalaxy 8s ease-in-out infinite;
+        }
+
+        @keyframes cardGalaxy {
+            0%, 100% { 
+                background: linear-gradient(135deg, #000428 0%, #004e92 100%);
+                box-shadow: 0 0 50px rgba(0, 78, 146, 0.4);
+            }
+            50% { 
+                background: linear-gradient(135deg, #000428 0%, #004e92 50%, #2d1b69 100%);
+                box-shadow: 0 0 80px rgba(0, 78, 146, 0.6);
+            }
+        }
+
+        .starfield {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: #ffffff;
+            border-radius: 50%;
+            animation: starTwinkle ease-in-out infinite;
+        }
+
+        .star-small {
+            width: 2px;
+            height: 2px;
+        }
+
+        .star-medium {
+            width: 3px;
+            height: 3px;
+        }
+
+        .star-large {
+            width: 4px;
+            height: 4px;
+        }
+
+        .star:nth-child(1) { top: 15%; left: 10%; animation-duration: 3s; animation-delay: 0s; }
+        .star:nth-child(2) { top: 25%; left: 85%; animation-duration: 4s; animation-delay: -1s; }
+        .star:nth-child(3) { top: 45%; left: 15%; animation-duration: 2.5s; animation-delay: -2s; }
+        .star:nth-child(4) { top: 60%; left: 90%; animation-duration: 3.5s; animation-delay: -0.5s; }
+        .star:nth-child(5) { top: 80%; left: 20%; animation-duration: 4.5s; animation-delay: -1.5s; }
+        .star:nth-child(6) { top: 35%; left: 75%; animation-duration: 2.8s; animation-delay: -2.5s; }
+        .star:nth-child(7) { top: 70%; left: 60%; animation-duration: 3.2s; animation-delay: -3s; }
+        .star:nth-child(8) { top: 20%; left: 45%; animation-duration: 4.2s; animation-delay: -0.8s; }
+        .star:nth-child(9) { top: 85%; left: 80%; animation-duration: 2.2s; animation-delay: -1.8s; }
+        .star:nth-child(10) { top: 55%; left: 30%; animation-duration: 3.8s; animation-delay: -2.8s; }
+
+        @keyframes starTwinkle {
+            0%, 100% { 
+                opacity: 0.3;
+                transform: scale(1);
+                box-shadow: 0 0 5px #ffffff;
+            }
+            50% { 
+                opacity: 1;
+                transform: scale(1.5);
+                box-shadow: 0 0 15px #ffffff, 0 0 25px #87ceeb;
+            }
+        }
+
+        .constellation {
+            position: absolute;
+            z-index: 2;
+        }
+
+        .constellation-line {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent,
+                rgba(135, 206, 235, 0.6),
+                transparent);
+            animation: constellationGlow 6s ease-in-out infinite;
+        }
+
+        .line-1 {
+            top: 120px;
+            left: 150px;
+            width: 80px;
+            transform: rotate(30deg);
+            animation-delay: 0s;
+        }
+
+        .line-2 {
+            top: 180px;
+            left: 200px;
+            width: 100px;
+            transform: rotate(-15deg);
+            animation-delay: -2s;
+        }
+
+        .line-3 {
+            top: 250px;
+            left: 280px;
+            width: 60px;
+            transform: rotate(45deg);
+            animation-delay: -4s;
+        }
+
+        @keyframes constellationGlow {
+            0%, 100% { 
+                opacity: 0.4;
+                background: linear-gradient(90deg, 
+                    transparent,
+                    rgba(135, 206, 235, 0.4),
+                    transparent);
+            }
+            50% { 
+                opacity: 0.8;
+                background: linear-gradient(90deg, 
+                    transparent,
+                    rgba(135, 206, 235, 0.8),
+                    rgba(255, 255, 255, 0.6),
+                    transparent);
+            }
+        }
+
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            animation: planetOrbit ease-in-out infinite;
+        }
+
+        .planet-1 {
+            top: 80px;
+            right: 100px;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle at 30% 30%,
+                #ff6b35 0%,
+                #f7931e 50%,
+                #c5302e 100%);
+            animation-duration: 12s;
+            animation-delay: 0s;
+        }
+
+        .planet-2 {
+            bottom: 120px;
+            left: 80px;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle at 25% 25%,
+                #4fc3f7 0%,
+                #29b6f6 50%,
+                #0277bd 100%);
+            animation-duration: 15s;
+            animation-delay: -6s;
+        }
+
+        @keyframes planetOrbit {
+            0%, 100% { 
+                transform: translateY(0px) scale(1);
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            }
+            25% { 
+                transform: translateY(-15px) scale(1.1);
+                box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+            }
+            50% { 
+                transform: translateY(-30px) scale(1.05);
+                box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
+            }
+            75% { 
+                transform: translateY(-10px) scale(1.08);
+                box-shadow: 0 0 35px rgba(255, 255, 255, 0.6);
+            }
+        }
+
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+            width: 85%;
+        }
+
+        .title {
+            font-family: 'Exo 2', sans-serif;
+            font-size: 4.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #87ceeb, #ffffff, #b0e0e6, #87ceeb);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            animation: titleCosmic 4s ease-in-out infinite;
+        }
+
+        @keyframes titleCosmic {
+            0%, 100% { 
+                background-position: 0% 50%;
+                text-shadow: 0 0 20px rgba(135, 206, 235, 0.5);
+            }
+            50% { 
+                background-position: 100% 50%;
+                text-shadow: 0 0 40px rgba(135, 206, 235, 0.8);
+            }
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            color: #87ceeb;
+            margin-bottom: 40px;
+            letter-spacing: 3px;
+            animation: subtitleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes subtitleGlow {
+            0% { 
+                opacity: 0.8;
+                text-shadow: 0 0 10px #87ceeb;
+            }
+            100% { 
+                opacity: 1;
+                text-shadow: 0 0 20px #87ceeb, 0 0 30px #b0e0e6;
+            }
+        }
+
+        .observation-event {
+            background: rgba(135, 206, 235, 0.1);
+            border: 2px solid rgba(135, 206, 235, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            animation: eventRise 2s ease-out 1s both;
+        }
+
+        @keyframes eventRise {
+            0% { 
+                opacity: 0; 
+                transform: translateY(50px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+
+        .observation-event::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg,
+                transparent 40%,
+                rgba(135, 206, 235, 0.05) 45%,
+                rgba(255, 255, 255, 0.03) 55%,
+                transparent 60%);
+            animation: cosmicShimmer 6s ease-in-out infinite;
+        }
+
+        @keyframes cosmicShimmer {
+            0%, 100% { transform: translate(-100%, -100%) rotate(45deg); }
+            50% { transform: translate(100%, 100%) rotate(45deg); }
+        }
+
+        .event-title {
+            font-family: 'Exo 2', sans-serif;
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 15px;
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        .celestial-event {
+            font-size: 1.2rem;
+            color: #b0e0e6;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        .astronomy-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
+            position: relative;
+            z-index: 2;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            color: #ffffff;
+            animation: detailTwinkle 4s ease-in-out infinite;
+        }
+
+        .detail-item:nth-child(1) { animation-delay: 0s; }
+        .detail-item:nth-child(2) { animation-delay: -1s; }
+        .detail-item:nth-child(3) { animation-delay: -2s; }
+        .detail-item:nth-child(4) { animation-delay: -3s; }
+
+        @keyframes detailTwinkle {
+            0%, 100% { 
+                color: #ffffff;
+                text-shadow: none;
+            }
+            50% { 
+                color: #87ceeb;
+                text-shadow: 0 0 10px #87ceeb;
+            }
+        }
+
+        .detail-icon {
+            margin-right: 12px;
+            font-size: 1.3rem;
+            color: #87ceeb;
+        }
+
+        .telescope {
+            position: absolute;
+            bottom: 40px;
+            right: 60px;
+            font-size: 3rem;
+            animation: telescopePoint 8s ease-in-out infinite;
+        }
+
+        @keyframes telescopePoint {
+            0%, 100% { 
+                transform: rotate(-10deg) scale(1);
+                filter: drop-shadow(0 0 15px rgba(135, 206, 235, 0.6));
+            }
+            25% { 
+                transform: rotate(0deg) scale(1.05);
+                filter: drop-shadow(0 0 20px rgba(135, 206, 235, 0.8));
+            }
+            50% { 
+                transform: rotate(10deg) scale(1.1);
+                filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.6));
+            }
+            75% { 
+                transform: rotate(5deg) scale(1.03);
+                filter: drop-shadow(0 0 18px rgba(135, 206, 235, 0.7));
+            }
+        }
+
+        .shooting-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #ffffff;
+            border-radius: 50%;
+            animation: shootingStar 3s linear infinite;
+        }
+
+        .meteor-1 {
+            top: 30px;
+            left: 200px;
+            animation-delay: 0s;
+        }
+
+        .meteor-2 {
+            top: 150px;
+            right: 150px;
+            animation-delay: -1.5s;
+        }
+
+        @keyframes shootingStar {
+            0% {
+                transform: translateX(0) translateY(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                box-shadow: 0 0 10px #ffffff, -20px 0 5px rgba(255,255,255,0.5);
+            }
+            90% {
+                opacity: 1;
+                box-shadow: 0 0 10px #ffffff, -20px 0 5px rgba(255,255,255,0.5);
+            }
+            100% {
+                transform: translateX(200px) translateY(100px);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="starfield">
+            <div class="star star-small"></div>
+            <div class="star star-medium"></div>
+            <div class="star star-large"></div>
+            <div class="star star-small"></div>
+            <div class="star star-medium"></div>
+            <div class="star star-small"></div>
+            <div class="star star-large"></div>
+            <div class="star star-medium"></div>
+            <div class="star star-small"></div>
+            <div class="star star-medium"></div>
+        </div>
+        
+        <div class="constellation">
+            <div class="constellation-line line-1"></div>
+            <div class="constellation-line line-2"></div>
+            <div class="constellation-line line-3"></div>
+        </div>
+        
+        <div class="planet planet-1"></div>
+        <div class="planet planet-2"></div>
+        
+        <div class="shooting-star meteor-1"></div>
+        <div class="shooting-star meteor-2"></div>
+        
+        <div class="telescope">🔭</div>
+        
+        <div class="content">
+            <h1 class="title">STARGAZERS</h1>
+            <p class="subtitle">천문 관측 동호회</p>
+            
+            <div class="observation-event">
+                <div class="event-title">겨울 밤하늘 관측회</div>
+                <div class="celestial-event">
+                    오리온자리와 쌍둥이자리 관측<br>
+                    목성과 토성의 대접근 현상 관찰
+                </div>
+                
+                <div class="astronomy-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">🔭</span>
+                        <span>고성능 망원경 제공</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📅</span>
+                        <span>2026년 1월 5일 오후 9시</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🏔️</span>
+                        <span>소백산 천문대</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📞</span>
+                        <span>stargazers.kr@gmail.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

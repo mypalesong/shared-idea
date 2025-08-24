@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train Locomotive Controller</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background: linear-gradient(145deg, #1a1a1a 0%, #2c2c2c 50%, #1a1a1a 100%);
+            height: 100vh;
+            overflow: hidden;
+            color: #00ff00;
+            position: relative;
+        }
+
+        .locomotive-container {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            grid-template-rows: 80px 1fr 120px;
+            height: 100vh;
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .header-panel {
+            grid-column: 1 / 4;
+            grid-row: 1;
+            background: linear-gradient(135deg, #333, #555);
+            border: 2px solid #ffaa00;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-shadow: inset 0 0 15px rgba(255, 170, 0, 0.3);
+        }
+
+        .left-controls {
+            grid-column: 1;
+            grid-row: 2;
+            background: linear-gradient(145deg, #2a2a2a, #404040);
+            border: 2px solid #00ff00;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.2);
+        }
+
+        .center-display {
+            grid-column: 2;
+            grid-row: 2;
+            background: radial-gradient(circle at center, #000 0%, #1a1a1a 100%);
+            border: 3px solid #00aaff;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .right-controls {
+            grid-column: 3;
+            grid-row: 2;
+            background: linear-gradient(145deg, #2a2a2a, #404040);
+            border: 2px solid #ff4444;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: inset 0 0 20px rgba(255, 68, 68, 0.2);
+        }
+
+        .bottom-panel {
+            grid-column: 1 / 4;
+            grid-row: 3;
+            background: linear-gradient(135deg, #333, #555);
+            border: 2px solid #888;
+            border-radius: 10px;
+            padding: 15px;
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 10px;
+            align-items: center;
+        }
+
+        .speed-gauge {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(from 180deg, #ff0000 0deg, #ffaa00 90deg, #00ff00 180deg);
+            position: relative;
+            margin: 20px auto;
+            border: 5px solid #fff;
+        }
+
+        .speed-gauge::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 120px;
+            height: 120px;
+            background: #1a1a1a;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .speed-needle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 3px;
+            height: 50px;
+            background: #ffaa00;
+            transform-origin: bottom center;
+            transform: translate(-50%, 0) rotate(45deg);
+            border-radius: 2px;
+            box-shadow: 0 0 10px #ffaa00;
+        }
+
+        .speed-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffaa00;
+            text-align: center;
+        }
+
+        .throttle-lever {
+            width: 60px;
+            height: 200px;
+            background: linear-gradient(to top, #333 0%, #666 100%);
+            border: 3px solid #00ff00;
+            border-radius: 30px;
+            margin: 20px auto;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .throttle-handle {
+            position: absolute;
+            left: 50%;
+            bottom: 20px;
+            transform: translateX(-50%);
+            width: 45px;
+            height: 30px;
+            background: linear-gradient(45deg, #00ff00, #00aa00);
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.8);
+            transition: all 0.3s ease;
+            cursor: grab;
+        }
+
+        .throttle-handle:active {
+            cursor: grabbing;
+        }
+
+        .brake-lever {
+            width: 60px;
+            height: 200px;
+            background: linear-gradient(to top, #333 0%, #666 100%);
+            border: 3px solid #ff4444;
+            border-radius: 30px;
+            margin: 20px auto;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .brake-handle {
+            position: absolute;
+            left: 50%;
+            top: 20px;
+            transform: translateX(-50%);
+            width: 45px;
+            height: 30px;
+            background: linear-gradient(45deg, #ff4444, #aa0000);
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(255, 68, 68, 0.8);
+            transition: all 0.3s ease;
+            cursor: grab;
+        }
+
+        .track-display {
+            flex: 1;
+            background: linear-gradient(to bottom, 
+                rgba(0, 170, 255, 0.1) 0%, 
+                rgba(0, 170, 255, 0.05) 50%, 
+                rgba(0, 170, 255, 0.1) 100%);
+            position: relative;
+            margin: 20px;
+            border: 2px solid #00aaff;
+            border-radius: 10px;
+        }
+
+        .track-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                #ffaa00 20%, 
+                #ffaa00 80%, 
+                transparent 100%);
+            animation: trackScroll 3s linear infinite;
+        }
+
+        @keyframes trackScroll {
+            0% { transform: translateY(-50%) scaleX(0.5); }
+            50% { transform: translateY(-50%) scaleX(1); }
+            100% { transform: translateY(-50%) scaleX(0.5); }
+        }
+
+        .signal-light {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 5px auto;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .signal-light.red {
+            background: #ff0000;
+            box-shadow: 0 0 20px #ff0000;
+            animation: blink 1.5s infinite;
+        }
+
+        .signal-light.yellow {
+            background: #ffaa00;
+            box-shadow: 0 0 20px #ffaa00;
+        }
+
+        .signal-light.green {
+            background: #00ff00;
+            box-shadow: 0 0 20px #00ff00;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        .control-button {
+            background: linear-gradient(145deg, #444, #222);
+            border: 2px solid;
+            border-radius: 10px;
+            color: white;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            height: 50px;
+        }
+
+        .control-button.primary {
+            border-color: #00ff00;
+            color: #00ff00;
+        }
+
+        .control-button.warning {
+            border-color: #ffaa00;
+            color: #ffaa00;
+        }
+
+        .control-button.danger {
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+
+        .control-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.3);
+        }
+
+        .control-button:active {
+            transform: translateY(0);
+        }
+
+        .status-display {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00aaff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+            color: #00aaff;
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .locomotive-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .route-info {
+            text-align: right;
+        }
+
+        .warning-panel {
+            background: rgba(255, 68, 68, 0.1);
+            border: 2px solid #ff4444;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .warning-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff4444;
+            text-align: center;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .horn-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #ffaa00, #ff8800);
+            border: 4px solid #fff;
+            color: #000;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 170, 0, 0.5);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+        }
+
+        .horn-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255, 170, 0, 0.8);
+        }
+
+        .horn-button:active {
+            transform: scale(0.95);
+        }
+
+        .pressure-gauge {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: conic-gradient(from 270deg, #ff0000 0deg, #ffaa00 120deg, #00ff00 240deg, #ff0000 360deg);
+            position: relative;
+            margin: 10px auto;
+            border: 3px solid #fff;
+        }
+
+        .pressure-gauge::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 80px;
+            height: 80px;
+            background: #1a1a1a;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .gauge-needle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 35px;
+            background: #ffaa00;
+            transform-origin: bottom center;
+            transform: translate(-50%, 0) rotate(135deg);
+            border-radius: 1px;
+        }
+
+        .gauge-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+            font-weight: bold;
+            color: #ffaa00;
+            text-align: center;
+        }
+
+        .emergency-stop {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #ff0000, #cc0000);
+            border: 5px solid #fff;
+            color: #fff;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.7);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .emergency-stop:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 35px rgba(255, 0, 0, 1);
+        }
+    </style>
+</head>
+<body>
+    <div class="locomotive-container">
+        <!-- Header Panel -->
+        <div class="header-panel">
+            <div class="locomotive-info">
+                <h2 style="color: #ffaa00;">KTX-001 LOCOMOTIVE</h2>
+                <div style="color: #00ff00;">OPERATIONAL</div>
+            </div>
+            <div class="route-info">
+                <div style="color: #00aaff;">SEOUL → BUSAN</div>
+                <div style="color: #fff; font-size: 14px;">Platform 3 | Track A</div>
+            </div>
+        </div>
+
+        <!-- Left Controls -->
+        <div class="left-controls">
+            <div style="text-align: center; color: #00ff00; font-size: 16px; margin-bottom: 20px; font-weight: bold;">PROPULSION</div>
+            
+            <div class="throttle-lever">
+                <div class="throttle-handle" id="throttle-handle"></div>
+            </div>
+            
+            <div style="text-align: center; color: #00ff00; font-size: 12px; margin-top: 10px;">
+                POWER: <span id="power-level">0%</span>
+            </div>
+
+            <div class="horn-button" id="horn-button">HORN</div>
+
+            <div class="status-display">
+                <div class="status-row">
+                    <span>ENGINE:</span>
+                    <span style="color: #00ff00;">RUNNING</span>
+                </div>
+                <div class="status-row">
+                    <span>TRACTION:</span>
+                    <span style="color: #ffaa00;">ACTIVE</span>
+                </div>
+                <div class="status-row">
+                    <span>DOORS:</span>
+                    <span style="color: #ff4444;">LOCKED</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Display -->
+        <div class="center-display">
+            <div class="speed-gauge">
+                <div class="speed-needle" id="speed-needle"></div>
+                <div class="speed-value">
+                    <div id="speed-display">85</div>
+                    <div style="font-size: 12px;">KM/H</div>
+                </div>
+            </div>
+            
+            <div class="track-display">
+                <div class="track-line"></div>
+                <div style="position: absolute; top: 20px; left: 20px; color: #00aaff; font-size: 14px;">
+                    NEXT STATION: DAEJEON - 45KM
+                </div>
+                <div style="position: absolute; bottom: 20px; right: 20px; color: #ffaa00; font-size: 12px;">
+                    GPS: 36.3504°N, 127.3845°E
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Controls -->
+        <div class="right-controls">
+            <div style="text-align: center; color: #ff4444; font-size: 16px; margin-bottom: 20px; font-weight: bold;">SAFETY & BRAKE</div>
+            
+            <div class="brake-lever">
+                <div class="brake-handle" id="brake-handle"></div>
+            </div>
+            
+            <div style="text-align: center; color: #ff4444; font-size: 12px; margin-top: 10px;">
+                BRAKE: <span id="brake-level">0%</span>
+            </div>
+
+            <div class="emergency-stop" id="emergency-stop">
+                EMERGENCY<br>STOP
+            </div>
+
+            <div class="warning-panel">
+                <div class="warning-title">SIGNALS</div>
+                <div class="signal-light green" id="signal-1"></div>
+                <div class="signal-light yellow" id="signal-2"></div>
+                <div class="signal-light red" id="signal-3"></div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+                <div class="pressure-gauge">
+                    <div class="gauge-needle"></div>
+                    <div class="gauge-value">
+                        <div>8.5</div>
+                        <div style="font-size: 8px;">BAR</div>
+                    </div>
+                </div>
+                <div class="pressure-gauge">
+                    <div class="gauge-needle" style="transform: translate(-50%, 0) rotate(45deg);"></div>
+                    <div class="gauge-value">
+                        <div>450</div>
+                        <div style="font-size: 8px;">°C</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Panel -->
+        <div class="bottom-panel">
+            <button class="control-button primary">DOORS OPEN</button>
+            <button class="control-button primary">DOORS CLOSE</button>
+            <button class="control-button warning">LIGHTS</button>
+            <button class="control-button warning">A/C</button>
+            <button class="control-button primary">RADIO</button>
+            <button class="control-button warning">PA SYSTEM</button>
+            <button class="control-button danger">FIRE ALARM</button>
+            <button class="control-button primary">ATC SYSTEM</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const throttleHandle = document.getElementById('throttle-handle');
+            const brakeHandle = document.getElementById('brake-handle');
+            const speedNeedle = document.getElementById('speed-needle');
+            const speedDisplay = document.getElementById('speed-display');
+            const powerLevel = document.getElementById('power-level');
+            const brakeLevel = document.getElementById('brake-level');
+            const hornButton = document.getElementById('horn-button');
+            const emergencyStop = document.getElementById('emergency-stop');
+            const signals = [
+                document.getElementById('signal-1'),
+                document.getElementById('signal-2'),
+                document.getElementById('signal-3')
+            ];
+
+            let currentSpeed = 85;
+            let isEmergencyActive = false;
+
+            // Throttle Control
+            let throttleDragging = false;
+            const throttleLever = throttleHandle.parentElement;
+            
+            throttleHandle.addEventListener('mousedown', (e) => {
+                throttleDragging = true;
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (throttleDragging && !isEmergencyActive) {
+                    const rect = throttleLever.getBoundingClientRect();
+                    const y = Math.max(20, Math.min(rect.height - 50, e.clientY - rect.top));
+                    const percentage = Math.round(((rect.height - 50 - y) / (rect.height - 70)) * 100);
+                    
+                    throttleHandle.style.bottom = (y - 20) + 'px';
+                    powerLevel.textContent = percentage + '%';
+                    
+                    // Update speed based on throttle
+                    const targetSpeed = Math.round(percentage * 3.2); // Max 320 km/h
+                    updateSpeed(targetSpeed);
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                throttleDragging = false;
+            });
+
+            // Brake Control
+            let brakeDragging = false;
+            const brakeLever = brakeHandle.parentElement;
+            
+            brakeHandle.addEventListener('mousedown', (e) => {
+                brakeDragging = true;
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (brakeDragging) {
+                    const rect = brakeLever.getBoundingClientRect();
+                    const y = Math.max(20, Math.min(rect.height - 50, e.clientY - rect.top));
+                    const percentage = Math.round((y - 20) / (rect.height - 70) * 100);
+                    
+                    brakeHandle.style.top = y + 'px';
+                    brakeLevel.textContent = percentage + '%';
+                    
+                    // Apply braking
+                    if (percentage > 50 && currentSpeed > 0) {
+                        const targetSpeed = Math.max(0, currentSpeed - percentage / 10);
+                        updateSpeed(targetSpeed);
+                    }
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                brakeDragging = false;
+            });
+
+            // Speed Update Function
+            function updateSpeed(targetSpeed) {
+                currentSpeed = Math.max(0, Math.min(320, targetSpeed));
+                speedDisplay.textContent = Math.round(currentSpeed);
+                
+                // Update needle rotation (0-320 km/h maps to 0-270 degrees)
+                const rotation = (currentSpeed / 320) * 270 - 135;
+                speedNeedle.style.transform = `translate(-50%, 0) rotate(${rotation}deg)`;
+            }
+
+            // Horn Button
+            hornButton.addEventListener('click', () => {
+                hornButton.style.transform = 'scale(0.9)';
+                hornButton.style.backgroundColor = '#ff6600';
+                
+                setTimeout(() => {
+                    hornButton.style.transform = 'scale(1)';
+                    hornButton.style.backgroundColor = '';
+                }, 300);
+            });
+
+            // Emergency Stop
+            emergencyStop.addEventListener('click', () => {
+                isEmergencyActive = !isEmergencyActive;
+                
+                if (isEmergencyActive) {
+                    emergencyStop.style.backgroundColor = '#990000';
+                    emergencyStop.innerHTML = 'EMERGENCY<br>ACTIVE';
+                    updateSpeed(0);
+                    
+                    // Reset throttle
+                    throttleHandle.style.bottom = '20px';
+                    powerLevel.textContent = '0%';
+                    
+                    // Activate emergency brake
+                    brakeHandle.style.top = '150px';
+                    brakeLevel.textContent = '100%';
+                } else {
+                    emergencyStop.style.backgroundColor = '';
+                    emergencyStop.innerHTML = 'EMERGENCY<br>STOP';
+                    
+                    // Reset brake
+                    brakeHandle.style.top = '20px';
+                    brakeLevel.textContent = '0%';
+                }
+            });
+
+            // Control Buttons
+            const controlButtons = document.querySelectorAll('.control-button');
+            controlButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const originalText = button.textContent;
+                    const originalColor = button.style.color;
+                    
+                    button.textContent = 'ACTIVATED';
+                    button.style.backgroundColor = 'rgba(0, 255, 0, 0.2)';
+                    
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.style.backgroundColor = '';
+                    }, 1500);
+                });
+            });
+
+            // Signal Light Animation
+            setInterval(() => {
+                signals.forEach((signal, index) => {
+                    const classes = ['red', 'yellow', 'green'];
+                    signal.className = 'signal-light ' + classes[Math.floor(Math.random() * 3)];
+                });
+            }, 3000);
+
+            // Random Speed Variations
+            setInterval(() => {
+                if (!isEmergencyActive && currentSpeed > 0) {
+                    const variation = (Math.random() - 0.5) * 10;
+                    updateSpeed(currentSpeed + variation);
+                }
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

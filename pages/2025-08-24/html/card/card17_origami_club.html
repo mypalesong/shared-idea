@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>종이접기 동호회 초대장</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+            color: #2d3748;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            width: 680px;
+            height: 480px;
+            background: #ffffff;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+            animation: paperFold 6s ease-in-out infinite;
+        }
+
+        @keyframes paperFold {
+            0%, 100% { 
+                transform: perspective(800px) rotateY(0deg);
+                box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+            }
+            25% { 
+                transform: perspective(800px) rotateY(2deg);
+                box-shadow: 0 30px 70px rgba(0,0,0,0.2);
+            }
+            50% { 
+                transform: perspective(800px) rotateY(0deg);
+                box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+            }
+            75% { 
+                transform: perspective(800px) rotateY(-2deg);
+                box-shadow: 0 35px 80px rgba(0,0,0,0.18);
+            }
+        }
+
+        .fold-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .fold-line {
+            position: absolute;
+            background: linear-gradient(45deg, 
+                transparent 48%,
+                rgba(74, 144, 226, 0.3) 49%,
+                rgba(74, 144, 226, 0.5) 50%,
+                rgba(74, 144, 226, 0.3) 51%,
+                transparent 52%);
+            animation: foldShimmer 8s ease-in-out infinite;
+        }
+
+        .fold-diagonal-1 {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            transform: rotate(30deg);
+            transform-origin: top left;
+            animation-delay: 0s;
+        }
+
+        .fold-diagonal-2 {
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 2px;
+            transform: rotate(-30deg);
+            transform-origin: bottom right;
+            animation-delay: -2s;
+        }
+
+        .fold-center {
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            transform: translateY(-50%);
+            animation-delay: -4s;
+        }
+
+        @keyframes foldShimmer {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        .origami-crane {
+            position: absolute;
+            font-size: 4rem;
+            color: #ff6b9d;
+            animation: craneFloat 8s ease-in-out infinite;
+        }
+
+        .crane-1 {
+            top: 80px;
+            right: 100px;
+            animation-delay: 0s;
+        }
+
+        .crane-2 {
+            bottom: 120px;
+            left: 80px;
+            font-size: 2.5rem;
+            color: #4facfe;
+            animation-delay: -4s;
+        }
+
+        @keyframes craneFloat {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg);
+                filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
+            }
+            25% { 
+                transform: translateY(-20px) rotate(5deg);
+                filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
+            }
+            50% { 
+                transform: translateY(-35px) rotate(0deg);
+                filter: drop-shadow(0 15px 25px rgba(0,0,0,0.2));
+            }
+            75% { 
+                transform: translateY(-15px) rotate(-5deg);
+                filter: drop-shadow(0 8px 18px rgba(0,0,0,0.12));
+            }
+        }
+
+        .paper-texture {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(255, 107, 157, 0.05) 20%, transparent 21%),
+                radial-gradient(circle at 80% 60%, rgba(79, 172, 254, 0.04) 15%, transparent 16%),
+                radial-gradient(circle at 60% 80%, rgba(255, 182, 193, 0.03) 25%, transparent 26%);
+            animation: textureShift 15s ease-in-out infinite;
+        }
+
+        @keyframes textureShift {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(5px, -5px); }
+        }
+
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+            width: 85%;
+        }
+
+        .title {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: #ff6b9d;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            animation: titleUnfold 3s ease-out;
+        }
+
+        @keyframes titleUnfold {
+            0% { 
+                opacity: 0; 
+                transform: scale(0.3) rotateY(-90deg);
+            }
+            50% { 
+                opacity: 0.7; 
+                transform: scale(0.8) rotateY(0deg);
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1) rotateY(0deg);
+            }
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: #4facfe;
+            margin-bottom: 35px;
+            letter-spacing: 2px;
+            animation: subtitleFold 2s ease-out 1s both;
+        }
+
+        @keyframes subtitleFold {
+            0% { 
+                opacity: 0; 
+                transform: translateY(20px) rotateX(-30deg);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0) rotateX(0deg);
+            }
+        }
+
+        .workshop-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(255, 107, 157, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
+            animation: cardUnfold 2s ease-out 1.5s both;
+        }
+
+        @keyframes cardUnfold {
+            0% { 
+                opacity: 0; 
+                transform: rotateX(-90deg) translateY(50px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: rotateX(0deg) translateY(0);
+            }
+        }
+
+        .workshop-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg,
+                transparent 40%,
+                rgba(255, 107, 157, 0.1) 45%,
+                rgba(79, 172, 254, 0.1) 55%,
+                transparent 60%);
+            animation: shimmer 4s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translate(-100%, -100%) rotate(45deg); }
+            50% { transform: translate(100%, 100%) rotate(45deg); }
+        }
+
+        .workshop-title {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 2rem;
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+        }
+
+        .skill-level {
+            font-size: 1rem;
+            color: #ff6b9d;
+            margin-bottom: 20px;
+            font-weight: 500;
+            position: relative;
+            z-index: 2;
+        }
+
+        .origami-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
+            position: relative;
+            z-index: 2;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+            color: #2d3748;
+            animation: detailPop 1s ease-out both;
+        }
+
+        .detail-item:nth-child(1) { animation-delay: 2s; }
+        .detail-item:nth-child(2) { animation-delay: 2.2s; }
+        .detail-item:nth-child(3) { animation-delay: 2.4s; }
+        .detail-item:nth-child(4) { animation-delay: 2.6s; }
+
+        @keyframes detailPop {
+            0% { 
+                opacity: 0; 
+                transform: scale(0.8) translateY(10px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .detail-icon {
+            color: #4facfe;
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .paper-strips {
+            position: absolute;
+            background: linear-gradient(90deg,
+                rgba(255, 107, 157, 0.4) 0%,
+                rgba(79, 172, 254, 0.3) 50%,
+                rgba(255, 182, 193, 0.2) 100%);
+            animation: stripMove 12s ease-in-out infinite;
+        }
+
+        .strip-1 {
+            top: 100px;
+            left: -200px;
+            width: 400px;
+            height: 10px;
+            transform: rotate(25deg);
+            animation-delay: 0s;
+        }
+
+        .strip-2 {
+            bottom: 150px;
+            right: -200px;
+            width: 350px;
+            height: 8px;
+            transform: rotate(-20deg);
+            animation-delay: -4s;
+        }
+
+        @keyframes stripMove {
+            0%, 100% { 
+                transform: translateX(0px) rotate(25deg);
+                opacity: 0.4;
+            }
+            50% { 
+                transform: translateX(20px) rotate(25deg);
+                opacity: 0.7;
+            }
+        }
+
+        .corner-fold {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
+
+        .fold-top-right {
+            top: 0;
+            right: 0;
+            border-left: 40px solid transparent;
+            border-top: 40px solid #f0f8ff;
+            animation: cornerFlap 5s ease-in-out infinite;
+        }
+
+        .fold-bottom-left {
+            bottom: 0;
+            left: 0;
+            border-right: 35px solid transparent;
+            border-bottom: 35px solid #e6f3ff;
+            animation: cornerFlap 5s ease-in-out infinite -2.5s;
+        }
+
+        @keyframes cornerFlap {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="paper-texture"></div>
+        
+        <div class="fold-lines">
+            <div class="fold-line fold-diagonal-1"></div>
+            <div class="fold-line fold-diagonal-2"></div>
+            <div class="fold-line fold-center"></div>
+        </div>
+        
+        <div class="corner-fold fold-top-right"></div>
+        <div class="corner-fold fold-bottom-left"></div>
+        
+        <div class="paper-strips strip-1"></div>
+        <div class="paper-strips strip-2"></div>
+        
+        <div class="origami-crane crane-1">🕊️</div>
+        <div class="origami-crane crane-2">🦋</div>
+        
+        <div class="content">
+            <h1 class="title">Paper Art</h1>
+            <p class="subtitle">종이접기 동호회 모임</p>
+            
+            <div class="workshop-card">
+                <div class="workshop-title">전통 학 접기 마스터클래스</div>
+                <div class="skill-level">초급자부터 고급자까지 환영합니다</div>
+                
+                <div class="origami-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">📜</span>
+                        <span>전통 종이와 도구 제공</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📅</span>
+                        <span>2025년 12월 25일 오후 2시</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📍</span>
+                        <span>종이문화센터 3층</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📞</span>
+                        <span>origami.club.kr@gmail.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

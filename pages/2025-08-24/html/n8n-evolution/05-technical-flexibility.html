@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>05. 기술적 유연성과 확장성 | n8n 워크플로우 자동화 백서</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fafafa;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav-header {
+            background: #1f2937;
+            color: white;
+            padding: 15px 0;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .nav-links a {
+            color: #9ca3af;
+            text-decoration: none;
+            margin-left: 20px;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        header {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: white;
+            padding: 50px 0;
+            text-align: center;
+        }
+
+        .header-content h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .header-content .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content-section {
+            background: white;
+            padding: 60px 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #1f2937;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .intro-text {
+            font-size: 1.1rem;
+            color: #4b5563;
+            margin-bottom: 40px;
+            line-height: 1.7;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .tech-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .tech-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+        }
+
+        .tech-card.code {
+            border-top: 4px solid #8b5cf6;
+        }
+
+        .tech-card.custom {
+            border-top: 4px solid #06b6d4;
+        }
+
+        .tech-card.api {
+            border-top: 4px solid #10b981;
+        }
+
+        .tech-card.integration {
+            border-top: 4px solid #f59e0b;
+        }
+
+        .tech-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .code .tech-icon {
+            background: #ede9fe;
+            color: #8b5cf6;
+        }
+
+        .custom .tech-icon {
+            background: #cffafe;
+            color: #06b6d4;
+        }
+
+        .api .tech-icon {
+            background: #d1fae5;
+            color: #10b981;
+        }
+
+        .integration .tech-icon {
+            background: #fef3c7;
+            color: #f59e0b;
+        }
+
+        .tech-card h3 {
+            font-size: 1.4rem;
+            color: #1f2937;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .tech-card p {
+            color: #6b7280;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .tech-features {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tech-features li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #374151;
+            font-size: 0.95rem;
+        }
+
+        .tech-features li::before {
+            content: '⚡';
+            position: absolute;
+            left: 0;
+            font-size: 14px;
+        }
+
+        .code-examples {
+            background: #f8fafc;
+            padding: 60px 0;
+        }
+
+        .code-demo {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            color: #e2e8f0;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            overflow-x: auto;
+        }
+
+        .code-demo h4 {
+            color: #f1f5f9;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .code-demo pre {
+            margin: 0;
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .code-comment {
+            color: #64748b;
+        }
+
+        .code-keyword {
+            color: #c084fc;
+        }
+
+        .code-string {
+            color: #34d399;
+        }
+
+        .code-function {
+            color: #60a5fa;
+        }
+
+        .architecture-section {
+            background: white;
+            padding: 60px 0;
+        }
+
+        .architecture-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .arch-component {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            text-align: center;
+        }
+
+        .arch-component h4 {
+            color: #1e40af;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .arch-component p {
+            color: #475569;
+            font-size: 0.9rem;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 40px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #1f2937;
+            color: white;
+            padding: 20px 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 20px 15px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        .feature-category {
+            font-weight: 600;
+            color: #1f2937;
+            background: #f3f4f6;
+        }
+
+        .checkmark {
+            color: #10b981;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .cross {
+            color: #ef4444;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .limited {
+            color: #f59e0b;
+            font-weight: bold;
+        }
+
+        .use-cases {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 60px 0;
+        }
+
+        .use-case-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .use-case-card {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .use-case-card h4 {
+            color: #f1f5f9;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .use-case-card p {
+            color: #cbd5e1;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .tech-stack {
+            background: rgba(16, 185, 129, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #10b981;
+        }
+
+        .tech-stack h5 {
+            color: #10b981;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .tech-stack p {
+            color: #d1fae5;
+            font-size: 0.9rem;
+        }
+
+        .performance-metrics {
+            background: white;
+            padding: 60px 0;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            border-top: 4px solid #7c3aed;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #7c3aed;
+            margin-bottom: 10px;
+        }
+
+        .metric-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .metric-description {
+            color: #9ca3af;
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
+
+        .navigation-footer {
+            background: #f9fafb;
+            padding: 30px 0;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 24px;
+            background: #7c3aed;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .nav-button:hover {
+            background: #6d28d9;
+        }
+
+        @media (max-width: 768px) {
+            .header-content h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-header">
+        <div class="container">
+            <div class="nav-content">
+                <div class="nav-title">n8n 워크플로우 자동화 백서</div>
+                <div class="nav-links">
+                    <a href="index.html">홈</a>
+                    <a href="04-cost-analysis.html">이전</a>
+                    <a href="06-case-studies.html">다음</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1>05. 기술적 유연성과 확장성</h1>
+                <p class="subtitle">Python, JavaScript 통합과 무한한 커스터마이징 가능성</p>
+            </div>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <h2 class="section-title">개발자 친화적 자동화 플랫폼</h2>
+            <p class="intro-text">
+                n8n은 단순한 드래그 앤 드롭 도구를 넘어서 완전한 프로그래밍 환경을 제공합니다. 
+                Python, JavaScript 코드를 네이티브하게 지원하며, 커스텀 노드 개발부터 
+                복잡한 비즈니스 로직 구현까지 모든 것이 가능합니다. 
+                이는 기술팀에게 <strong>코드의 유연성</strong>과 <strong>노코드의 신속성</strong>을 동시에 제공하는 
+                유일한 솔루션입니다.
+            </p>
+
+            <div class="tech-grid">
+                <div class="tech-card code">
+                    <div class="tech-icon">💻</div>
+                    <h3>풀스택 코드 통합</h3>
+                    <p>Python, JavaScript를 완전히 지원하여 복잡한 비즈니스 로직과 데이터 처리를 자유롭게 구현합니다.</p>
+                    <ul class="tech-features">
+                        <li>Python 3.11+ 완전 지원</li>
+                        <li>Node.js 환경 내장</li>
+                        <li>외부 라이브러리 설치 가능</li>
+                        <li>복잡한 데이터 변환 및 분석</li>
+                        <li>머신러닝 모델 통합</li>
+                    </ul>
+                </div>
+
+                <div class="tech-card custom">
+                    <div class="tech-icon">🔧</div>
+                    <h3>커스텀 노드 개발</h3>
+                    <p>특수한 요구사항에 맞춰 전용 노드를 개발하여 워크플로우에 완벽하게 통합할 수 있습니다.</p>
+                    <ul class="tech-features">
+                        <li>TypeScript 기반 노드 개발</li>
+                        <li>시각적 인터페이스 커스터마이징</li>
+                        <li>독점 시스템 연동</li>
+                        <li>팀 내 노드 공유</li>
+                        <li>오픈소스 커뮤니티 기여</li>
+                    </ul>
+                </div>
+
+                <div class="tech-card api">
+                    <div class="tech-icon">🌐</div>
+                    <h3>무제한 API 연동</h3>
+                    <p>REST, GraphQL, WebSocket 등 모든 형태의 API와 통신하며 실시간 데이터 처리가 가능합니다.</p>
+                    <ul class="tech-features">
+                        <li>REST API 완전 지원</li>
+                        <li>GraphQL 쿼리 실행</li>
+                        <li>WebSocket 실시간 통신</li>
+                        <li>OAuth 2.0 인증</li>
+                        <li>커스텀 헤더 및 인증</li>
+                    </ul>
+                </div>
+
+                <div class="tech-card integration">
+                    <div class="tech-icon">🔗</div>
+                    <h3>레거시 시스템 통합</h3>
+                    <p>오래된 시스템부터 최신 클라우드 서비스까지 모든 인프라와 원활하게 연동됩니다.</p>
+                    <ul class="tech-features">
+                        <li>데이터베이스 직접 연결</li>
+                        <li>FTP/SFTP 파일 처리</li>
+                        <li>SOAP 웹서비스 지원</li>
+                        <li>메인프레임 연동</li>
+                        <li>온프레미스 시스템 통합</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-examples">
+        <div class="container">
+            <h2 class="section-title">실제 코드 활용 사례</h2>
+
+            <div class="code-demo">
+                <h4>Python을 활용한 고급 데이터 분석</h4>
+                <pre><code><span class="code-comment"># 고객 행동 패턴 분석 및 예측</span>
+<span class="code-keyword">import</span> pandas <span class="code-keyword">as</span> pd
+<span class="code-keyword">import</span> numpy <span class="code-keyword">as</span> np
+<span class="code-keyword">from</span> sklearn.cluster <span class="code-keyword">import</span> KMeans
+<span class="code-keyword">from</span> sklearn.preprocessing <span class="code-keyword">import</span> StandardScaler
+
+<span class="code-comment"># n8n에서 전달받은 고객 데이터</span>
+customer_data = pd.DataFrame(items)
+
+<span class="code-comment"># 특성 엔지니어링</span>
+features = customer_data[[<span class="code-string">'purchase_frequency'</span>, <span class="code-string">'avg_order_value'</span>, <span class="code-string">'days_since_last_purchase'</span>]]
+scaler = StandardScaler()
+scaled_features = scaler.fit_transform(features)
+
+<span class="code-comment"># 고객 세그멘테이션</span>
+kmeans = KMeans(n_clusters=4, random_state=42)
+customer_segments = kmeans.fit_predict(scaled_features)
+
+<span class="code-comment"># 결과를 다음 노드로 전달</span>
+<span class="code-keyword">return</span> [{
+    <span class="code-string">'json'</span>: {
+        <span class="code-string">'segments'</span>: customer_segments.tolist(),
+        <span class="code-string">'cluster_centers'</span>: kmeans.cluster_centers_.tolist(),
+        <span class="code-string">'insights'</span>: <span class="code-function">generate_insights</span>(customer_segments)
+    }
+}]</code></pre>
+            </div>
+
+            <div class="code-demo">
+                <h4>JavaScript를 활용한 실시간 데이터 변환</h4>
+                <pre><code><span class="code-comment">// 복잡한 JSON 구조 변환 및 검증</span>
+<span class="code-keyword">const</span> transformedData = items.map(<span class="code-function">item</span> => {
+  <span class="code-comment">// 중첩된 객체 플래튼화</span>
+  <span class="code-keyword">const</span> flattened = <span class="code-function">flattenObject</span>(item.json);
+  
+  <span class="code-comment">// 데이터 검증 및 정제</span>
+  <span class="code-keyword">const</span> validated = <span class="code-function">validateAndClean</span>(flattened, schema);
+  
+  <span class="code-comment">// 비즈니스 룰 적용</span>
+  <span class="code-keyword">const</span> enriched = {
+    ...validated,
+    <span class="code-string">risk_score</span>: <span class="code-function">calculateRiskScore</span>(validated),
+    <span class="code-string">category</span>: <span class="code-function">categorizeCustomer</span>(validated),
+    <span class="code-string">next_action</span>: <span class="code-function">determineNextAction</span>(validated)
+  };
+  
+  <span class="code-keyword">return</span> { json: enriched };
+});
+
+<span class="code-comment">// 결과 반환</span>
+<span class="code-keyword">return</span> transformedData;</code></pre>
+            </div>
+
+            <div class="code-demo">
+                <h4>커스텀 노드 개발 예시</h4>
+                <pre><code><span class="code-comment">// 기업 전용 CRM 시스템 연동 노드</span>
+<span class="code-keyword">import</span> { IExecuteFunctions } <span class="code-keyword">from</span> <span class="code-string">'n8n-core'</span>;
+<span class="code-keyword">import</span> { INodeType, INodeTypeDescription } <span class="code-keyword">from</span> <span class="code-string">'n8n-workflow'</span>;
+
+<span class="code-keyword">export</span> <span class="code-keyword">class</span> <span class="code-function">CustomCrmNode</span> <span class="code-keyword">implements</span> INodeType {
+  description: INodeTypeDescription = {
+    displayName: <span class="code-string">'Custom CRM'</span>,
+    name: <span class="code-string">'customCrm'</span>,
+    group: [<span class="code-string">'transform'</span>],
+    version: 1,
+    description: <span class="code-string">'기업 전용 CRM 시스템과 연동'</span>,
+    <span class="code-comment">// 노드 속성 정의...</span>
+  };
+
+  <span class="code-keyword">async</span> <span class="code-function">execute</span>(executeFunctions: IExecuteFunctions) {
+    <span class="code-comment">// 커스텀 비즈니스 로직 구현</span>
+    <span class="code-keyword">const</span> customers = <span class="code-keyword">await</span> <span class="code-function">this.fetchCustomerData</span>();
+    <span class="code-keyword">const</span> processed = <span class="code-keyword">await</span> <span class="code-function">this.applyBusinessRules</span>(customers);
+    
+    <span class="code-keyword">return</span> <span class="code-function">this.prepareOutputData</span>(processed);
+  }
+}</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <section class="architecture-section">
+        <div class="container">
+            <h2 class="section-title">확장 가능한 아키텍처</h2>
+
+            <div class="architecture-grid">
+                <div class="arch-component">
+                    <h4>마이크로서비스</h4>
+                    <p>개별 워크플로우를 독립적인 서비스로 배포하여 장애 격리와 독립적인 확장이 가능합니다.</p>
+                </div>
+                <div class="arch-component">
+                    <h4>로드 밸런싱</h4>
+                    <p>다중 인스턴스 배포로 높은 가용성과 성능을 보장하며 트래픽을 효율적으로 분산시킵니다.</p>
+                </div>
+                <div class="arch-component">
+                    <h4>큐 시스템</h4>
+                    <p>Redis, Bull Queue를 활용한 대용량 작업 처리와 백그라운드 실행을 지원합니다.</p>
+                </div>
+                <div class="arch-component">
+                    <h4>데이터베이스</h4>
+                    <p>PostgreSQL, MySQL, MongoDB 등 다양한 데이터베이스와 직접 연동하여 데이터를 처리합니다.</p>
+                </div>
+                <div class="arch-component">
+                    <h4>컨테이너화</h4>
+                    <p>Docker, Kubernetes 환경에서 완벽하게 동작하며 클라우드 네이티브 배포를 지원합니다.</p>
+                </div>
+                <div class="arch-component">
+                    <h4>모니터링</h4>
+                    <p>Prometheus, Grafana 통합으로 실시간 성능 모니터링과 알림 시스템을 구축할 수 있습니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <div class="container">
+            <h2 class="section-title">경쟁사 기술 역량 비교</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>기술적 특징</th>
+                        <th>n8n</th>
+                        <th>Zapier</th>
+                        <th>Make</th>
+                        <th>Power Automate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="feature-category">
+                        <td><strong>코드 통합</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Python 지원</td>
+                        <td><span class="checkmark">✓ 완전 지원</span></td>
+                        <td><span class="cross">✗ 불가능</span></td>
+                        <td><span class="cross">✗ 불가능</span></td>
+                        <td><span class="limited">△ Power Apps</span></td>
+                    </tr>
+                    <tr>
+                        <td>JavaScript 지원</td>
+                        <td><span class="checkmark">✓ 네이티브 지원</span></td>
+                        <td><span class="limited">△ 제한적</span></td>
+                        <td><span class="limited">△ 기본적</span></td>
+                        <td><span class="limited">△ 제한적</span></td>
+                    </tr>
+                    <tr>
+                        <td>외부 라이브러리</td>
+                        <td><span class="checkmark">✓ 무제한 설치</span></td>
+                        <td><span class="cross">✗ 불가능</span></td>
+                        <td><span class="cross">✗ 불가능</span></td>
+                        <td><span class="cross">✗ 불가능</span></td>
+                    </tr>
+                    <tr class="feature-category">
+                        <td><strong>확장성</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>커스텀 노드 개발</td>
+                        <td><span class="checkmark">✓ 완전 지원</span></td>
+                        <td><span class="cross">✗ 불가능</span></td>
+                        <td><span class="cross">✗ 불가능</span></td>
+                        <td><span class="limited">△ 커넥터 제한</span></td>
+                    </tr>
+                    <tr>
+                        <td>API 연동 자유도</td>
+                        <td><span class="checkmark">✓ 무제한</span></td>
+                        <td><span class="limited">△ 제한적</span></td>
+                        <td><span class="limited">△ 제한적</span></td>
+                        <td><span class="limited">△ MS 생태계</span></td>
+                    </tr>
+                    <tr>
+                        <td>온프레미스 배포</td>
+                        <td><span class="checkmark">✓ 완전 지원</span></td>
+                        <td><span class="cross">✗ 불가능</span></td>
+                        <td><span class="cross">✗ 불가능</span></td>
+                        <td><span class="cross">✗ 클라우드 전용</span></td>
+                    </tr>
+                    <tr class="feature-category">
+                        <td><strong>개발 환경</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>버전 관리</td>
+                        <td><span class="checkmark">✓ Git 통합</span></td>
+                        <td><span class="limited">△ 기본적</span></td>
+                        <td><span class="limited">△ 기본적</span></td>
+                        <td><span class="checkmark">✓ 지원</span></td>
+                    </tr>
+                    <tr>
+                        <td>디버깅 도구</td>
+                        <td><span class="checkmark">✓ 완전한 디버깅</span></td>
+                        <td><span class="limited">△ 기본적</span></td>
+                        <td><span class="limited">△ 기본적</span></td>
+                        <td><span class="checkmark">✓ 지원</span></td>
+                    </tr>
+                    <tr>
+                        <td>테스트 환경</td>
+                        <td><span class="checkmark">✓ 완전 격리</span></td>
+                        <td><span class="limited">△ 제한적</span></td>
+                        <td><span class="limited">△ 제한적</span></td>
+                        <td><span class="checkmark">✓ 지원</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="use-cases">
+        <div class="container">
+            <h2 class="section-title" style="color: white;">고급 기술 활용 사례</h2>
+
+            <div class="use-case-grid">
+                <div class="use-case-card">
+                    <h4>AI 모델 통합 자동화</h4>
+                    <p>
+                        머신러닝 모델을 워크플로우에 직접 통합하여 실시간 예측과 분석을 수행합니다. 
+                        scikit-learn, TensorFlow, PyTorch 등 모든 Python ML 라이브러리를 활용 가능합니다.
+                    </p>
+                    <div class="tech-stack">
+                        <h5>사용 기술</h5>
+                        <p>Python 3.11, scikit-learn, pandas, numpy, TensorFlow</p>
+                    </div>
+                </div>
+
+                <div class="use-case-card">
+                    <h4>실시간 ETL 파이프라인</h4>
+                    <p>
+                        복잡한 데이터 변환과 정제 과정을 자동화하여 대용량 데이터를 실시간으로 처리합니다. 
+                        다양한 데이터 소스에서 일관된 형태로 데이터를 통합합니다.
+                    </p>
+                    <div class="tech-stack">
+                        <h5>사용 기술</h5>
+                        <p>PostgreSQL, MongoDB, Redis, Apache Kafka, JSON/XML 처리</p>
+                    </div>
+                </div>
+
+                <div class="use-case-card">
+                    <h4>마이크로서비스 오케스트레이션</h4>
+                    <p>
+                        분산된 마이크로서비스들을 조율하여 복잡한 비즈니스 프로세스를 구현합니다. 
+                        장애 처리, 재시도 로직, 보상 트랜잭션 등을 자동으로 관리합니다.
+                    </p>
+                    <div class="tech-stack">
+                        <h5>사용 기술</h5>
+                        <p>Docker, Kubernetes, REST API, GraphQL, 이벤트 드리븐 아키텍처</p>
+                    </div>
+                </div>
+
+                <div class="use-case-card">
+                    <h4>레거시 시스템 모더나이제이션</h4>
+                    <p>
+                        오래된 메인프레임이나 온프레미스 시스템을 최신 클라우드 서비스와 연결하여 
+                        점진적인 디지털 트랜스포메이션을 지원합니다.
+                    </p>
+                    <div class="tech-stack">
+                        <h5>사용 기술</h5>
+                        <p>SOAP/REST 변환, FTP/SFTP, 데이터베이스 직접 연결, 파일 처리</p>
+                    </div>
+                </div>
+
+                <div class="use-case-card">
+                    <h4>IoT 데이터 처리</h4>
+                    <p>
+                        수백만 개의 IoT 디바이스에서 전송되는 센서 데이터를 실시간으로 수집, 
+                        분석하여 인사이트를 추출하고 자동 대응 시스템을 구축합니다.
+                    </p>
+                    <div class="tech-stack">
+                        <h5>사용 기술</h5>
+                        <p>MQTT, WebSocket, 시계열 데이터베이스, 실시간 스트리밍</p>
+                    </div>
+                </div>
+
+                <div class="use-case-card">
+                    <h4>고성능 금융 데이터 처리</h4>
+                    <p>
+                        실시간 거래 데이터, 리스크 분석, 규정 준수 체크 등 금융업계의 
+                        복잡하고 중요한 워크플로우를 안전하고 빠르게 처리합니다.
+                    </p>
+                    <div class="tech-stack">
+                        <h5>사용 기술</h5>
+                        <p>고성능 연산, 병렬 처리, 보안 암호화, 감사 로깅</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="performance-metrics">
+        <div class="container">
+            <h2 class="section-title">성능 및 확장성 지표</h2>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value">220</div>
+                    <div class="metric-label">워크플로우/초</div>
+                    <div class="metric-description">단일 인스턴스 최대 실행 성능</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-value">10M+</div>
+                    <div class="metric-label">일 실행량</div>
+                    <div class="metric-description">대규모 기업 환경 처리 가능량</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-value">99.9%</div>
+                    <div class="metric-label">가용성</div>
+                    <div class="metric-description">클러스터 환경 고가용성</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-value">< 100ms</div>
+                    <div class="metric-label">응답시간</div>
+                    <div class="metric-description">API 호출 평균 응답시간</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-value">무제한</div>
+                    <div class="metric-label">확장성</div>
+                    <div class="metric-description">수평 확장 가능한 아키텍처</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-value">1000+</div>
+                    <div class="metric-label">동시 워크플로우</div>
+                    <div class="metric-description">병렬 실행 가능한 워크플로우 수</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">기술적 우위의 비즈니스 가치</h2>
+            <p class="intro-text">
+                n8n의 기술적 유연성은 단순한 기능을 넘어서 <strong>비즈니스 민첩성</strong>을 제공합니다. 
+                변화하는 요구사항에 즉시 대응할 수 있는 능력, 레거시 시스템과 최신 기술의 완벽한 연결, 
+                그리고 무제한 확장 가능성을 통해 기업은 <strong>진정한 디지털 트랜스포메이션</strong>을 달성할 수 있습니다. 
+                2025년 현재, 기술적 제약 없이 비즈니스 로직을 구현할 수 있는 n8n은 
+                혁신을 추구하는 모든 기업에게 <strong>필수적인 플랫폼</strong>이 되었습니다.
+            </p>
+        </div>
+    </section>
+
+    <div class="navigation-footer">
+        <div class="container">
+            <div class="nav-buttons">
+                <a href="04-cost-analysis.html" class="nav-button">← 이전: 비용 효율성</a>
+                <a href="06-case-studies.html" class="nav-button">다음: 구현 사례 연구 →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

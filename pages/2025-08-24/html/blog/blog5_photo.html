@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"="width=device-width, initial-scale=1.0">
+    <title>사진으로 보는 일상 - 40대의 시선</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        .photo-story {
+            background: #2c2c2c;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .photo-story:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+        }
+        
+        .photo-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .photo-placeholder {
+            font-size: 4rem;
+            opacity: 0.7;
+            position: relative;
+        }
+        
+        .photo-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 30px 20px 20px;
+            color: white;
+        }
+        
+        .photo-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .photo-meta {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .story-content {
+            padding: 30px;
+        }
+        
+        .story-text {
+            margin-bottom: 20px;
+            color: #d0d0d0;
+        }
+        
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        
+        .tag {
+            background: #3498db;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 400;
+        }
+        
+        .photo-coffee { background: linear-gradient(135deg, #8B4513 0%, #DEB887 100%); }
+        .photo-sunset { background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%); }
+        .photo-family { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .photo-street { background: linear-gradient(135deg, #2c3e50 0%, #bdc3c7 100%); }
+        .photo-food { background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%); }
+        .photo-nature { background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%); }
+        
+        .featured-section {
+            margin-top: 80px;
+            text-align: center;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            color: #3498db;
+            font-weight: 300;
+        }
+        
+        .featured-story {
+            background: #2c2c2c;
+            border-radius: 20px;
+            padding: 50px;
+            text-align: left;
+        }
+        
+        .featured-photo {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .featured-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+        
+        .featured-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .quote-box {
+            background: #1a1a1a;
+            border-left: 4px solid #3498db;
+            padding: 25px;
+            border-radius: 10px;
+            font-style: italic;
+            margin: 20px 0;
+        }
+        
+        .photo-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 60px;
+            padding: 40px;
+            background: #2c2c2c;
+            border-radius: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: #3498db;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .photo-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .featured-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .photo-stats {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>📷 일상 스냅샷</h1>
+        <p class="subtitle">40대 아저씨의 눈으로 본 세상, 한 컷씩</p>
+    </header>
+    
+    <div class="container">
+        <div class="photo-grid">
+            <article class="photo-story">
+                <div class="photo-container photo-coffee">
+                    <div class="photo-placeholder">☕</div>
+                    <div class="photo-overlay">
+                        <div class="photo-title">아침 커피 의식</div>
+                        <div class="photo-meta">2025.08.24 | 07:30 AM</div>
+                    </div>
+                </div>
+                <div class="story-content">
+                    <p class="story-text">
+                        하루의 시작을 알리는 커피 한 잔. 원두를 갈고, 물을 끓이고, 
+                        천천히 내리는 이 시간이 나에게는 하루 중 가장 소중한 명상의 시간이다. 
+                        커피 향이 집 안 가득 퍼지면 비로소 하루가 시작된 느낌이다.
+                    </p>
+                    <div class="tags">
+                        <span class="tag">#커피</span>
+                        <span class="tag">#아침루틴</span>
+                        <span class="tag">#명상</span>
+                    </div>
+                </div>
+            </article>
+            
+            <article class="photo-story">
+                <div class="photo-container photo-sunset">
+                    <div class="photo-placeholder">🌅</div>
+                    <div class="photo-overlay">
+                        <div class="photo-title">퇴근길의 노을</div>
+                        <div class="photo-meta">2025.08.23 | 06:45 PM</div>
+                    </div>
+                </div>
+                <div class="story-content">
+                    <p class="story-text">
+                        바쁜 하루를 마치고 집으로 향하는 길. 문득 하늘을 올려다보니 
+                        아름다운 노을이 펼쳐져 있었다. 20년 넘게 같은 길을 다니면서도 
+                        이런 풍경을 놓치고 살았구나 싶어 잠시 발걸음을 멈췄다.
+                    </p>
+                    <div class="tags">
+                        <span class="tag">#노을</span>
+                        <span class="tag">#퇴근길</span>
+                        <span class="tag">#여유</span>
+                    </div>
+                </div>
+            </article>
+            
+            <article class="photo-story">
+                <div class="photo-container photo-family">
+                    <div class="photo-placeholder">👨‍👩‍👧‍👦</div>
+                    <div class="photo-overlay">
+                        <div class="photo-title">주말 가족 시간</div>
+                        <div class="photo-meta">2025.08.22 | 02:30 PM</div>
+                    </div>
+                </div>
+                <div class="story-content">
+                    <p class="story-text">
+                        공원에서 아이들과 함께 보낸 오후. 아이들이 웃으며 뛰어노는 모습을 보니 
+                        이런 순간들이 얼마나 소중한지 새삼 깨닫는다. 
+                        바쁘다는 핑계로 놓치지 말아야 할 시간들이다.
+                    </p>
+                    <div class="tags">
+                        <span class="tag">#가족</span>
+                        <span class="tag">#주말</span>
+                        <span class="tag">#행복</span>
+                    </div>
+                </div>
+            </article>
+            
+            <article class="photo-story">
+                <div class="photo-container photo-street">
+                    <div class="photo-placeholder">🏪</div>
+                    <div class="photo-overlay">
+                        <div class="photo-title">골목길의 발견</div>
+                        <div class="photo-meta">2025.08.21 | 11:20 AM</div>
+                    </div>
+                </div>
+                <div class="story-content">
+                    <p class="story-text">
+                        평소 지나다니던 골목에서 발견한 오래된 간판과 작은 가게들. 
+                        급변하는 세상 속에서도 묵묵히 자리를 지키고 있는 
+                        이런 공간들이 주는 안정감이 좋다.
+                    </p>
+                    <div class="tags">
+                        <span class="tag">#골목길</span>
+                        <span class="tag">#추억</span>
+                        <span class="tag">#동네</span>
+                    </div>
+                </div>
+            </article>
+            
+            <article class="photo-story">
+                <div class="photo-container photo-food">
+                    <div class="photo-placeholder">🍜</div>
+                    <div class="photo-overlay">
+                        <div class="photo-title">아내의 손맛</div>
+                        <div class="photo-meta">2025.08.20 | 07:00 PM</div>
+                    </div>
+                </div>
+                <div class="story-content">
+                    <p class="story-text">
+                        집에서 먹는 따뜻한 저녁 식사. 비싼 레스토랑 음식보다 
+                        훨씬 맛있고 정겨운 우리집 밥상. 
+                        가족과 함께 나누는 식사 시간의 소중함을 느낀다.
+                    </p>
+                    <div class="tags">
+                        <span class="tag">#집밥</span>
+                        <span class="tag">#가족식사</span>
+                        <span class="tag">#감사</span>
+                    </div>
+                </div>
+            </article>
+            
+            <article class="photo-story">
+                <div class="photo-container photo-nature">
+                    <div class="photo-placeholder">🌳</div>
+                    <div class="photo-overlay">
+                        <div class="photo-title">아침 산책로</div>
+                        <div class="photo-meta">2025.08.19 | 06:00 AM</div>
+                    </div>
+                </div>
+                <div class="story-content">
+                    <p class="story-text">
+                        새벽 산책에서 만난 싱그러운 나무들. 도시 한복판에서도 
+                        이런 자연의 아름다움을 만날 수 있다는 게 감사하다. 
+                        신선한 공기와 함께 하루를 시작하는 기분이 좋다.
+                    </p>
+                    <div class="tags">
+                        <span class="tag">#산책</span>
+                        <span class="tag">#자연</span>
+                        <span class="tag">#건강</span>
+                    </div>
+                </div>
+            </article>
+        </div>
+        
+        <section class="featured-section">
+            <h2 class="section-title">이주의 하이라이트</h2>
+            <div class="featured-story">
+                <div class="featured-photo">📸</div>
+                <div class="featured-content">
+                    <div>
+                        <h3 style="font-size: 1.8rem; margin-bottom: 20px; color: #3498db;">사진을 통해 본 40대의 일상</h3>
+                        <div class="featured-text">
+                            <p>사진을 찍기 시작한 건 아이들 때문이었다. 아이들의 성장 과정을 기록하고 싶어서 카메라를 들었는데, 어느새 내 일상까지 담게 되었다.</p>
+                            
+                            <div class="quote-box">
+                                "카메라를 통해 세상을 다시 보게 되었다. 
+                                평범해 보이던 일상도 렌즈를 통하면 
+                                특별한 순간이 된다."
+                            </div>
+                            
+                            <p>40대 중반의 시선으로 바라보는 세상은 20대 때와는 다르다. 더 여유롭고, 더 깊이 있게 바라보게 된다. 그리고 그런 시선들이 사진에 담긴다.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="photo-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">365</span>
+                                <div class="stat-label">일상 사진</div>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">52</span>
+                                <div class="stat-label">주말 스냅</div>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">12</span>
+                                <div class="stat-label">특별한 순간</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

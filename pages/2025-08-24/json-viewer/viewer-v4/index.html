@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Network Topology Visualizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/three@0.156.1/build/three.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="neural-container">
+        <!-- Command Center -->
+        <header class="neural-header">
+            <div class="brand-zone">
+                <div class="neural-logo">
+                    <div class="logo-pulse"></div>
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="brand-info">
+                    <h1>Neural Topology</h1>
+                    <span class="tagline">AI-Powered JSON Analysis</span>
+                </div>
+            </div>
+
+            <div class="neural-controls">
+                <div class="control-cluster">
+                    <button id="loadData" class="neural-btn primary">
+                        <i class="fas fa-upload"></i>
+                        <span>Load Data</span>
+                        <div class="btn-glow"></div>
+                    </button>
+                    
+                    <button id="analyzeBtn" class="neural-btn accent">
+                        <i class="fas fa-microscope"></i>
+                        <span>Analyze</span>
+                        <div class="btn-glow"></div>
+                    </button>
+                    
+                    <button id="trainBtn" class="neural-btn success">
+                        <i class="fas fa-cog fa-spin"></i>
+                        <span>Train</span>
+                        <div class="btn-glow"></div>
+                    </button>
+                </div>
+
+                <div class="network-stats">
+                    <div class="stat-node">
+                        <div class="stat-value" id="nodeCount">0</div>
+                        <div class="stat-label">Neurons</div>
+                    </div>
+                    <div class="stat-connection">
+                        <div class="stat-value" id="connectionCount">0</div>
+                        <div class="stat-label">Synapses</div>
+                    </div>
+                    <div class="stat-layer">
+                        <div class="stat-value" id="layerCount">0</div>
+                        <div class="stat-label">Layers</div>
+                    </div>
+                    <div class="stat-accuracy">
+                        <div class="stat-value" id="accuracyScore">0%</div>
+                        <div class="stat-label">Accuracy</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="visualization-modes">
+                <div class="mode-selector">
+                    <button class="mode-btn active" data-mode="network">
+                        <i class="fas fa-project-diagram"></i>
+                        <span>Network</span>
+                    </button>
+                    <button class="mode-btn" data-mode="layers">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Layers</span>
+                    </button>
+                    <button class="mode-btn" data-mode="flow">
+                        <i class="fas fa-route"></i>
+                        <span>Flow</span>
+                    </button>
+                    <button class="mode-btn" data-mode="heatmap">
+                        <i class="fas fa-fire"></i>
+                        <span>Heatmap</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Interface -->
+        <main class="neural-main">
+            <!-- Left Control Panel -->
+            <aside class="left-neural-panel">
+                <div class="panel-tabs">
+                    <button class="tab-btn active" data-tab="structure">
+                        <i class="fas fa-sitemap"></i>
+                        Structure
+                    </button>
+                    <button class="tab-btn" data-tab="patterns">
+                        <i class="fas fa-puzzle-piece"></i>
+                        Patterns
+                    </button>
+                    <button class="tab-btn" data-tab="insights">
+                        <i class="fas fa-lightbulb"></i>
+                        Insights
+                    </button>
+                </div>
+
+                <div class="tab-content">
+                    <!-- Structure Tab -->
+                    <div id="structureTab" class="tab-pane active">
+                        <div class="structure-analyzer">
+                            <div class="analyzer-section">
+                                <h3><i class="fas fa-dna"></i> Data DNA</h3>
+                                <div class="dna-strand" id="dnaStrand">
+                                    <div class="empty-dna">
+                                        <i class="fas fa-molecule"></i>
+                                        <p>Load data to analyze structure</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="analyzer-section">
+                                <h3><i class="fas fa-chart-network"></i> Node Types</h3>
+                                <div class="node-type-distribution" id="nodeTypeChart">
+                                    <!-- Node type analysis will be populated here -->
+                                </div>
+                            </div>
+
+                            <div class="analyzer-section">
+                                <h3><i class="fas fa-filter"></i> Filters</h3>
+                                <div class="neural-filters">
+                                    <label class="filter-control">
+                                        <input type="checkbox" id="showPrimitives" checked>
+                                        <span class="checkmark"></span>
+                                        <span>Primitives</span>
+                                    </label>
+                                    <label class="filter-control">
+                                        <input type="checkbox" id="showObjects" checked>
+                                        <span class="checkmark"></span>
+                                        <span>Objects</span>
+                                    </label>
+                                    <label class="filter-control">
+                                        <input type="checkbox" id="showArrays" checked>
+                                        <span class="checkmark"></span>
+                                        <span>Arrays</span>
+                                    </label>
+                                    <label class="filter-control">
+                                        <input type="checkbox" id="showConnections" checked>
+                                        <span class="checkmark"></span>
+                                        <span>Connections</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Patterns Tab -->
+                    <div id="patternsTab" class="tab-pane">
+                        <div class="pattern-analyzer">
+                            <div class="analyzer-section">
+                                <h3><i class="fas fa-search"></i> Pattern Detection</h3>
+                                <div class="pattern-scanner">
+                                    <button class="scan-btn" onclick="scanPatterns()">
+                                        <i class="fas fa-radar"></i>
+                                        Scan for Patterns
+                                    </button>
+                                </div>
+                                <div class="pattern-results" id="patternResults">
+                                    <!-- Pattern results will be populated here -->
+                                </div>
+                            </div>
+
+                            <div class="analyzer-section">
+                                <h3><i class="fas fa-repeat"></i> Recurring Structures</h3>
+                                <div class="recurring-patterns" id="recurringPatterns">
+                                    <!-- Recurring patterns will be shown here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Insights Tab -->
+                    <div id="insightsTab" class="tab-pane">
+                        <div class="insights-analyzer">
+                            <div class="analyzer-section">
+                                <h3><i class="fas fa-brain"></i> AI Insights</h3>
+                                <div class="ai-insights" id="aiInsights">
+                                    <div class="insight-loading">
+                                        <div class="neural-pulse"></div>
+                                        <p>Analyzing neural patterns...</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="analyzer-section">
+                                <h3><i class="fas fa-chart-line"></i> Performance Metrics</h3>
+                                <div class="performance-metrics" id="performanceMetrics">
+                                    <!-- Performance metrics will be shown here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Central Neural Canvas -->
+            <div class="neural-canvas">
+                <div class="canvas-controls">
+                    <div class="control-group">
+                        <button id="zoomIn" class="canvas-control">
+                            <i class="fas fa-search-plus"></i>
+                        </button>
+                        <button id="zoomOut" class="canvas-control">
+                            <i class="fas fa-search-minus"></i>
+                        </button>
+                        <button id="resetZoom" class="canvas-control">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                        </button>
+                    </div>
+
+                    <div class="neural-info">
+                        <span id="currentMode">Network Mode</span>
+                        <span class="separator">•</span>
+                        <span id="selectedInfo">Select a neuron</span>
+                    </div>
+
+                    <div class="control-group">
+                        <button id="playAnimation" class="canvas-control">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button id="pauseAnimation" class="canvas-control">
+                            <i class="fas fa-pause"></i>
+                        </button>
+                        <button id="fullscreen" class="canvas-control">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="visualization-area" id="visualizationArea">
+                    <!-- Network View -->
+                    <div id="networkView" class="neural-view active">
+                        <svg id="networkSvg" class="neural-svg"></svg>
+                        <div class="neural-particles" id="neuralParticles">
+                            <!-- Animated particles will be added here -->
+                        </div>
+                    </div>
+
+                    <!-- Layers View -->
+                    <div id="layersView" class="neural-view">
+                        <div id="layersContainer" class="layers-container">
+                            <!-- Layer visualization will be built here -->
+                        </div>
+                    </div>
+
+                    <!-- Flow View -->
+                    <div id="flowView" class="neural-view">
+                        <svg id="flowSvg" class="neural-svg"></svg>
+                        <div class="flow-controls">
+                            <input type="range" id="flowSpeed" min="0.1" max="3" value="1" step="0.1">
+                            <label>Flow Speed</label>
+                        </div>
+                    </div>
+
+                    <!-- Heatmap View -->
+                    <div id="heatmapView" class="neural-view">
+                        <canvas id="heatmapCanvas" class="heatmap-canvas"></canvas>
+                        <div class="heatmap-legend" id="heatmapLegend">
+                            <!-- Heatmap legend will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div class="neural-loading" id="neuralLoading">
+                        <div class="loading-brain">
+                            <div class="brain-core"></div>
+                            <div class="brain-wave wave-1"></div>
+                            <div class="brain-wave wave-2"></div>
+                            <div class="brain-wave wave-3"></div>
+                        </div>
+                        <p>Building neural topology...</p>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="neural-empty" id="neuralEmpty">
+                        <div class="empty-brain">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>Neural Network Ready</h3>
+                        <p>Load JSON data to begin neural analysis</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Analysis Panel -->
+            <aside class="right-neural-panel">
+                <div class="panel-header">
+                    <h3 id="analysisTitle">
+                        <i class="fas fa-microscope"></i>
+                        Neuron Analysis
+                    </h3>
+                    <button id="closeAnalysis" class="close-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="analysis-content" id="analysisContent">
+                    <div class="analysis-empty">
+                        <i class="fas fa-crosshairs"></i>
+                        <h4>Select a Neuron</h4>
+                        <p>Click on any neuron in the network to view detailed analysis</p>
+                    </div>
+                </div>
+
+                <div class="neural-inspector" id="neuralInspector">
+                    <div class="inspector-tabs">
+                        <button class="inspector-tab active" data-tab="properties">
+                            <i class="fas fa-list"></i>
+                            Properties
+                        </button>
+                        <button class="inspector-tab" data-tab="connections">
+                            <i class="fas fa-link"></i>
+                            Connections
+                        </button>
+                        <button class="inspector-tab" data-tab="activation">
+                            <i class="fas fa-bolt"></i>
+                            Activation
+                        </button>
+                    </div>
+
+                    <div class="inspector-content">
+                        <div id="propertiesInspector" class="inspector-pane active">
+                            <!-- Properties content -->
+                        </div>
+                        <div id="connectionsInspector" class="inspector-pane">
+                            <!-- Connections content -->
+                        </div>
+                        <div id="activationInspector" class="inspector-pane">
+                            <!-- Activation content -->
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Neural Context Menu -->
+        <div id="neuralContextMenu" class="neural-context-menu">
+            <button onclick="activateNeuron()">
+                <i class="fas fa-bolt"></i>
+                Activate Neuron
+            </button>
+            <button onclick="traceConnections()">
+                <i class="fas fa-route"></i>
+                Trace Connections
+            </button>
+            <button onclick="isolateCluster()">
+                <i class="fas fa-object-group"></i>
+                Isolate Cluster
+            </button>
+            <div class="menu-separator"></div>
+            <button onclick="analyzeNeuron()">
+                <i class="fas fa-microscope"></i>
+                Deep Analysis
+            </button>
+            <button onclick="exportNeuron()">
+                <i class="fas fa-download"></i>
+                Export Data
+            </button>
+        </div>
+
+        <!-- Training Progress Modal -->
+        <div id="trainingModal" class="neural-modal">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-brain"></i> Neural Training</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="training-visualization">
+                        <div class="training-progress">
+                            <div class="progress-ring">
+                                <svg class="progress-svg">
+                                    <circle class="progress-circle" cx="50" cy="50" r="40"></circle>
+                                    <circle class="progress-bar" cx="50" cy="50" r="40"></circle>
+                                </svg>
+                                <div class="progress-text">
+                                    <span id="trainingProgress">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="training-metrics">
+                            <div class="metric">
+                                <span class="metric-label">Epoch:</span>
+                                <span id="currentEpoch">0</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Loss:</span>
+                                <span id="currentLoss">0.000</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Accuracy:</span>
+                                <span id="currentAccuracy">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="training-log" id="trainingLog">
+                        <div class="log-header">Training Log</div>
+                        <div class="log-content">
+                            <!-- Training log entries will be added here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="neural-btn secondary" onclick="pauseTraining()">Pause</button>
+                    <button class="neural-btn danger" onclick="stopTraining()">Stop Training</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tooltip -->
+        <div id="neuralTooltip" class="neural-tooltip">
+            <div class="tooltip-header">
+                <span class="tooltip-title"></span>
+                <span class="tooltip-type"></span>
+            </div>
+            <div class="tooltip-content">
+                <div class="tooltip-value"></div>
+                <div class="tooltip-connections"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

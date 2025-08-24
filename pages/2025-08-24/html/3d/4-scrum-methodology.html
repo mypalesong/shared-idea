@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스크럼 방법론 - Scrum Methodology</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 30px;
+        }
+        
+        .three-container {
+            width: 100%;
+            height: 400px;
+            margin: 30px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .content-section {
+            background: rgba(255,255,255,0.95);
+            padding: 40px;
+            margin: 30px 0;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .content-section h2 {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 25px;
+            border-left: 5px solid #667eea;
+            padding-left: 20px;
+        }
+        
+        .content-section h3 {
+            font-size: 1.8rem;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+        
+        .content-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #4a5568;
+        }
+        
+        .scrum-roles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .role-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+        
+        .role-card:hover {
+            transform: translateY(-5px) rotate(2deg);
+        }
+        
+        .role-card h4 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .role-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+        
+        .sprint-timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 15px;
+            color: white;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .sprint-event {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+            transition: all 0.3s ease;
+        }
+        
+        .sprint-event:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+        
+        .sprint-event h5 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+        
+        .artifacts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .artifact {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .artifact:hover {
+            transform: translateY(-10px);
+        }
+        
+        .artifact h4 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+        
+        .values-principles {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .value-item {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .value-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .benefit-item {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+        }
+        
+        .benefit-item h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 50px;
+            border-radius: 20px;
+        }
+        
+        footer p {
+            color: white;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>스크럼 방법론</h1>
+            <p class="subtitle">반복적이고 점진적인 제품 개발을 위한 애자일 프레임워크</p>
+        </header>
+        
+        <div class="three-container" id="three-container"></div>
+        
+        <div class="content-section">
+            <h2>스크럼이란?</h2>
+            <p>스크럼(Scrum)은 복잡한 제품 개발을 위한 애자일 프레임워크입니다. 켄 슈웨버(Ken Schwaber)와 제프 서덜랜드(Jeff Sutherland)에 의해 개발된 스크럼은 짧은 주기(스프린트)로 반복하며 제품을 개발하는 방법론입니다.</p>
+            
+            <p>스크럼의 이름은 럭비에서 따온 것으로, 팀원들이 하나의 목표를 향해 함께 전진하는 모습을 의미합니다. 스크럼은 단순한 개발 방법론을 넘어 팀의 협업 방식과 조직 문화를 변화시키는 프레임워크입니다.</p>
+        </div>
+        
+        <div class="content-section">
+            <h2>스크럼 팀 구성원</h2>
+            <div class="scrum-roles">
+                <div class="role-card">
+                    <div class="role-icon">👨‍💼</div>
+                    <h4>제품 책임자 (Product Owner)</h4>
+                    <p>제품의 비전을 설정하고 백로그를 관리하며, 사업적 가치를 최대화하는 역할을 담당합니다.</p>
+                </div>
+                <div class="role-card">
+                    <div class="role-icon">🎯</div>
+                    <h4>스크럼 마스터 (Scrum Master)</h4>
+                    <p>스크럼 프로세스를 촉진하고 팀이 스크럼을 올바르게 실행할 수 있도록 도와주는 서번트 리더입니다.</p>
+                </div>
+                <div class="role-card">
+                    <div class="role-icon">👥</div>
+                    <h4>개발팀 (Development Team)</h4>
+                    <p>실제 제품을 개발하는 자기조직적이고 교차기능적인 팀으로, 3-9명의 구성원으로 이루어집니다.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>스프린트 프로세스</h2>
+            <p>스크럼의 핵심은 1-4주 길이의 스프린트입니다. 각 스프린트는 다음과 같은 이벤트들로 구성됩니다:</p>
+            
+            <div class="sprint-timeline">
+                <div class="sprint-event">
+                    <h5>스프린트 계획</h5>
+                    <p>스프린트 목표와 백로그 아이템을 선정</p>
+                </div>
+                <div class="sprint-event">
+                    <h5>일일 스크럼</h5>
+                    <p>매일 15분간 진행 상황 공유</p>
+                </div>
+                <div class="sprint-event">
+                    <h5>스프린트 검토</h5>
+                    <p>개발 결과물을 이해관계자들에게 시연</p>
+                </div>
+                <div class="sprint-event">
+                    <h5>스프린트 회고</h5>
+                    <p>팀의 개선점을 논의하고 계획</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>스크럼 산출물 (Artifacts)</h2>
+            <div class="artifacts-container">
+                <div class="artifact">
+                    <h4>제품 백로그</h4>
+                    <p>제품에 필요한 모든 기능들의 우선순위가 정해진 목록</p>
+                </div>
+                <div class="artifact">
+                    <h4>스프린트 백로그</h4>
+                    <p>현재 스프린트에서 개발할 작업들의 상세 목록</p>
+                </div>
+                <div class="artifact">
+                    <h4>제품 증분</h4>
+                    <p>스프린트가 끝날 때마다 완성되는 잠재적으로 배포 가능한 제품</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>스크럼 가치와 원칙</h2>
+            <div class="values-principles">
+                <div class="value-item">
+                    <h4>용기 (Courage)</h4>
+                    <p>올바른 일을 할 용기와 어려운 문제를 해결할 용기</p>
+                </div>
+                <div class="value-item">
+                    <h4>집중 (Focus)</h4>
+                    <p>스프린트의 작업과 스크럼 팀의 목표에 집중</p>
+                </div>
+                <div class="value-item">
+                    <h4>헌신 (Commitment)</h4>
+                    <p>목표 달성과 팀 동료들을 위한 헌신</p>
+                </div>
+                <div class="value-item">
+                    <h4>존중 (Respect)</h4>
+                    <p>팀원들이 서로 유능하고 독립적임을 존중</p>
+                </div>
+                <div class="value-item">
+                    <h4>개방성 (Openness)</h4>
+                    <p>작업과 도전에 대해 개방적 태도 유지</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>스크럼의 이점</h2>
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <h4>빠른 가치 제공</h4>
+                    <p>짧은 주기로 작동하는 제품을 지속적으로 제공하여 고객에게 빠르게 가치를 전달합니다.</p>
+                </div>
+                <div class="benefit-item">
+                    <h4>위험 감소</h4>
+                    <p>정기적인 검토와 조정을 통해 프로젝트 위험을 조기에 식별하고 대응할 수 있습니다.</p>
+                </div>
+                <div class="benefit-item">
+                    <h4>유연성 향상</h4>
+                    <p>변화하는 요구사항에 빠르게 대응하고 제품을 지속적으로 개선할 수 있습니다.</p>
+                </div>
+                <div class="benefit-item">
+                    <h4>팀 생산성</h4>
+                    <p>자기조직적 팀과 명확한 역할 분담으로 팀의 전반적인 생산성이 향상됩니다.</p>
+                </div>
+                <div class="benefit-item">
+                    <h4>품질 향상</h4>
+                    <p>지속적인 테스트와 검토를 통해 제품의 품질을 꾸준히 개선할 수 있습니다.</p>
+                </div>
+                <div class="benefit-item">
+                    <h4>고객 만족도</h4>
+                    <p>정기적인 피드백과 협업을 통해 고객의 실제 요구사항을 충족하는 제품을 개발합니다.</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>스크럼은 단순한 프로세스가 아닌, 팀의 협업과 지속적인 개선을 추구하는 철학입니다.</p>
+        </footer>
+    </div>
+    
+    <script>
+        let scene, camera, renderer, scrumElements = [], sprintCycle = [];
+        
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            
+            const container = document.getElementById('three-container');
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            renderer.setClearColor(0x667eea);
+            container.appendChild(renderer.domElement);
+            
+            // Create Scrum sprint cycle
+            const sprintRadius = 3;
+            const sprintEvents = ['Planning', 'Daily Scrum', 'Development', 'Review', 'Retrospective'];
+            const eventColors = [0xff6b6b, 0x4ecdc4, 0x45b7d1, 0x96ceb4, 0xfeca57];
+            
+            for (let i = 0; i < sprintEvents.length; i++) {
+                const angle = (i / sprintEvents.length) * Math.PI * 2;
+                const geometry = new THREE.SphereGeometry(0.4, 16, 16);
+                const material = new THREE.MeshPhongMaterial({ 
+                    color: eventColors[i],
+                    emissive: eventColors[i],
+                    emissiveIntensity: 0.1
+                });
+                const sphere = new THREE.Mesh(geometry, material);
+                
+                sphere.position.x = Math.cos(angle) * sprintRadius;
+                sphere.position.z = Math.sin(angle) * sprintRadius;
+                sphere.position.y = 0;
+                
+                sphere.userData = {
+                    angle: angle,
+                    originalY: 0,
+                    name: sprintEvents[i]
+                };
+                
+                scene.add(sphere);
+                sprintCycle.push(sphere);
+            }
+            
+            // Create connecting circle
+            const circleGeometry = new THREE.RingGeometry(sprintRadius - 0.1, sprintRadius + 0.1, 32);
+            const circleMaterial = new THREE.MeshBasicMaterial({ 
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.3,
+                side: THREE.DoubleSide
+            });
+            const circle = new THREE.Mesh(circleGeometry, circleMaterial);
+            circle.rotation.x = -Math.PI / 2;
+            scene.add(circle);
+            
+            // Create central Scrum team
+            const teamGeometry = new THREE.CylinderGeometry(0.5, 0.5, 0.2, 8);
+            const teamMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0x764ba2,
+                transparent: true,
+                opacity: 0.8
+            });
+            const team = new THREE.Mesh(teamGeometry, teamMaterial);
+            team.position.y = 0.1;
+            scene.add(team);
+            
+            // Create floating user stories (backlog items)
+            for (let i = 0; i < 20; i++) {
+                const storyGeometry = new THREE.BoxGeometry(0.2, 0.1, 0.3);
+                const storyMaterial = new THREE.MeshPhongMaterial({ 
+                    color: Math.random() * 0xffffff,
+                    transparent: true,
+                    opacity: 0.7
+                });
+                const story = new THREE.Mesh(storyGeometry, storyMaterial);
+                
+                story.position.x = (Math.random() - 0.5) * 10;
+                story.position.y = 2 + Math.random() * 3;
+                story.position.z = (Math.random() - 0.5) * 10;
+                
+                story.userData = {
+                    velocity: new THREE.Vector3(
+                        (Math.random() - 0.5) * 0.02,
+                        -Math.random() * 0.01 - 0.005,
+                        (Math.random() - 0.5) * 0.02
+                    ),
+                    rotationSpeed: Math.random() * 0.05
+                };
+                
+                scene.add(story);
+                scrumElements.push(story);
+            }
+            
+            // Create sprint burndown visualization
+            const burndownGeometry = new THREE.BufferGeometry();
+            const burndownPoints = [];
+            for (let i = 0; i <= 10; i++) {
+                burndownPoints.push(
+                    -4 + (i / 10) * 8,
+                    2 - (i / 10) * 1.5,
+                    -5
+                );
+            }
+            burndownGeometry.setAttribute('position', new THREE.Float32BufferAttribute(burndownPoints, 3));
+            
+            const burndownMaterial = new THREE.LineBasicMaterial({ 
+                color: 0xf093fb,
+                linewidth: 3
+            });
+            const burndownLine = new THREE.Line(burndownGeometry, burndownMaterial);
+            scene.add(burndownLine);
+            
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(10, 10, 5);
+            scene.add(directionalLight);
+            
+            const pointLight1 = new THREE.PointLight(0x667eea, 0.5, 100);
+            pointLight1.position.set(0, 5, 0);
+            scene.add(pointLight1);
+            
+            const pointLight2 = new THREE.PointLight(0xf093fb, 0.5, 100);
+            pointLight2.position.set(0, -2, 5);
+            scene.add(pointLight2);
+            
+            camera.position.set(0, 4, 8);
+            camera.lookAt(0, 0, 0);
+            
+            animate();
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const time = Date.now() * 0.001;
+            
+            // Animate sprint cycle elements
+            sprintCycle.forEach((element, index) => {
+                element.position.y = element.userData.originalY + Math.sin(time * 2 + index) * 0.3;
+                element.rotation.x = time * 1.5;
+                element.rotation.y = time * 2;
+                
+                // Subtle orbital movement
+                const newAngle = element.userData.angle + time * 0.1;
+                element.position.x = Math.cos(newAngle) * 3;
+                element.position.z = Math.sin(newAngle) * 3;
+            });
+            
+            // Animate user stories floating down
+            scrumElements.forEach(story => {
+                story.position.add(story.userData.velocity);
+                story.rotation.x += story.userData.rotationSpeed;
+                story.rotation.y += story.userData.rotationSpeed * 0.7;
+                
+                // Reset stories that fall too low
+                if (story.position.y < -2) {
+                    story.position.y = 5 + Math.random() * 2;
+                    story.position.x = (Math.random() - 0.5) * 10;
+                    story.position.z = (Math.random() - 0.5) * 10;
+                }
+            });
+            
+            // Camera orbiting around the scene
+            const cameraRadius = 8;
+            camera.position.x = Math.sin(time * 0.15) * cameraRadius;
+            camera.position.z = Math.cos(time * 0.15) * cameraRadius;
+            camera.position.y = 4 + Math.sin(time * 0.1) * 2;
+            camera.lookAt(0, 0, 0);
+            
+            renderer.render(scene, camera);
+        }
+        
+        window.addEventListener('resize', () => {
+            const container = document.getElementById('three-container');
+            camera.aspect = container.offsetWidth / container.offsetHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+        });
+        
+        init3D();
+    </script>
+</body>
+</html>

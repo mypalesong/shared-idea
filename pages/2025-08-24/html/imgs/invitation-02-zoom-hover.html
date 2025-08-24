@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>골프 모임 - 봄날의 초대</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background: #1a1a1a;
+            color: white;
+        }
+        
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .hero-section {
+            position: relative;
+            height: 70vh;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .hero-bg {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1535131749006-b7f58c99034b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.8s ease-out;
+        }
+        
+        .hero-section:hover .hero-bg {
+            transform: scale(1.1);
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            animation: slideInFromTop 1.5s ease-out;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            animation: slideInFromBottom 1.5s ease-out 0.5s both;
+        }
+        
+        .content-section {
+            flex: 1;
+            padding: 50px 20px;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+        }
+        
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto 50px;
+        }
+        
+        .gallery-item {
+            position: relative;
+            height: 200px;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-10px);
+        }
+        
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .gallery-item:hover .gallery-img {
+            transform: scale(1.2);
+        }
+        
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 20px;
+            color: white;
+            text-align: center;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+        
+        .event-details {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .event-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #ecf0f1;
+        }
+        
+        .event-info {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .cta-button {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.6);
+        }
+        
+        @keyframes slideInFromTop {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInFromBottom {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="hero-section">
+            <div class="hero-bg"></div>
+            <div class="hero-overlay">
+                <h1 class="hero-title">Spring Golf Day</h1>
+                <p class="hero-subtitle">친구들과 함께하는 특별한 라운딩</p>
+            </div>
+        </section>
+        
+        <section class="content-section">
+            <div class="image-gallery">
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="골프장" class="gallery-img">
+                    <div class="gallery-overlay">
+                        <p>아름다운 골프장</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="골프클럽" class="gallery-img">
+                    <div class="gallery-overlay">
+                        <p>완벽한 샷을 위해</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="친구들" class="gallery-img">
+                    <div class="gallery-overlay">
+                        <p>소중한 동료들</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1574391884720-bbc4fe48aa10?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="맥주" class="gallery-img">
+                    <div class="gallery-overlay">
+                        <p>라운딩 후 한잔</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="event-details">
+                <h2 class="event-title">봄날의 골프 모임</h2>
+                <div class="event-info">
+                    <p><strong>날짜:</strong> 2025년 4월 20일 (일)</p>
+                    <p><strong>시간:</strong> 오전 8시 티타임</p>
+                    <p><strong>장소:</strong> 남서울CC</p>
+                    <p><strong>참가비:</strong> 그린피 + 식사 포함</p>
+                </div>
+                <button class="cta-button">참석 확인하기</button>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

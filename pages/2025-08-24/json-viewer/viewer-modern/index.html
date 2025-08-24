@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern JSON Viewer</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="header-title">
+                    <span class="material-icons">code</span>
+                    Modern JSON Viewer
+                </h1>
+                <div class="header-actions">
+                    <button id="themeToggle" class="btn btn-icon">
+                        <span class="material-icons">dark_mode</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="toolbar card">
+                <div class="toolbar-section">
+                    <button id="loadFileBtn" class="btn btn-primary">
+                        <span class="material-icons">upload_file</span>
+                        Load JSON File
+                    </button>
+                    <button id="loadSampleBtn" class="btn btn-outlined">
+                        <span class="material-icons">source</span>
+                        Load Sample
+                    </button>
+                    <button id="rawInputBtn" class="btn btn-outlined">
+                        <span class="material-icons">edit_note</span>
+                        Raw Input
+                    </button>
+                </div>
+                
+                <div class="toolbar-section">
+                    <button id="diffBtn" class="btn btn-outlined">
+                        <span class="material-icons">compare</span>
+                        Compare JSONs
+                    </button>
+                    <button id="analyzeBtn" class="btn btn-outlined">
+                        <span class="material-icons">analytics</span>
+                        Deep Analysis
+                    </button>
+                </div>
+
+                <div class="toolbar-section">
+                    <div class="search-container">
+                        <span class="material-icons">search</span>
+                        <input type="text" id="searchInput" placeholder="Search keys or values..." class="search-input">
+                    </div>
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="filterEmpty" checked>
+                        <span class="checkmark"></span>
+                        <span class="checkbox-label">Hide empty values</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div class="stats-panel card" id="statsPanel">
+                    <div class="stats-header">
+                        <h3><span class="material-icons">assessment</span>Statistics</h3>
+                        <button id="collapseStats" class="btn btn-icon">
+                            <span class="material-icons">expand_less</span>
+                        </button>
+                    </div>
+                    <div class="stats-content" id="statsContent">
+                        <div class="stats-grid" id="statsGrid">
+                            <div class="stat-item">
+                                <div class="stat-value" id="totalKeys">-</div>
+                                <div class="stat-label">Total Keys</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="totalValues">-</div>
+                                <div class="stat-label">Total Values</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="emptyValues">-</div>
+                                <div class="stat-label">Empty Values</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="dataSize">-</div>
+                                <div class="stat-label">Data Size</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="maxDepth">-</div>
+                                <div class="stat-label">Max Depth</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="arrayCount">-</div>
+                                <div class="stat-label">Arrays</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="main-content">
+                    <div class="viewer-container" id="singleViewMode">
+                        <div class="left-panel card">
+                            <div class="panel-header">
+                                <h3><span class="material-icons">account_tree</span>JSON Structure</h3>
+                                <div class="panel-actions">
+                                    <button id="expandAll" class="btn btn-text">
+                                        <span class="material-icons">unfold_more</span>
+                                        Expand All
+                                    </button>
+                                    <button id="collapseAll" class="btn btn-text">
+                                        <span class="material-icons">unfold_less</span>
+                                        Collapse All
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="json-viewer" id="jsonViewer">
+                                <div class="empty-state">
+                                    <span class="material-icons">upload_file</span>
+                                    <p>Load a JSON file to start exploring</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="right-panel card">
+                            <div class="panel-header">
+                                <h3 id="detailTitle"><span class="material-icons">info</span>Select an object to view details</h3>
+                                <button id="closeDetail" class="btn btn-icon">
+                                    <span class="material-icons">close</span>
+                                </button>
+                            </div>
+                            <div class="detail-viewer" id="detailViewer">
+                                <div class="empty-state">
+                                    <span class="material-icons">touch_app</span>
+                                    <p>Click on any object key in the left panel to view its contents here</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="diff-container card" id="diffViewMode" style="display: none;">
+                        <div class="diff-header">
+                            <h3><span class="material-icons">compare</span>JSON Comparison</h3>
+                            <div class="diff-actions">
+                                <button id="loadDiffFile1" class="btn btn-outlined">
+                                    <span class="material-icons">upload</span>
+                                    Load JSON 1
+                                </button>
+                                <button id="loadDiffFile2" class="btn btn-outlined">
+                                    <span class="material-icons">upload</span>
+                                    Load JSON 2
+                                </button>
+                                <button id="closeDiff" class="btn btn-text">
+                                    <span class="material-icons">close</span>
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                        <div class="diff-content">
+                            <div class="diff-panel">
+                                <h4>JSON 1</h4>
+                                <div class="diff-viewer" id="diffViewer1">
+                                    <div class="empty-state">Load first JSON</div>
+                                </div>
+                            </div>
+                            <div class="diff-panel">
+                                <h4>JSON 2</h4>
+                                <div class="diff-viewer" id="diffViewer2">
+                                    <div class="empty-state">Load second JSON</div>
+                                </div>
+                            </div>
+                            <div class="diff-panel">
+                                <h4>Differences</h4>
+                                <div class="diff-result" id="diffResult">
+                                    <div class="empty-state">Load both JSONs to see differences</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Raw Input Modal -->
+    <div class="modal" id="rawInputModal">
+        <div class="modal-content card">
+            <div class="modal-header">
+                <h3><span class="material-icons">edit_note</span>Raw JSON Input</h3>
+                <button id="closeRawInput" class="btn btn-icon">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea id="rawJsonInput" placeholder="Paste your JSON here..." class="raw-input"></textarea>
+                <div class="modal-actions">
+                    <button id="parseRawJson" class="btn btn-primary">
+                        <span class="material-icons">check</span>
+                        Parse JSON
+                    </button>
+                    <button id="clearRawInput" class="btn btn-outlined">
+                        <span class="material-icons">clear</span>
+                        Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Input (Hidden) -->
+    <input type="file" id="fileInput" accept=".json" style="display: none;">
+    <input type="file" id="diffFile1Input" accept=".json" style="display: none;">
+    <input type="file" id="diffFile2Input" accept=".json" style="display: none;">
+
+    <script src="script.js"></script>
+</body>
+</html>

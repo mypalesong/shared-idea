@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>여행동호회 초대장</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Open+Sans:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            width: 700px;
+            height: 500px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.2);
+        }
+
+        .parallax-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 120%;
+            height: 120%;
+            background: linear-gradient(135deg, 
+                rgba(116, 185, 255, 0.3) 0%,
+                rgba(9, 132, 227, 0.4) 30%,
+                rgba(0, 123, 255, 0.2) 60%,
+                rgba(116, 185, 255, 0.3) 100%);
+            animation: parallaxMove 20s ease-in-out infinite;
+        }
+
+        @keyframes parallaxMove {
+            0%, 100% { 
+                transform: translate(0px, 0px) scale(1);
+            }
+            25% { 
+                transform: translate(-20px, -10px) scale(1.02);
+            }
+            50% { 
+                transform: translate(10px, -20px) scale(0.98);
+            }
+            75% { 
+                transform: translate(-10px, 10px) scale(1.01);
+            }
+        }
+
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50px;
+            animation: cloudFloat linear infinite;
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50px;
+        }
+
+        .cloud-1 {
+            width: 80px;
+            height: 30px;
+            top: 60px;
+            left: -40px;
+            animation-duration: 25s;
+            animation-delay: 0s;
+        }
+
+        .cloud-1::before {
+            width: 50px;
+            height: 30px;
+            top: -15px;
+            left: 10px;
+        }
+
+        .cloud-1::after {
+            width: 40px;
+            height: 20px;
+            top: -10px;
+            right: 10px;
+        }
+
+        .cloud-2 {
+            width: 60px;
+            height: 25px;
+            top: 120px;
+            right: -30px;
+            animation-duration: 30s;
+            animation-delay: -10s;
+            animation-direction: reverse;
+        }
+
+        .cloud-2::before {
+            width: 40px;
+            height: 25px;
+            top: -12px;
+            left: 8px;
+        }
+
+        .cloud-2::after {
+            width: 35px;
+            height: 18px;
+            top: -8px;
+            right: 8px;
+        }
+
+        .cloud-3 {
+            width: 70px;
+            height: 28px;
+            bottom: 100px;
+            left: -35px;
+            animation-duration: 28s;
+            animation-delay: -15s;
+        }
+
+        .cloud-3::before {
+            width: 45px;
+            height: 28px;
+            top: -14px;
+            left: 12px;
+        }
+
+        .cloud-3::after {
+            width: 38px;
+            height: 20px;
+            top: -10px;
+            right: 12px;
+        }
+
+        @keyframes cloudFloat {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(750px); }
+        }
+
+        .mountain-silhouette {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(45deg,
+                rgba(74, 144, 226, 0.3) 0%,
+                rgba(37, 117, 252, 0.2) 50%,
+                rgba(116, 185, 255, 0.1) 100%);
+            clip-path: polygon(0% 100%, 15% 60%, 25% 80%, 40% 40%, 55% 70%, 70% 30%, 85% 60%, 100% 50%, 100% 100%);
+            animation: mountainShift 15s ease-in-out infinite;
+        }
+
+        @keyframes mountainShift {
+            0%, 100% { transform: translateX(0px) scaleY(1); }
+            50% { transform: translateX(-10px) scaleY(1.05); }
+        }
+
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+            width: 85%;
+            color: #2d3748;
+        }
+
+        .title {
+            font-family: 'Pacifico', cursive;
+            font-size: 4rem;
+            color: #4a90e2;
+            margin-bottom: 15px;
+            text-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            animation: titleWave 3s ease-out;
+        }
+
+        @keyframes titleWave {
+            0% { 
+                opacity: 0; 
+                transform: translateY(-30px) scale(0.8);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: #718096;
+            margin-bottom: 35px;
+            letter-spacing: 2px;
+            animation: subtitleFade 2s ease-out 1s both;
+        }
+
+        @keyframes subtitleFade {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .destination-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            animation: cardSlideIn 2s ease-out 1.5s both;
+        }
+
+        @keyframes cardSlideIn {
+            0% { 
+                opacity: 0; 
+                transform: translateY(40px) scale(0.95);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .destination-name {
+            font-family: 'Pacifico', cursive;
+            font-size: 2.2rem;
+            color: #4a90e2;
+            margin-bottom: 15px;
+        }
+
+        .trip-description {
+            font-size: 1rem;
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .travel-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
+        }
+
+        .detail-group {
+            animation: detailSlide 1s ease-out both;
+        }
+
+        .detail-group:nth-child(1) { animation-delay: 2s; }
+        .detail-group:nth-child(2) { animation-delay: 2.2s; }
+
+        @keyframes detailSlide {
+            0% { opacity: 0; transform: translateX(-20px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+            color: #2d3748;
+        }
+
+        .detail-icon {
+            color: #4a90e2;
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        .airplane {
+            position: absolute;
+            font-size: 2rem;
+            color: rgba(74, 144, 226, 0.6);
+            animation: airplaneFly 12s linear infinite;
+        }
+
+        .airplane-1 {
+            top: 80px;
+            left: -50px;
+            animation-delay: 0s;
+        }
+
+        .airplane-2 {
+            bottom: 180px;
+            right: -50px;
+            transform: scaleX(-1);
+            animation-delay: -6s;
+            animation-direction: reverse;
+        }
+
+        @keyframes airplaneFly {
+            0% { transform: translateX(0px) translateY(0px); }
+            25% { transform: translateX(200px) translateY(-10px); }
+            50% { transform: translateX(400px) translateY(5px); }
+            75% { transform: translateX(600px) translateY(-5px); }
+            100% { transform: translateX(800px) translateY(0px); }
+        }
+
+        .compass {
+            position: absolute;
+            top: 40px;
+            right: 50px;
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(74, 144, 226, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #4a90e2;
+            animation: compassSpin 8s linear infinite;
+        }
+
+        @keyframes compassSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .compass::before {
+            content: '🧭';
+            animation: compassReverse 8s linear infinite;
+        }
+
+        @keyframes compassReverse {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(-360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="parallax-bg"></div>
+        
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+        
+        <div class="mountain-silhouette"></div>
+        
+        <div class="airplane airplane-1">✈️</div>
+        <div class="airplane airplane-2">✈️</div>
+        
+        <div class="compass"></div>
+        
+        <div class="content">
+            <h1 class="title">Wanderlust</h1>
+            <p class="subtitle">여행동호회 정기모임</p>
+            
+            <div class="destination-card">
+                <div class="destination-name">제주도 힐링 여행</div>
+                <div class="trip-description">
+                    가을 제주의 아름다운 자연과 함께하는<br>
+                    2박 3일 힐링 여행을 떠나보세요
+                </div>
+                
+                <div class="travel-details">
+                    <div class="detail-group">
+                        <div class="detail-item">
+                            <span class="detail-icon">📅</span>
+                            <span>2025년 11월 15일-17일</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">✈️</span>
+                            <span>김포공항 출발</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">🏨</span>
+                            <span>4성급 호텔 숙박</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-group">
+                        <div class="detail-item">
+                            <span class="detail-icon">💰</span>
+                            <span>45만원 (전 일정 포함)</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">👥</span>
+                            <span>선착순 20명</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">📞</span>
+                            <span>travel.jeju@gmail.com</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

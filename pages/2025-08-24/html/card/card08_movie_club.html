@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영화동호회 초대장</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #000000;
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            width: 700px;
+            height: 500px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+            border: 1px solid #333333;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .film-strips {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .film-strip-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: repeating-linear-gradient(
+                90deg,
+                #2a2a2a 0px,
+                #2a2a2a 30px,
+                #1a1a1a 30px,
+                #1a1a1a 40px
+            );
+            border-bottom: 2px solid #444;
+            animation: filmMove 20s linear infinite;
+        }
+
+        .film-strip-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background: repeating-linear-gradient(
+                90deg,
+                #2a2a2a 0px,
+                #2a2a2a 30px,
+                #1a1a1a 30px,
+                #1a1a1a 40px
+            );
+            border-top: 2px solid #444;
+            animation: filmMove 20s linear infinite reverse;
+        }
+
+        @keyframes filmMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-70px); }
+        }
+
+        .spotlight {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle,
+                rgba(255, 255, 255, 0.1) 0%,
+                rgba(255, 255, 255, 0.05) 30%,
+                transparent 70%);
+            border-radius: 50%;
+            animation: spotlightMove 12s ease-in-out infinite;
+        }
+
+        .spotlight-1 {
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .spotlight-2 {
+            bottom: -100px;
+            right: -100px;
+            animation-delay: -6s;
+        }
+
+        @keyframes spotlightMove {
+            0%, 100% { 
+                transform: translate(0px, 0px) scale(1);
+                opacity: 0.3;
+            }
+            25% { 
+                transform: translate(50px, 30px) scale(1.2);
+                opacity: 0.6;
+            }
+            50% { 
+                transform: translate(-30px, 50px) scale(0.8);
+                opacity: 0.4;
+            }
+            75% { 
+                transform: translate(40px, -20px) scale(1.1);
+                opacity: 0.7;
+            }
+        }
+
+        .vintage-frame {
+            position: absolute;
+            top: 80px;
+            left: 50px;
+            width: 200px;
+            height: 150px;
+            border: 5px solid #d4af37;
+            background: #222;
+            transform: rotate(-3deg);
+            animation: frameFloat 8s ease-in-out infinite;
+        }
+
+        @keyframes frameFloat {
+            0%, 100% { 
+                transform: rotate(-3deg) translateY(0px);
+                box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+            }
+            50% { 
+                transform: rotate(-1deg) translateY(-15px);
+                box-shadow: 0 20px 40px rgba(212, 175, 55, 0.4);
+            }
+        }
+
+        .vintage-frame::before {
+            content: '🎬';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            opacity: 0.7;
+            animation: iconSpin 6s linear infinite;
+        }
+
+        @keyframes iconSpin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .content {
+            position: absolute;
+            top: 50%;
+            right: 80px;
+            transform: translateY(-50%);
+            text-align: left;
+            z-index: 10;
+            width: 350px;
+        }
+
+        .title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 4rem;
+            color: #d4af37;
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+            text-shadow: 
+                0 0 10px rgba(212, 175, 55, 0.5),
+                3px 3px 0px #000000;
+            animation: titleNeon 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleNeon {
+            0% {
+                text-shadow: 
+                    0 0 10px rgba(212, 175, 55, 0.5),
+                    3px 3px 0px #000000;
+            }
+            100% {
+                text-shadow: 
+                    0 0 20px rgba(212, 175, 55, 0.8),
+                    0 0 30px rgba(212, 175, 55, 0.6),
+                    3px 3px 0px #000000;
+            }
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #cccccc;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            animation: subtitleFade 2s ease-out 1s both;
+        }
+
+        @keyframes subtitleFade {
+            0% { opacity: 0; transform: translateX(30px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        .movie-info {
+            background: rgba(212, 175, 55, 0.1);
+            border-left: 4px solid #d4af37;
+            padding: 20px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(5px);
+            animation: infoSlide 2s ease-out 1.5s both;
+        }
+
+        @keyframes infoSlide {
+            0% { 
+                opacity: 0; 
+                transform: translateX(50px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateX(0);
+            }
+        }
+
+        .movie-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            color: #d4af37;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .movie-director {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-bottom: 15px;
+        }
+
+        .screening-details {
+            line-height: 1.8;
+            color: #ffffff;
+            animation: detailsFade 2s ease-out 2s both;
+        }
+
+        @keyframes detailsFade {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .detail-label {
+            color: #d4af37;
+            font-weight: 600;
+            min-width: 70px;
+        }
+
+        .detail-value {
+            color: #ffffff;
+        }
+
+        .cinema-lights {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: radial-gradient(circle, 
+                rgba(212, 175, 55, 0.8) 0%,
+                rgba(212, 175, 55, 0.3) 60%,
+                transparent 100%);
+            animation: lightFlicker 2s ease-in-out infinite;
+        }
+
+        .light-1 { top: 60px; left: 280px; animation-delay: 0s; }
+        .light-2 { top: 60px; left: 320px; animation-delay: -0.5s; }
+        .light-3 { top: 60px; left: 360px; animation-delay: -1s; }
+        .light-4 { bottom: 60px; right: 180px; animation-delay: -1.5s; }
+        .light-5 { bottom: 60px; right: 140px; animation-delay: -0.3s; }
+
+        @keyframes lightFlicker {
+            0%, 100% { 
+                opacity: 1;
+                transform: scale(1);
+            }
+            25% { 
+                opacity: 0.3;
+                transform: scale(0.8);
+            }
+            50% { 
+                opacity: 0.8;
+                transform: scale(1.1);
+            }
+            75% { 
+                opacity: 0.5;
+                transform: scale(0.9);
+            }
+        }
+
+        .shadow-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="film-strips">
+            <div class="film-strip-top"></div>
+            <div class="film-strip-bottom"></div>
+        </div>
+        
+        <div class="spotlight spotlight-1"></div>
+        <div class="spotlight spotlight-2"></div>
+        
+        <div class="vintage-frame"></div>
+        
+        <div class="cinema-lights light-1"></div>
+        <div class="cinema-lights light-2"></div>
+        <div class="cinema-lights light-3"></div>
+        <div class="cinema-lights light-4"></div>
+        <div class="cinema-lights light-5"></div>
+        
+        <div class="shadow-overlay"></div>
+        
+        <div class="content">
+            <h1 class="title">CINEMA NOIR</h1>
+            <p class="subtitle">클래식 영화 감상회</p>
+            
+            <div class="movie-info">
+                <div class="movie-title">Casablanca</div>
+                <div class="movie-director">Director: Michael Curtiz (1942)</div>
+            </div>
+            
+            <div class="screening-details">
+                <div class="detail-row">
+                    <span class="detail-label">상영:</span>
+                    <span class="detail-value">2025년 10월 28일 오후 7시</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">장소:</span>
+                    <span class="detail-value">시네마테크 강남점</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">토론:</span>
+                    <span class="detail-value">상영 후 1시간</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">참가비:</span>
+                    <span class="detail-value">12,000원</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">문의:</span>
+                    <span class="detail-value">cinema.club.kr@gmail.com</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

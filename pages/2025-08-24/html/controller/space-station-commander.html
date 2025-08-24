@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Station Commander Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Orbitron', 'Roboto Mono', monospace;
+            background: radial-gradient(ellipse at center, #000011 0%, #000033 30%, #000000 100%);
+            height: 100vh;
+            overflow: hidden;
+            color: #00ffff;
+            position: relative;
+        }
+
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #ffffff;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .station-container {
+            display: grid;
+            grid-template-columns: 320px 1fr 320px;
+            grid-template-rows: 90px 1fr 110px;
+            height: 100vh;
+            gap: 10px;
+            padding: 10px;
+            z-index: 10;
+            position: relative;
+        }
+
+        .header-panel {
+            grid-column: 1 / 4;
+            grid-row: 1;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            color: #00ffff;
+            box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+
+        .left-panel {
+            grid-column: 1;
+            grid-row: 2;
+            background: linear-gradient(145deg, #0f1419, #1a1a2e);
+            border: 2px solid #ff6b35;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: inset 0 0 20px rgba(255, 107, 53, 0.2);
+        }
+
+        .center-display {
+            grid-column: 2;
+            grid-row: 2;
+            background: linear-gradient(135deg, #0f1419, #1a1a2e);
+            border: 3px solid #00ff41;
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+        }
+
+        .right-panel {
+            grid-column: 3;
+            grid-row: 2;
+            background: linear-gradient(145deg, #0f1419, #1a1a2e);
+            border: 2px solid #ff1744;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: inset 0 0 20px rgba(255, 23, 68, 0.2);
+        }
+
+        .footer-panel {
+            grid-column: 1 / 4;
+            grid-row: 3;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 2px solid #ffa726;
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            color: #00ffff;
+            box-shadow: inset 0 0 15px rgba(255, 167, 38, 0.2);
+        }
+
+        .system-module {
+            background: rgba(26, 26, 46, 0.8);
+            border: 2px solid #ff6b35;
+            border-radius: 15px;
+            padding: 18px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .system-module::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ff6b35, transparent);
+            border-radius: 15px 15px 0 0;
+        }
+
+        .system-module:hover {
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .module-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #ff6b35;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .module-status {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00ffff;
+            margin: 8px 0;
+        }
+
+        .module-details {
+            font-size: 12px;
+            color: #aaaaaa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-led {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        .status-led.operational {
+            background: #00ff41;
+            box-shadow: 0 0 12px #00ff41;
+            animation: pulse-green 2s infinite;
+        }
+
+        .status-led.warning {
+            background: #ffa726;
+            box-shadow: 0 0 12px #ffa726;
+            animation: pulse-orange 1.5s infinite;
+        }
+
+        .status-led.critical {
+            background: #ff1744;
+            box-shadow: 0 0 12px #ff1744;
+            animation: pulse-red 1s infinite;
+        }
+
+        .status-led.offline {
+            background: #555555;
+            box-shadow: none;
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        @keyframes pulse-orange {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.2; }
+        }
+
+        .earth-view {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: radial-gradient(ellipse at 30% 30%, #0066cc 0%, #003399 40%, #001122 100%);
+            border-radius: 50%;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        .earth-surface {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(to top, 
+                #228b22 0%, 
+                #32cd32 30%, 
+                #98fb98 50%, 
+                #87ceeb 70%, 
+                #4682b4 100%);
+            border-radius: 0 0 100% 100%;
+        }
+
+        .earth-clouds {
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            right: 10%;
+            height: 40%;
+            background: linear-gradient(45deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.3) 25%, 
+                rgba(255, 255, 255, 0.5) 50%, 
+                rgba(255, 255, 255, 0.3) 75%, 
+                transparent 100%);
+            border-radius: 50%;
+            animation: cloudDrift 20s linear infinite;
+        }
+
+        @keyframes cloudDrift {
+            0% { transform: translateX(-20px) rotate(0deg); }
+            100% { transform: translateX(20px) rotate(360deg); }
+        }
+
+        .orbital-path {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 80%;
+            border: 2px dashed #00ff41;
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+
+        .space-station {
+            position: absolute;
+            top: 20%;
+            left: 80%;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(45deg, #ffffff, #cccccc);
+            border: 2px solid #00ff41;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            animation: orbit 30s linear infinite;
+            cursor: pointer;
+        }
+
+        @keyframes orbit {
+            0% { transform: rotate(0deg) translateX(180px) rotate(0deg); }
+            100% { transform: rotate(360deg) translateX(180px) rotate(-360deg); }
+        }
+
+        .mission-control {
+            background: rgba(15, 20, 25, 0.9);
+            border: 2px solid #00ff41;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .mission-title {
+            font-size: 18px;
+            color: #00ff41;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .mission-time {
+            font-size: 28px;
+            font-weight: bold;
+            color: #00ffff;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .mission-details {
+            font-size: 12px;
+            color: #aaaaaa;
+            margin-bottom: 15px;
+        }
+
+        .crew-status {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .crew-member {
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid #555;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .crew-member:hover {
+            border-color: #00ffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .crew-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #00ffff;
+            margin-bottom: 5px;
+        }
+
+        .crew-role {
+            font-size: 10px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .crew-vital {
+            font-size: 12px;
+            color: #00ff41;
+        }
+
+        .experiment-module {
+            background: rgba(15, 20, 25, 0.9);
+            border: 2px solid #ff1744;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .experiment-title {
+            font-size: 16px;
+            color: #ff1744;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .experiment-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .experiment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 23, 68, 0.2);
+            font-size: 12px;
+            color: #aaaaaa;
+        }
+
+        .experiment-item:last-child {
+            border-bottom: none;
+        }
+
+        .experiment-progress {
+            font-size: 12px;
+            color: #ff1744;
+            font-weight: bold;
+        }
+
+        .space-button {
+            background: linear-gradient(145deg, #1a1a2e, #0f1419);
+            border: 2px solid #00ffff;
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: bold;
+            color: #00ffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.2);
+        }
+
+        .space-button:hover {
+            background: linear-gradient(145deg, #00ffff, #00cccc);
+            color: #0f1419;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 255, 255, 0.4);
+        }
+
+        .space-button:active {
+            transform: translateY(0);
+        }
+
+        .space-button.warning {
+            border-color: #ffa726;
+            color: #ffa726;
+        }
+
+        .space-button.danger {
+            border-color: #ff1744;
+            color: #ff1744;
+        }
+
+        .space-button.success {
+            border-color: #00ff41;
+            color: #00ff41;
+        }
+
+        .telemetry-display {
+            background: rgba(15, 20, 25, 0.9);
+            border: 2px solid #ffa726;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .telemetry-title {
+            font-size: 16px;
+            color: #ffa726;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .telemetry-item {
+            text-align: center;
+        }
+
+        .telemetry-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00ffff;
+            margin-bottom: 5px;
+        }
+
+        .telemetry-label {
+            font-size: 10px;
+            color: #aaaaaa;
+            text-transform: uppercase;
+        }
+
+        .communication-panel {
+            background: rgba(15, 20, 25, 0.9);
+            border: 2px solid #9c27b0;
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .comm-title {
+            font-size: 14px;
+            color: #9c27b0;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .comm-log {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            padding: 10px;
+            height: 80px;
+            overflow-y: auto;
+            font-size: 10px;
+            color: #00ff41;
+            font-family: 'Courier New', monospace;
+        }
+
+        .emergency-alert {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 23, 68, 0.2);
+            border: 2px solid #ff1744;
+            border-radius: 10px;
+            padding: 15px;
+            color: #ff1744;
+            font-weight: bold;
+            display: none;
+            animation: alertBlink 1s infinite;
+        }
+
+        @keyframes alertBlink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        .orbit-info {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ffff;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 11px;
+            color: #00ffff;
+        }
+
+        .docking-bay {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            width: 40px;
+            height: 80px;
+            background: linear-gradient(90deg, #333, #555);
+            border: 2px solid #ffa726;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .docking-bay:hover {
+            box-shadow: 0 0 20px #ffa726;
+            transform: scale(1.1);
+        }
+
+        .solar-panel {
+            position: absolute;
+            top: 30%;
+            right: 20px;
+            width: 60px;
+            height: 120px;
+            background: linear-gradient(135deg, #001f3f, #0074d9);
+            border: 2px solid #00ff41;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .solar-panel:hover {
+            box-shadow: 0 0 25px #00ff41;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <!-- Starfield Background -->
+    <div class="stars" id="starfield"></div>
+
+    <div class="station-container">
+        <!-- Header Panel -->
+        <div class="header-panel">
+            <div>
+                <h2>🚀 INTERNATIONAL SPACE STATION - COMMAND CENTER</h2>
+                <div style="font-size: 14px; opacity: 0.9;">ISS-Alpha | Orbital Operations Control</div>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 18px;">Mission Day</div>
+                <div style="font-size: 28px; font-weight: bold;" id="mission-day">2,847</div>
+            </div>
+        </div>
+
+        <!-- Left Panel - Life Support & Systems -->
+        <div class="left-panel">
+            <div style="text-align: center; color: #ff6b35; font-size: 16px; margin-bottom: 20px; font-weight: bold;">LIFE SUPPORT SYSTEMS</div>
+            
+            <div class="system-module" onclick="systemDetails('oxygen')">
+                <div class="module-title">
+                    🫁 Oxygen Generation
+                </div>
+                <div class="module-status">98.7%</div>
+                <div class="module-details">
+                    <span>Production Rate</span>
+                    <span class="status-led operational"></span>
+                </div>
+            </div>
+
+            <div class="system-module" onclick="systemDetails('water')">
+                <div class="module-title">
+                    💧 Water Recovery
+                </div>
+                <div class="module-status">94.2%</div>
+                <div class="module-details">
+                    <span>Recycling Active</span>
+                    <span class="status-led operational"></span>
+                </div>
+            </div>
+
+            <div class="system-module" onclick="systemDetails('atmosphere')">
+                <div class="module-title">
+                    🌬️ Atmospheric Control
+                </div>
+                <div class="module-status">NORMAL</div>
+                <div class="module-details">
+                    <span>Pressure: 14.7 PSI</span>
+                    <span class="status-led operational"></span>
+                </div>
+            </div>
+
+            <div class="system-module" onclick="systemDetails('temperature')">
+                <div class="module-title">
+                    🌡️ Temperature Control
+                </div>
+                <div class="module-status">22.5°C</div>
+                <div class="module-details">
+                    <span>Thermal Regulation</span>
+                    <span class="status-led operational"></span>
+                </div>
+            </div>
+
+            <div class="system-module" onclick="systemDetails('power')">
+                <div class="module-title">
+                    ⚡ Power Systems
+                </div>
+                <div class="module-status">157.2 kW</div>
+                <div class="module-details">
+                    <span>Solar Array Nominal</span>
+                    <span class="status-led warning"></span>
+                </div>
+            </div>
+
+            <div class="communication-panel">
+                <div class="comm-title">📡 Communication Log</div>
+                <div class="comm-log" id="comm-log">
+                    > 14:23:45 Houston: ISS, this is Mission Control<br>
+                    > 14:24:02 ISS: Houston, we copy. All systems nominal<br>
+                    > 14:24:18 Houston: Confirm EVA preparations<br>
+                    > 14:24:35 ISS: EVA prep on schedule for 16:00
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Display - Earth View & Station Position -->
+        <div class="center-display">
+            <div class="earth-view">
+                <div class="earth-surface"></div>
+                <div class="earth-clouds"></div>
+                <div class="orbital-path"></div>
+                <div class="space-station" onclick="stationDetails()">🛰️</div>
+                
+                <div class="docking-bay" onclick="dockingControl()" title="Docking Bay Control">
+                    🚢
+                </div>
+                
+                <div class="solar-panel" onclick="solarControl()" title="Solar Panel Array">
+                    ☀️
+                </div>
+            </div>
+            
+            <div class="orbit-info">
+                <div><strong>Orbital Parameters</strong></div>
+                <div>Altitude: 408 km</div>
+                <div>Velocity: 27,600 km/h</div>
+                <div>Period: 93.2 minutes</div>
+                <div>Inclination: 51.6°</div>
+            </div>
+
+            <div class="emergency-alert" id="emergency-alert">
+                🚨 EMERGENCY ALERT 🚨<br>
+                Check all systems immediately!
+            </div>
+        </div>
+
+        <!-- Right Panel - Crew Status & Experiments -->
+        <div class="right-panel">
+            <div style="text-align: center; color: #ff1744; font-size: 16px; margin-bottom: 20px; font-weight: bold;">CREW & SCIENCE</div>
+            
+            <div class="mission-control">
+                <div class="mission-title">Mission Status</div>
+                <div class="mission-time" id="mission-clock">15:23:47</div>
+                <div class="mission-details">
+                    Expedition 70 | Day 847/365<br>
+                    Next EVA: 2 days, 14 hours
+                </div>
+            </div>
+
+            <div class="crew-status">
+                <div class="crew-member">
+                    <div class="crew-name">김우주</div>
+                    <div class="crew-role">Commander</div>
+                    <div class="crew-vital">♥ 72 BPM</div>
+                </div>
+                
+                <div class="crew-member">
+                    <div class="crew-name">이별</div>
+                    <div class="crew-role">Flight Engineer</div>
+                    <div class="crew-vital">♥ 68 BPM</div>
+                </div>
+                
+                <div class="crew-member">
+                    <div class="crew-name">박성간</div>
+                    <div class="crew-role">Science Officer</div>
+                    <div class="crew-vital">♥ 75 BPM</div>
+                </div>
+                
+                <div class="crew-member">
+                    <div class="crew-name">최궤도</div>
+                    <div class="crew-role">Mission Specialist</div>
+                    <div class="crew-vital">♥ 71 BPM</div>
+                </div>
+            </div>
+
+            <div class="experiment-module">
+                <div class="experiment-title">🧪 Active Experiments</div>
+                <ul class="experiment-list">
+                    <li class="experiment-item">
+                        <span>Protein Crystal Growth</span>
+                        <span class="experiment-progress">Day 12/14</span>
+                    </li>
+                    <li class="experiment-item">
+                        <span>Microgravity Combustion</span>
+                        <span class="experiment-progress">85% Complete</span>
+                    </li>
+                    <li class="experiment-item">
+                        <span>Plant Growth Studies</span>
+                        <span class="experiment-progress">Day 45/60</span>
+                    </li>
+                    <li class="experiment-item">
+                        <span>Fluid Physics</span>
+                        <span class="experiment-progress">Ready</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="telemetry-display">
+                <div class="telemetry-title">Telemetry Data</div>
+                <div class="telemetry-grid">
+                    <div class="telemetry-item">
+                        <div class="telemetry-value" id="radiation-level">2.4</div>
+                        <div class="telemetry-label">mSv/day</div>
+                    </div>
+                    
+                    <div class="telemetry-item">
+                        <div class="telemetry-value" id="atmospheric-co2">0.4</div>
+                        <div class="telemetry-label">% CO2</div>
+                    </div>
+                    
+                    <div class="telemetry-item">
+                        <div class="telemetry-value" id="gyroscope">0.02</div>
+                        <div class="telemetry-label">°/sec</div>
+                    </div>
+                    
+                    <div class="telemetry-item">
+                        <div class="telemetry-value" id="solar-efficiency">87</div>
+                        <div class="telemetry-label">% Efficiency</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Panel -->
+        <div class="footer-panel">
+            <button class="space-button" onclick="missionCommand('eva')">EVA Preparation</button>
+            <button class="space-button warning" onclick="missionCommand('experiment')">Start Experiment</button>
+            <button class="space-button success" onclick="missionCommand('docking')">Docking Sequence</button>
+            <button class="space-button" onclick="missionCommand('communication')">Ground Contact</button>
+            <button class="space-button danger" onclick="missionCommand('emergency')">Emergency Protocol</button>
+            <button class="space-button" onclick="missionCommand('maintenance')">System Maintenance</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let stationData = {
+                missionDay: 2847,
+                missionClock: { hours: 15, minutes: 23, seconds: 47 },
+                radiationLevel: 2.4,
+                co2Level: 0.4,
+                gyroscopeRate: 0.02,
+                solarEfficiency: 87,
+                emergencyActive: false
+            };
+
+            // Create starfield
+            function createStarfield() {
+                const starfield = document.getElementById('starfield');
+                for (let i = 0; i < 200; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = Math.random() * 100 + '%';
+                    star.style.animationDelay = Math.random() * 3 + 's';
+                    starfield.appendChild(star);
+                }
+            }
+
+            // System Details
+            window.systemDetails = function(system) {
+                const systemElement = document.querySelector(`[onclick="systemDetails('${system}')"]`);
+                systemElement.style.transform = 'scale(0.95)';
+                
+                setTimeout(() => {
+                    systemElement.style.transform = 'scale(1)';
+                    
+                    switch(system) {
+                        case 'oxygen':
+                            alert('OXYGEN GENERATION SYSTEM\\n\\nStatus: OPERATIONAL\\nProduction Rate: 98.7%\\nOxygen Partial Pressure: 3.1 PSI\\nElectrolysis Units: 2/2 Online\\n\\nNext Maintenance: 15 days');
+                            break;
+                        case 'water':
+                            alert('WATER RECOVERY SYSTEM\\n\\nStatus: OPERATIONAL\\nRecycling Efficiency: 94.2%\\nWater Quality: Potable\\nWaste Processing: Normal\\n\\nDaily Recovery: 6.8 liters');
+                            break;
+                        case 'atmosphere':
+                            alert('ATMOSPHERIC CONTROL\\n\\nStatus: NORMAL\\nTotal Pressure: 14.7 PSI\\nOxygen: 20.9%\\nNitrogen: 78.7%\\nCO2: 0.4%\\n\\nVentilation: Active');
+                            break;
+                        case 'temperature':
+                            alert('TEMPERATURE CONTROL\\n\\nStatus: OPERATIONAL\\nCurrent Temp: 22.5°C\\nHumidity: 45%\\nAir Circulation: Normal\\n\\nThermal Control System: Nominal');
+                            break;
+                        case 'power':
+                            alert('POWER SYSTEMS\\n\\nStatus: CAUTION\\nCurrent Output: 157.2 kW\\nSolar Array 1: 98% Efficiency\\nSolar Array 2: 76% Efficiency\\n\\n⚠ Solar Array 2 requires maintenance');
+                            break;
+                    }
+                }, 200);
+            };
+
+            // Station Details
+            window.stationDetails = function() {
+                const station = document.querySelector('.space-station');
+                station.style.transform += ' scale(1.5)';
+                
+                setTimeout(() => {
+                    station.style.transform = station.style.transform.replace(' scale(1.5)', '');
+                    alert('INTERNATIONAL SPACE STATION\\n\\nMass: 420,000 kg\\nLength: 73 m\\nWidth: 109 m\\nAltitude: 408 km\\n\\nCurrent Position: Over Pacific Ocean\\nNext Major City Flyover: Tokyo in 23 minutes');
+                }, 300);
+            };
+
+            // Docking Control
+            window.dockingControl = function() {
+                const dockingBay = document.querySelector('.docking-bay');
+                dockingBay.style.transform = 'scale(1.3)';
+                
+                setTimeout(() => {
+                    dockingBay.style.transform = 'scale(1)';
+                    
+                    if (confirm('DOCKING BAY CONTROL\\n\\nInitiate automated docking sequence?\\n\\nNext scheduled arrival: Dragon Cargo Vehicle\\nETA: 4 hours, 37 minutes')) {
+                        alert('Docking sequence initiated.\\nAutomated guidance systems online.\\nDocking bay prepared for arrival.');
+                    }
+                }, 200);
+            };
+
+            // Solar Control
+            window.solarControl = function() {
+                const solarPanel = document.querySelector('.solar-panel');
+                solarPanel.style.transform = 'scale(1.2)';
+                
+                setTimeout(() => {
+                    solarPanel.style.transform = 'scale(1)';
+                    
+                    const action = confirm('SOLAR PANEL ARRAY CONTROL\\n\\nCurrent Efficiency: 87%\\n\\nInitiate solar panel realignment?');
+                    if (action) {
+                        stationData.solarEfficiency += 8;
+                        stationData.solarEfficiency = Math.min(100, stationData.solarEfficiency);
+                        document.getElementById('solar-efficiency').textContent = stationData.solarEfficiency;
+                        alert('Solar panels realigned.\\nEfficiency improved to ' + stationData.solarEfficiency + '%');
+                    }
+                }, 200);
+            };
+
+            // Mission Commands
+            window.missionCommand = function(command) {
+                const button = document.querySelector(`[onclick="missionCommand('${command}')"]`);
+                const originalText = button.textContent;
+                
+                button.classList.add('active');
+                button.textContent = 'EXECUTING...';
+                
+                setTimeout(() => {
+                    button.classList.remove('active');
+                    button.textContent = originalText;
+                    
+                    switch(command) {
+                        case 'eva':
+                            alert('EVA PREPARATION PROTOCOL\\n\\n✓ Spacesuit systems check\\n✓ Airlock pressurization\\n✓ Tool inventory complete\\n✓ Communication test passed\\n\\nEVA scheduled for 16:00 GMT\\nDuration: 6 hours, 30 minutes');
+                            break;
+                        case 'experiment':
+                            alert('EXPERIMENT INITIALIZATION\\n\\nStarting Microgravity Protein Crystal Growth\\n\\n✓ Sample preparation complete\\n✓ Temperature stabilized at 4°C\\n✓ Monitoring systems active\\n\\nExperiment duration: 7 days');
+                            break;
+                        case 'docking':
+                            alert('AUTOMATED DOCKING SEQUENCE\\n\\n✓ Docking bay systems online\\n✓ Guidance radar active\\n✓ Capture mechanisms ready\\n✓ Communication established\\n\\nStandby for incoming vehicle');
+                            break;
+                        case 'communication':
+                            alert('GROUND COMMUNICATION ESTABLISHED\\n\\n📡 Houston Mission Control: ONLINE\\n📡 Moscow Control Center: ONLINE\\n📡 Munich Control Center: ONLINE\\n📡 Tsukuba Space Center: ONLINE\\n\\nNext scheduled contact: 19:45 GMT');
+                            updateCommLog('> 15:24:12 ISS: Ground contact established, all systems nominal');
+                            break;
+                        case 'emergency':
+                            stationData.emergencyActive = !stationData.emergencyActive;
+                            const alertPanel = document.getElementById('emergency-alert');
+                            
+                            if (stationData.emergencyActive) {
+                                alertPanel.style.display = 'block';
+                                alert('🚨 EMERGENCY PROTOCOL ACTIVATED 🚨\\n\\n⚠ All crew to emergency stations\\n⚠ Non-essential systems shutdown\\n⚠ Emergency communication active\\n⚠ Ground control notified\\n\\nStandby for further instructions');
+                            } else {
+                                alertPanel.style.display = 'none';
+                                alert('Emergency protocol deactivated.\\nAll systems returning to normal operations.');
+                            }
+                            break;
+                        case 'maintenance':
+                            alert('SYSTEM MAINTENANCE MODE\\n\\n🔧 Diagnostics initiated\\n🔧 Component status check\\n🔧 Software updates queued\\n🔧 Preventive maintenance scheduled\\n\\nEstimated completion: 2 hours');
+                            break;
+                    }
+                }, 2000);
+            };
+
+            // Update Communication Log
+            function updateCommLog(message) {
+                const commLog = document.getElementById('comm-log');
+                commLog.innerHTML += '<br>' + message;
+                commLog.scrollTop = commLog.scrollHeight;
+            }
+
+            // Update Mission Clock
+            function updateMissionClock() {
+                stationData.missionClock.seconds++;
+                if (stationData.missionClock.seconds >= 60) {
+                    stationData.missionClock.seconds = 0;
+                    stationData.missionClock.minutes++;
+                    if (stationData.missionClock.minutes >= 60) {
+                        stationData.missionClock.minutes = 0;
+                        stationData.missionClock.hours++;
+                        if (stationData.missionClock.hours >= 24) {
+                            stationData.missionClock.hours = 0;
+                            stationData.missionDay++;
+                            document.getElementById('mission-day').textContent = stationData.missionDay.toLocaleString();
+                        }
+                    }
+                }
+                
+                const timeString = String(stationData.missionClock.hours).padStart(2, '0') + ':' +
+                                 String(stationData.missionClock.minutes).padStart(2, '0') + ':' +
+                                 String(stationData.missionClock.seconds).padStart(2, '0');
+                
+                document.getElementById('mission-clock').textContent = timeString;
+            }
+
+            // Simulate real-time telemetry updates
+            setInterval(() => {
+                // Update radiation level
+                stationData.radiationLevel += (Math.random() - 0.5) * 0.2;
+                stationData.radiationLevel = Math.max(2.0, Math.min(3.0, stationData.radiationLevel));
+                document.getElementById('radiation-level').textContent = stationData.radiationLevel.toFixed(1);
+
+                // Update CO2 level
+                stationData.co2Level += (Math.random() - 0.5) * 0.05;
+                stationData.co2Level = Math.max(0.3, Math.min(0.6, stationData.co2Level));
+                document.getElementById('atmospheric-co2').textContent = stationData.co2Level.toFixed(1);
+
+                // Update gyroscope rate
+                stationData.gyroscopeRate += (Math.random() - 0.5) * 0.01;
+                stationData.gyroscopeRate = Math.max(0.01, Math.min(0.05, stationData.gyroscopeRate));
+                document.getElementById('gyroscope').textContent = stationData.gyroscopeRate.toFixed(2);
+
+                // Update solar efficiency
+                stationData.solarEfficiency += (Math.random() - 0.5) * 2;
+                stationData.solarEfficiency = Math.max(75, Math.min(100, stationData.solarEfficiency));
+                document.getElementById('solar-efficiency').textContent = Math.round(stationData.solarEfficiency);
+            }, 5000);
+
+            // Update mission clock every second
+            setInterval(updateMissionClock, 1000);
+
+            // Periodic communication updates
+            setInterval(() => {
+                const messages = [
+                    '> Houston: ISS, routine systems check complete',
+                    '> ISS: Copy Houston, all parameters nominal',
+                    '> Moscow: Station, we show good telemetry',
+                    '> ISS: Confirmed, experiment proceeding on schedule',
+                    '> Houston: Next orbit sunrise in 12 minutes'
+                ];
+                
+                const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                updateCommLog(randomMessage);
+            }, 30000);
+
+            // Initialize starfield
+            createStarfield();
+            
+            // Initial mission clock display
+            updateMissionClock();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게이밍 밋업 초대장</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #000014;
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            width: 720px;
+            height: 520px;
+            background: linear-gradient(135deg, #000014 0%, #1a0033 50%, #330066 100%);
+            border: 3px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+            overflow: hidden;
+            animation: cardHolo 4s ease-in-out infinite;
+        }
+
+        @keyframes cardHolo {
+            0%, 100% { 
+                border-image: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00, #ff00ff) 1;
+                box-shadow: 0 0 30px rgba(255, 0, 255, 0.3);
+            }
+            25% { 
+                border-image: linear-gradient(45deg, #00ffff, #ffff00, #ff00ff, #00ffff) 1;
+                box-shadow: 0 0 50px rgba(0, 255, 255, 0.4);
+            }
+            50% { 
+                border-image: linear-gradient(45deg, #ffff00, #ff00ff, #00ffff, #ffff00) 1;
+                box-shadow: 0 0 70px rgba(255, 255, 0, 0.3);
+            }
+            75% { 
+                border-image: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00, #ff00ff) 1;
+                box-shadow: 0 0 50px rgba(255, 0, 255, 0.4);
+            }
+        }
+
+        .holographic-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 0, 255, 0.03) 35%,
+                rgba(0, 255, 255, 0.05) 40%,
+                rgba(255, 255, 0, 0.03) 45%,
+                transparent 50%
+            );
+            animation: holoShift 3s linear infinite;
+        }
+
+        @keyframes holoShift {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .pixel-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 0, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            animation: pixelMove 10s linear infinite;
+        }
+
+        @keyframes pixelMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(20px, 20px); }
+        }
+
+        .game-controller {
+            position: absolute;
+            top: 60px;
+            right: 80px;
+            font-size: 4rem;
+            color: #ff00ff;
+            animation: controllerFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes controllerFloat {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg);
+                text-shadow: 0 0 20px #ff00ff;
+            }
+            25% { 
+                transform: translateY(-15px) rotate(5deg);
+                text-shadow: 0 0 30px #ff00ff, 0 0 40px #00ffff;
+            }
+            50% { 
+                transform: translateY(-30px) rotate(0deg);
+                text-shadow: 0 0 40px #00ffff, 0 0 50px #ffff00;
+            }
+            75% { 
+                transform: translateY(-15px) rotate(-5deg);
+                text-shadow: 0 0 30px #ffff00, 0 0 40px #ff00ff;
+            }
+        }
+
+        .digital-particles {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00ffff;
+            animation: particleFloat linear infinite;
+        }
+
+        .particle-1 { top: 100px; left: 50px; animation-duration: 8s; animation-delay: 0s; }
+        .particle-2 { top: 200px; left: 150px; animation-duration: 6s; animation-delay: -2s; background: #ff00ff; }
+        .particle-3 { top: 300px; right: 100px; animation-duration: 9s; animation-delay: -4s; background: #ffff00; }
+        .particle-4 { bottom: 150px; left: 200px; animation-duration: 7s; animation-delay: -1s; }
+        .particle-5 { bottom: 250px; right: 150px; animation-duration: 8s; animation-delay: -3s; background: #ff00ff; }
+
+        @keyframes particleFloat {
+            0% { 
+                transform: translateY(0px) scale(1);
+                opacity: 0.8;
+                box-shadow: 0 0 10px currentColor;
+            }
+            25% { 
+                transform: translateY(-20px) scale(1.2);
+                opacity: 1;
+                box-shadow: 0 0 20px currentColor;
+            }
+            50% { 
+                transform: translateY(-40px) scale(0.8);
+                opacity: 0.6;
+                box-shadow: 0 0 15px currentColor;
+            }
+            75% { 
+                transform: translateY(-20px) scale(1.1);
+                opacity: 0.9;
+                box-shadow: 0 0 25px currentColor;
+            }
+            100% { 
+                transform: translateY(0px) scale(1);
+                opacity: 0.8;
+                box-shadow: 0 0 10px currentColor;
+            }
+        }
+
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+            width: 80%;
+        }
+
+        .title {
+            font-family: 'Orbitron', monospace;
+            font-size: 4.5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00, #ff00ff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            animation: titleRainbow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleRainbow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            color: #00ffff;
+            margin-bottom: 40px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 15px #00ffff;
+            animation: subtitleGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes subtitleGlow {
+            0% { 
+                text-shadow: 0 0 15px #00ffff;
+                opacity: 0.8;
+            }
+            100% { 
+                text-shadow: 0 0 25px #00ffff, 0 0 35px #00ffff;
+                opacity: 1;
+            }
+        }
+
+        .game-event {
+            background: rgba(255, 0, 255, 0.1);
+            border: 2px solid;
+            border-image: linear-gradient(45deg, #ff00ff, #00ffff) 1;
+            padding: 30px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+            animation: eventSlide 2s ease-out 1s both;
+        }
+
+        @keyframes eventSlide {
+            0% { 
+                opacity: 0; 
+                transform: translateY(50px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+
+        .game-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.2rem;
+            color: #ffff00;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 0 0 10px #ffff00;
+        }
+
+        .tournament-info {
+            font-size: 1.1rem;
+            color: #ffffff;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .gaming-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+            color: #ffffff;
+            animation: detailHolo 4s ease-in-out infinite;
+        }
+
+        .detail-item:nth-child(1) { animation-delay: 0s; }
+        .detail-item:nth-child(2) { animation-delay: -1s; }
+        .detail-item:nth-child(3) { animation-delay: -2s; }
+        .detail-item:nth-child(4) { animation-delay: -3s; }
+
+        @keyframes detailHolo {
+            0%, 100% { 
+                color: #ffffff;
+                text-shadow: none;
+            }
+            25% { 
+                color: #ff00ff;
+                text-shadow: 0 0 10px #ff00ff;
+            }
+            50% { 
+                color: #00ffff;
+                text-shadow: 0 0 10px #00ffff;
+            }
+            75% { 
+                color: #ffff00;
+                text-shadow: 0 0 10px #ffff00;
+            }
+        }
+
+        .detail-icon {
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+
+        .power-button {
+            position: absolute;
+            bottom: 40px;
+            left: 60px;
+            width: 50px;
+            height: 50px;
+            border: 3px solid #00ffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #00ffff;
+            animation: powerPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes powerPulse {
+            0%, 100% { 
+                box-shadow: 0 0 15px #00ffff;
+                border-color: #00ffff;
+            }
+            50% { 
+                box-shadow: 0 0 30px #00ffff, 0 0 45px #00ffff;
+                border-color: #ffff00;
+                color: #ffff00;
+            }
+        }
+
+        .glitch-text {
+            position: absolute;
+            bottom: 80px;
+            right: 100px;
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            color: #ff00ff;
+            animation: glitch 1s linear infinite;
+        }
+
+        @keyframes glitch {
+            0%, 100% { 
+                transform: translate(0);
+                filter: hue-rotate(0deg);
+            }
+            10% { 
+                transform: translate(-2px, 2px);
+                filter: hue-rotate(90deg);
+            }
+            20% { 
+                transform: translate(-2px, -2px);
+                filter: hue-rotate(180deg);
+            }
+            30% { 
+                transform: translate(2px, 2px);
+                filter: hue-rotate(270deg);
+            }
+            40% { 
+                transform: translate(2px, -2px);
+                filter: hue-rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="holographic-overlay"></div>
+        <div class="pixel-grid"></div>
+        
+        <div class="digital-particles particle-1"></div>
+        <div class="digital-particles particle-2"></div>
+        <div class="digital-particles particle-3"></div>
+        <div class="digital-particles particle-4"></div>
+        <div class="digital-particles particle-5"></div>
+        
+        <div class="game-controller">🎮</div>
+        
+        <div class="power-button">⚡</div>
+        
+        <div class="glitch-text">LOADING... 99%</div>
+        
+        <div class="content">
+            <h1 class="title">GAME ON</h1>
+            <p class="subtitle">게이밍 토너먼트 밋업</p>
+            
+            <div class="game-event">
+                <div class="game-title">eSports Tournament 2025</div>
+                <div class="tournament-info">
+                    리그 오브 레전드 & 오버워치 토너먼트<br>
+                    프로게이머와 함께하는 특별한 게이밍 이벤트
+                </div>
+                
+                <div class="gaming-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">🏆</span>
+                        <span>상금 총 500만원</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📅</span>
+                        <span>2025년 12월 10일 오후 1시</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🏢</span>
+                        <span>e스포츠 스타디움 강남</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📧</span>
+                        <span>esports.tournament@gmail.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

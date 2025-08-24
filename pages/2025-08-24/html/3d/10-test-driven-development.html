@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>테스트 주도 개발 - Test-Driven Development (TDD)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 25%, #48dbfb 50%, #0abde3 75%, #10ac84 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 30px;
+        }
+        
+        .three-container {
+            width: 100%;
+            height: 400px;
+            margin: 30px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .content-section {
+            background: rgba(255,255,255,0.95);
+            padding: 40px;
+            margin: 30px 0;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .content-section h2 {
+            font-size: 2.5rem;
+            color: #ff6b6b;
+            margin-bottom: 25px;
+            border-left: 5px solid #ff6b6b;
+            padding-left: 20px;
+        }
+        
+        .content-section h3 {
+            font-size: 1.8rem;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+        
+        .content-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #4a5568;
+        }
+        
+        .tdd-cycle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 40px 0;
+            flex-wrap: wrap;
+            gap: 30px;
+            position: relative;
+        }
+        
+        .tdd-step {
+            color: white;
+            padding: 30px;
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .tdd-step:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .red-step { 
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            animation: pulse-red 2s infinite;
+        }
+        
+        .green-step { 
+            background: linear-gradient(135deg, #00b894, #55efc4);
+            animation: pulse-green 2s infinite 0.7s;
+        }
+        
+        .blue-step { 
+            background: linear-gradient(135deg, #0984e3, #74b9ff);
+            animation: pulse-blue 2s infinite 1.4s;
+        }
+        
+        @keyframes pulse-red {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes pulse-green {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes pulse-blue {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .tdd-step h4 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .cycle-arrow {
+            font-size: 3rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: bounce 1s infinite alternate;
+        }
+        
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .benefit-card {
+            background: linear-gradient(135deg, #0984e3, #74b9ff);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .benefit-card:hover {
+            transform: translateY(-8px) rotate(2deg);
+        }
+        
+        .benefit-card h4 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+        
+        .benefit-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            position: relative;
+        }
+        
+        .code-example::before {
+            content: attr(data-lang);
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #4a5568;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+        }
+        
+        .code-example h5 {
+            color: #feca57;
+            margin-bottom: 15px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .code-example pre {
+            margin: 0;
+            white-space: pre-wrap;
+            line-height: 1.4;
+        }
+        
+        .keyword { color: #f093fb; }
+        .string { color: #4ecdc4; }
+        .function { color: #feca57; }
+        .comment { color: #a0aec0; }
+        
+        .practices-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minWidth(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .practice-item {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #10ac84;
+            transition: all 0.3s ease;
+        }
+        
+        .practice-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .practice-item h4 {
+            color: #10ac84;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .testing-pyramid {
+            background: linear-gradient(135deg, #feca57, #ff9ff3);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .pyramid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .pyramid-level {
+            padding: 15px 30px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .pyramid-level:hover {
+            transform: scale(1.05);
+        }
+        
+        .unit-tests {
+            width: 300px;
+            background: rgba(76, 175, 80, 0.8);
+        }
+        
+        .integration-tests {
+            width: 200px;
+            background: rgba(255, 152, 0, 0.8);
+        }
+        
+        .e2e-tests {
+            width: 100px;
+            background: rgba(244, 67, 54, 0.8);
+        }
+        
+        .anti-patterns {
+            background: linear-gradient(135deg, #ee5a52, #ff6b6b);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .anti-pattern-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minWidth(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .anti-pattern-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .anti-pattern-item h5 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 50px;
+            border-radius: 20px;
+        }
+        
+        footer p {
+            color: white;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>테스트 주도 개발</h1>
+            <p class="subtitle">테스트가 이끄는 견고하고 신뢰할 수 있는 소프트웨어 개발</p>
+        </header>
+        
+        <div class="three-container" id="three-container"></div>
+        
+        <div class="content-section">
+            <h2>TDD란?</h2>
+            <p>테스트 주도 개발(Test-Driven Development, TDD)은 켄트 벡(Kent Beck)이 극한 프로그래밍(XP)의 일환으로 체계화한 소프트웨어 개발 방법론입니다. TDD는 먼저 테스트를 작성하고, 그 테스트를 통과하는 최소한의 코드를 구현한 후, 코드를 개선하는 과정을 반복합니다.</p>
+            
+            <p>TDD의 핵심은 '실패하는 테스트 → 테스트를 통과하는 코드 → 리팩터링'의 짧은 사이클을 반복하는 것입니다. 이를 통해 높은 품질의 코드와 포괄적인 테스트 커버리지를 동시에 확보할 수 있습니다.</p>
+        </div>
+        
+        <div class="content-section">
+            <h2>TDD의 3단계 사이클</h2>
+            <div class="tdd-cycle">
+                <div class="tdd-step red-step">
+                    <div class="step-number">1</div>
+                    <h4>RED</h4>
+                    <p>실패하는 테스트를 먼저 작성합니다</p>
+                </div>
+                <div class="cycle-arrow">→</div>
+                <div class="tdd-step green-step">
+                    <div class="step-number">2</div>
+                    <h4>GREEN</h4>
+                    <p>테스트를 통과하는 최소한의 코드를 작성합니다</p>
+                </div>
+                <div class="cycle-arrow">→</div>
+                <div class="tdd-step blue-step">
+                    <div class="step-number">3</div>
+                    <h4>REFACTOR</h4>
+                    <p>코드를 개선하고 중복을 제거합니다</p>
+                </div>
+            </div>
+            
+            <h3>각 단계의 상세 설명</h3>
+            <p><strong>RED 단계:</strong> 구현하려는 기능에 대한 테스트를 먼저 작성합니다. 아직 해당 기능이 구현되지 않았으므로 테스트는 실패합니다.</p>
+            <p><strong>GREEN 단계:</strong> 테스트를 통과할 수 있는 최소한의 코드만 작성합니다. 아름다운 코드보다는 동작하는 코드에 집중합니다.</p>
+            <p><strong>REFACTOR 단계:</strong> 테스트가 통과하는 상태를 유지하면서 코드를 개선합니다. 중복 제거, 가독성 향상, 설계 개선 등을 수행합니다.</p>
+        </div>
+        
+        <div class="content-section">
+            <h2>TDD 코드 예제</h2>
+            
+            <div class="code-example" data-lang="JavaScript">
+                <h5>1. RED - 실패하는 테스트 작성</h5>
+                <pre><code><span class="comment">// calculator.test.js</span>
+<span class="keyword">const</span> Calculator = <span class="keyword">require</span>(<span class="string">'./calculator'</span>);
+
+<span class="function">describe</span>(<span class="string">'Calculator'</span>, () => {
+  <span class="function">test</span>(<span class="string">'should add two numbers correctly'</span>, () => {
+    <span class="keyword">const</span> calc = <span class="keyword">new</span> Calculator();
+    <span class="keyword">const</span> result = calc.<span class="function">add</span>(2, 3);
+    <span class="function">expect</span>(result).<span class="function">toBe</span>(5);
+  });
+});</code></pre>
+            </div>
+            
+            <div class="code-example" data-lang="JavaScript">
+                <h5>2. GREEN - 테스트를 통과하는 최소 코드</h5>
+                <pre><code><span class="comment">// calculator.js</span>
+<span class="keyword">class</span> Calculator {
+  <span class="function">add</span>(a, b) {
+    <span class="keyword">return</span> a + b;
+  }
+}
+
+<span class="keyword">module.exports</span> = Calculator;</code></pre>
+            </div>
+            
+            <div class="code-example" data-lang="JavaScript">
+                <h5>3. REFACTOR - 코드 개선 (더 많은 테스트 추가 후)</h5>
+                <pre><code><span class="comment">// calculator.js (개선된 버전)</span>
+<span class="keyword">class</span> Calculator {
+  <span class="function">add</span>(a, b) {
+    <span class="keyword">if</span> (<span class="keyword">typeof</span> a !== <span class="string">'number'</span> || <span class="keyword">typeof</span> b !== <span class="string">'number'</span>) {
+      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="function">Error</span>(<span class="string">'Both arguments must be numbers'</span>);
+    }
+    <span class="keyword">return</span> a + b;
+  }
+
+  <span class="function">subtract</span>(a, b) {
+    <span class="keyword">return</span> <span class="keyword">this</span>.<span class="function">add</span>(a, -b);
+  }
+}
+
+<span class="keyword">module.exports</span> = Calculator;</code></pre>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>TDD의 이점</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">🛡️</div>
+                    <h4>높은 코드 품질</h4>
+                    <p>테스트를 먼저 작성함으로써 버그가 적고 안정적인 코드를 만들 수 있습니다.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📋</div>
+                    <h4>명확한 요구사항</h4>
+                    <p>테스트가 요구사항을 명확히 표현하여 개발 방향을 제시합니다.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🔧</div>
+                    <h4>안전한 리팩터링</h4>
+                    <p>포괄적인 테스트가 있어 자신있게 코드를 개선할 수 있습니다.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">⚡</div>
+                    <h4>빠른 피드백</h4>
+                    <p>짧은 개발 사이클로 문제를 빠르게 발견하고 수정할 수 있습니다.</p>
+                </div>
+                <div class="benefit-card">
+                    <div benefit-icon">🎯</div>
+                    <h4>단순한 설계</h4>
+                    <p>필요한 기능만 구현하게 되어 과도한 설계를 방지합니다.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📚</div>
+                    <h4>문서화 효과</h4>
+                    <p>테스트가 코드의 사용법과 의도를 설명하는 문서 역할을 합니다.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>테스트 피라미드</h2>
+            <div class="testing-pyramid">
+                <h3>효과적인 테스트 전략</h3>
+                <p>TDD에서는 다양한 레벨의 테스트를 피라미드 형태로 구성합니다.</p>
+                
+                <div class="pyramid">
+                    <div class="pyramid-level e2e-tests">
+                        <h5>E2E 테스트</h5>
+                        <p>전체 시스템 테스트</p>
+                    </div>
+                    <div class="pyramid-level integration-tests">
+                        <h5>통합 테스트</h5>
+                        <p>컴포넌트 간 상호작용 테스트</p>
+                    </div>
+                    <div class="pyramid-level unit-tests">
+                        <h5>단위 테스트</h5>
+                        <p>개별 함수/메서드 테스트</p>
+                    </div>
+                </div>
+                
+                <p>하단의 단위 테스트가 가장 많고, 상단으로 갈수록 테스트 수가 줄어드는 구조입니다.</p>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>TDD 모범 사례</h2>
+            <div class="practices-container">
+                <div class="practice-item">
+                    <h4>작은 단계로 진행</h4>
+                    <p>한 번에 하나의 작은 기능에만 집중하여 단계적으로 개발합니다.</p>
+                </div>
+                <div class="practice-item">
+                    <h4>의미있는 테스트 이름</h4>
+                    <p>테스트 이름으로 무엇을 테스트하는지 명확히 표현합니다.</p>
+                </div>
+                <div class="practice-item">
+                    <h4>하나의 개념만 테스트</h4>
+                    <p>각 테스트는 하나의 개념이나 행동만을 검증합니다.</p>
+                </div>
+                <div class="practice-item">
+                    <h4>빠른 테스트 실행</h4>
+                    <p>테스트는 빠르게 실행되어야 개발 흐름을 방해하지 않습니다.</p>
+                </div>
+                <div class="practice-item">
+                    <h4>독립적인 테스트</h4>
+                    <p>테스트들은 서로 의존하지 않고 독립적으로 실행되어야 합니다.</p>
+                </div>
+                <div class="practice-item">
+                    <h4>테스트의 가독성</h4>
+                    <p>테스트 코드도 프로덕션 코드만큼 깔끔하고 이해하기 쉽게 작성합니다.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>TDD 안티패턴</h2>
+            <div class="anti-patterns">
+                <h3>피해야 할 나쁜 관행들</h3>
+                <div class="anti-pattern-list">
+                    <div class="anti-pattern-item">
+                        <h5>구현 후 테스트 작성</h5>
+                        <p>코드를 먼저 작성하고 나중에 테스트를 추가하는 것은 TDD가 아닙니다.</p>
+                    </div>
+                    <div class="anti-pattern-item">
+                        <h5>큰 단위의 테스트</h5>
+                        <p>한 번에 너무 많은 기능을 테스트하면 실패 원인을 찾기 어렵습니다.</p>
+                    </div>
+                    <div class="anti-pattern-item">
+                        <h5>테스트 생략</h5>
+                        <p>시간에 쫓겨 테스트를 생략하면 TDD의 이점을 잃게 됩니다.</p>
+                    </div>
+                    <div class="anti-pattern-item">
+                        <h5>복잡한 테스트</h5>
+                        <p>테스트 자체가 복잡하면 테스트의 신뢰성이 떨어집니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>TDD 도입 가이드</h2>
+            <h3>1. 간단한 함수부터 시작</h3>
+            <p>계산기의 덧셈 함수 같은 간단한 기능부터 TDD를 연습해보세요.</p>
+            
+            <h3>2. 테스팅 도구 선택</h3>
+            <p>언어에 맞는 테스팅 프레임워크를 선택합니다 (Jest, JUnit, pytest 등).</p>
+            
+            <h3>3. 팀 전체 교육</h3>
+            <p>TDD의 원칙과 이점에 대해 팀원들과 공감대를 형성합니다.</p>
+            
+            <h3>4. 점진적 적용</h3>
+            <p>전체 프로젝트에 한 번에 적용하지 말고 작은 모듈부터 시작합니다.</p>
+            
+            <h3>5. 지속적인 개선</h3>
+            <p>TDD 경험을 팀과 공유하고 지속적으로 개선해나갑니다.</p>
+        </div>
+        
+        <footer>
+            <p>TDD는 단순한 테스트 기법을 넘어 코드 품질과 개발자 신뢰도를 향상시키는 강력한 개발 철학입니다.</p>
+        </footer>
+    </div>
+    
+    <script>
+        let scene, camera, renderer, tddCycle = [], testElements = [];
+        
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            
+            const container = document.getElementById('three-container');
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            renderer.setClearColor(0xff6b6b);
+            container.appendChild(renderer.domElement);
+            
+            // Create TDD Red-Green-Refactor cycle
+            const cycleColors = [0xff6b6b, 0x00b894, 0x0984e3]; // Red, Green, Blue
+            const cycleLabels = ['RED', 'GREEN', 'REFACTOR'];
+            const cycleRadius = 3;
+            
+            for (let i = 0; i < 3; i++) {
+                const angle = (i / 3) * Math.PI * 2 - Math.PI / 2;
+                const geometry = new THREE.CylinderGeometry(0.8, 0.8, 0.4, 16);
+                const material = new THREE.MeshPhongMaterial({ 
+                    color: cycleColors[i],
+                    emissive: cycleColors[i],
+                    emissiveIntensity: 0.15
+                });
+                const cycleStep = new THREE.Mesh(geometry, material);
+                
+                cycleStep.position.x = Math.cos(angle) * cycleRadius;
+                cycleStep.position.z = Math.sin(angle) * cycleRadius;
+                cycleStep.position.y = 0;
+                
+                cycleStep.userData = {
+                    angle: angle,
+                    originalY: 0,
+                    phase: i,
+                    label: cycleLabels[i],
+                    active: false
+                };
+                
+                scene.add(cycleStep);
+                tddCycle.push(cycleStep);
+            }
+            
+            // Create connecting arrows between cycle steps
+            tddCycle.forEach((step, index) => {
+                const nextIndex = (index + 1) % tddCycle.length;
+                const currentPos = step.position;
+                const nextPos = tddCycle[nextIndex].position;
+                
+                const direction = new THREE.Vector3().subVectors(nextPos, currentPos);
+                const arrowGeometry = new THREE.ConeGeometry(0.2, 0.8, 8);
+                const arrowMaterial = new THREE.MeshPhongMaterial({ 
+                    color: 0xffffff,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const arrow = new THREE.Mesh(arrowGeometry, arrowMaterial);
+                
+                arrow.position.copy(currentPos);
+                arrow.position.add(direction.clone().normalize().multiplyScalar(1.5));
+                arrow.lookAt(nextPos);
+                arrow.rotateX(Math.PI / 2);
+                
+                scene.add(arrow);
+            });
+            
+            // Create test cases floating around
+            for (let i = 0; i < 20; i++) {
+                const testGeometry = new THREE.BoxGeometry(0.3, 0.2, 0.1);
+                const testMaterial = new THREE.MeshPhongMaterial({ 
+                    color: i % 2 === 0 ? 0x00b894 : 0xff6b6b, // Green for passing, red for failing
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const testCase = new THREE.Mesh(testGeometry, testMaterial);
+                
+                testCase.position.x = (Math.random() - 0.5) * 10;
+                testCase.position.y = 2 + (Math.random() - 0.5) * 4;
+                testCase.position.z = (Math.random() - 0.5) * 10;
+                
+                testCase.userData = {
+                    velocity: new THREE.Vector3(
+                        (Math.random() - 0.5) * 0.02,
+                        (Math.random() - 0.5) * 0.01,
+                        (Math.random() - 0.5) * 0.02
+                    ),
+                    rotationSpeed: Math.random() * 0.05,
+                    passing: i % 2 === 0
+                };
+                
+                scene.add(testCase);
+                testElements.push(testCase);
+            }
+            
+            // Create code quality indicators (pyramids)
+            const pyramidLevels = [
+                { height: 0.6, radius: 1.2, color: 0x10ac84, name: 'Unit Tests' },
+                { height: 0.4, radius: 0.8, color: 0xfeca57, name: 'Integration Tests' },
+                { height: 0.2, radius: 0.4, color: 0xff6b6b, name: 'E2E Tests' }
+            ];
+            
+            let pyramidY = -2;
+            pyramidLevels.forEach((level, index) => {
+                const geometry = new THREE.CylinderGeometry(level.radius, level.radius, level.height, 8);
+                const material = new THREE.MeshPhongMaterial({ 
+                    color: level.color,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const pyramid = new THREE.Mesh(geometry, material);
+                
+                pyramid.position.set(5, pyramidY, 0);
+                pyramidY += level.height / 2 + 0.1;
+                
+                pyramid.userData = {
+                    originalY: pyramid.position.y,
+                    name: level.name
+                };
+                
+                scene.add(pyramid);
+            });
+            
+            // Create refactoring particles
+            for (let i = 0; i < 30; i++) {
+                const particleGeometry = new THREE.OctahedronGeometry(0.1);
+                const particleMaterial = new THREE.MeshBasicMaterial({ 
+                    color: 0x0984e3,
+                    transparent: true,
+                    opacity: 0.6
+                });
+                const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+                
+                particle.position.x = (Math.random() - 0.5) * 12;
+                particle.position.y = (Math.random() - 0.5) * 8;
+                particle.position.z = (Math.random() - 0.5) * 12;
+                
+                particle.userData = {
+                    velocity: new THREE.Vector3(
+                        (Math.random() - 0.5) * 0.015,
+                        (Math.random() - 0.5) * 0.015,
+                        (Math.random() - 0.5) * 0.015
+                    ),
+                    rotationSpeed: Math.random() * 0.08
+                };
+                
+                scene.add(particle);
+            }
+            
+            // Create bug elimination effect
+            for (let i = 0; i < 10; i++) {
+                const bugGeometry = new THREE.SphereGeometry(0.15, 8, 8);
+                const bugMaterial = new THREE.MeshPhongMaterial({ 
+                    color: 0xff6b6b,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const bug = new THREE.Mesh(bugGeometry, bugMaterial);
+                
+                bug.position.x = (Math.random() - 0.5) * 8;
+                bug.position.y = -3 + Math.random() * 2;
+                bug.position.z = (Math.random() - 0.5) * 8;
+                
+                bug.userData = {
+                    life: Math.random() * 5 + 2,
+                    shrinking: false
+                };
+                
+                scene.add(bug);
+            }
+            
+            // Create confidence meter
+            const confidenceGeometry = new THREE.CylinderGeometry(0.2, 0.2, 4, 16);
+            const confidenceMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0x00b894,
+                transparent: true,
+                opacity: 0.7
+            });
+            const confidenceMeter = new THREE.Mesh(confidenceGeometry, confidenceMaterial);
+            confidenceMeter.position.set(-5, 0, 0);
+            scene.add(confidenceMeter);
+            
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(10, 10, 5);
+            scene.add(directionalLight);
+            
+            const pointLight1 = new THREE.PointLight(0xff6b6b, 0.8, 100);
+            pointLight1.position.set(-3, 3, 3);
+            scene.add(pointLight1);
+            
+            const pointLight2 = new THREE.PointLight(0x00b894, 0.8, 100);
+            pointLight2.position.set(3, 0, 3);
+            scene.add(pointLight2);
+            
+            const pointLight3 = new THREE.PointLight(0x0984e3, 0.6, 100);
+            pointLight3.position.set(0, -3, 3);
+            scene.add(pointLight3);
+            
+            camera.position.set(0, 3, 10);
+            camera.lookAt(0, 0, 0);
+            
+            animate();
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const time = Date.now() * 0.001;
+            
+            // Animate TDD cycle with sequential activation
+            tddCycle.forEach((step, index) => {
+                const cycleTime = (time * 0.5) % 3;
+                const isActive = Math.floor(cycleTime) === index;
+                
+                step.userData.active = isActive;
+                
+                if (isActive) {
+                    step.scale.set(1.2, 1.2, 1.2);
+                    step.material.emissiveIntensity = 0.3;
+                } else {
+                    step.scale.set(1, 1, 1);
+                    step.material.emissiveIntensity = 0.1;
+                }
+                
+                step.position.y = step.userData.originalY + Math.sin(time * 2 + index * 0.8) * 0.2;
+                step.rotation.y = time * 1.5;
+            });
+            
+            // Animate test cases
+            testElements.forEach(test => {
+                test.position.add(test.userData.velocity);
+                test.rotation.x += test.userData.rotationSpeed;
+                test.rotation.y += test.userData.rotationSpeed;
+                test.rotation.z += test.userData.rotationSpeed;
+                
+                // Reset tests that move too far
+                if (test.position.length() > 8) {
+                    test.position.normalize().multiplyScalar(2);
+                }
+                
+                // Animate test status (passing/failing)
+                if (Math.random() < 0.005) {
+                    test.userData.passing = !test.userData.passing;
+                    test.material.color.setHex(test.userData.passing ? 0x00b894 : 0xff6b6b);
+                }
+            });
+            
+            // Animate test pyramid
+            scene.children.forEach(child => {
+                if (child.geometry instanceof THREE.CylinderGeometry && 
+                    child.position.x > 4 && child.userData.name) {
+                    child.position.y = child.userData.originalY + Math.sin(time * 2) * 0.1;
+                    child.rotation.y = time * 0.5;
+                }
+            });
+            
+            // Animate refactoring particles
+            scene.children.forEach(child => {
+                if (child.geometry instanceof THREE.OctahedronGeometry && child.userData.velocity) {
+                    child.position.add(child.userData.velocity);
+                    child.rotation.x += child.userData.rotationSpeed;
+                    child.rotation.y += child.userData.rotationSpeed;
+                    child.rotation.z += child.userData.rotationSpeed;
+                    
+                    // Reset particles that move too far
+                    if (child.position.length() > 10) {
+                        child.position.normalize().multiplyScalar(3);
+                    }
+                }
+            });
+            
+            // Animate bugs being eliminated
+            scene.children.forEach(child => {
+                if (child.geometry instanceof THREE.SphereGeometry && 
+                    child.material.color.getHex() === 0xff6b6b && 
+                    child.userData.life !== undefined) {
+                    
+                    child.userData.life -= 0.01;
+                    
+                    if (child.userData.life <= 0) {
+                        child.scale.multiplyScalar(0.98);
+                        child.material.opacity *= 0.99;
+                        
+                        if (child.scale.x < 0.1) {
+                            child.scale.set(1, 1, 1);
+                            child.material.opacity = 0.8;
+                            child.userData.life = Math.random() * 5 + 2;
+                        }
+                    }
+                    
+                    child.rotation.x += 0.02;
+                    child.rotation.y += 0.03;
+                }
+            });
+            
+            // Animate confidence meter
+            scene.children.forEach(child => {
+                if (child.position.x < -4 && child.geometry instanceof THREE.CylinderGeometry) {
+                    child.scale.y = 0.5 + Math.sin(time * 2) * 0.3;
+                    child.rotation.y = time;
+                }
+            });
+            
+            // Camera orbiting
+            const radius = 10;
+            camera.position.x = Math.sin(time * 0.1) * radius;
+            camera.position.z = Math.cos(time * 0.1) * radius;
+            camera.position.y = 3 + Math.sin(time * 0.07) * 2;
+            camera.lookAt(0, 0, 0);
+            
+            renderer.render(scene, camera);
+        }
+        
+        window.addEventListener('resize', () => {
+            const container = document.getElementById('three-container');
+            camera.aspect = container.offsetWidth / container.offsetHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+        });
+        
+        init3D();
+    </script>
+</body>
+</html>

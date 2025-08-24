@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IBM Watson Analytics Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f4f4f4;
+            color: #121619;
+        }
+        
+        .header {
+            background: #000;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+        }
+        
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+        }
+        
+        .ibm-logo {
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+        
+        .nav-container {
+            background: #161616;
+            border-bottom: 1px solid #393939;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        .nav-tab {
+            padding: 16px 20px;
+            color: #c6c6c6;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        
+        .nav-tab:hover {
+            background: #262626;
+            color: white;
+        }
+        
+        .nav-tab.active {
+            color: white;
+            border-bottom-color: #0f62fe;
+        }
+        
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+        
+        .page-header {
+            margin-bottom: 32px;
+        }
+        
+        .page-title {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 8px;
+            color: #121619;
+        }
+        
+        .page-subtitle {
+            color: #525252;
+            font-size: 16px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+        
+        .widget {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 0;
+            padding: 24px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .widget-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .widget-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #121619;
+        }
+        
+        .widget-menu {
+            width: 20px;
+            height: 20px;
+            background: #8d8d8d;
+            cursor: pointer;
+        }
+        
+        .kpi-value {
+            font-size: 48px;
+            font-weight: 300;
+            color: #0f62fe;
+            margin-bottom: 8px;
+        }
+        
+        .kpi-label {
+            color: #525252;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        
+        .trend-up {
+            background: #d4f4dd;
+            color: #24a148;
+        }
+        
+        .trend-down {
+            background: #ffd7d9;
+            color: #da1e28;
+        }
+        
+        .chart-widget {
+            grid-column: span 2;
+        }
+        
+        .chart-area {
+            height: 300px;
+            position: relative;
+            background: linear-gradient(180deg, #f4f4f4 0%, #ffffff 100%);
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+            gap: 4px;
+        }
+        
+        .chart-line {
+            flex: 1;
+            background: linear-gradient(180deg, #0f62fe 0%, #8a3ffc 100%);
+            border-radius: 2px 2px 0 0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .chart-line:hover {
+            opacity: 0.8;
+            transform: scaleY(1.05);
+        }
+        
+        .chart-line:nth-child(1) { height: 60%; }
+        .chart-line:nth-child(2) { height: 80%; }
+        .chart-line:nth-child(3) { height: 45%; }
+        .chart-line:nth-child(4) { height: 95%; }
+        .chart-line:nth-child(5) { height: 70%; }
+        .chart-line:nth-child(6) { height: 85%; }
+        .chart-line:nth-child(7) { height: 55%; }
+        .chart-line:nth-child(8) { height: 90%; }
+        .chart-line:nth-child(9) { height: 75%; }
+        .chart-line:nth-child(10) { height: 65%; }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        
+        .data-table th {
+            background: #f4f4f4;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            color: #121619;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .data-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f4f4f4;
+            font-size: 14px;
+        }
+        
+        .data-table tr:hover {
+            background: #f4f4f4;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-active {
+            background: #d4f4dd;
+            color: #24a148;
+        }
+        
+        .status-warning {
+            background: #fff2cc;
+            color: #f1c21b;
+        }
+        
+        .status-error {
+            background: #ffd7d9;
+            color: #da1e28;
+        }
+        
+        .insights-panel {
+            background: white;
+            border: 1px solid #e0e0e0;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .insights-title {
+            font-size: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .ai-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #0f62fe, #8a3ffc);
+            border-radius: 50%;
+        }
+        
+        .insight-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid #f4f4f4;
+        }
+        
+        .insight-item:last-child {
+            border-bottom: none;
+        }
+        
+        .insight-priority {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        
+        .priority-high {
+            background: #ffd7d9;
+            color: #da1e28;
+        }
+        
+        .priority-medium {
+            background: #fff2cc;
+            color: #f1c21b;
+        }
+        
+        .priority-low {
+            background: #d4f4dd;
+            color: #24a148;
+        }
+        
+        .insight-content h4 {
+            margin-bottom: 8px;
+            color: #121619;
+        }
+        
+        .insight-content p {
+            color: #525252;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 0;
+            font-size: 14px;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        
+        .btn-primary {
+            background: #0f62fe;
+            color: white;
+            border-color: #0f62fe;
+        }
+        
+        .btn-primary:hover {
+            background: #0043ce;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #121619;
+            border-color: #8d8d8d;
+        }
+        
+        .btn-secondary:hover {
+            background: #f4f4f4;
+        }
+        
+        .loading-indicator {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f4f4f4;
+            border-top: 2px solid #0f62fe;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-logo">
+            <span class="ibm-logo">IBM</span>
+            <span style="color: #c6c6c6;">Watson Analytics</span>
+        </div>
+    </header>
+    
+    <nav class="nav-container">
+        <div class="nav-tabs">
+            <a href="#" class="nav-tab active">Dashboard</a>
+            <a href="#" class="nav-tab">Data Sources</a>
+            <a href="#" class="nav-tab">Models</a>
+            <a href="#" class="nav-tab">Insights</a>
+            <a href="#" class="nav-tab">Reports</a>
+            <a href="#" class="nav-tab">Administration</a>
+        </div>
+    </nav>
+    
+    <div class="main-container">
+        <div class="page-header">
+            <h1 class="page-title">Analytics Overview</h1>
+            <p class="page-subtitle">Real-time insights and predictive analytics for enterprise data</p>
+        </div>
+        
+        <div class="dashboard-grid">
+            <div class="widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">Total Revenue</h3>
+                    <div class="widget-menu"></div>
+                </div>
+                <div class="kpi-value">$12.4M</div>
+                <div class="kpi-label">This Quarter</div>
+                <div class="trend-indicator trend-up">↑ 15.3%</div>
+            </div>
+            
+            <div class="widget chart-widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">Revenue Trend Analysis</h3>
+                    <div class="widget-menu"></div>
+                </div>
+                <div class="chart-area">
+                    <div class="chart-line"></div>
+                    <div class="chart-line"></div>
+                    <div class="chart-line"></div>
+                    <div class="chart-line"></div>
+                    <div class="chart-line"></div>
+                    <div class="chart-line"></div>
+                    <div class="chart-line"></div>
+                    <div class="chart-line"></div>
+                    <div class="chart-line"></div>
+                    <div class="chart-line"></div>
+                </div>
+            </div>
+            
+            <div class="widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">Active Models</h3>
+                    <div class="widget-menu"></div>
+                </div>
+                <div class="kpi-value">847</div>
+                <div class="kpi-label">Running Models</div>
+                <div class="trend-indicator trend-up">↑ 8.7%</div>
+            </div>
+            
+            <div class="widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">Prediction Accuracy</h3>
+                    <div class="widget-menu"></div>
+                </div>
+                <div class="kpi-value">94.2%</div>
+                <div class="kpi-label">Average Score</div>
+                <div class="trend-indicator trend-up">↑ 2.1%</div>
+            </div>
+            
+            <div class="widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">Data Sources</h3>
+                    <div class="widget-menu"></div>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Source</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>CRM Database</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>ERP System</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td>Web Analytics</td>
+                            <td><span class="status-badge status-warning">Warning</span></td>
+                        </tr>
+                        <tr>
+                            <td>IoT Sensors</td>
+                            <td><span class="status-badge status-error">Error</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">Processing Queue</h3>
+                    <div class="widget-menu"></div>
+                </div>
+                <div class="kpi-value">23</div>
+                <div class="kpi-label">Jobs in Queue</div>
+                <div class="trend-indicator trend-down">↓ 12.5%</div>
+            </div>
+        </div>
+        
+        <div class="insights-panel">
+            <h2 class="insights-title">
+                <span class="ai-icon"></span>
+                AI-Powered Insights
+            </h2>
+            
+            <div class="insight-item">
+                <div class="insight-priority priority-high">H</div>
+                <div class="insight-content">
+                    <h4>Revenue Anomaly Detected</h4>
+                    <p>Q4 revenue patterns show 23% deviation from predictive model. Recommended immediate review of sales pipeline and market conditions.</p>
+                </div>
+            </div>
+            
+            <div class="insight-item">
+                <div class="insight-priority priority-medium">M</div>
+                <div class="insight-content">
+                    <h4>Customer Churn Risk Identified</h4>
+                    <p>147 enterprise customers showing high churn probability (>75%) based on usage patterns and support interactions.</p>
+                </div>
+            </div>
+            
+            <div class="insight-item">
+                <div class="insight-priority priority-low">L</div>
+                <div class="insight-content">
+                    <h4>Optimization Opportunity</h4>
+                    <p>Marketing attribution model can be improved by 12% with additional social media data integration.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary">
+                <span class="loading-indicator"></span>
+                Generate Report
+            </button>
+            <button class="btn btn-secondary">Export Data</button>
+            <button class="btn btn-secondary">Schedule Analysis</button>
+        </div>
+    </div>
+</body>
+</html>

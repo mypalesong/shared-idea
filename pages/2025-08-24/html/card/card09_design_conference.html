@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>디자인 컨퍼런스 초대장</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            width: 720px;
+            height: 520px;
+            background: #ffffff;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 30px 100px rgba(0,0,0,0.3);
+        }
+
+        .gradient-mesh {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                #667eea 0%, 
+                #764ba2 25%, 
+                #f093fb 50%, 
+                #f5576c 75%, 
+                #4facfe 100%);
+            animation: meshShift 10s ease-in-out infinite;
+        }
+
+        @keyframes meshShift {
+            0%, 100% { 
+                filter: hue-rotate(0deg) brightness(1);
+                transform: scale(1);
+            }
+            25% { 
+                filter: hue-rotate(90deg) brightness(1.1);
+                transform: scale(1.02);
+            }
+            50% { 
+                filter: hue-rotate(180deg) brightness(0.9);
+                transform: scale(1.01);
+            }
+            75% { 
+                filter: hue-rotate(270deg) brightness(1.05);
+                transform: scale(1.03);
+            }
+        }
+
+        .noise-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(255,255,255,0.1) 1px, transparent 1px),
+                radial-gradient(circle at 60% 60%, rgba(255,255,255,0.08) 1px, transparent 1px),
+                radial-gradient(circle at 90% 30%, rgba(255,255,255,0.06) 1px, transparent 1px);
+            background-size: 50px 50px, 80px 80px, 120px 120px;
+            animation: noiseMove 20s linear infinite;
+        }
+
+        @keyframes noiseMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100px, -100px); }
+        }
+
+        .glass-morphism {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            height: 80%;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            padding: 50px;
+            z-index: 10;
+            animation: glassFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes glassFloat {
+            0%, 100% { 
+                transform: translate(-50%, -50%) translateY(0px);
+                box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            }
+            50% { 
+                transform: translate(-50%, -50%) translateY(-10px);
+                box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+            }
+        }
+
+        .title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            animation: titleGradient 4s ease-in-out infinite;
+            background: linear-gradient(45deg, #ffffff, #f0f0f0, #ffffff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes titleGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            margin-bottom: 40px;
+            letter-spacing: 3px;
+            animation: subtitleFade 2s ease-out 1s both;
+        }
+
+        @keyframes subtitleFade {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .conference-theme {
+            text-align: center;
+            margin-bottom: 35px;
+            animation: themeSlide 2s ease-out 1.5s both;
+        }
+
+        @keyframes themeSlide {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .theme-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .theme-description {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+        }
+
+        .details-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .detail-section {
+            animation: sectionFade 1.5s ease-out both;
+        }
+
+        .detail-section:nth-child(1) { animation-delay: 2s; }
+        .detail-section:nth-child(2) { animation-delay: 2.3s; }
+
+        @keyframes sectionFade {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .detail-icon {
+            color: #ffffff;
+            margin-right: 12px;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            z-index: 5;
+        }
+
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: shapeFloat ease-in-out infinite;
+        }
+
+        .shape-1 {
+            width: 60px;
+            height: 60px;
+            top: 80px;
+            left: 100px;
+            animation-duration: 8s;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 40px;
+            height: 40px;
+            top: 200px;
+            right: 120px;
+            animation-duration: 6s;
+            animation-delay: -2s;
+        }
+
+        .shape-3 {
+            width: 80px;
+            height: 80px;
+            bottom: 100px;
+            left: 80px;
+            animation-duration: 10s;
+            animation-delay: -4s;
+        }
+
+        .shape-4 {
+            width: 50px;
+            height: 50px;
+            bottom: 150px;
+            right: 150px;
+            animation-duration: 7s;
+            animation-delay: -1s;
+        }
+
+        @keyframes shapeFloat {
+            0%, 100% { 
+                transform: translateY(0px) scale(1);
+                opacity: 0.3;
+            }
+            25% { 
+                transform: translateY(-20px) scale(1.1);
+                opacity: 0.6;
+            }
+            50% { 
+                transform: translateY(-40px) scale(0.9);
+                opacity: 0.4;
+            }
+            75% { 
+                transform: translateY(-15px) scale(1.05);
+                opacity: 0.7;
+            }
+        }
+
+        .design-accent {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: accentSpin 12s linear infinite;
+        }
+
+        @keyframes accentSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .design-accent::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="gradient-mesh"></div>
+        <div class="noise-overlay"></div>
+        
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+        </div>
+        
+        <div class="design-accent"></div>
+        
+        <div class="glass-morphism">
+            <h1 class="title">DESIGN FUTURES</h1>
+            <p class="subtitle">디자인 컨퍼런스 2025</p>
+            
+            <div class="conference-theme">
+                <div class="theme-title">AI와 창의성의 융합</div>
+                <div class="theme-description">
+                    인공지능 시대의 디자인 패러다임 변화와<br>
+                    창의적 협업의 새로운 가능성을 탐구합니다
+                </div>
+            </div>
+            
+            <div class="details-container">
+                <div class="detail-section">
+                    <div class="section-title">Event Details</div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📅</span>
+                        <span>2025년 11월 8일 오전 9시</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📍</span>
+                        <span>서울 코엑스 컨벤션홀</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🎤</span>
+                        <span>12명의 국내외 연사</span>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="section-title">Participation</div>
+                    <div class="detail-item">
+                        <span class="detail-icon">🎫</span>
+                        <span>조기등록 25만원</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">👥</span>
+                        <span>선착순 500명</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📧</span>
+                        <span>design.conf.kr@gmail.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

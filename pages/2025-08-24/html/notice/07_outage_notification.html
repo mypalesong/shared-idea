@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>서비스 장애 알림</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f5f5f5; }
+        .container { max-width: 800px; margin: 20px auto; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; position: relative; overflow: hidden; }
+        .header::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); animation: pulse 3s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.8; } }
+        .header h1 { font-size: 28px; margin-bottom: 10px; font-weight: 300; position: relative; z-index: 1; }
+        .header .subtitle { font-size: 16px; opacity: 0.9; position: relative; z-index: 1; }
+        .content { padding: 40px; }
+        .notice-type { background: #dc3545; color: white; padding: 8px 20px; border-radius: 20px; display: inline-block; margin-bottom: 20px; font-size: 14px; font-weight: 500; animation: blink 2s infinite; }
+        @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0.7; } }
+        .urgent-banner { background: #f8d7da; border: 2px solid #dc3545; border-radius: 8px; padding: 20px; margin-bottom: 20px; text-align: center; }
+        .urgent-banner h2 { color: #721c24; font-size: 24px; margin-bottom: 10px; }
+        .urgent-banner p { color: #721c24; font-size: 16px; }
+        .incident-details { background: #f8f9fa; border-left: 4px solid #dc3545; padding: 25px; margin: 20px 0; border-radius: 0 8px 8px 0; }
+        .incident-details h3 { color: #dc3545; margin-bottom: 15px; font-size: 18px; }
+        .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .detail-item { background: white; padding: 15px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .detail-label { font-weight: 600; color: #dc3545; font-size: 14px; margin-bottom: 5px; }
+        .detail-value { color: #2c3e50; }
+        .status-timeline { background: #fff3cd; border-radius: 8px; padding: 25px; margin: 20px 0; }
+        .status-timeline h3 { color: #856404; margin-bottom: 20px; }
+        .timeline-item { display: flex; margin-bottom: 15px; padding: 15px; background: white; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .timeline-time { background: #dc3545; color: white; padding: 8px 12px; border-radius: 6px; margin-right: 15px; font-size: 14px; min-width: 80px; text-align: center; }
+        .timeline-content { flex: 1; }
+        .timeline-status { font-weight: 600; color: #dc3545; margin-bottom: 5px; }
+        .affected-services { background: #ffe6e6; border: 1px solid #dc3545; border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .affected-services h4 { color: #dc3545; margin-bottom: 15px; }
+        .service-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+        .service-item { background: white; padding: 10px; border-radius: 4px; text-align: center; border-left: 3px solid #dc3545; }
+        .workaround { background: #d4edda; border: 1px solid #28a745; border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .workaround h4 { color: #155724; margin-bottom: 15px; }
+        .workaround-list { list-style: none; padding: 0; }
+        .workaround-list li { padding: 8px 0; padding-left: 25px; position: relative; }
+        .workaround-list li:before { content: "▶"; color: #28a745; position: absolute; left: 0; }
+        .contact-urgent { background: #f8d7da; border: 2px solid #dc3545; padding: 20px; border-radius: 6px; margin-top: 30px; }
+        .contact-urgent h4 { color: #721c24; margin-bottom: 10px; font-size: 18px; }
+        .contact-urgent .hotline { font-size: 20px; font-weight: bold; color: #dc3545; text-align: center; padding: 10px; background: white; border-radius: 4px; margin: 10px 0; }
+        .footer { text-align: center; padding: 20px; color: #7f8c8d; font-size: 14px; border-top: 1px solid #ecf0f1; }
+        .logo { float: right; font-weight: bold; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">Emergency</div>
+            <h1>서비스 장애 알림</h1>
+            <div class="subtitle">Service Outage Notification</div>
+        </div>
+        
+        <div class="content">
+            <span class="notice-type">긴급장애</span>
+            
+            <div class="urgent-banner">
+                <h2>🚨 긴급 서비스 장애 발생</h2>
+                <p>현재 주요 서비스에 장애가 발생하여 긴급 복구 작업을 진행 중입니다</p>
+            </div>
+            
+            <div class="incident-details">
+                <h3>📋 장애 상세정보</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">장애 발생시간</div>
+                        <div class="detail-value">2025년 8월 24일 14:23</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">현재 상태</div>
+                        <div class="detail-value">복구 작업 진행 중</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">예상 복구시간</div>
+                        <div class="detail-value">18:00 (3시간 30분 소요예상)</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">장애 원인</div>
+                        <div class="detail-value">데이터베이스 서버 이중화 실패</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">영향 범위</div>
+                        <div class="detail-value">전사 웹시스템 및 모바일앱</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">담당 팀</div>
+                        <div class="detail-value">인프라팀 + 개발팀 합동</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="affected-services">
+                <h4>❌ 영향받는 서비스</h4>
+                <div class="service-list">
+                    <div class="service-item">웹 포털</div>
+                    <div class="service-item">모바일 앱</div>
+                    <div class="service-item">API 서비스</div>
+                    <div class="service-item">파일 업로드</div>
+                    <div class="service-item">결제 시스템</div>
+                    <div class="service-item">실시간 알림</div>
+                </div>
+            </div>
+            
+            <div class="status-timeline">
+                <h3>📊 장애 대응 현황</h3>
+                <div class="timeline-item">
+                    <div class="timeline-time">14:23</div>
+                    <div class="timeline-content">
+                        <div class="timeline-status">장애 발생</div>
+                        <div>데이터베이스 Primary 서버 다운 감지</div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time">14:25</div>
+                    <div class="timeline-content">
+                        <div class="timeline-status">긴급 대응팀 소집</div>
+                        <div>인프라팀, 개발팀, 네트워크팀 긴급 소집</div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time">14:35</div>
+                    <div class="timeline-content">
+                        <div class="timeline-status">원인 분석 완료</div>
+                        <div>하드웨어 장애로 인한 DB 서버 중단 확인</div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-time">15:10</div>
+                    <div class="timeline-content">
+                        <div class="timeline-status">복구 작업 시작</div>
+                        <div>백업 서버로 전환 작업 및 데이터 복구 진행</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="workaround">
+                <h4>🔧 임시 해결방안</h4>
+                <ul class="workaround-list">
+                    <li>긴급한 업무는 전화나 이메일로 처리해 주세요</li>
+                    <li>중요한 파일은 로컬에 백업 저장해 주세요</li>
+                    <li>결제 관련 업무는 복구 완료 후 진행해 주세요</li>
+                    <li>모바일앱은 삭제하지 마시고 복구를 기다려 주세요</li>
+                </ul>
+            </div>
+            
+            <div class="contact-urgent">
+                <h4>🚨 긴급 연락처</h4>
+                <div class="hotline">24시간 장애대응 핫라인: 1588-9999</div>
+                <div><strong>장애대응팀:</strong> 내선 9999 | emergency@company.com</div>
+                <div><strong>현장대응팀:</strong> 010-9999-9999 (김대응 팀장)</div>
+                <div><strong>경영진 보고:</strong> ceo-office@company.com</div>
+            </div>
+            
+            <div style="background: #d1ecf1; border: 1px solid #bee5eb; border-radius: 6px; padding: 15px; margin: 20px 0; text-align: center;">
+                <strong>📢 실시간 상황:</strong> 
+                복구율 60% 진행 중 | 다음 업데이트: 16:30 예정 | 
+                <a href="status.company.com" style="color: #0056b3;">실시간 상태 페이지 ▶</a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            이 장애 알림은 장애대응팀에서 발송되었습니다. | 발송시간: 2025-08-24 15:30
+        </div>
+    </div>
+</body>
+</html>

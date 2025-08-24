@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공급망 최적화 전략 보고서 | Supply Chain Excellence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 50px;
+            position: relative;
+        }
+        
+        .header-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.1;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px);
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            font-weight: 300;
+            letter-spacing: -1px;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+        
+        .header-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .nav-tabs {
+            background: #ecf0f1;
+            padding: 0;
+            display: flex;
+            border-bottom: 3px solid #3498db;
+        }
+        
+        .nav-tab {
+            padding: 20px 30px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            color: #7f8c8d;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .nav-tab.active {
+            background: white;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #3498db;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .supply-chain-map {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+        }
+        
+        .flow-diagram {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .flow-node {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            min-width: 150px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .flow-node-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .flow-node-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .flow-node-metric {
+            color: #27ae60;
+            font-size: 0.9em;
+        }
+        
+        .flow-arrow {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #3498db, #9b59b6);
+            z-index: 1;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .metric-title {
+            font-size: 1.1em;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .metric-trend {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        
+        .trend-up {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .trend-down {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .metric-value {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+        
+        .metric-description {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        
+        .supplier-analysis {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        
+        .supplier-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .supplier-table thead {
+            background: linear-gradient(135deg, #3498db, #9b59b6);
+            color: white;
+        }
+        
+        .supplier-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .supplier-table td {
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .supplier-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .rating {
+            display: inline-flex;
+            gap: 3px;
+        }
+        
+        .star {
+            color: #f1c40f;
+        }
+        
+        .risk-level {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        
+        .risk-low {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .risk-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .risk-high {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .optimization-strategies {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            padding: 40px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .strategy-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .strategy-title {
+            font-size: 1.3em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .strategy-content {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .strategy-benefits {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .benefit-tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        
+        .cost-analysis {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .cost-breakdown {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .cost-item {
+            text-align: center;
+        }
+        
+        .cost-label {
+            color: #7f8c8d;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+        
+        .cost-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        .recommendations {
+            background: #fff8e1;
+            border: 2px solid #ffc107;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .recommendations h2 {
+            color: #f57c00;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .recommendation-list {
+            list-style: none;
+        }
+        
+        .recommendation-list li {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .recommendation-icon {
+            font-size: 1.5em;
+            color: #f57c00;
+        }
+        
+        .timeline {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .timeline-item {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .timeline-date {
+            min-width: 120px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .timeline-content {
+            flex: 1;
+            padding-left: 20px;
+            border-left: 2px solid #ecf0f1;
+        }
+        
+        .timeline-content h4 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .flow-diagram {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            .flow-arrow {
+                display: none;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-pattern"></div>
+            <div class="header-content">
+                <h1>공급망 최적화 종합 전략 보고서</h1>
+                <p class="subtitle">AI 기반 수요 예측과 블록체인 투명성으로 구현하는 차세대 SCM</p>
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">32%</span>
+                        <span class="stat-label">재고 회전율 개선</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">18%</span>
+                        <span class="stat-label">물류 비용 절감</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">99.2%</span>
+                        <span class="stat-label">납기 준수율</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">45일</span>
+                        <span class="stat-label">평균 리드타임</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <nav class="nav-tabs">
+            <button class="nav-tab active">Overview</button>
+            <button class="nav-tab">Supplier Network</button>
+            <button class="nav-tab">Logistics</button>
+            <button class="nav-tab">Risk Management</button>
+            <button class="nav-tab">Digital Twin</button>
+        </nav>
+        
+        <div class="content">
+            <section class="supply-chain-map">
+                <h2 style="margin-bottom: 20px;">🌐 End-to-End 공급망 현황</h2>
+                <div class="flow-diagram">
+                    <div class="flow-arrow"></div>
+                    <div class="flow-node">
+                        <div class="flow-node-icon">🏭</div>
+                        <div class="flow-node-title">Tier 2 공급사</div>
+                        <div class="flow-node-metric">156개 업체</div>
+                    </div>
+                    <div class="flow-node">
+                        <div class="flow-node-icon">🔧</div>
+                        <div class="flow-node-title">Tier 1 공급사</div>
+                        <div class="flow-node-metric">42개 핵심 파트너</div>
+                    </div>
+                    <div class="flow-node">
+                        <div class="flow-node-icon">🏗️</div>
+                        <div class="flow-node-title">제조 거점</div>
+                        <div class="flow-node-metric">6개 공장</div>
+                    </div>
+                    <div class="flow-node">
+                        <div class="flow-node-icon">📦</div>
+                        <div class="flow-node-title">물류 센터</div>
+                        <div class="flow-node-metric">12개 허브</div>
+                    </div>
+                    <div class="flow-node">
+                        <div class="flow-node-icon">🛒</div>
+                        <div class="flow-node-title">고객사</div>
+                        <div class="flow-node-metric">850+ 기업</div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-title">재고 정확도</span>
+                        <span class="metric-trend trend-up">▲ 5.2%</span>
+                    </div>
+                    <div class="metric-value">98.7%</div>
+                    <div class="metric-description">RFID 기반 실시간 재고 추적 시스템 구축으로 정확도 향상</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-title">완벽 주문율</span>
+                        <span class="metric-trend trend-up">▲ 3.8%</span>
+                    </div>
+                    <div class="metric-value">96.3%</div>
+                    <div class="metric-description">정시, 정량, 무손상 배송 달성률</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-title">공급망 가시성</span>
+                        <span class="metric-trend trend-up">▲ 12%</span>
+                    </div>
+                    <div class="metric-value">87%</div>
+                    <div class="metric-description">End-to-End 실시간 추적 가능 비율</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-title">수요 예측 정확도</span>
+                        <span class="metric-trend trend-up">▲ 8.5%</span>
+                    </div>
+                    <div class="metric-value">91.2%</div>
+                    <div class="metric-description">AI 머신러닝 모델 적용 후 예측력 개선</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-title">공급사 신뢰도</span>
+                        <span class="metric-trend trend-down">▼ 2.1%</span>
+                    </div>
+                    <div class="metric-value">88.5%</div>
+                    <div class="metric-description">품질 및 납기 종합 평가 점수</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-title">탄소 배출 감소</span>
+                        <span class="metric-trend trend-up">▲ 15%</span>
+                    </div>
+                    <div class="metric-value">-23%</div>
+                    <div class="metric-description">친환경 물류 전환으로 탄소 발자국 감소</div>
+                </div>
+            </section>
+            
+            <section class="supplier-analysis">
+                <h2>🤝 핵심 공급사 성과 분석</h2>
+                <table class="supplier-table">
+                    <thead>
+                        <tr>
+                            <th>공급사</th>
+                            <th>카테고리</th>
+                            <th>성과 등급</th>
+                            <th>납기 준수율</th>
+                            <th>품질 수준</th>
+                            <th>리스크</th>
+                            <th>거래 규모</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Samsung SDI</strong></td>
+                            <td>배터리셀</td>
+                            <td><span class="rating">⭐⭐⭐⭐⭐</span></td>
+                            <td>99.8%</td>
+                            <td>99.95%</td>
+                            <td><span class="risk-level risk-low">낮음</span></td>
+                            <td>450억원/년</td>
+                        </tr>
+                        <tr>
+                            <td><strong>LG Chem</strong></td>
+                            <td>화학소재</td>
+                            <td><span class="rating">⭐⭐⭐⭐⭐</span></td>
+                            <td>98.5%</td>
+                            <td>99.92%</td>
+                            <td><span class="risk-level risk-low">낮음</span></td>
+                            <td>320억원/년</td>
+                        </tr>
+                        <tr>
+                            <td><strong>POSCO</strong></td>
+                            <td>철강재</td>
+                            <td><span class="rating">⭐⭐⭐⭐</span></td>
+                            <td>96.2%</td>
+                            <td>99.85%</td>
+                            <td><span class="risk-level risk-medium">중간</span></td>
+                            <td>280억원/년</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Continental AG</strong></td>
+                            <td>센서모듈</td>
+                            <td><span class="rating">⭐⭐⭐⭐</span></td>
+                            <td>94.7%</td>
+                            <td>99.88%</td>
+                            <td><span class="risk-level risk-medium">중간</span></td>
+                            <td>180억원/년</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Infineon Tech</strong></td>
+                            <td>반도체</td>
+                            <td><span class="rating">⭐⭐⭐</span></td>
+                            <td>88.3%</td>
+                            <td>99.90%</td>
+                            <td><span class="risk-level risk-high">높음</span></td>
+                            <td>150억원/년</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            
+            <section class="optimization-strategies">
+                <h2 style="margin-bottom: 25px;">🚀 최적화 전략 및 이니셔티브</h2>
+                
+                <div class="strategy-card">
+                    <h3 class="strategy-title">
+                        <span>1️⃣</span> AI 기반 수요 예측 고도화
+                    </h3>
+                    <p class="strategy-content">
+                        머신러닝 알고리즘을 활용한 수요 예측 모델을 구축하여 계절성, 프로모션, 
+                        시장 트렌드를 반영한 정확한 예측을 실현합니다. 과거 3년간의 판매 데이터와 
+                        외부 변수를 통합 분석하여 예측 정확도를 91.2%까지 향상시켰습니다.
+                    </p>
+                    <div class="strategy-benefits">
+                        <span class="benefit-tag">재고 비용 25% 절감</span>
+                        <span class="benefit-tag">품절률 60% 감소</span>
+                        <span class="benefit-tag">과잉 재고 40% 감소</span>
+                    </div>
+                </div>
+                
+                <div class="strategy-card">
+                    <h3 class="strategy-title">
+                        <span>2️⃣</span> 블록체인 기반 투명성 확보
+                    </h3>
+                    <p class="strategy-content">
+                        원자재 조달부터 최종 고객 배송까지 모든 거래를 블록체인에 기록하여 
+                        위변조 불가능한 투명한 공급망을 구축합니다. 품질 인증서, 원산지 증명, 
+                        물류 이력을 실시간으로 추적 가능합니다.
+                    </p>
+                    <div class="strategy-benefits">
+                        <span class="benefit-tag">위조품 차단 100%</span>
+                        <span class="benefit-tag">분쟁 해결 시간 75% 단축</span>
+                        <span class="benefit-tag">컴플라이언스 비용 30% 절감</span>
+                    </div>
+                </div>
+                
+                <div class="strategy-card">
+                    <h3 class="strategy-title">
+                        <span>3️⃣</span> 디지털 트윈 공급망 구현
+                    </h3>
+                    <p class="strategy-content">
+                        실제 공급망의 디지털 복제본을 생성하여 시뮬레이션과 최적화를 수행합니다. 
+                        What-if 분석을 통해 리스크를 사전에 파악하고 최적 대응 방안을 도출합니다.
+                    </p>
+                    <div class="strategy-benefits">
+                        <span class="benefit-tag">의사결정 속도 50% 향상</span>
+                        <span class="benefit-tag">리스크 예측 정확도 85%</span>
+                        <span class="benefit-tag">운영 효율성 20% 개선</span>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="cost-analysis">
+                <h2>💰 비용 절감 효과 분석</h2>
+                <div class="cost-breakdown">
+                    <div class="cost-item">
+                        <div class="cost-label">물류 비용</div>
+                        <div class="cost-value">-18%</div>
+                    </div>
+                    <div class="cost-item">
+                        <div class="cost-label">재고 유지 비용</div>
+                        <div class="cost-value">-25%</div>
+                    </div>
+                    <div class="cost-item">
+                        <div class="cost-label">긴급 운송 비용</div>
+                        <div class="cost-value">-42%</div>
+                    </div>
+                    <div class="cost-item">
+                        <div class="cost-label">품질 문제 비용</div>
+                        <div class="cost-value">-35%</div>
+                    </div>
+                    <div class="cost-item">
+                        <div class="cost-label">연간 총 절감액</div>
+                        <div class="cost-value">82억원</div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="recommendations">
+                <h2>⚡ 긴급 권고 사항</h2>
+                <ul class="recommendation-list">
+                    <li>
+                        <span class="recommendation-icon">🔴</span>
+                        <div>
+                            <strong>반도체 공급 리스크 대응:</strong> Infineon 납기 지연 문제 해결을 위한 
+                            대체 공급사 2곳 추가 확보 필요 (2025년 1월까지)
+                        </div>
+                    </li>
+                    <li>
+                        <span class="recommendation-icon">🟡</span>
+                        <div>
+                            <strong>동남아 물류 허브 구축:</strong> 베트남 하노이에 신규 물류센터 설립으로 
+                            리드타임 15일 단축 예상 (투자액: 45억원)
+                        </div>
+                    </li>
+                    <li>
+                        <span class="recommendation-icon">🟢</span>
+                        <div>
+                            <strong>친환경 포장재 전환:</strong> 2025년까지 모든 포장재를 재활용 가능 소재로 
+                            전환하여 ESG 평가 등급 상승 기대
+                        </div>
+                    </li>
+                </ul>
+            </section>
+            
+            <section class="timeline">
+                <h2 style="margin-bottom: 25px;">📅 실행 로드맵</h2>
+                <div class="timeline-item">
+                    <div class="timeline-date">2025 Q1</div>
+                    <div class="timeline-content">
+                        <h4>Phase 1: 기반 구축</h4>
+                        <p>AI 수요예측 시스템 파일럿 운영, 블록체인 플랫폼 구축 착수</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">2025 Q2</div>
+                    <div class="timeline-content">
+                        <h4>Phase 2: 시스템 통합</h4>
+                        <p>ERP-SCM 통합, 실시간 모니터링 대시보드 구현</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">2025 Q3</div>
+                    <div class="timeline-content">
+                        <h4>Phase 3: 최적화</h4>
+                        <p>디지털 트윈 본격 운영, 자동화 의사결정 시스템 도입</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">2025 Q4</div>
+                    <div class="timeline-content">
+                        <h4>Phase 4: 확산</h4>
+                        <p>글로벌 전 사업장 확대 적용, 파트너사 통합 완료</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <footer class="footer">
+            <p><strong>Supply Chain Excellence Center</strong></p>
+            <p>본 보고서는 2024년 12월 기준 데이터를 바탕으로 작성되었습니다.</p>
+            <p>© 2024 Global Manufacturing Corporation. Confidential Document.</p>
+        </footer>
+    </div>
+</body>
+</html>

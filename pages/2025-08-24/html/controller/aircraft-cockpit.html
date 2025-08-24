@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aircraft Cockpit Controller</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+            height: 100vh;
+            overflow: hidden;
+            color: #00ff88;
+            position: relative;
+        }
+
+        .cockpit-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            grid-template-rows: 1fr 2fr 1fr;
+            height: 100vh;
+            gap: 8px;
+            padding: 8px;
+        }
+
+        .left-panel {
+            grid-column: 1;
+            grid-row: 1 / 4;
+            background: linear-gradient(145deg, #1e2a3a, #2a3f5f);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: inset 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .center-display {
+            grid-column: 2;
+            grid-row: 2;
+            background: radial-gradient(circle at center, #0d1b2a 0%, #1b2f45 100%);
+            border: 3px solid #00aaff;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .right-panel {
+            grid-column: 3;
+            grid-row: 1 / 4;
+            background: linear-gradient(145deg, #1e2a3a, #2a3f5f);
+            border: 2px solid #ff6600;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: inset 0 0 20px rgba(255, 102, 0, 0.3);
+        }
+
+        .top-controls {
+            grid-column: 2;
+            grid-row: 1;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .bottom-controls {
+            grid-column: 2;
+            grid-row: 3;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            padding: 10px;
+        }
+
+        .instrument {
+            background: linear-gradient(135deg, #2a3f5f, #1e2a3a);
+            border: 2px solid #00ff88;
+            border-radius: 50%;
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .instrument:hover {
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.8);
+            transform: scale(1.05);
+        }
+
+        .instrument.warning {
+            border-color: #ff3333;
+            color: #ff3333;
+        }
+
+        .instrument.critical {
+            border-color: #ff0000;
+            color: #ff0000;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .radar {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, 
+                transparent 20%, 
+                rgba(0, 170, 255, 0.1) 21%, 
+                rgba(0, 170, 255, 0.1) 40%, 
+                transparent 41%);
+            position: relative;
+            border-radius: 50%;
+            border: 2px solid #00aaff;
+        }
+
+        .radar::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 40%;
+            background: #00aaff;
+            transform-origin: bottom;
+            animation: sweep 3s linear infinite;
+        }
+
+        @keyframes sweep {
+            0% { transform: translate(-50%, 0) rotate(0deg); }
+            100% { transform: translate(-50%, 0) rotate(360deg); }
+        }
+
+        .altitude-indicator {
+            background: linear-gradient(to top, #001122 0%, #003366 50%, #0066cc 100%);
+            height: 200px;
+            width: 80px;
+            border: 2px solid #00aaff;
+            border-radius: 10px;
+            position: relative;
+            margin: 10px auto;
+        }
+
+        .altitude-marker {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ffff00;
+            width: 60px;
+            height: 3px;
+            top: 50%;
+            box-shadow: 0 0 10px #ffff00;
+        }
+
+        .throttle-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .throttle {
+            width: 100%;
+            height: 40px;
+            background: #1a1a2e;
+            border: 2px solid #00ff88;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .throttle-handle {
+            position: absolute;
+            top: 50%;
+            left: 75%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(45deg, #00ff88, #00aa66);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .button {
+            background: linear-gradient(145deg, #2a3f5f, #1e2a3a);
+            border: 2px solid;
+            border-radius: 8px;
+            color: white;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .button.primary {
+            border-color: #00ff88;
+            color: #00ff88;
+        }
+
+        .button.warning {
+            border-color: #ff6600;
+            color: #ff6600;
+        }
+
+        .button.danger {
+            border-color: #ff3333;
+            color: #ff3333;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.5);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .status-bar {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 5px 15px;
+            border: 1px solid #00aaff;
+            border-radius: 15px;
+            font-size: 14px;
+            color: #00aaff;
+        }
+
+        .hud-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            background: 
+                linear-gradient(90deg, transparent 48%, rgba(0, 170, 255, 0.1) 49%, rgba(0, 170, 255, 0.1) 51%, transparent 52%),
+                linear-gradient(0deg, transparent 48%, rgba(0, 170, 255, 0.1) 49%, rgba(0, 170, 255, 0.1) 51%, transparent 52%);
+        }
+
+        .instrument-value {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .instrument-label {
+            font-size: 10px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .warning-lights {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .warning-light {
+            width: 100%;
+            height: 30px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .warning-light.green {
+            background: #00ff88;
+            color: #000;
+        }
+
+        .warning-light.red {
+            background: #ff3333;
+            color: #fff;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        .nav-compass {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #001122 0%, #003366 100%);
+            border: 3px solid #00aaff;
+            position: relative;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .compass-needle {
+            position: absolute;
+            width: 2px;
+            height: 40px;
+            background: #ff3333;
+            transform-origin: bottom;
+            animation: compassRotate 8s linear infinite;
+        }
+
+        @keyframes compassRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="cockpit-container">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <div class="warning-lights">
+                <div class="warning-light green">ENGINE OK</div>
+                <div class="warning-light green">FUEL OK</div>
+                <div class="warning-light red">ALTITUDE</div>
+                <div class="warning-light green">HYDRAULIC</div>
+            </div>
+            
+            <div class="altitude-indicator">
+                <div class="altitude-marker"></div>
+            </div>
+            
+            <div class="throttle-controls">
+                <div style="text-align: center; font-size: 12px; margin-bottom: 10px;">THROTTLE</div>
+                <div class="throttle">
+                    <div class="throttle-handle"></div>
+                </div>
+                <div style="text-align: center; font-size: 12px; margin-bottom: 10px;">FLAPS</div>
+                <div class="throttle">
+                    <div class="throttle-handle" style="left: 25%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Controls -->
+        <div class="top-controls">
+            <button class="button primary">AUTO PILOT</button>
+            <button class="button warning">NAV MODE</button>
+            <button class="button primary">LANDING GEAR</button>
+            <button class="button danger">EMERGENCY</button>
+            <button class="button primary">RADIO</button>
+            <button class="button warning">TRANSPONDER</button>
+        </div>
+
+        <!-- Center Display -->
+        <div class="center-display">
+            <div class="status-bar">FL350 | SPD 450 KTS | HDG 270°</div>
+            <div class="radar"></div>
+            <div class="hud-overlay"></div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <div style="text-align: center; margin-bottom: 20px; font-size: 14px; color: #ff6600;">NAVIGATION</div>
+            
+            <div class="nav-compass">
+                <div class="compass-needle"></div>
+                <div style="font-size: 12px; font-weight: bold;">270°</div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 20px;">
+                <div class="instrument">
+                    <div class="instrument-label">SPEED</div>
+                    <div class="instrument-value">450</div>
+                </div>
+                <div class="instrument">
+                    <div class="instrument-label">ALT</div>
+                    <div class="instrument-value">35000</div>
+                </div>
+                <div class="instrument warning">
+                    <div class="instrument-label">FUEL</div>
+                    <div class="instrument-value">15%</div>
+                </div>
+                <div class="instrument">
+                    <div class="instrument-label">TEMP</div>
+                    <div class="instrument-value">-45°</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <button class="button warning" style="width: 100%; margin-bottom: 8px;">GPS LOCK</button>
+                <button class="button primary" style="width: 100%; margin-bottom: 8px;">ILS APPROACH</button>
+                <button class="button danger" style="width: 100%;">MAYDAY</button>
+            </div>
+        </div>
+
+        <!-- Bottom Controls -->
+        <div class="bottom-controls">
+            <div class="instrument">
+                <div class="instrument-label">ENGINE 1</div>
+                <div class="instrument-value">98%</div>
+            </div>
+            <div class="instrument">
+                <div class="instrument-label">ENGINE 2</div>
+                <div class="instrument-value">97%</div>
+            </div>
+            <div class="instrument critical">
+                <div class="instrument-label">HYDRAULIC</div>
+                <div class="instrument-value">LOW</div>
+            </div>
+            <div class="instrument">
+                <div class="instrument-label">CABIN</div>
+                <div class="instrument-value">22°C</div>
+            </div>
+            <div class="instrument">
+                <div class="instrument-label">OXYGEN</div>
+                <div class="instrument-value">100%</div>
+            </div>
+            <div class="instrument warning">
+                <div class="instrument-label">BATTERY</div>
+                <div class="instrument-value">24V</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const throttleHandles = document.querySelectorAll('.throttle-handle');
+            const instruments = document.querySelectorAll('.instrument');
+            const buttons = document.querySelectorAll('.button');
+            const warningLights = document.querySelectorAll('.warning-light');
+
+            throttleHandles.forEach(handle => {
+                let isDragging = false;
+                const throttle = handle.parentElement;
+
+                handle.addEventListener('mousedown', () => isDragging = true);
+                document.addEventListener('mouseup', () => isDragging = false);
+                
+                throttle.addEventListener('mousemove', (e) => {
+                    if (isDragging) {
+                        const rect = throttle.getBoundingClientRect();
+                        const x = Math.max(15, Math.min(rect.width - 15, e.clientX - rect.left));
+                        const percentage = ((x - 15) / (rect.width - 30)) * 100;
+                        handle.style.left = percentage + '%';
+                    }
+                });
+            });
+
+            instruments.forEach(instrument => {
+                instrument.addEventListener('click', () => {
+                    instrument.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        instrument.style.transform = 'scale(1)';
+                    }, 150);
+                });
+            });
+
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const originalText = button.textContent;
+                    button.textContent = 'ACTIVATED';
+                    button.style.backgroundColor = 'rgba(0, 255, 136, 0.2)';
+                    
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.style.backgroundColor = '';
+                    }, 1500);
+                });
+            });
+
+            warningLights.forEach(light => {
+                light.addEventListener('click', () => {
+                    if (light.classList.contains('red')) {
+                        light.classList.remove('red');
+                        light.classList.add('green');
+                        light.textContent = light.textContent + ' OK';
+                    }
+                });
+            });
+
+            setInterval(() => {
+                const speedValue = document.querySelector('.instrument .instrument-value');
+                if (speedValue && speedValue.textContent === '450') {
+                    const newSpeed = 440 + Math.floor(Math.random() * 20);
+                    speedValue.textContent = newSpeed;
+                }
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

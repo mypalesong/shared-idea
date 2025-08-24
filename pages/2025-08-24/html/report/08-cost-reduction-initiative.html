@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>비용 절감 이니셔티브 성과 보고서 | Cost Optimization Excellence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1500px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 35px 70px rgba(0,0,0,0.2);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 60px 50px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '💰';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.1;
+            top: -50px;
+            right: -50px;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .main-title {
+            font-size: 3.5em;
+            font-weight: 200;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+        }
+        
+        .subtitle {
+            font-size: 1.4em;
+            opacity: 0.9;
+            margin-bottom: 35px;
+            font-weight: 300;
+        }
+        
+        .header-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .summary-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .summary-value {
+            font-size: 2.8em;
+            font-weight: bold;
+            color: #f1c40f;
+            margin-bottom: 8px;
+            text-shadow: 0 0 20px rgba(241, 196, 15, 0.3);
+        }
+        
+        .summary-label {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 50px;
+        }
+        
+        .achievement-banner {
+            background: linear-gradient(135deg, #00d4aa, #00b894);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .achievement-banner::before {
+            content: '🏆';
+            position: absolute;
+            font-size: 80px;
+            opacity: 0.2;
+            left: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .achievement-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .achievement-title {
+            font-size: 2.2em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .achievement-subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .initiatives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .initiative-card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .initiative-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.12);
+        }
+        
+        .initiative-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .initiative-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+        
+        .initiative-icon {
+            font-size: 3em;
+            opacity: 0.8;
+        }
+        
+        .initiative-impact {
+            background: linear-gradient(135deg, #00d4aa, #00b894);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        
+        .initiative-title {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .initiative-description {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .initiative-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .metric {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            font-size: 0.85em;
+            color: #636e72;
+        }
+        
+        .category-analysis {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .section-title {
+            font-size: 2.4em;
+            color: #2c3e50;
+            margin-bottom: 35px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 300;
+        }
+        
+        .category-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            border-left: 6px solid #e74c3c;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+        }
+        
+        .category-name {
+            font-size: 1.3em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .category-savings {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 15px;
+        }
+        
+        .category-items {
+            list-style: none;
+        }
+        
+        .category-items li {
+            padding: 8px 0;
+            color: #636e72;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .category-items li::before {
+            content: '•';
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .timeline-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+            margin-top: 30px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, #667eea, #764ba2);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -35px;
+            top: 25px;
+            width: 20px;
+            height: 20px;
+            background: #667eea;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px #f8f9fa;
+        }
+        
+        .timeline-quarter {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .timeline-achievements {
+            list-style: none;
+        }
+        
+        .timeline-achievements li {
+            padding: 5px 0;
+            color: #2c3e50;
+        }
+        
+        .roi-analysis {
+            background: linear-gradient(135deg, #fd79a8, #fdcb6e);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .roi-analysis::before {
+            content: '📈';
+            position: absolute;
+            font-size: 120px;
+            opacity: 0.2;
+            right: 30px;
+            top: 20px;
+        }
+        
+        .roi-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .roi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .roi-card {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .roi-value {
+            font-size: 2.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .roi-label {
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+        
+        .comparison-chart {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        
+        .chart-container {
+            height: 300px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            color: #636e72;
+            margin: 25px 0;
+        }
+        
+        .future-targets {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .targets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .target-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .target-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .target-value {
+            font-size: 2.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #fdcb6e;
+        }
+        
+        .target-description {
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        
+        .success-factors {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        
+        .factors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .factor-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .factor-title {
+            font-size: 1.2em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .factor-description {
+            color: #636e72;
+            line-height: 1.6;
+        }
+        
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 40px 50px;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+        }
+        
+        @media (max-width: 1024px) {
+            .initiatives-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .main-title {
+                font-size: 2.5em;
+            }
+            
+            .header-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="main-title">비용 절감 이니셔티브 성과 보고서</h1>
+                <p class="subtitle">Cost Excellence Program | 2024 Total Savings Achievement</p>
+                <div class="header-summary">
+                    <div class="summary-card">
+                        <div class="summary-value">127억원</div>
+                        <div class="summary-label">총 절감 금액</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value">23개</div>
+                        <div class="summary-label">완료된 프로젝트</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value">8.3%</div>
+                        <div class="summary-label">매출 대비 절감률</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value">ROI 340%</div>
+                        <div class="summary-label">투자 수익률</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="content">
+            <div class="achievement-banner">
+                <div class="achievement-content">
+                    <h2 class="achievement-title">2024년 목표 달성률 142%</h2>
+                    <p class="achievement-subtitle">당초 목표 90억원 대비 127억원 달성으로 역대 최고 성과 기록</p>
+                </div>
+            </div>
+            
+            <section class="initiatives-grid">
+                <div class="initiative-card">
+                    <div class="initiative-header">
+                        <span class="initiative-icon">⚡</span>
+                        <span class="initiative-impact">높음</span>
+                    </div>
+                    <h3 class="initiative-title">에너지 효율화 프로젝트</h3>
+                    <p class="initiative-description">
+                        LED 조명 교체, 고효율 모터 도입, 인버터 설치를 통한 
+                        전력 소비 최적화로 연간 전기료 대폭 절감
+                    </p>
+                    <div class="initiative-metrics">
+                        <div class="metric">
+                            <div class="metric-value">-23%</div>
+                            <div class="metric-label">전력 소비 감소</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">18억원</div>
+                            <div class="metric-label">연간 절감액</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="initiative-card">
+                    <div class="initiative-header">
+                        <span class="initiative-icon">🔄</span>
+                        <span class="initiative-impact">높음</span>
+                    </div>
+                    <h3 class="initiative-title">공정 최적화 & 자동화</h3>
+                    <p class="initiative-description">
+                        병목 공정 개선과 로봇 자동화 도입으로 인건비 절감과 
+                        생산성 향상을 동시에 달성
+                    </p>
+                    <div class="initiative-metrics">
+                        <div class="metric">
+                            <div class="metric-value">+32%</div>
+                            <div class="metric-label">생산성 향상</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">25억원</div>
+                            <div class="metric-label">연간 절감액</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="initiative-card">
+                    <div class="initiative-header">
+                        <span class="initiative-icon">📦</span>
+                        <span class="initiative-impact">중간</span>
+                    </div>
+                    <h3 class="initiative-title">물류비 최적화</h3>
+                    <p class="initiative-description">
+                        운송 경로 최적화, 통합 배송, 포장재 표준화를 통한 
+                        물류비용 절감과 배송 효율성 향상
+                    </p>
+                    <div class="initiative-metrics">
+                        <div class="metric">
+                            <div class="metric-value">-18%</div>
+                            <div class="metric-label">물류비 감소</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">12억원</div>
+                            <div class="metric-label">연간 절감액</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="initiative-card">
+                    <div class="initiative-header">
+                        <span class="initiative-icon">🏭</span>
+                        <span class="initiative-impact">높음</span>
+                    </div>
+                    <h3 class="initiative-title">설비 예방정비</h3>
+                    <p class="initiative-description">
+                        AI 기반 예측정비 시스템 도입으로 계획외 정지시간 감소와 
+                        부품 수명 최적화를 통한 유지보수비 절감
+                    </p>
+                    <div class="initiative-metrics">
+                        <div class="metric">
+                            <div class="metric-value">-42%</div>
+                            <div class="metric-label">다운타임 감소</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">22억원</div>
+                            <div class="metric-label">연간 절감액</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="initiative-card">
+                    <div class="initiative-header">
+                        <span class="initiative-icon">♻️</span>
+                        <span class="initiative-impact">중간</span>
+                    </div>
+                    <h3 class="initiative-title">폐기물 재활용</h3>
+                    <p class="initiative-description">
+                        생산 과정 부산물의 재활용율 향상과 폐기물 처리비 절감을 
+                        통한 환경친화적 비용 절감
+                    </p>
+                    <div class="initiative-metrics">
+                        <div class="metric">
+                            <div class="metric-value">+45%</div>
+                            <div class="metric-label">재활용율 증가</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">8억원</div>
+                            <div class="metric-label">연간 절감액</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="initiative-card">
+                    <div class="initiative-header">
+                        <span class="initiative-icon">💎</span>
+                        <span class="initiative-impact">중간</span>
+                    </div>
+                    <h3 class="initiative-title">원자재 구매 최적화</h3>
+                    <p class="initiative-description">
+                        공급업체 다변화, 장기계약을 통한 단가 절감과 
+                        재고 최적화로 운전자본 효율성 향상
+                    </p>
+                    <div class="initiative-metrics">
+                        <div class="metric">
+                            <div class="metric-value">-12%</div>
+                            <div class="metric-label">구매 단가 절감</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">15억원</div>
+                            <div class="metric-label">연간 절감액</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="category-analysis">
+                <h2 class="section-title">
+                    <span>📊</span> 비용 카테고리별 절감 현황
+                </h2>
+                <div class="category-cards">
+                    <div class="category-card">
+                        <h3 class="category-name">제조비용</h3>
+                        <div class="category-savings">-47억원</div>
+                        <ul class="category-items">
+                            <li>공정 자동화: 25억원</li>
+                            <li>설비 효율화: 22억원</li>
+                        </ul>
+                    </div>
+                    <div class="category-card">
+                        <h3 class="category-name">에너지비용</h3>
+                        <div class="category-savings">-28억원</div>
+                        <ul class="category-items">
+                            <li>전력비 절감: 18억원</li>
+                            <li>연료비 절감: 6억원</li>
+                            <li>냉난방비 절감: 4억원</li>
+                        </ul>
+                    </div>
+                    <div class="category-card">
+                        <h3 class="category-name">원자재비용</h3>
+                        <div class="category-savings">-25억원</div>
+                        <ul class="category-items">
+                            <li>구매단가 절감: 15억원</li>
+                            <li>재고 최적화: 10억원</li>
+                        </ul>
+                    </div>
+                    <div class="category-card">
+                        <h3 class="category-name">물류비용</h3>
+                        <div class="category-savings">-15억원</div>
+                        <ul class="category-items">
+                            <li>운송비 절감: 12억원</li>
+                            <li>포장비 절감: 3억원</li>
+                        </ul>
+                    </div>
+                    <div class="category-card">
+                        <h3 class="category-name">환경비용</h3>
+                        <div class="category-savings">-12억원</div>
+                        <ul class="category-items">
+                            <li>폐기물 처리비: 8억원</li>
+                            <li>환경 부담금: 4억원</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="timeline-section">
+                <h2 class="section-title">
+                    <span>📅</span> 분기별 달성 현황
+                </h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-quarter">2024 Q1</div>
+                        <ul class="timeline-achievements">
+                            <li>LED 조명 전면 교체 완료 - 5억원 절감</li>
+                            <li>물류 경로 최적화 시스템 도입 - 3억원 절감</li>
+                            <li>총 절감액: 18억원 (목표 대비 120%)</li>
+                        </ul>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-quarter">2024 Q2</div>
+                        <ul class="timeline-achievements">
+                            <li>로봇 자동화 라인 3개소 구축 - 12억원 절감</li>
+                            <li>예방정비 시스템 1차 도입 - 8억원 절감</li>
+                            <li>총 절감액: 28억원 (목표 대비 135%)</li>
+                        </ul>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-quarter">2024 Q3</div>
+                        <ul class="timeline-achievements">
+                            <li>공급업체 재협상을 통한 단가 절감 - 15억원</li>
+                            <li>폐기물 재활용 시스템 확대 - 6억원 절감</li>
+                            <li>총 절감액: 35억원 (목표 대비 148%)</li>
+                        </ul>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-quarter">2024 Q4</div>
+                        <ul class="timeline-achievements">
+                            <li>AI 기반 전력 관리 시스템 도입 - 18억원 절감</li>
+                            <li>통합 배송 시스템 구축 - 9억원 절감</li>
+                            <li>총 절감액: 46억원 (목표 대비 155%)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="roi-analysis">
+                <div class="roi-content">
+                    <h2 class="section-title" style="color: white;">
+                        <span>📈</span> 투자 수익률 (ROI) 분석
+                    </h2>
+                    <div class="roi-grid">
+                        <div class="roi-card">
+                            <div class="roi-value">37억원</div>
+                            <div class="roi-label">총 투자금액</div>
+                        </div>
+                        <div class="roi-card">
+                            <div class="roi-value">127억원</div>
+                            <div class="roi-label">총 절감금액</div>
+                        </div>
+                        <div class="roi-card">
+                            <div class="roi-value">90억원</div>
+                            <div class="roi-label">순수익</div>
+                        </div>
+                        <div class="roi-card">
+                            <div class="roi-value">340%</div>
+                            <div class="roi-label">투자수익률</div>
+                        </div>
+                        <div class="roi-card">
+                            <div class="roi-value">11개월</div>
+                            <div class="roi-label">투자회수기간</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="comparison-chart">
+                <h2 class="section-title">
+                    <span>📊</span> 연도별 비용 절감 비교
+                </h2>
+                <div class="chart-container">
+                    2022년: 45억원 → 2023년: 73억원 → 2024년: 127억원<br>
+                    <small>연평균 증가율 69% 달성</small>
+                </div>
+                <p style="text-align: center; color: #636e72; font-size: 0.95em; margin-top: 20px;">
+                    지속적인 개선활동과 신기술 도입으로 매년 절감 규모가 확대되고 있으며, 
+                    특히 2024년에는 AI 기술 활용으로 혁신적인 성과를 달성했습니다.
+                </p>
+            </section>
+            
+            <section class="future-targets">
+                <h2 class="section-title" style="color: white;">
+                    <span>🎯</span> 2025년 목표 및 계획
+                </h2>
+                <div class="targets-grid">
+                    <div class="target-card">
+                        <div class="target-title">총 절감 목표</div>
+                        <div class="target-value">150억원</div>
+                        <p class="target-description">
+                            2024년 대비 18% 증가한 목표 설정. 
+                            신규 기술 도입과 기존 프로그램 확대 추진.
+                        </p>
+                    </div>
+                    <div class="target-card">
+                        <div class="target-title">신규 프로젝트</div>
+                        <div class="target-value">15개</div>
+                        <p class="target-description">
+                            탄소중립 관련 비용 절감과 디지털 전환을 통한 
+                            효율성 개선 프로젝트 신규 추진.
+                        </p>
+                    </div>
+                    <div class="target-card">
+                        <div class="target-title">ROI 목표</div>
+                        <div class="target-value">400%</div>
+                        <p class="target-description">
+                            투자 대비 수익률 목표를 상향 조정하여 
+                            더욱 효율적인 투자 포트폴리오 구성.
+                        </p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="success-factors">
+                <h2 class="section-title">
+                    <span>🔑</span> 성공 요인 분석
+                </h2>
+                <div class="factors-grid">
+                    <div class="factor-card">
+                        <h4 class="factor-title">경영진 강력한 의지</h4>
+                        <p class="factor-description">
+                            CEO 주도의 Cost Excellence 프로그램 추진으로 
+                            전사적 비용 절감 문화 정착과 지속적인 동력 확보
+                        </p>
+                    </div>
+                    <div class="factor-card">
+                        <h4 class="factor-title">데이터 기반 의사결정</h4>
+                        <p class="factor-description">
+                            실시간 데이터 분석과 AI 기술을 활용한 과학적 접근으로 
+                            정확한 문제 진단과 효과적인 해결방안 도출
+                        </p>
+                    </div>
+                    <div class="factor-card">
+                        <h4 class="factor-title">직원 참여 및 아이디어</h4>
+                        <p class="factor-description">
+                            전 직원 대상 아이디어 공모전과 개선제안 시스템으로 
+                            현장 중심의 실질적 개선 아이디어 발굴
+                        </p>
+                    </div>
+                    <div class="factor-card">
+                        <h4 class="factor-title">체계적 프로젝트 관리</h4>
+                        <p class="factor-description">
+                            단계별 목표 설정, 정기적 점검, 성과 평가 체계로 
+                            프로젝트별 확실한 성과 달성과 지속적 개선
+                        </p>
+                    </div>
+                    <div class="factor-card">
+                        <h4 class="factor-title">기술 혁신 적극 도입</h4>
+                        <p class="factor-description">
+                            IoT, AI, 빅데이터 등 4차 산업혁명 기술을 활용한 
+                            스마트한 비용 관리와 운영 효율성 극대화
+                        </p>
+                    </div>
+                    <div class="factor-card">
+                        <h4 class="factor-title">지속적 모니터링</h4>
+                        <p class="factor-description">
+                            실시간 대시보드를 통한 성과 모니터링과 
+                            신속한 피드백으로 목표 달성률 극대화
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <footer class="footer">
+            <div class="footer-content">
+                <div>
+                    <strong>Cost Excellence Center</strong><br>
+                    전사 비용 최적화 전담 조직 | 지속 가능한 경영 효율성 추구
+                </div>
+                <div class="footer-links">
+                    <a href="#">비용 대시보드</a>
+                    <a href="#">개선 제안</a>
+                    <a href="#">성과 리포트</a>
+                    <a href="#">벤치마킹</a>
+                </div>
+            </div>
+            <p style="margin-top: 20px; opacity: 0.7;">
+                모든 절감 금액은 검증된 실제 성과를 기준으로 산출되었습니다.
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

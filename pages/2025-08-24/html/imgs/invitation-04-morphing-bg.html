@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>등산 모임 - 산으로 떠나는 여행</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            color: white;
+        }
+        
+        .morphing-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-size: cover;
+            background-position: center;
+            animation: morphBackground 20s infinite;
+        }
+        
+        @keyframes morphBackground {
+            0% { 
+                background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+                filter: hue-rotate(0deg) brightness(1);
+            }
+            25% { 
+                background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1464822759844-d150ad6d1c89?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+                filter: hue-rotate(30deg) brightness(1.1);
+            }
+            50% { 
+                background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+                filter: hue-rotate(60deg) brightness(0.9);
+            }
+            75% { 
+                background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+                filter: hue-rotate(90deg) brightness(1.2);
+            }
+            100% { 
+                background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+                filter: hue-rotate(0deg) brightness(1);
+            }
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .title-container {
+            position: relative;
+            margin-bottom: 50px;
+        }
+        
+        .main-title {
+            font-size: 4.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 4px 4px 8px rgba(0,0,0,0.8);
+            animation: breathe 4s ease-in-out infinite;
+            background: linear-gradient(45deg, #fff, #ffd700, #fff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: breathe 4s ease-in-out infinite, shimmer 3s ease-in-out infinite;
+        }
+        
+        .subtitle {
+            font-size: 1.8rem;
+            opacity: 0.9;
+            animation: fadeInOut 6s ease-in-out infinite;
+        }
+        
+        .floating-icons {
+            position: absolute;
+            width: 100%;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        .floating-icon {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background-size: cover;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: floatDiagonal 12s linear infinite;
+        }
+        
+        .floating-icon:nth-child(1) {
+            background-image: url('https://images.unsplash.com/photo-1551698618-1dfe5d97d256?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80');
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+        
+        .floating-icon:nth-child(2) {
+            background-image: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80');
+            top: 20%;
+            right: 10%;
+            animation-delay: 3s;
+        }
+        
+        .floating-icon:nth-child(3) {
+            background-image: url('https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80');
+            bottom: 30%;
+            left: 15%;
+            animation-delay: 6s;
+        }
+        
+        .floating-icon:nth-child(4) {
+            background-image: url('https://images.unsplash.com/photo-1574391884720-bbc4fe48aa10?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80');
+            bottom: 20%;
+            right: 20%;
+            animation-delay: 9s;
+        }
+        
+        .info-panel {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 40px;
+            border-radius: 25px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            animation: pulseGlow 5s ease-in-out infinite;
+            transform: perspective(1000px) rotateX(5deg);
+        }
+        
+        .event-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .detail-item {
+            background: rgba(255,255,255,0.15);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            color: #ffd700;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        
+        .detail-value {
+            font-size: 1.2rem;
+        }
+        
+        .action-button {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53, #ff6b6b);
+            background-size: 200% 200%;
+            color: white;
+            padding: 20px 50px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+            animation: buttonPulse 3s ease-in-out infinite;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .action-button:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(255, 107, 107, 0.6);
+            animation-play-state: paused;
+        }
+        
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.9; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-10px); }
+        }
+        
+        @keyframes floatDiagonal {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(100px, -50px) rotate(90deg); }
+            50% { transform: translate(-50px, -100px) rotate(180deg); }
+            75% { transform: translate(-100px, 50px) rotate(270deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { 
+                box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+                border-color: rgba(255,255,255,0.3);
+            }
+            50% { 
+                box-shadow: 0 20px 50px rgba(255,255,255,0.2);
+                border-color: rgba(255,255,255,0.5);
+            }
+        }
+        
+        @keyframes buttonPulse {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="morphing-bg"></div>
+    
+    <div class="floating-icons">
+        <div class="floating-icon"></div>
+        <div class="floating-icon"></div>
+        <div class="floating-icon"></div>
+        <div class="floating-icon"></div>
+    </div>
+    
+    <div class="container">
+        <div class="title-container">
+            <h1 class="main-title">Mountain Adventure</h1>
+            <p class="subtitle">자연과 함께하는 힐링 등산</p>
+        </div>
+        
+        <div class="info-panel">
+            <div class="event-details">
+                <div class="detail-item">
+                    <div class="detail-label">등산 코스</div>
+                    <div class="detail-value">북한산 백운대</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">모임 날짜</div>
+                    <div class="detail-value">2025년 6월 14일</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">출발 시간</div>
+                    <div class="detail-value">오전 7시 집결</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">예상 소요시간</div>
+                    <div class="detail-value">6시간 (식사 포함)</div>
+                </div>
+            </div>
+            
+            <button class="action-button">등산 참여하기</button>
+        </div>
+    </div>
+</body>
+</html>

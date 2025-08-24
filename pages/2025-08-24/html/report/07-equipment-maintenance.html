@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>설비 보전 성과 보고서 | Predictive Maintenance Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'SF Pro Display', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f0f23;
+            color: #e6e6fa;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #0f3460, #533483);
+            padding: 60px 50px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(83, 52, 131, 0.3) 0%, transparent 50%);
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            color: white;
+        }
+        
+        .title-section h1 {
+            font-size: 3.5em;
+            font-weight: 100;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(83, 52, 131, 0.5);
+        }
+        
+        .title-section .subtitle {
+            font-size: 1.4em;
+            opacity: 0.9;
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+        
+        .status-indicators {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .status-indicator {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            min-width: 150px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .indicator-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #00ff88;
+            margin-bottom: 8px;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+        
+        .indicator-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .main-content {
+            padding: 50px;
+        }
+        
+        .alert-banner {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        .alert-icon {
+            font-size: 2em;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #1e1e3f, #2a2a5c);
+            border: 1px solid #3a3a6b;
+            border-radius: 20px;
+            padding: 35px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(83, 52, 131, 0.3);
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00ff88, #00d4aa);
+        }
+        
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+        
+        .metric-icon {
+            font-size: 2.5em;
+            opacity: 0.7;
+        }
+        
+        .metric-trend {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        
+        .trend-excellent {
+            background: linear-gradient(135deg, #00ff88, #00d4aa);
+            color: #0f0f23;
+        }
+        
+        .trend-good {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+        }
+        
+        .trend-warning {
+            background: linear-gradient(135deg, #fdcb6e, #f39c12);
+            color: #2d3436;
+        }
+        
+        .trend-critical {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+            color: white;
+        }
+        
+        .metric-title {
+            font-size: 1.2em;
+            color: #a8a8ff;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .metric-value {
+            font-size: 3.2em;
+            font-weight: bold;
+            color: #00ff88;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+        
+        .metric-description {
+            color: #b8b8d4;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+        
+        .equipment-status-section {
+            background: linear-gradient(135deg, #2a2a5c, #1e1e3f);
+            border: 1px solid #3a3a6b;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .section-title {
+            font-size: 2.2em;
+            color: #a8a8ff;
+            margin-bottom: 35px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .equipment-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 25px;
+            position: relative;
+        }
+        
+        .equipment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .equipment-name {
+            font-weight: 600;
+            color: #e6e6fa;
+            font-size: 1.1em;
+        }
+        
+        .status-led {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            position: relative;
+        }
+        
+        .status-running {
+            background: #00ff88;
+            box-shadow: 0 0 20px #00ff88;
+            animation: blink 2s infinite;
+        }
+        
+        .status-maintenance {
+            background: #fdcb6e;
+            box-shadow: 0 0 20px #fdcb6e;
+        }
+        
+        .status-error {
+            background: #fd79a8;
+            box-shadow: 0 0 20px #fd79a8;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+        
+        .equipment-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .equipment-metric {
+            background: rgba(255,255,255,0.03);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .equipment-metric-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #00ff88;
+        }
+        
+        .equipment-metric-label {
+            font-size: 0.8em;
+            color: #b8b8d4;
+            margin-top: 5px;
+        }
+        
+        .maintenance-schedule {
+            background: linear-gradient(135deg, #1e1e3f, #2a2a5c);
+            border: 1px solid #3a3a6b;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .schedule-table thead {
+            background: linear-gradient(135deg, #533483, #0f3460);
+        }
+        
+        .schedule-table th {
+            padding: 20px 15px;
+            text-align: left;
+            color: white;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        .schedule-table td {
+            padding: 18px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: #e6e6fa;
+        }
+        
+        .schedule-table tbody tr:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .priority-badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .priority-urgent {
+            background: #fd79a8;
+            color: white;
+        }
+        
+        .priority-high {
+            background: #fdcb6e;
+            color: #2d3436;
+        }
+        
+        .priority-normal {
+            background: #74b9ff;
+            color: white;
+        }
+        
+        .priority-low {
+            background: #00d4aa;
+            color: white;
+        }
+        
+        .predictive-analytics {
+            background: linear-gradient(135deg, #2a2a5c, #1e1e3f);
+            border: 1px solid #3a3a6b;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .ai-insights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .insight-card {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            position: relative;
+        }
+        
+        .insight-card::before {
+            content: '🤖';
+            position: absolute;
+            top: -10px;
+            right: 15px;
+            font-size: 2em;
+        }
+        
+        .insight-title {
+            color: #00ff88;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .insight-content {
+            color: #b8b8d4;
+            line-height: 1.6;
+        }
+        
+        .insight-confidence {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0, 255, 136, 0.2);
+            font-size: 0.9em;
+            color: #00d4aa;
+        }
+        
+        .cost-analysis {
+            background: linear-gradient(135deg, #1e1e3f, #2a2a5c);
+            border: 1px solid #3a3a6b;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .cost-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .cost-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .cost-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .cost-saved {
+            color: #00ff88;
+        }
+        
+        .cost-spent {
+            color: #fd79a8;
+        }
+        
+        .cost-label {
+            color: #b8b8d4;
+            font-size: 0.95em;
+        }
+        
+        .recommendations {
+            background: linear-gradient(135deg, #533483, #0f3460);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+        }
+        
+        .recommendations h2 {
+            color: #00ff88;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+        }
+        
+        .recommendation-list {
+            list-style: none;
+        }
+        
+        .recommendation-item {
+            background: rgba(255,255,255,0.05);
+            margin-bottom: 15px;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #00ff88;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .recommendation-icon {
+            font-size: 1.5em;
+            color: #00ff88;
+            margin-top: 5px;
+        }
+        
+        .recommendation-content h4 {
+            color: #e6e6fa;
+            margin-bottom: 8px;
+        }
+        
+        .recommendation-content p {
+            color: #b8b8d4;
+            line-height: 1.5;
+        }
+        
+        .footer {
+            background: #0f0f23;
+            color: #a8a8ff;
+            padding: 40px 50px;
+            text-align: center;
+            border-top: 1px solid #3a3a6b;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .footer-links a {
+            color: #a8a8ff;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            color: #00ff88;
+        }
+        
+        @media (max-width: 1024px) {
+            .header-content {
+                flex-direction: column;
+                gap: 30px;
+                text-align: center;
+            }
+            
+            .status-indicators {
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 30px 20px;
+            }
+            
+            .title-section h1 {
+                font-size: 2.5em;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <div class="title-section">
+                    <h1>설비 보전 성과 보고서</h1>
+                    <p class="subtitle">AI 기반 예측정비 시스템 | Real-time Equipment Intelligence</p>
+                    <div style="margin-top: 25px; opacity: 0.8;">
+                        <span>⚡ 실시간 모니터링</span>
+                        <span style="margin-left: 30px;">🤖 AI 분석 중</span>
+                        <span style="margin-left: 30px;">📊 2024.12.24 기준</span>
+                    </div>
+                </div>
+                <div class="status-indicators">
+                    <div class="status-indicator">
+                        <div class="indicator-value">96.4%</div>
+                        <div class="indicator-label">전체 가동률</div>
+                    </div>
+                    <div class="status-indicator">
+                        <div class="indicator-value">18</div>
+                        <div class="indicator-label">가동 중인 설비</div>
+                    </div>
+                    <div class="status-indicator">
+                        <div class="indicator-value">2</div>
+                        <div class="indicator-label">정비 중</div>
+                    </div>
+                    <div class="status-indicator">
+                        <div class="indicator-value">0</div>
+                        <div class="indicator-label">고장 설비</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <div class="alert-banner">
+                <span class="alert-icon">⚠️</span>
+                <div>
+                    <strong>예측 알림:</strong> CNC-07 스핀들 베어링 교체 권장 (예상 수명: 72시간). 
+                    12월 28일 계획 정비 시 동시 교체 예정.
+                </div>
+            </div>
+            
+            <section class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-icon">🎯</span>
+                        <span class="metric-trend trend-excellent">▲ 8.5%</span>
+                    </div>
+                    <h3 class="metric-title">설비 종합 효율 (OEE)</h3>
+                    <div class="metric-value">88.2%</div>
+                    <p class="metric-description">
+                        가동률, 성능률, 품질률을 종합한 설비 효율 지수가 
+                        업계 최고 수준을 기록. 예측정비 도입 효과가 가시화됨.
+                    </p>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-icon">⏱️</span>
+                        <span class="metric-trend trend-excellent">▼ 42%</span>
+                    </div>
+                    <h3 class="metric-title">평균 다운타임</h3>
+                    <div class="metric-value">12분</div>
+                    <p class="metric-description">
+                        계획외 정지 시간이 대폭 감소. IoT 센서 기반 
+                        실시간 모니터링으로 사전 예방 정비 효과 극대화.
+                    </p>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-icon">🔧</span>
+                        <span class="metric-trend trend-good">▲ 25%</span>
+                    </div>
+                    <h3 class="metric-title">예방정비 달성률</h3>
+                    <div class="metric-value">96.8%</div>
+                    <p class="metric-description">
+                        예정된 예방정비 작업의 달성률이 목표치를 
+                        크게 상회. 체계적인 정비 계획 수립과 실행력 향상.
+                    </p>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-icon">💰</span>
+                        <span class="metric-trend trend-excellent">▼ 35%</span>
+                    </div>
+                    <h3 class="metric-title">정비 비용 절감</h3>
+                    <div class="metric-value">32억원</div>
+                    <p class="metric-description">
+                        예측정비 도입으로 긴급 수리 비용 대폭 절감. 
+                        부품 수명 최적화와 재고 관리 효율성 향상.
+                    </p>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-icon">📈</span>
+                        <span class="metric-trend trend-excellent">92%</span>
+                    </div>
+                    <h3 class="metric-title">예측 정확도</h3>
+                    <div class="metric-value">91.7%</div>
+                    <p class="metric-description">
+                        AI 알고리즘의 고장 예측 정확도가 90%를 초과. 
+                        딥러닝 모델 지속 학습으로 정확도 향상 중.
+                    </p>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-header">
+                        <span class="metric-icon">🔋</span>
+                        <span class="metric-trend trend-good">▲ 18%</span>
+                    </div>
+                    <h3 class="metric-title">부품 수명 연장</h3>
+                    <div class="metric-value">127%</div>
+                    <p class="metric-description">
+                        적정 정비 시점 예측으로 부품 수명 최적화. 
+                        교체 주기 연장으로 운영비 절감 효과.
+                    </p>
+                </div>
+            </section>
+            
+            <section class="equipment-status-section">
+                <h2 class="section-title">
+                    <span>🏭</span> 실시간 설비 현황
+                </h2>
+                <div class="equipment-grid">
+                    <div class="equipment-card">
+                        <div class="equipment-header">
+                            <span class="equipment-name">CNC 가공센터 #01</span>
+                            <span class="status-led status-running"></span>
+                        </div>
+                        <div class="equipment-metrics">
+                            <div class="equipment-metric">
+                                <div class="equipment-metric-value">98.5%</div>
+                                <div class="equipment-metric-label">가동률</div>
+                            </div>
+                            <div class="equipment-metric">
+                                <div class="equipment-metric-value">67°C</div>
+                                <div class="equipment-metric-label">온도</div>
+                            </div>
+                            <div class="equipment-metric">
+                                <div class="equipment-metric-value">2.1A</div>
+                                <div class="equipment-metric-label">전류</div>
+                            </div>
+                            <div class="equipment-metric">
+                                <div class="equipment-metric-value">42dB</div>
+                                <div class="equipment-metric-label">진동</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="equipment-card">
+                        <div class="equipment-header">
+                            <span class="equipment-name">로봇 용접기 #03</span>
+                            <span class="status-led status-running"></span>
+                        </div>
+                        <div class="equipment-metrics">
+                            <div class="equipment-metric">
+                                <div class="equipment-metric-value">96.2%</div>
+                                <div class="equipment-metric-label">가동률</div>
+                            </div>
+                            <div class="equipment-metric">
+                                <div class="equipment-metric-value">85°C</div>
+                                <div class="equipment-metric-label">온도</div>
+                            </div>
+                            <div class="equipment-metric">
+                                <div class="equipment-metric-value">5.8A</div>
+                                <div class="equipment-metric-label">전류</div>
+                            </div>
+                            <div class="equipment-metric">
+                                <div class="equipment-metric-value">38dB</div>
+                                <div class="equipment-metric-label">진동</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="equipment-card">
+                        <div class="equipment-header">
+                            <span class="equipment-name">사출성형기 #05</span>
+                            <span class="status-led status-maintenance"></span>
+                        </div>
+                        <div class="equipment-metrics">
+                            <div class="equipment-metric">
+                                <div class="equipment-metric-value">0%</div>
+                                <div class="equipment-metric-label">가동률</div>
+                            </div>
+                            <div class="equipment-metric">
+                                <div class="equipment-metric-value">25°C</div>
+                                <div class="equipment-metric-label">온도</div>
+                            </div>
+                            <div class="equipment-metric">
+                                <div class="equipment-metric-value">0A</div>
+                                <div class="equipment-metric-label">전류</div>
+                            </div>
+                            <div class="equipment-metric">
+                                <div class="equipment-metric-value">0dB</div>
+                                <div class="equipment-metric-label">진동</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="equipment-card">
+                        <div class="equipment-header">
+                            <span class="equipment-name">컨베이어 시스템 #02</span>
+                            <span class="status-led status-running"></span>
+                        </div>
+                        <div class="equipment-metrics">
+                            <div class="equipment-metric">
+                                <div class="equipment-metric-value">94.7%</div>
+                                <div class="equipment-metric-label">가동률</div>
+                            </div>
+                            <div class="equipment-metric">
+                                <div class="equipment-metric-value">45°C</div>
+                                <div class="equipment-metric-label">온도</div>
+                            </div>
+                            <div class="equipment-metric">
+                                <div class="equipment-metric-value">1.2A</div>
+                                <div class="equipment-metric-label">전류</div>
+                            </div>
+                            <div class="equipment-metric">
+                                <div class="equipment-metric-value">35dB</div>
+                                <div class="equipment-metric-label">진동</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="maintenance-schedule">
+                <h2 class="section-title">
+                    <span>📅</span> 정비 계획 및 일정
+                </h2>
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>설비명</th>
+                            <th>정비 유형</th>
+                            <th>예정일</th>
+                            <th>소요 시간</th>
+                            <th>우선순위</th>
+                            <th>담당자</th>
+                            <th>상태</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>CNC-07</strong></td>
+                            <td>스핀들 베어링 교체</td>
+                            <td>2024.12.28</td>
+                            <td>4시간</td>
+                            <td><span class="priority-badge priority-urgent">긴급</span></td>
+                            <td>김기술 주임</td>
+                            <td>대기 중</td>
+                        </tr>
+                        <tr>
+                            <td><strong>로봇-03</strong></td>
+                            <td>용접 토치 점검</td>
+                            <td>2024.12.26</td>
+                            <td>2시간</td>
+                            <td><span class="priority-badge priority-high">높음</span></td>
+                            <td>박정비 기사</td>
+                            <td>부품 대기</td>
+                        </tr>
+                        <tr>
+                            <td><strong>사출-05</strong></td>
+                            <td>유압 시스템 점검</td>
+                            <td>2024.12.25</td>
+                            <td>6시간</td>
+                            <td><span class="priority-badge priority-normal">보통</span></td>
+                            <td>이설비 기사</td>
+                            <td>진행 중</td>
+                        </tr>
+                        <tr>
+                            <td><strong>컨베이어-02</strong></td>
+                            <td>벨트 장력 조정</td>
+                            <td>2024.12.30</td>
+                            <td>1시간</td>
+                            <td><span class="priority-badge priority-low">낮음</span></td>
+                            <td>최보전 사원</td>
+                            <td>예정</td>
+                        </tr>
+                        <tr>
+                            <td><strong>프레스-04</strong></td>
+                            <td>금형 점검 및 교체</td>
+                            <td>2025.01.05</td>
+                            <td>8시간</td>
+                            <td><span class="priority-badge priority-high">높음</span></td>
+                            <td>정금형 팀장</td>
+                            <td>계획 중</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            
+            <section class="predictive-analytics">
+                <h2 class="section-title">
+                    <span>🤖</span> AI 예측 분석 인사이트
+                </h2>
+                <div class="ai-insights">
+                    <div class="insight-card">
+                        <h4 class="insight-title">베어링 수명 예측</h4>
+                        <p class="insight-content">
+                            CNC-07의 스핀들 베어링에서 미세한 진동 패턴 변화 감지. 
+                            현재 진동값이 기준치 대비 15% 증가했으며, 
+                            머신러닝 모델 예측 결과 72시간 내 교체 권장.
+                        </p>
+                        <div class="insight-confidence">신뢰도: 94.2%</div>
+                    </div>
+                    
+                    <div class="insight-card">
+                        <h4 class="insight-title">전력 소비 패턴 이상</h4>
+                        <p class="insight-content">
+                            로봇-03의 전력 소비가 정상 패턴 대비 8% 증가. 
+                            용접 토치 마모로 인한 아크 불안정으로 추정. 
+                            2-3일 내 토치 점검 및 교체 권장.
+                        </p>
+                        <div class="insight-confidence">신뢰도: 87.6%</div>
+                    </div>
+                    
+                    <div class="insight-card">
+                        <h4 class="insight-title">온도 상승 트렌드</h4>
+                        <p class="insight-content">
+                            사출-05의 유압 시스템 온도가 지난 2주간 점진적 상승. 
+                            유압 오일 점성도 변화로 인한 것으로 분석. 
+                            오일 교체와 필터 점검 필요.
+                        </p>
+                        <div class="insight-confidence">신뢰도: 91.3%</div>
+                    </div>
+                    
+                    <div class="insight-card">
+                        <h4 class="insight-title">생산 최적화 제안</h4>
+                        <p class="insight-content">
+                            현재 설비 가동 패턴 분석 결과, 에너지 효율 개선 여지 발견. 
+                            비가동 시간 설비 대기전력 관리로 월 15% 전력 절약 가능.
+                        </p>
+                        <div class="insight-confidence">신뢰도: 89.1%</div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="cost-analysis">
+                <h2 class="section-title">
+                    <span>💰</span> 정비 비용 분석
+                </h2>
+                <div class="cost-metrics">
+                    <div class="cost-card">
+                        <div class="cost-value cost-saved">-32억원</div>
+                        <div class="cost-label">예측정비로 절감된 비용</div>
+                    </div>
+                    <div class="cost-card">
+                        <div class="cost-value cost-spent">18억원</div>
+                        <div class="cost-label">계획 정비 투자액</div>
+                    </div>
+                    <div class="cost-card">
+                        <div class="cost-value cost-saved">-65%</div>
+                        <div class="cost-label">긴급 수리 비용 감소</div>
+                    </div>
+                    <div class="cost-card">
+                        <div class="cost-value cost-saved">+28%</div>
+                        <div class="cost-label">부품 수명 연장률</div>
+                    </div>
+                    <div class="cost-card">
+                        <div class="cost-value cost-saved">ROI 278%</div>
+                        <div class="cost-label">예측정비 시스템 투자 수익률</div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="recommendations">
+                <h2>⚡ 설비 보전 개선 권고사항</h2>
+                <ul class="recommendation-list">
+                    <li class="recommendation-item">
+                        <span class="recommendation-icon">🎯</span>
+                        <div class="recommendation-content">
+                            <h4>IoT 센서 확대 배치</h4>
+                            <p>현재 80% 커버리지를 95%로 확대하여 사각지대 제거. 
+                            특히 보조 설비와 유틸리티 시설에 센서 추가 설치 권장.</p>
+                        </div>
+                    </li>
+                    <li class="recommendation-item">
+                        <span class="recommendation-icon">🤖</span>
+                        <div class="recommendation-content">
+                            <h4>AI 모델 정확도 향상</h4>
+                            <p>더 많은 학습 데이터 축적과 외부 변수(날씨, 계절) 반영으로 
+                            예측 모델 정확도를 95% 이상으로 향상.</p>
+                        </div>
+                    </li>
+                    <li class="recommendation-item">
+                        <span class="recommendation-icon">📱</span>
+                        <div class="recommendation-content">
+                            <h4>모바일 정비 시스템</h4>
+                            <p>현장 정비원을 위한 모바일 앱 도입으로 실시간 작업 지시, 
+                            부품 재고 확인, 정비 이력 관리 기능 제공.</p>
+                        </div>
+                    </li>
+                    <li class="recommendation-item">
+                        <span class="recommendation-icon">🎓</span>
+                        <div class="recommendation-content">
+                            <h4>정비원 역량 강화</h4>
+                            <p>예측정비 시대에 맞는 데이터 분석 교육과 첨단 장비 
+                            운용 교육으로 정비원 전문성 향상.</p>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+        </div>
+        
+        <footer class="footer">
+            <div class="footer-content">
+                <div>
+                    <strong>Smart Maintenance Center</strong><br>
+                    AI 기반 예측정비 전담 조직 | Industry 4.0 Digital Transformation
+                </div>
+                <div class="footer-links">
+                    <a href="#">실시간 모니터링</a>
+                    <a href="#">정비 이력</a>
+                    <a href="#">부품 재고</a>
+                    <a href="#">교육 프로그램</a>
+                </div>
+            </div>
+            <p style="margin-top: 20px; opacity: 0.7;">
+                본 시스템은 24/7 가동되며 모든 데이터는 실시간으로 업데이트됩니다.
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

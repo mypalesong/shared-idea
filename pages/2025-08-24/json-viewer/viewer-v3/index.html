@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Data Inspector</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/three@0.156.1/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.156.1/examples/js/controls/OrbitControls.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="inspector-container">
+        <!-- Command Bar -->
+        <div class="command-bar">
+            <div class="brand-section">
+                <div class="brand-logo">
+                    <i class="fas fa-eye"></i>
+                    <span class="brand-text">Visual Data Inspector</span>
+                    <span class="version-badge">v3.0</span>
+                </div>
+            </div>
+
+            <div class="command-center">
+                <div class="data-controls">
+                    <div class="input-cluster">
+                        <button id="loadDataBtn" class="action-btn primary">
+                            <i class="fas fa-database"></i>
+                            <span>Load Data</span>
+                        </button>
+                        <div class="dropdown-menu" id="loadDropdown">
+                            <button onclick="loadFromFile()">
+                                <i class="fas fa-file-upload"></i> From File
+                            </button>
+                            <button onclick="loadFromUrl()">
+                                <i class="fas fa-link"></i> From URL
+                            </button>
+                            <button onclick="loadRawData()">
+                                <i class="fas fa-code"></i> Raw JSON
+                            </button>
+                            <button onclick="loadSampleData()">
+                                <i class="fas fa-flask"></i> Sample Data
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button id="compareDataBtn" class="action-btn accent">
+                        <i class="fas fa-balance-scale"></i>
+                        <span>Compare</span>
+                    </button>
+                </div>
+
+                <div class="visualization-controls">
+                    <div class="view-switcher">
+                        <button id="graphViewBtn" class="view-btn active" data-view="graph">
+                            <i class="fas fa-project-diagram"></i>
+                            <span>Graph</span>
+                        </button>
+                        <button id="treeViewBtn" class="view-btn" data-view="tree">
+                            <i class="fas fa-sitemap"></i>
+                            <span>Tree</span>
+                        </button>
+                        <button id="forceViewBtn" class="view-btn" data-view="force">
+                            <i class="fas fa-atoms"></i>
+                            <span>Force</span>
+                        </button>
+                        <button id="matrixViewBtn" class="view-btn" data-view="matrix">
+                            <i class="fas fa-th"></i>
+                            <span>Matrix</span>
+                        </button>
+                        <button id="3dViewBtn" class="view-btn" data-view="3d">
+                            <i class="fas fa-cube"></i>
+                            <span>3D</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="analysis-controls">
+                    <button id="analyzeBtn" class="action-btn secondary">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analyze</span>
+                    </button>
+                    <button id="exportBtn" class="action-btn secondary">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Export</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="status-section">
+                <div class="live-stats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="nodeCount">0</span>
+                        <span class="stat-label">Nodes</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="linkCount">0</span>
+                        <span class="stat-label">Links</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="depthLevel">0</span>
+                        <span class="stat-label">Depth</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Interface -->
+        <div class="main-interface">
+            <!-- Left Panel - Explorer & Controls -->
+            <div class="left-panel">
+                <div class="panel-tabs">
+                    <button class="tab-btn active" data-tab="explorer">
+                        <i class="fas fa-search"></i> Explorer
+                    </button>
+                    <button class="tab-btn" data-tab="filters">
+                        <i class="fas fa-filter"></i> Filters
+                    </button>
+                    <button class="tab-btn" data-tab="settings">
+                        <i class="fas fa-sliders-h"></i> Settings
+                    </button>
+                </div>
+
+                <div class="tab-content">
+                    <!-- Explorer Tab -->
+                    <div id="explorerTab" class="tab-pane active">
+                        <div class="search-section">
+                            <div class="search-input-group">
+                                <i class="fas fa-search search-icon"></i>
+                                <input type="text" id="nodeSearch" placeholder="Search nodes, values, paths...">
+                                <button id="clearSearch" class="clear-btn">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="search-options">
+                                <label class="option-checkbox">
+                                    <input type="checkbox" id="searchKeys" checked>
+                                    <span>Keys</span>
+                                </label>
+                                <label class="option-checkbox">
+                                    <input type="checkbox" id="searchValues" checked>
+                                    <span>Values</span>
+                                </label>
+                                <label class="option-checkbox">
+                                    <input type="checkbox" id="searchPaths">
+                                    <span>Paths</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="data-hierarchy" id="dataHierarchy">
+                            <div class="empty-state">
+                                <i class="fas fa-sitemap"></i>
+                                <p>Load data to explore structure</p>
+                            </div>
+                        </div>
+
+                        <div class="quick-stats" id="quickStats">
+                            <!-- Quick statistics will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Filters Tab -->
+                    <div id="filtersTab" class="tab-pane">
+                        <div class="filter-section">
+                            <h4>Data Type Filters</h4>
+                            <div class="filter-group">
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" id="showStrings" checked>
+                                    <span class="type-badge type-string">String</span>
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" id="showNumbers" checked>
+                                    <span class="type-badge type-number">Number</span>
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" id="showBooleans" checked>
+                                    <span class="type-badge type-boolean">Boolean</span>
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" id="showArrays" checked>
+                                    <span class="type-badge type-array">Array</span>
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" id="showObjects" checked>
+                                    <span class="type-badge type-object">Object</span>
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" id="showNulls">
+                                    <span class="type-badge type-null">Null</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="filter-section">
+                            <h4>Value Filters</h4>
+                            <div class="filter-controls">
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" id="hideEmpty" checked>
+                                    <span>Hide empty values</span>
+                                </label>
+                                <label class="filter-checkbox">
+                                    <input type="checkbox" id="hideNulls">
+                                    <span>Hide null values</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="filter-section">
+                            <h4>Depth Filter</h4>
+                            <div class="depth-slider">
+                                <input type="range" id="depthRange" min="1" max="10" value="10">
+                                <div class="depth-labels">
+                                    <span>1</span>
+                                    <span id="currentDepth">10</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="filter-actions">
+                            <button id="applyFilters" class="action-btn primary full-width">
+                                <i class="fas fa-filter"></i> Apply Filters
+                            </button>
+                            <button id="resetFilters" class="action-btn secondary full-width">
+                                <i class="fas fa-undo"></i> Reset All
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Settings Tab -->
+                    <div id="settingsTab" class="tab-pane">
+                        <div class="settings-section">
+                            <h4>Visualization</h4>
+                            <div class="setting-group">
+                                <label>Node Size</label>
+                                <input type="range" id="nodeSizeRange" min="3" max="20" value="8">
+                            </div>
+                            <div class="setting-group">
+                                <label>Link Strength</label>
+                                <input type="range" id="linkStrengthRange" min="0.1" max="2" step="0.1" value="1">
+                            </div>
+                            <div class="setting-group">
+                                <label>Animation Speed</label>
+                                <input type="range" id="animationSpeed" min="0.1" max="2" step="0.1" value="1">
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h4>Colors & Theme</h4>
+                            <div class="theme-selector">
+                                <button class="theme-btn active" data-theme="light">
+                                    <i class="fas fa-sun"></i> Light
+                                </button>
+                                <button class="theme-btn" data-theme="dark">
+                                    <i class="fas fa-moon"></i> Dark
+                                </button>
+                                <button class="theme-btn" data-theme="auto">
+                                    <i class="fas fa-adjust"></i> Auto
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h4>Performance</h4>
+                            <div class="setting-group">
+                                <label class="option-checkbox">
+                                    <input type="checkbox" id="enablePhysics" checked>
+                                    <span>Enable Physics</span>
+                                </label>
+                                <label class="option-checkbox">
+                                    <input type="checkbox" id="enableAnimations" checked>
+                                    <span>Enable Animations</span>
+                                </label>
+                                <label class="option-checkbox">
+                                    <input type="checkbox" id="enableTooltips" checked>
+                                    <span>Show Tooltips</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Central Canvas -->
+            <div class="central-canvas">
+                <div class="canvas-header">
+                    <div class="canvas-controls">
+                        <button id="zoomIn" class="canvas-btn">
+                            <i class="fas fa-search-plus"></i>
+                        </button>
+                        <button id="zoomOut" class="canvas-btn">
+                            <i class="fas fa-search-minus"></i>
+                        </button>
+                        <button id="resetView" class="canvas-btn">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                        </button>
+                        <button id="fitToScreen" class="canvas-btn">
+                            <i class="fas fa-compress-arrows-alt"></i>
+                        </button>
+                    </div>
+
+                    <div class="view-info">
+                        <span id="currentViewType">Graph View</span>
+                        <span class="separator">•</span>
+                        <span id="selectedNodeInfo">Select a node to view details</span>
+                    </div>
+
+                    <div class="canvas-actions">
+                        <button id="screenshotBtn" class="canvas-btn">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                        <button id="fullscreenBtn" class="canvas-btn">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="visualization-container" id="vizContainer">
+                    <!-- Graph View -->
+                    <div id="graphView" class="viz-view active">
+                        <svg id="graphSvg" class="main-svg"></svg>
+                        <div class="view-overlay">
+                            <div class="loading-indicator hidden" id="loadingIndicator">
+                                <div class="loader"></div>
+                                <p>Building visualization...</p>
+                            </div>
+                            <div class="empty-state" id="graphEmptyState">
+                                <i class="fas fa-project-diagram"></i>
+                                <h3>No Data Loaded</h3>
+                                <p>Load JSON data to start exploring</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tree View -->
+                    <div id="treeView" class="viz-view">
+                        <svg id="treeSvg" class="main-svg"></svg>
+                        <div class="empty-state" id="treeEmptyState">
+                            <i class="fas fa-sitemap"></i>
+                            <h3>Tree Visualization</h3>
+                            <p>Hierarchical view of your data structure</p>
+                        </div>
+                    </div>
+
+                    <!-- Force View -->
+                    <div id="forceView" class="viz-view">
+                        <svg id="forceSvg" class="main-svg"></svg>
+                        <div class="empty-state" id="forceEmptyState">
+                            <i class="fas fa-atoms"></i>
+                            <h3>Force Layout</h3>
+                            <p>Physics-based node arrangement</p>
+                        </div>
+                    </div>
+
+                    <!-- Matrix View -->
+                    <div id="matrixView" class="viz-view">
+                        <div id="matrixContainer" class="matrix-container">
+                            <div class="empty-state" id="matrixEmptyState">
+                                <i class="fas fa-th"></i>
+                                <h3>Matrix View</h3>
+                                <p>Grid-based data representation</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3D View -->
+                    <div id="3dView" class="viz-view">
+                        <div id="threeContainer" class="three-container">
+                            <div class="empty-state" id="3dEmptyState">
+                                <i class="fas fa-cube"></i>
+                                <h3>3D Visualization</h3>
+                                <p>Three-dimensional data exploration</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mini Map -->
+                <div class="mini-map" id="miniMap">
+                    <svg class="mini-map-svg"></svg>
+                </div>
+            </div>
+
+            <!-- Right Panel - Details & Analysis -->
+            <div class="right-panel">
+                <div class="panel-header">
+                    <h3 id="detailsTitle">
+                        <i class="fas fa-info-circle"></i>
+                        Node Details
+                    </h3>
+                    <button id="closePanelBtn" class="close-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="details-content" id="detailsContent">
+                    <div class="detail-empty-state">
+                        <i class="fas fa-mouse-pointer"></i>
+                        <h4>Select a Node</h4>
+                        <p>Click on any node in the visualization to view its details and relationships</p>
+                    </div>
+                </div>
+
+                <div class="analysis-panel" id="analysisPanel">
+                    <div class="analysis-tabs">
+                        <button class="analysis-tab-btn active" data-tab="properties">Properties</button>
+                        <button class="analysis-tab-btn" data-tab="relationships">Relations</button>
+                        <button class="analysis-tab-btn" data-tab="statistics">Stats</button>
+                    </div>
+
+                    <div class="analysis-content">
+                        <div id="propertiesTab" class="analysis-tab-content active">
+                            <!-- Properties content -->
+                        </div>
+                        <div id="relationshipsTab" class="analysis-tab-content">
+                            <!-- Relationships content -->
+                        </div>
+                        <div id="statisticsTab" class="analysis-tab-content">
+                            <!-- Statistics content -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Context Menu -->
+        <div id="contextMenu" class="context-menu hidden">
+            <button onclick="focusOnNode()">
+                <i class="fas fa-crosshairs"></i> Focus on Node
+            </button>
+            <button onclick="expandNode()">
+                <i class="fas fa-plus-circle"></i> Expand
+            </button>
+            <button onclick="collapseNode()">
+                <i class="fas fa-minus-circle"></i> Collapse
+            </button>
+            <div class="menu-separator"></div>
+            <button onclick="copyNodeData()">
+                <i class="fas fa-copy"></i> Copy Data
+            </button>
+            <button onclick="exportNode()">
+                <i class="fas fa-download"></i> Export Node
+            </button>
+            <div class="menu-separator"></div>
+            <button onclick="bookmarkNode()">
+                <i class="fas fa-bookmark"></i> Bookmark
+            </button>
+        </div>
+
+        <!-- Comparison Modal -->
+        <div id="compareModal" class="modal">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-balance-scale"></i> Data Comparison</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="comparison-setup">
+                        <div class="comparison-source">
+                            <h4>First Dataset</h4>
+                            <div class="source-controls">
+                                <button onclick="selectCurrentData(1)" class="btn-secondary">Use Current</button>
+                                <button onclick="uploadCompareData(1)" class="btn-secondary">Upload File</button>
+                            </div>
+                            <div class="source-preview" id="comparePreview1">No data selected</div>
+                        </div>
+                        <div class="comparison-vs">
+                            <i class="fas fa-arrows-alt-h"></i>
+                        </div>
+                        <div class="comparison-source">
+                            <h4>Second Dataset</h4>
+                            <div class="source-controls">
+                                <button onclick="selectCurrentData(2)" class="btn-secondary">Use Current</button>
+                                <button onclick="uploadCompareData(2)" class="btn-secondary">Upload File</button>
+                            </div>
+                            <div class="source-preview" id="comparePreview2">No data selected</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="action-btn secondary" onclick="closeCompareModal()">Cancel</button>
+                    <button class="action-btn primary" onclick="startComparison()">Compare</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tooltips -->
+        <div id="tooltip" class="tooltip hidden">
+            <div class="tooltip-content">
+                <div class="tooltip-header">
+                    <span class="tooltip-title"></span>
+                    <span class="tooltip-type"></span>
+                </div>
+                <div class="tooltip-body">
+                    <div class="tooltip-value"></div>
+                    <div class="tooltip-path"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

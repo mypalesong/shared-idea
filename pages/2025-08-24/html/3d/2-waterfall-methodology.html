@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>폭포수 방법론 - Waterfall Methodology</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2196F3 0%, #21CBF3 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 30px;
+        }
+        
+        .three-container {
+            width: 100%;
+            height: 400px;
+            margin: 30px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .content-section {
+            background: rgba(255,255,255,0.95);
+            padding: 40px;
+            margin: 30px 0;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .content-section h2 {
+            font-size: 2.5rem;
+            color: #1976D2;
+            margin-bottom: 25px;
+            border-left: 5px solid #1976D2;
+            padding-left: 20px;
+        }
+        
+        .content-section h3 {
+            font-size: 1.8rem;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+        
+        .content-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #4a5568;
+        }
+        
+        .phases-waterfall {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .phase-step {
+            background: linear-gradient(135deg, #2196F3, #64B5F6);
+            color: white;
+            padding: 25px 40px;
+            border-radius: 10px;
+            margin-left: calc(var(--step) * 50px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(0);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .phase-step:nth-child(1) { --step: 0; }
+        .phase-step:nth-child(2) { --step: 1; }
+        .phase-step:nth-child(3) { --step: 2; }
+        .phase-step:nth-child(4) { --step: 3; }
+        .phase-step:nth-child(5) { --step: 4; }
+        .phase-step:nth-child(6) { --step: 5; }
+        
+        .phase-step:hover {
+            transform: translateY(-5px) scale(1.02);
+        }
+        
+        .phase-step::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -30px;
+            width: 0;
+            height: 0;
+            border-left: 15px solid #64B5F6;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+        }
+        
+        .phase-step:last-child::before {
+            display: none;
+        }
+        
+        .phase-step h4 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .advantages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .advantage-card {
+            background: linear-gradient(135deg, #42A5F5, #1E88E5);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .advantage-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .advantage-card h4 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+        
+        .comparison-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            margin: 30px 0;
+        }
+        
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .comparison-table th {
+            background: #1976D2;
+            color: white;
+            padding: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .comparison-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 50px;
+            border-radius: 20px;
+        }
+        
+        footer p {
+            color: white;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>폭포수 방법론</h1>
+            <p class="subtitle">순차적이고 체계적인 소프트웨어 개발 접근법</p>
+        </header>
+        
+        <div class="three-container" id="three-container"></div>
+        
+        <div class="content-section">
+            <h2>폭포수 방법론이란?</h2>
+            <p>폭포수(Waterfall) 방법론은 소프트웨어 개발 생명주기(SDLC)의 전통적인 접근법으로, 각 개발 단계를 순차적으로 진행하는 선형 모델입니다. 1970년 윈스턴 로이스(Winston Royce)에 의해 처음 제안된 이 방법론은 한 단계가 완전히 완료된 후에 다음 단계로 진행하는 것이 특징입니다.</p>
+            
+            <h3>폭포수 모델의 6단계</h3>
+            <div class="phases-waterfall">
+                <div class="phase-step">
+                    <h4>1. 요구사항 분석 (Requirements Analysis)</h4>
+                    <p>고객의 요구사항을 수집하고 분석하여 명확히 정의하는 단계</p>
+                </div>
+                <div class="phase-step">
+                    <h4>2. 시스템 설계 (System Design)</h4>
+                    <p>요구사항을 바탕으로 시스템 아키텍처와 인터페이스를 설계</p>
+                </div>
+                <div class="phase-step">
+                    <h4>3. 구현 (Implementation)</h4>
+                    <p>설계된 시스템을 실제 코드로 구현하는 개발 단계</p>
+                </div>
+                <div class="phase-step">
+                    <h4>4. 통합 및 테스트 (Integration & Testing)</h4>
+                    <p>개발된 모듈들을 통합하고 시스템 전체를 테스트</p>
+                </div>
+                <div class="phase-step">
+                    <h4>5. 배포 (Deployment)</h4>
+                    <p>완성된 시스템을 실제 운영 환경에 배포</p>
+                </div>
+                <div class="phase-step">
+                    <h4>6. 유지보수 (Maintenance)</h4>
+                    <p>배포 후 발생하는 버그 수정 및 기능 개선</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>폭포수 방법론의 장점</h2>
+            <div class="advantages-grid">
+                <div class="advantage-card">
+                    <h4>명확한 구조</h4>
+                    <p>각 단계가 명확히 정의되어 있어 프로젝트 관리가 쉽고 진행 상황을 파악하기 용이합니다.</p>
+                </div>
+                <div class="advantage-card">
+                    <h4>문서화 중시</h4>
+                    <p>각 단계마다 상세한 문서를 작성하여 향후 유지보수와 지식 전수에 유리합니다.</p>
+                </div>
+                <div class="advantage-card">
+                    <h4>예측 가능성</h4>
+                    <p>일정과 비용을 미리 계획할 수 있어 프로젝트 예산 관리가 효율적입니다.</p>
+                </div>
+                <div class="advantage-card">
+                    <h4>품질 보장</h4>
+                    <p>각 단계가 완료될 때마다 검토와 승인 과정을 거쳐 품질을 보장합니다.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>적용 분야</h2>
+            <p>폭포수 방법론은 다음과 같은 프로젝트에 적합합니다:</p>
+            
+            <h3>대규모 시스템 개발</h3>
+            <p>정부 기관이나 대기업의 핵심 시스템처럼 안정성이 중요하고 요구사항 변경이 적은 프로젝트에 적합합니다.</p>
+            
+            <h3>규제가 엄격한 분야</h3>
+            <p>의료, 항공, 금융 등 안전성과 규정 준수가 중요한 분야에서 문서화와 검증 과정이 필수인 경우에 사용됩니다.</p>
+            
+            <h3>명확한 요구사항</h3>
+            <p>초기에 요구사항이 명확하게 정의되고 변경 가능성이 낮은 프로젝트에 효과적입니다.</p>
+        </div>
+        
+        <div class="content-section">
+            <h2>폭포수 vs 애자일 비교</h2>
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>구분</th>
+                            <th>폭포수 방법론</th>
+                            <th>애자일 방법론</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>접근 방식</strong></td>
+                            <td>순차적, 선형적</td>
+                            <td>반복적, 점진적</td>
+                        </tr>
+                        <tr>
+                            <td><strong>요구사항 변경</strong></td>
+                            <td>변경 어려움</td>
+                            <td>변경 유연함</td>
+                        </tr>
+                        <tr>
+                            <td><strong>고객 참여</strong></td>
+                            <td>초기와 최종 단계</td>
+                            <td>전 과정 참여</td>
+                        </tr>
+                        <tr>
+                            <td><strong>문서화</strong></td>
+                            <td>상세한 문서 중시</td>
+                            <td>작동하는 소프트웨어 중시</td>
+                        </tr>
+                        <tr>
+                            <td><strong>위험 관리</strong></td>
+                            <td>후반부에 발견</td>
+                            <td>조기 발견 및 대응</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <footer>
+            <p>폭포수 방법론은 체계적이고 안정적인 개발을 원하는 프로젝트에서 여전히 중요한 역할을 하고 있습니다.</p>
+        </footer>
+    </div>
+    
+    <script>
+        let scene, camera, renderer, waterfallSteps = [], particles = [];
+        
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            
+            const container = document.getElementById('three-container');
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            renderer.setClearColor(0x2196F3);
+            container.appendChild(renderer.domElement);
+            
+            // Create waterfall steps
+            const stepColors = [0xff6b6b, 0x4ecdc4, 0x45b7d1, 0x96ceb4, 0xfeca57, 0xe17055];
+            const stepNames = ['요구사항', '설계', '구현', '테스트', '배포', '유지보수'];
+            
+            for (let i = 0; i < 6; i++) {
+                const geometry = new THREE.BoxGeometry(2, 0.5, 1);
+                const material = new THREE.MeshPhongMaterial({ 
+                    color: stepColors[i],
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const step = new THREE.Mesh(geometry, material);
+                
+                step.position.x = (i - 2.5) * 1.5;
+                step.position.y = (5 - i) * 0.8;
+                step.position.z = 0;
+                step.userData = { 
+                    originalY: step.position.y,
+                    name: stepNames[i]
+                };
+                
+                scene.add(step);
+                waterfallSteps.push(step);
+            }
+            
+            // Create flowing particles (water effect)
+            const particleGeometry = new THREE.SphereGeometry(0.05, 8, 8);
+            for (let i = 0; i < 50; i++) {
+                const material = new THREE.MeshBasicMaterial({ 
+                    color: 0xffffff,
+                    transparent: true,
+                    opacity: 0.7
+                });
+                const particle = new THREE.Mesh(particleGeometry, material);
+                
+                particle.position.x = -5 + Math.random() * 10;
+                particle.position.y = 5 + Math.random() * 2;
+                particle.position.z = -2 + Math.random() * 4;
+                
+                particle.userData = {
+                    velocity: new THREE.Vector3(
+                        (Math.random() - 0.5) * 0.02,
+                        -Math.random() * 0.05 - 0.02,
+                        (Math.random() - 0.5) * 0.02
+                    )
+                };
+                
+                scene.add(particle);
+                particles.push(particle);
+            }
+            
+            // Create connecting arrows
+            waterfallSteps.forEach((step, index) => {
+                if (index < waterfallSteps.length - 1) {
+                    const arrowGeometry = new THREE.ConeGeometry(0.1, 0.3, 8);
+                    const arrowMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
+                    const arrow = new THREE.Mesh(arrowGeometry, arrowMaterial);
+                    
+                    arrow.position.x = step.position.x + 0.75;
+                    arrow.position.y = step.position.y - 0.4;
+                    arrow.rotation.z = -Math.PI / 2;
+                    
+                    scene.add(arrow);
+                }
+            });
+            
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(10, 10, 5);
+            scene.add(directionalLight);
+            
+            camera.position.set(0, 2, 8);
+            camera.lookAt(0, 1, 0);
+            
+            animate();
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const time = Date.now() * 0.001;
+            
+            // Animate waterfall steps with subtle floating
+            waterfallSteps.forEach((step, index) => {
+                step.position.y = step.userData.originalY + Math.sin(time + index * 0.5) * 0.1;
+                step.rotation.y = Math.sin(time * 0.5 + index) * 0.1;
+            });
+            
+            // Animate flowing particles
+            particles.forEach(particle => {
+                particle.position.add(particle.userData.velocity);
+                
+                // Reset particles that flow off screen
+                if (particle.position.y < -3) {
+                    particle.position.y = 5 + Math.random() * 2;
+                    particle.position.x = -5 + Math.random() * 10;
+                }
+                
+                if (particle.position.x > 6 || particle.position.x < -6) {
+                    particle.position.x = Math.random() > 0.5 ? -5 : 5;
+                }
+            });
+            
+            // Camera rotation
+            camera.position.x = Math.sin(time * 0.1) * 8;
+            camera.position.z = Math.cos(time * 0.1) * 8;
+            camera.lookAt(0, 1, 0);
+            
+            renderer.render(scene, camera);
+        }
+        
+        window.addEventListener('resize', () => {
+            const container = document.getElementById('three-container');
+            camera.aspect = container.offsetWidth / container.offsetHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+        });
+        
+        init3D();
+    </script>
+</body>
+</html>

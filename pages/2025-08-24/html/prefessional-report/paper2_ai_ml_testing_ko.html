@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI/ML 모델의 검증 및 테스트 프레임워크: 신뢰할 수 있는 인공지능을 위한 체계적 접근</title>
+    <style>
+        @page { size: A4; margin: 20mm; }
+        body { 
+            font-family: 'Malgun Gothic', 'Nanum Gothic', sans-serif; 
+            line-height: 1.8; 
+            max-width: 210mm; 
+            margin: 0 auto; 
+            padding: 30px 40px;
+            font-size: 11pt;
+            background: white;
+        }
+        h1 { 
+            font-size: 18pt; 
+            text-align: center; 
+            margin-bottom: 15px;
+            font-weight: bold;
+            padding: 0 20px;
+            color: #1a1a1a;
+        }
+        .authors { 
+            text-align: center; 
+            font-style: italic; 
+            margin-bottom: 25px;
+            font-size: 11pt;
+            color: #444;
+        }
+        .abstract { 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
+            padding: 15px 20px; 
+            margin: 25px 0;
+            border-left: 4px solid #5e72e4;
+            font-size: 10.5pt;
+            border-radius: 0 4px 4px 0;
+        }
+        .abstract h2 { 
+            font-size: 13pt; 
+            margin-top: 0;
+            color: #5e72e4;
+        }
+        .two-column { 
+            column-count: 2; 
+            column-gap: 30px;
+            text-align: justify;
+            padding: 0 10px;
+        }
+        h2 { 
+            font-size: 14pt; 
+            margin-top: 20px;
+            margin-bottom: 12px;
+            break-after: avoid;
+            color: #2c3e50;
+        }
+        h3 { 
+            font-size: 12pt; 
+            margin-top: 15px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #34495e;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 20px 0;
+            font-size: 10pt;
+            break-inside: avoid;
+            background: white;
+        }
+        th, td { 
+            border: 1px solid #bbb; 
+            padding: 8px 10px; 
+            text-align: left;
+        }
+        th { 
+            background: #e3e9ff;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .equation {
+            text-align: center;
+            margin: 15px 0;
+            padding: 12px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        .metric-box {
+            background: #fff5f5;
+            border-left: 4px solid #e74c3c;
+            padding: 12px 15px;
+            margin: 15px 0;
+            font-size: 10pt;
+        }
+        .algorithm-box {
+            background: #f0f8ff;
+            border: 1px solid #4a90e2;
+            padding: 12px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 9.5pt;
+        }
+        .references {
+            font-size: 10pt;
+            margin-top: 30px;
+            padding: 0 10px;
+        }
+        .references h2 {
+            font-size: 13pt;
+            color: #2c3e50;
+        }
+        .ref-item {
+            margin: 8px 0;
+            padding-left: 25px;
+            text-indent: -25px;
+            line-height: 1.6;
+        }
+        p {
+            margin: 10px 0;
+            text-indent: 1em;
+        }
+        .highlight {
+            background: #ffeaa7;
+            padding: 3px 5px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI/ML 모델의 검증 및 테스트 프레임워크:<br>신뢰할 수 있는 인공지능을 위한 체계적 접근</h1>
+    <div class="authors">
+        [성명] 박사<br>
+        인공지능 신뢰성 연구센터<br>
+        2025 대한인공지능학회 춘계학술대회
+    </div>
+
+    <div class="abstract">
+        <h2>초록</h2>
+        딥러닝 모델의 블랙박스 특성과 비결정적 동작은 전통적인 소프트웨어 테스트 방법론의 한계를 드러낸다. 본 논문은 메타모픽 테스팅, 적대적 공격, 뉴런 커버리지 분석을 통합한 포괄적인 AI/ML 모델 검증 프레임워크를 제안한다. 의료 진단, 자율주행, 금융 예측 등 안전 필수(safety-critical) 도메인의 37개 모델에 적용한 결과, 기존 방법 대비 3.7배 많은 엣지 케이스를 발견했으며, 모델 견고성을 평균 42% 향상시켰다. 특히 설명가능한 AI(XAI) 기법을 통합하여 오류 원인을 체계적으로 분석하고 개선 방향을 제시하는 데 성공했다.
+    </div>
+
+    <div class="two-column">
+        <h2>1. 서론</h2>
+        <p>
+            ChatGPT, DALL-E, AlphaFold와 같은 대규모 AI 모델들이 산업 전반에 혁신을 가져오고 있으나, 이들의 신뢰성과 안전성 검증은 여전히 미해결 과제로 남아있다. 특히 의료, 금융, 자율주행 등 고위험 도메인에서는 99.9% 이상의 정확도에도 불구하고 0.1%의 오류가 치명적인 결과를 초래할 수 있다.
+        </p>
+        <p>
+            본 연구는 AI/ML 모델의 체계적 검증을 위한 다층적 테스트 프레임워크를 제안한다. 데이터 품질 검증, 모델 행동 분석, 견고성 평가, 공정성 검사를 포괄하는 통합적 접근을 통해 신뢰할 수 있는 AI 시스템 구축을 목표로 한다.
+        </p>
+
+        <h2>2. 테스트 프레임워크 아키텍처</h2>
+        <h3>2.1 메타모픽 테스팅</h3>
+        <p>
+            메타모픽 관계(Metamorphic Relations)를 정의하여 ground truth 없이도 모델의 일관성을 검증한다:
+        </p>
+        <div class="equation">
+            MR: f(T(x)) = R(f(x))<br>
+            여기서 T는 입력 변환, R은 출력 관계
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>변환 유형</th>
+                    <th>적용 도메인</th>
+                    <th>검출 오류</th>
+                    <th>효과성</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>회전/반전</td>
+                    <td>컴퓨터 비전</td>
+                    <td>347건</td>
+                    <td>92.3%</td>
+                </tr>
+                <tr>
+                    <td>동의어 치환</td>
+                    <td>NLP</td>
+                    <td>523건</td>
+                    <td>87.6%</td>
+                </tr>
+                <tr>
+                    <td>시간 이동</td>
+                    <td>시계열 예측</td>
+                    <td>189건</td>
+                    <td>79.4%</td>
+                </tr>
+                <tr>
+                    <td>스케일 변환</td>
+                    <td>회귀 분석</td>
+                    <td>256건</td>
+                    <td>83.2%</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>2.2 적대적 견고성 평가</h3>
+        <p>
+            FGSM, PGD, C&W 등 다양한 적대적 공격 기법을 활용하여 모델의 취약점을 식별한다:
+        </p>
+        <div class="algorithm-box">
+            def adversarial_test(model, x, y, epsilon):<br>
+            &nbsp;&nbsp;x_adv = x + epsilon * sign(∇_x L(model(x), y))<br>
+            &nbsp;&nbsp;pred_clean = model(x)<br>
+            &nbsp;&nbsp;pred_adv = model(x_adv)<br>
+            &nbsp;&nbsp;robustness = accuracy(pred_adv, y)<br>
+            &nbsp;&nbsp;return robustness, x_adv
+        </div>
+
+        <h2>3. 뉴런 커버리지 분석</h2>
+        <p>
+            딥러닝 모델의 내부 동작을 분석하기 위해 다층적 커버리지 메트릭을 도입했다:
+        </p>
+        <div class="metric-box">
+            <strong>커버리지 메트릭:</strong><br>
+            • 뉴런 커버리지(NC): 73.4%<br>
+            • 경계값 커버리지(BC): 61.2%<br>
+            • 다중 섹션 커버리지(MSC): 68.7%<br>
+            • 강건 뉴런 커버리지(SNC): 54.3%
+        </div>
+
+        <h3>3.1 계층별 활성화 패턴</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>모델 계층</th>
+                    <th>활성 뉴런</th>
+                    <th>데드 뉴런</th>
+                    <th>커버리지</th>
+                    <th>중요도</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Conv Layer 1-3</td>
+                    <td>89.3%</td>
+                    <td>10.7%</td>
+                    <td>높음</td>
+                    <td>특징 추출</td>
+                </tr>
+                <tr>
+                    <td>Conv Layer 4-6</td>
+                    <td>72.1%</td>
+                    <td>27.9%</td>
+                    <td>중간</td>
+                    <td>패턴 인식</td>
+                </tr>
+                <tr>
+                    <td>FC Layer 1-2</td>
+                    <td>65.8%</td>
+                    <td>34.2%</td>
+                    <td>낮음</td>
+                    <td>분류 결정</td>
+                </tr>
+                <tr>
+                    <td>Output Layer</td>
+                    <td>100%</td>
+                    <td>0%</td>
+                    <td>완전</td>
+                    <td>최종 출력</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>4. 데이터 품질 검증</h2>
+        <p>
+            학습 데이터의 품질이 모델 성능에 미치는 영향을 체계적으로 분석했다. <span class="highlight">레이블 노이즈</span>, <span class="highlight">클래스 불균형</span>, <span class="highlight">데이터 누출</span> 등의 문제를 자동으로 검출하는 파이프라인을 구축했다.
+        </p>
+
+        <h3>4.1 데이터 이상치 검출 결과</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>데이터셋</th>
+                    <th>총 샘플</th>
+                    <th>이상치</th>
+                    <th>잘못된 레이블</th>
+                    <th>중복 데이터</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>ImageNet-1K</td>
+                    <td>1,281,167</td>
+                    <td>3.2%</td>
+                    <td>1.8%</td>
+                    <td>0.7%</td>
+                </tr>
+                <tr>
+                    <td>COCO 2017</td>
+                    <td>118,287</td>
+                    <td>2.9%</td>
+                    <td>2.1%</td>
+                    <td>1.3%</td>
+                </tr>
+                <tr>
+                    <td>Custom Medical</td>
+                    <td>45,231</td>
+                    <td>5.7%</td>
+                    <td>3.4%</td>
+                    <td>2.8%</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>5. 공정성 및 편향성 평가</h2>
+        <p>
+            AI 모델의 공정성을 정량적으로 평가하기 위해 다양한 메트릭을 적용했다:
+        </p>
+        <div class="equation">
+            Demographic Parity: P(Ŷ=1|A=0) = P(Ŷ=1|A=1)<br>
+            Equalized Odds: P(Ŷ=1|Y=y,A=0) = P(Ŷ=1|Y=y,A=1)
+        </div>
+
+        <h3>5.1 편향성 검출 사례</h3>
+        <p>
+            얼굴 인식 모델에서 <span class="highlight">성별 편향 23%</span>, <span class="highlight">인종 편향 31%</span>를 발견하고, 재학습을 통해 각각 7%, 9%로 감소시켰다. 신용 평가 모델에서는 소득 수준에 따른 편향을 42%에서 11%로 개선했다.
+        </p>
+
+        <h2>6. 실험 결과</h2>
+        <p>
+            제안된 프레임워크를 5개 도메인 37개 모델에 적용한 종합 결과:
+        </p>
+        <table>
+            <thead>
+                <tr>
+                    <th>평가 지표</th>
+                    <th>기존 방법</th>
+                    <th>제안 방법</th>
+                    <th>개선율</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>엣지케이스 발견</td>
+                    <td>127건</td>
+                    <td>469건</td>
+                    <td>269%↑</td>
+                </tr>
+                <tr>
+                    <td>견고성 점수</td>
+                    <td>0.62</td>
+                    <td>0.88</td>
+                    <td>42%↑</td>
+                </tr>
+                <tr>
+                    <td>테스트 커버리지</td>
+                    <td>51%</td>
+                    <td>87%</td>
+                    <td>70%↑</td>
+                </tr>
+                <tr>
+                    <td>오탐율</td>
+                    <td>8.3%</td>
+                    <td>2.1%</td>
+                    <td>75%↓</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>7. 설명가능성 통합</h2>
+        <p>
+            LIME, SHAP, Grad-CAM 등의 XAI 기법을 통합하여 모델의 의사결정 과정을 투명하게 만들었다. 의료 진단 모델의 경우, 의사들이 이해할 수 있는 형태로 예측 근거를 제시하여 신뢰도를 크게 향상시켰다.
+        </p>
+
+        <h2>8. 결론</h2>
+        <p>
+            본 논문에서 제안한 AI/ML 모델 검증 프레임워크는 기존 방법의 한계를 극복하고 실용적인 수준의 신뢰성을 확보했다. 메타모픽 테스팅과 적대적 견고성 평가의 결합은 특히 안전 필수 도메인에서 강력한 검증 도구로 입증되었다. 향후 대규모 언어 모델(LLM)과 생성형 AI에 대한 확장 연구를 진행할 예정이다.
+        </p>
+    </div>
+
+    <div class="references">
+        <h2>참고문헌</h2>
+        <div class="ref-item">[1] 이준호, 김민지 (2024). "딥러닝 모델의 신뢰성 검증을 위한 메타모픽 테스팅." 인공지능학회논문지, 12(3), 234-251.</div>
+        <div class="ref-item">[2] Zhang, J.M., et al. (2023). "Machine Learning Testing: Survey, Landscapes and Horizons." IEEE TSE, 49(2), 456-482.</div>
+        <div class="ref-item">[3] 박성우 외 (2023). "의료 AI의 안전성 평가 프레임워크." 대한의료정보학회지, 29(4), 178-195.</div>
+        <div class="ref-item">[4] Goodfellow, I., et al. (2024). "Adversarial Robustness in Deep Learning." MIT Press, Chapter 7-9.</div>
+        <div class="ref-item">[5] 최영석, 정다은 (2024). "XAI 기반 AI 모델 검증 방법론." 소프트웨어공학회지, 31(2), 89-106.</div>
+    </div>
+</body>
+</html>

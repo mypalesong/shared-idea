@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Big Joe's American Diner - Home Style Cooking Since 1972</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@300;400;700&display=swap');
+        
+        :root {
+            --red: #c41e3a;
+            --navy: #1e3a5f;
+            --cream: #faf6f0;
+            --brown: #8b4513;
+            --yellow: #ffd700;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--cream);
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        /* Vintage Pattern Background */
+        .vintage-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,0,0,.1) 35px, rgba(255,0,0,.1) 70px),
+                repeating-linear-gradient(-45deg, transparent, transparent 35px, rgba(0,0,255,.1) 35px, rgba(0,0,255,.1) 70px);
+            z-index: -1;
+        }
+        
+        /* Header with Neon Sign Effect */
+        header {
+            background: var(--navy);
+            padding: 20px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 20px;
+        }
+        
+        .neon-sign {
+            display: inline-block;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 4em;
+            color: var(--yellow);
+            text-shadow: 
+                0 0 10px var(--yellow),
+                0 0 20px var(--yellow),
+                0 0 30px var(--red),
+                0 0 40px var(--red);
+            animation: flicker 2s infinite alternate;
+            letter-spacing: 3px;
+        }
+        
+        @keyframes flicker {
+            0%, 100% {
+                text-shadow: 
+                    0 0 10px var(--yellow),
+                    0 0 20px var(--yellow),
+                    0 0 30px var(--red),
+                    0 0 40px var(--red);
+            }
+            50% {
+                text-shadow: 
+                    0 0 15px var(--yellow),
+                    0 0 25px var(--yellow),
+                    0 0 35px var(--red),
+                    0 0 50px var(--red);
+            }
+        }
+        
+        .tagline {
+            color: var(--cream);
+            font-size: 1.2em;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        /* Retro Navigation */
+        nav {
+            background: var(--red);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        nav li {
+            position: relative;
+        }
+        
+        nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background 0.3s;
+            border-right: 2px solid rgba(255,255,255,0.1);
+        }
+        
+        nav li:last-child a {
+            border-right: none;
+        }
+        
+        nav a:hover {
+            background: rgba(0,0,0,0.2);
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        /* Welcome Section */
+        .welcome {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 60px;
+            position: relative;
+        }
+        
+        .welcome::before,
+        .welcome::after {
+            content: '★';
+            position: absolute;
+            font-size: 2em;
+            color: var(--red);
+            top: 30px;
+        }
+        
+        .welcome::before {
+            left: 30px;
+        }
+        
+        .welcome::after {
+            right: 30px;
+        }
+        
+        .welcome h2 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 3em;
+            color: var(--navy);
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        
+        .welcome p {
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Menu Board Style */
+        .menu-board {
+            background: linear-gradient(135deg, #2c2416 0%, #3d2f1f 100%);
+            border: 15px solid var(--brown);
+            border-radius: 10px;
+            padding: 40px;
+            margin-bottom: 60px;
+            box-shadow: 
+                0 20px 40px rgba(0,0,0,0.3),
+                inset 0 0 30px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        
+        .menu-board::before {
+            content: 'MENU';
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--red);
+            color: white;
+            padding: 10px 40px;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2em;
+            letter-spacing: 3px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .menu-section {
+            margin-bottom: 40px;
+        }
+        
+        .menu-section h3 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2.5em;
+            color: var(--yellow);
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 2px;
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .menu-item {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px dashed rgba(255,215,0,0.3);
+            transition: transform 0.3s, background 0.3s;
+        }
+        
+        .menu-item:hover {
+            transform: scale(1.05);
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .menu-item h4 {
+            color: var(--cream);
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .menu-item .price {
+            color: var(--yellow);
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.3em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .menu-item p {
+            color: rgba(255,255,255,0.8);
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+        
+        /* Specials Banner */
+        .specials-banner {
+            background: var(--red);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            border-radius: 15px;
+            margin-bottom: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .specials-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.05) 10px,
+                rgba(255,255,255,0.05) 20px
+            );
+            animation: slide 20s linear infinite;
+        }
+        
+        @keyframes slide {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(50px, 50px);
+            }
+        }
+        
+        .specials-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .specials-banner h2 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            letter-spacing: 3px;
+        }
+        
+        .daily-specials {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .special-day {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .special-day h4 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            color: var(--yellow);
+        }
+        
+        .special-day p {
+            font-size: 1.1em;
+            line-height: 1.5;
+        }
+        
+        /* Info Cards */
+        .info-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        .info-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            border-top: 5px solid var(--red);
+        }
+        
+        .info-card h3 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2em;
+            color: var(--navy);
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+        
+        .info-card p {
+            color: #666;
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+        
+        .badge {
+            position: absolute;
+            top: -20px;
+            right: 20px;
+            background: var(--yellow);
+            color: var(--navy);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: rotate(5deg);
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--navy);
+            color: white;
+            padding: 60px 20px 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-section h4 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.8em;
+            color: var(--yellow);
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+        
+        .footer-section p,
+        .footer-section li {
+            color: rgba(255,255,255,0.9);
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .social-links {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid rgba(255,255,255,0.1);
+        }
+        
+        .social-links a {
+            color: var(--yellow);
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.2em;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            margin-top: 20px;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9em;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .neon-sign {
+                font-size: 2.5em;
+            }
+            
+            nav a {
+                padding: 12px 20px;
+                font-size: 0.9em;
+            }
+            
+            .welcome h2,
+            .specials-banner h2 {
+                font-size: 2em;
+            }
+            
+            .menu-board {
+                padding: 20px;
+            }
+            
+            .daily-specials {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="vintage-bg"></div>
+    
+    <header>
+        <div class="header-content">
+            <h1 class="neon-sign">BIG JOE'S</h1>
+            <p class="tagline">All-American Diner • Est. 1972</p>
+        </div>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#home">홈</a></li>
+            <li><a href="#menu">메뉴</a></li>
+            <li><a href="#specials">스페셜</a></li>
+            <li><a href="#about">소개</a></li>
+            <li><a href="#contact">오시는 길</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <section class="welcome" id="home">
+            <h2>Welcome to Big Joe's!</h2>
+            <p>1972년부터 이어온 정통 미국식 가정 요리의 맛! Big Joe's는 3대째 이어오는 가족 경영 다이너로, 
+            푸짐한 양과 정직한 맛으로 사랑받고 있습니다. 갓 구운 홈메이드 파이부터 육즙 가득한 스테이크까지, 
+            미국 가정식의 따뜻함을 느껴보세요.</p>
+        </section>
+        
+        <section class="menu-board" id="menu">
+            <div class="menu-section">
+                <h3>STEAKS & RIBS</h3>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <h4>Joe's Special T-Bone <span class="price">$42</span></h4>
+                        <p>20oz T-본 스테이크, 구운 감자, 콘 온 더 콥, 홈메이드 그레이비</p>
+                    </div>
+                    <div class="menu-item">
+                        <h4>Country Fried Steak <span class="price">$28</span></h4>
+                        <p>바삭하게 튀긴 큐브 스테이크, 크리미 그레이비, 매쉬드 포테이토</p>
+                    </div>
+                    <div class="menu-item">
+                        <h4>BBQ Baby Back Ribs <span class="price">$35</span></h4>
+                        <p>수제 바비큐 소스, 코울슬로, 콘브레드</p>
+                    </div>
+                    <div class="menu-item">
+                        <h4>Ribeye Steak <span class="price">$48</span></h4>
+                        <p>16oz 립아이, 양파 링, 시저 샐러드</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="menu-section">
+                <h3>BURGERS & SANDWICHES</h3>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <h4>Big Joe Burger <span class="price">$18</span></h4>
+                        <p>더블 패티, 베이컨, 체다 치즈, 특제 소스, 감자튀김</p>
+                    </div>
+                    <div class="menu-item">
+                        <h4>Philly Cheesesteak <span class="price">$16</span></h4>
+                        <p>얇게 썬 비프, 프로볼로네, 구운 양파와 피망</p>
+                    </div>
+                    <div class="menu-item">
+                        <h4>Pulled Pork Sandwich <span class="price">$15</span></h4>
+                        <p>12시간 훈제 풀드 포크, 코울슬로, 피클</p>
+                    </div>
+                    <div class="menu-item">
+                        <h4>Classic BLT <span class="price">$12</span></h4>
+                        <p>두툼한 베이컨, 신선한 토마토, 아이스버그 레터스</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="menu-section">
+                <h3>COMFORT FOOD</h3>
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <h4>Chicken & Waffles <span class="price">$22</span></h4>
+                        <p>남부식 프라이드 치킨, 벨기에 와플, 메이플 시럽</p>
+                    </div>
+                    <div class="menu-item">
+                        <h4>Meatloaf Dinner <span class="price">$24</span></h4>
+                        <p>홈메이드 미트로프, 그린빈, 매쉬드 포테이토</p>
+                    </div>
+                    <div class="menu-item">
+                        <h4>Mac & Cheese Deluxe <span class="price">$18</span></h4>
+                        <p>5가지 치즈, 베이컨 비츠, 그릴드 치킨 추가 가능</p>
+                    </div>
+                    <div class="menu-item">
+                        <h4>Pot Roast <span class="price">$26</span></h4>
+                        <p>천천히 조린 비프, 당근, 감자, 양파</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="specials-banner" id="specials">
+            <div class="specials-content">
+                <h2>DAILY SPECIALS</h2>
+                <p style="font-size: 1.3em; margin-bottom: 30px;">매일 바뀌는 특별 메뉴를 놓치지 마세요!</p>
+                <div class="daily-specials">
+                    <div class="special-day">
+                        <h4>월요일</h4>
+                        <p>All-You-Can-Eat Wings<br>$19.99</p>
+                    </div>
+                    <div class="special-day">
+                        <h4>화요일</h4>
+                        <p>Taco Tuesday<br>3 Tacos $12</p>
+                    </div>
+                    <div class="special-day">
+                        <h4>수요일</h4>
+                        <p>Steak Night<br>20% OFF</p>
+                    </div>
+                    <div class="special-day">
+                        <h4>목요일</h4>
+                        <p>Burger & Beer<br>$15 Combo</p>
+                    </div>
+                    <div class="special-day">
+                        <h4>금요일</h4>
+                        <p>Fish Fry Friday<br>$16.99</p>
+                    </div>
+                    <div class="special-day">
+                        <h4>주말</h4>
+                        <p>Brunch Special<br>10AM-2PM</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="info-section" id="about">
+            <div class="info-card">
+                <span class="badge">Since 1972</span>
+                <h3>OUR STORY</h3>
+                <p>Big Joe가 작은 다이너를 시작한 이래로 50년이 넘는 시간동안 
+                변하지 않는 맛과 푸짐한 인심으로 지역 주민들의 사랑을 받아왔습니다. 
+                3대째 이어오는 비법 레시피와 정성을 만나보세요.</p>
+            </div>
+            <div class="info-card">
+                <span class="badge">Fresh Daily</span>
+                <h3>HOMEMADE</h3>
+                <p>매일 아침 직접 구운 빵과 파이, 신선한 재료로 만든 수제 소스, 
+                12시간 이상 저온 조리한 고기까지. Big Joe's의 모든 메뉴는 
+                정성스럽게 직접 만듭니다.</p>
+            </div>
+            <div class="info-card">
+                <span class="badge">Family Style</span>
+                <h3>ATMOSPHERE</h3>
+                <p>빈티지 주크박스, 체커보드 바닥, 레드 가죽 부스 좌석. 
+                1970년대 정통 미국 다이너의 분위기를 그대로 간직한 
+                Big Joe's에서 특별한 추억을 만드세요.</p>
+            </div>
+        </section>
+    </div>
+    
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-info">
+                <div class="footer-section">
+                    <h4>LOCATION</h4>
+                    <p>서울특별시 용산구 이태원로 245<br>
+                    Big Joe's Diner<br>
+                    주차장 완비</p>
+                </div>
+                <div class="footer-section">
+                    <h4>HOURS</h4>
+                    <ul>
+                        <li>월-목: 11:00 AM - 10:00 PM</li>
+                        <li>금-토: 11:00 AM - 11:00 PM</li>
+                        <li>일요일: 10:00 AM - 10:00 PM</li>
+                        <li>브런치: 주말 10:00 AM - 2:00 PM</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>CONTACT</h4>
+                    <p>전화: 02-749-1972<br>
+                    이메일: hello@bigjoes.kr<br>
+                    예약 및 단체 문의 환영</p>
+                </div>
+            </div>
+            <div class="social-links">
+                <a href="#">Facebook</a>
+                <a href="#">Instagram</a>
+                <a href="#">Twitter</a>
+                <a href="#">YouTube</a>
+            </div>
+            <p class="copyright">© 2025 Big Joe's American Diner. All Rights Reserved. | Serving Happiness Since 1972</p>
+        </div>
+    </footer>
+</body>
+</html>

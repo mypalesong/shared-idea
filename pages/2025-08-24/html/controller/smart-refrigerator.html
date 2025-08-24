@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Refrigerator Controller</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 50%, #d1e7dd 100%);
+            height: 100vh;
+            overflow: hidden;
+            color: #333;
+            position: relative;
+        }
+
+        .fridge-container {
+            display: grid;
+            grid-template-columns: 350px 1fr 300px;
+            grid-template-rows: 100px 1fr 80px;
+            height: 100vh;
+            gap: 15px;
+            padding: 15px;
+        }
+
+        .header-panel {
+            grid-column: 1 / 4;
+            grid-row: 1;
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            color: white;
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);
+        }
+
+        .left-panel {
+            grid-column: 1;
+            grid-row: 2;
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border: 2px solid #4a90e2;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .center-display {
+            grid-column: 2;
+            grid-row: 2;
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            border: 3px solid #28a745;
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .right-panel {
+            grid-column: 3;
+            grid-row: 2;
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border: 2px solid #dc3545;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-panel {
+            grid-column: 1 / 4;
+            grid-row: 3;
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            color: white;
+            box-shadow: 0 5px 20px rgba(108, 117, 125, 0.3);
+        }
+
+        .temperature-display {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(23, 162, 184, 0.3);
+        }
+
+        .temp-value {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .temp-label {
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.9;
+        }
+
+        .zone-control {
+            background: #ffffff;
+            border: 2px solid #28a745;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .zone-control:hover {
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .zone-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .zone-temp {
+            font-size: 32px;
+            font-weight: bold;
+            color: #007bff;
+            margin: 10px 0;
+        }
+
+        .zone-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .temp-button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #007bff, #0056b3);
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        .temp-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.5);
+        }
+
+        .temp-button:active {
+            transform: scale(0.95);
+        }
+
+        .inventory-display {
+            flex: 1;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            margin: 20px;
+            border-radius: 20px;
+            padding: 25px;
+            position: relative;
+            border: 2px solid #6c757d;
+        }
+
+        .inventory-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #495057;
+            text-align: center;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            height: calc(100% - 80px);
+        }
+
+        .inventory-item {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #dee2e6;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .inventory-item:hover {
+            border-color: #007bff;
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .inventory-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .inventory-name {
+            font-weight: bold;
+            color: #495057;
+            font-size: 12px;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .inventory-count {
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .inventory-expiry {
+            font-size: 10px;
+            color: #dc3545;
+            margin-top: 5px;
+        }
+
+        .energy-efficiency {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+        }
+
+        .efficiency-score {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .efficiency-label {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        .alert-panel {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            color: #212529;
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.3);
+        }
+
+        .alert-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .alert-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .alert-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(33, 37, 41, 0.1);
+            font-size: 12px;
+        }
+
+        .alert-list li:last-child {
+            border-bottom: none;
+        }
+
+        .control-button {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border: 2px solid #007bff;
+            border-radius: 15px;
+            padding: 15px 25px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: bold;
+            color: #007bff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+        }
+
+        .control-button:hover {
+            background: linear-gradient(145deg, #007bff, #0056b3);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+        }
+
+        .control-button:active {
+            transform: translateY(0);
+        }
+
+        .control-button.active {
+            background: linear-gradient(145deg, #28a745, #1e7e34);
+            border-color: #28a745;
+            color: white;
+        }
+
+        .status-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .status-indicator.green {
+            background: #28a745;
+            box-shadow: 0 0 15px #28a745;
+        }
+
+        .status-indicator.yellow {
+            background: #ffc107;
+            box-shadow: 0 0 15px #ffc107;
+        }
+
+        .status-indicator.red {
+            background: #dc3545;
+            box-shadow: 0 0 15px #dc3545;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .water-filter-status {
+            background: linear-gradient(135deg, #6f42c1, #5a2d91);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(111, 66, 193, 0.3);
+        }
+
+        .filter-percentage {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .filter-bar {
+            background: rgba(255, 255, 255, 0.2);
+            height: 8px;
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .filter-progress {
+            background: white;
+            height: 100%;
+            width: 75%;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .smart-features {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .feature-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #dee2e6;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .feature-toggle:hover {
+            background: #e9ecef;
+            border-color: #007bff;
+        }
+
+        .toggle-switch {
+            width: 50px;
+            height: 25px;
+            background: #dee2e6;
+            border-radius: 25px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #28a745;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 21px;
+            height: 21px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(25px);
+        }
+    </style>
+</head>
+<body>
+    <div class="fridge-container">
+        <!-- Header Panel -->
+        <div class="header-panel">
+            <div>
+                <h2>LG SMART REFRIGERATOR</h2>
+                <div style="font-size: 14px; opacity: 0.9;">Model: GR-X257CSW | Serial: KR2024001</div>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 18px;">전체 전력 소모량</div>
+                <div style="font-size: 24px; font-weight: bold;">347W</div>
+            </div>
+        </div>
+
+        <!-- Left Panel - Temperature Controls -->
+        <div class="left-panel">
+            <div class="temperature-display">
+                <div class="temp-label">전체 온도</div>
+                <div class="temp-value">2°C</div>
+                <div class="temp-label">최적 상태</div>
+            </div>
+
+            <div class="zone-control">
+                <div class="zone-title">냉장실</div>
+                <div class="zone-temp" id="fridge-temp">4°C</div>
+                <div class="zone-controls">
+                    <button class="temp-button" onclick="adjustTemp('fridge', -1)">-</button>
+                    <span style="font-size: 14px; color: #6c757d;">목표: 4°C</span>
+                    <button class="temp-button" onclick="adjustTemp('fridge', 1)">+</button>
+                </div>
+            </div>
+
+            <div class="zone-control">
+                <div class="zone-title">냉동실</div>
+                <div class="zone-temp" id="freezer-temp">-18°C</div>
+                <div class="zone-controls">
+                    <button class="temp-button" onclick="adjustTemp('freezer', -1)">-</button>
+                    <span style="font-size: 14px; color: #6c757d;">목표: -18°C</span>
+                    <button class="temp-button" onclick="adjustTemp('freezer', 1)">+</button>
+                </div>
+            </div>
+
+            <div class="zone-control">
+                <div class="zone-title">채소칸</div>
+                <div class="zone-temp" id="vegetable-temp">1°C</div>
+                <div class="zone-controls">
+                    <button class="temp-button" onclick="adjustTemp('vegetable', -1)">-</button>
+                    <span style="font-size: 14px; color: #6c757d;">목표: 1°C</span>
+                    <button class="temp-button" onclick="adjustTemp('vegetable', 1)">+</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Display - Inventory -->
+        <div class="center-display">
+            <div class="inventory-display">
+                <div class="inventory-title">식품 재고 현황</div>
+                <div class="inventory-grid">
+                    <div class="inventory-item" onclick="showItemDetails('milk')">
+                        <div class="inventory-icon">🥛</div>
+                        <div class="inventory-name">우유</div>
+                        <div class="inventory-count">2개</div>
+                        <div class="inventory-expiry">D-3</div>
+                    </div>
+                    
+                    <div class="inventory-item" onclick="showItemDetails('eggs')">
+                        <div class="inventory-icon">🥚</div>
+                        <div class="inventory-name">계란</div>
+                        <div class="inventory-count">8개</div>
+                        <div class="inventory-expiry">D-7</div>
+                    </div>
+                    
+                    <div class="inventory-item" onclick="showItemDetails('vegetables')">
+                        <div class="inventory-icon">🥬</div>
+                        <div class="inventory-name">채소</div>
+                        <div class="inventory-count">충분</div>
+                        <div class="inventory-expiry">신선</div>
+                    </div>
+                    
+                    <div class="inventory-item" onclick="showItemDetails('meat')">
+                        <div class="inventory-icon">🥩</div>
+                        <div class="inventory-name">육류</div>
+                        <div class="inventory-count">1.2kg</div>
+                        <div class="inventory-expiry">D-2</div>
+                    </div>
+                    
+                    <div class="inventory-item" onclick="showItemDetails('cheese')">
+                        <div class="inventory-icon">🧀</div>
+                        <div class="inventory-name">치즈</div>
+                        <div class="inventory-count">5개</div>
+                        <div class="inventory-expiry">D-14</div>
+                    </div>
+                    
+                    <div class="inventory-item" onclick="showItemDetails('fruits')">
+                        <div class="inventory-icon">🍎</div>
+                        <div class="inventory-name">과일</div>
+                        <div class="inventory-count">다양</div>
+                        <div class="inventory-expiry">D-5</div>
+                    </div>
+                    
+                    <div class="inventory-item" onclick="showItemDetails('beverages')">
+                        <div class="inventory-icon">🧃</div>
+                        <div class="inventory-name">음료</div>
+                        <div class="inventory-count">12개</div>
+                        <div class="inventory-expiry">D-30</div>
+                    </div>
+                    
+                    <div class="inventory-item" onclick="showItemDetails('leftovers')">
+                        <div class="inventory-icon">🍱</div>
+                        <div class="inventory-name">남은음식</div>
+                        <div class="inventory-count">3개</div>
+                        <div class="inventory-expiry">오늘</div>
+                    </div>
+                    
+                    <div class="inventory-item" onclick="showItemDetails('condiments')">
+                        <div class="inventory-icon">🍯</div>
+                        <div class="inventory-name">양념류</div>
+                        <div class="inventory-count">충분</div>
+                        <div class="inventory-expiry">장기보관</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Status & Controls -->
+        <div class="right-panel">
+            <div class="energy-efficiency">
+                <div class="efficiency-label">에너지 효율</div>
+                <div class="efficiency-score">A++</div>
+                <div class="efficiency-label">월 예상 전기료: 34,500원</div>
+            </div>
+
+            <div class="alert-panel">
+                <div class="alert-title">🚨 알림</div>
+                <ul class="alert-list">
+                    <li>우유 유통기한 임박 (3일 남음)</li>
+                    <li>육류 빨리 섭취 권장 (2일 남음)</li>
+                    <li>남은음식 오늘 안에 섭취</li>
+                </ul>
+            </div>
+
+            <div class="water-filter-status">
+                <div class="efficiency-label">정수 필터 상태</div>
+                <div class="filter-percentage">75%</div>
+                <div class="filter-bar">
+                    <div class="filter-progress"></div>
+                </div>
+                <div style="font-size: 12px;">교체까지 2개월</div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <div style="font-size: 16px; font-weight: bold; color: #495057; margin-bottom: 15px;">스마트 기능</div>
+                <div class="smart-features">
+                    <div class="feature-toggle" onclick="toggleFeature(this)">
+                        <span>에코 모드</span>
+                        <div class="toggle-switch active"></div>
+                    </div>
+                    <div class="feature-toggle" onclick="toggleFeature(this)">
+                        <span>휴가 모드</span>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    <div class="feature-toggle" onclick="toggleFeature(this)">
+                        <span>자동 주문</span>
+                        <div class="toggle-switch active"></div>
+                    </div>
+                    <div class="feature-toggle" onclick="toggleFeature(this)">
+                        <span>스마트 진단</span>
+                        <div class="toggle-switch active"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Panel -->
+        <div class="footer-panel">
+            <button class="control-button" onclick="controlAction('defrost')">수동 해동</button>
+            <button class="control-button" onclick="controlAction('clean')">자동 청소</button>
+            <button class="control-button" onclick="controlAction('shopping')">쇼핑 목록</button>
+            <button class="control-button" onclick="controlAction('diagnostic')">진단 실행</button>
+            <button class="control-button" onclick="controlAction('settings')">설정</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const temperatures = {
+                fridge: 4,
+                freezer: -18,
+                vegetable: 1
+            };
+
+            let inventoryData = {
+                milk: { name: '우유', count: 2, expiry: 3, icon: '🥛' },
+                eggs: { name: '계란', count: 8, expiry: 7, icon: '🥚' },
+                vegetables: { name: '채소', count: '충분', expiry: '신선', icon: '🥬' },
+                meat: { name: '육류', count: '1.2kg', expiry: 2, icon: '🥩' },
+                cheese: { name: '치즈', count: 5, expiry: 14, icon: '🧀' },
+                fruits: { name: '과일', count: '다양', expiry: 5, icon: '🍎' },
+                beverages: { name: '음료', count: 12, expiry: 30, icon: '🧃' },
+                leftovers: { name: '남은음식', count: 3, expiry: 0, icon: '🍱' },
+                condiments: { name: '양념류', count: '충분', expiry: '장기보관', icon: '🍯' }
+            };
+
+            // Temperature adjustment function
+            window.adjustTemp = function(zone, delta) {
+                temperatures[zone] += delta;
+                
+                // Set reasonable limits
+                if (zone === 'fridge') {
+                    temperatures[zone] = Math.max(-2, Math.min(8, temperatures[zone]));
+                } else if (zone === 'freezer') {
+                    temperatures[zone] = Math.max(-25, Math.min(-10, temperatures[zone]));
+                } else if (zone === 'vegetable') {
+                    temperatures[zone] = Math.max(-1, Math.min(5, temperatures[zone]));
+                }
+                
+                document.getElementById(zone + '-temp').textContent = temperatures[zone] + '°C';
+                
+                // Visual feedback
+                const tempElement = document.getElementById(zone + '-temp');
+                tempElement.style.transform = 'scale(1.1)';
+                tempElement.style.color = delta > 0 ? '#dc3545' : '#007bff';
+                
+                setTimeout(() => {
+                    tempElement.style.transform = 'scale(1)';
+                    tempElement.style.color = '#007bff';
+                }, 300);
+            };
+
+            // Item details function
+            window.showItemDetails = function(itemKey) {
+                const item = inventoryData[itemKey];
+                const itemElement = document.querySelector(`[onclick="showItemDetails('${itemKey}')"]`);
+                
+                // Visual feedback
+                itemElement.style.transform = 'scale(0.95)';
+                itemElement.style.boxShadow = '0 15px 35px rgba(0, 123, 255, 0.4)';
+                
+                // Show alert or modal (simplified for demo)
+                setTimeout(() => {
+                    alert(`${item.name}\\n수량: ${item.count}\\n유통기한: ${item.expiry === 0 ? '오늘' : (typeof item.expiry === 'number' ? 'D-' + item.expiry : item.expiry)}`);
+                    
+                    itemElement.style.transform = 'scale(1)';
+                    itemElement.style.boxShadow = '';
+                }, 200);
+            };
+
+            // Feature toggle function
+            window.toggleFeature = function(element) {
+                const toggle = element.querySelector('.toggle-switch');
+                toggle.classList.toggle('active');
+                
+                // Visual feedback
+                element.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    element.style.transform = 'scale(1)';
+                }, 150);
+            };
+
+            // Control actions
+            window.controlAction = function(action) {
+                const button = event.target;
+                const originalText = button.textContent;
+                
+                // Button feedback
+                button.classList.add('active');
+                button.textContent = '실행 중...';
+                
+                setTimeout(() => {
+                    button.classList.remove('active');
+                    button.textContent = originalText;
+                    
+                    // Action-specific feedback
+                    switch(action) {
+                        case 'defrost':
+                            alert('수동 해동을 시작합니다. 예상 시간: 45분');
+                            break;
+                        case 'clean':
+                            alert('자동 청소 모드가 활성화되었습니다.');
+                            break;
+                        case 'shopping':
+                            alert('쇼핑 목록:\\n- 우유\\n- 육류\\n- 계란');
+                            break;
+                        case 'diagnostic':
+                            alert('진단 완료: 모든 시스템 정상');
+                            break;
+                        case 'settings':
+                            alert('설정 메뉴를 열었습니다.');
+                            break;
+                    }
+                }, 2000);
+            };
+
+            // Simulated real-time updates
+            setInterval(() => {
+                // Update power consumption
+                const powerElement = document.querySelector('.header-panel div:last-child div:last-child');
+                const currentPower = parseInt(powerElement.textContent);
+                const newPower = currentPower + (Math.random() - 0.5) * 20;
+                powerElement.textContent = Math.max(300, Math.min(400, Math.round(newPower))) + 'W';
+            }, 5000);
+
+            // Animate inventory items periodically
+            setInterval(() => {
+                const items = document.querySelectorAll('.inventory-item');
+                const randomItem = items[Math.floor(Math.random() * items.length)];
+                randomItem.style.transform = 'scale(1.05)';
+                randomItem.style.borderColor = '#28a745';
+                
+                setTimeout(() => {
+                    randomItem.style.transform = 'scale(1)';
+                    randomItem.style.borderColor = '#dee2e6';
+                }, 1000);
+            }, 8000);
+        });
+    </script>
+</body>
+</html>

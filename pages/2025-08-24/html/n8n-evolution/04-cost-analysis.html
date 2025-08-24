@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>04. 비용 효율성 및 ROI 분석 | n8n 워크플로우 자동화 백서</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fafafa;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav-header {
+            background: #1f2937;
+            color: white;
+            padding: 15px 0;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .nav-links a {
+            color: #9ca3af;
+            text-decoration: none;
+            margin-left: 20px;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        header {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: white;
+            padding: 50px 0;
+            text-align: center;
+        }
+
+        .header-content h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .header-content .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content-section {
+            background: white;
+            padding: 60px 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #1f2937;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .intro-text {
+            font-size: 1.1rem;
+            color: #4b5563;
+            margin-bottom: 40px;
+            line-height: 1.7;
+        }
+
+        .cost-breakdown {
+            background: #f8fafc;
+            padding: 60px 0;
+        }
+
+        .cost-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .cost-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-top: 4px solid #10b981;
+        }
+
+        .cost-card h3 {
+            color: #065f46;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+
+        .cost-comparison {
+            margin: 30px 0;
+        }
+
+        .cost-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .cost-row:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            background: #ecfdf5;
+            margin: 10px -20px -20px -20px;
+            padding: 15px 20px;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .cost-label {
+            color: #374151;
+        }
+
+        .cost-value {
+            font-weight: 600;
+        }
+
+        .savings {
+            color: #059669;
+        }
+
+        .expense {
+            color: #dc2626;
+        }
+
+        .roi-calculator {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 60px 0;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 40px 0;
+        }
+
+        .calculator-input {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .calculator-output {
+            background: rgba(16, 185, 129, 0.2);
+            padding: 30px;
+            border-radius: 12px;
+            border-left: 4px solid #10b981;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 6px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .input-group input::placeholder {
+            color: #94a3b8;
+        }
+
+        .roi-results {
+            margin-top: 20px;
+        }
+
+        .roi-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .roi-metric:last-child {
+            border-bottom: none;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #10b981;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 40px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #1f2937;
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 20px 15px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        .feature-category {
+            font-weight: 600;
+            color: #1f2937;
+            background: #f3f4f6;
+            text-align: left;
+        }
+
+        .cost-highlight {
+            background: #d1fae5;
+            color: #065f46;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .case-studies {
+            background: white;
+            padding: 60px 0;
+        }
+
+        .case-study-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .case-study-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .case-study-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .company-logo {
+            width: 50px;
+            height: 50px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+
+        .company-info h4 {
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .company-info p {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .roi-summary {
+            background: #ecfdf5;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+            margin: 20px 0;
+        }
+
+        .roi-summary h5 {
+            color: #065f46;
+            margin-bottom: 10px;
+        }
+
+        .roi-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .roi-metric-item {
+            text-align: center;
+        }
+
+        .roi-metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #059669;
+        }
+
+        .roi-metric-label {
+            font-size: 0.8rem;
+            color: #374151;
+            margin-top: 5px;
+        }
+
+        .hidden-costs {
+            background: #fef3c7;
+            padding: 40px;
+            border-radius: 12px;
+            border-left: 4px solid #f59e0b;
+            margin: 40px 0;
+        }
+
+        .hidden-costs h3 {
+            color: #92400e;
+            margin-bottom: 20px;
+        }
+
+        .hidden-costs-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .hidden-cost-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .hidden-cost-item h4 {
+            color: #92400e;
+            margin-bottom: 10px;
+        }
+
+        .hidden-cost-item p {
+            color: #78716c;
+            font-size: 0.9rem;
+        }
+
+        .tco-analysis {
+            background: #f0f9ff;
+            padding: 60px 0;
+        }
+
+        .tco-chart {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin: 30px 0;
+        }
+
+        .chart-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .chart-header h3 {
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .chart-bars {
+            display: flex;
+            align-items: end;
+            justify-content: space-around;
+            height: 300px;
+            margin: 30px 0;
+        }
+
+        .chart-bar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        .bar {
+            width: 60px;
+            border-radius: 6px 6px 0 0;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .bar-n8n {
+            background: linear-gradient(to top, #059669, #10b981);
+        }
+
+        .bar-zapier {
+            background: linear-gradient(to top, #dc2626, #ef4444);
+        }
+
+        .bar-make {
+            background: linear-gradient(to top, #7c3aed, #a855f7);
+        }
+
+        .bar-power {
+            background: linear-gradient(to top, #2563eb, #3b82f6);
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1f2937;
+        }
+
+        .bar-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .navigation-footer {
+            background: #f9fafb;
+            padding: 30px 0;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 24px;
+            background: #059669;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .nav-button:hover {
+            background: #047857;
+        }
+
+        @media (max-width: 768px) {
+            .header-content h1 {
+                font-size: 2rem;
+            }
+            
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-bars {
+                height: 200px;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-header">
+        <div class="container">
+            <div class="nav-content">
+                <div class="nav-title">n8n 워크플로우 자동화 백서</div>
+                <div class="nav-links">
+                    <a href="index.html">홈</a>
+                    <a href="03-security-compliance.html">이전</a>
+                    <a href="05-technical-flexibility.html">다음</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1>04. 비용 효율성 및 ROI 분석</h1>
+                <p class="subtitle">n8n 도입의 정량적 경제 효과와 투자 수익률 분석</p>
+            </div>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <h2 class="section-title">비용 혁명의 핵심 동력</h2>
+            <p class="intro-text">
+                n8n의 셀프 호스팅 옵션은 자동화 비용 구조를 근본적으로 바꿉니다. 
+                초기 구축 이후에는 실행량에 관계없이 추가 비용이 발생하지 않아, 
+                대규모 자동화 구현 시 경쟁사 대비 <strong>80% 이상의 비용 절감</strong>이 가능합니다. 
+                이는 단순한 라이선스 절약을 넘어서 기업의 디지털 자산 가치를 극대화하는 전략적 투자입니다.
+            </p>
+        </div>
+    </section>
+
+    <section class="cost-breakdown">
+        <div class="container">
+            <h2 class="section-title">상세 비용 분석</h2>
+            
+            <div class="cost-grid">
+                <div class="cost-card">
+                    <h3>n8n 셀프 호스팅</h3>
+                    <div class="cost-comparison">
+                        <div class="cost-row">
+                            <span class="cost-label">초기 구축 비용</span>
+                            <span class="cost-value expense">$5,000</span>
+                        </div>
+                        <div class="cost-row">
+                            <span class="cost-label">서버 운영비 (월)</span>
+                            <span class="cost-value expense">$500</span>
+                        </div>
+                        <div class="cost-row">
+                            <span class="cost-label">라이선스 비용</span>
+                            <span class="cost-value savings">$0</span>
+                        </div>
+                        <div class="cost-row">
+                            <span class="cost-label">실행량 제한</span>
+                            <span class="cost-value savings">무제한</span>
+                        </div>
+                        <div class="cost-row">
+                            <span class="cost-label">연간 총 비용</span>
+                            <span class="cost-value">$11,000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cost-card">
+                    <h3>Zapier 프로페셔널</h3>
+                    <div class="cost-comparison">
+                        <div class="cost-row">
+                            <span class="cost-label">월 기본 요금</span>
+                            <span class="cost-value expense">$599</span>
+                        </div>
+                        <div class="cost-row">
+                            <span class="cost-label">추가 태스크 비용</span>
+                            <span class="cost-value expense">$1,200</span>
+                        </div>
+                        <div class="cost-row">
+                            <span class="cost-label">프리미엄 앱 연동</span>
+                            <span class="cost-value expense">$300</span>
+                        </div>
+                        <div class="cost-row">
+                            <span class="cost-label">실행량 제한</span>
+                            <span class="cost-value expense">100,000/월</span>
+                        </div>
+                        <div class="cost-row">
+                            <span class="cost-label">연간 총 비용</span>
+                            <span class="cost-value">$25,188</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cost-card">
+                    <h3>Make 엔터프라이즈</h3>
+                    <div class="cost-comparison">
+                        <div class="cost-row">
+                            <span class="cost-label">월 기본 요금</span>
+                            <span class="cost-value expense">$899</span>
+                        </div>
+                        <div class="cost-row">
+                            <span class="cost-label">추가 오퍼레이션</span>
+                            <span class="cost-value expense">$800</span>
+                        </div>
+                        <div class="cost-row">
+                            <span class="cost-label">고급 기능 패키지</span>
+                            <span class="cost-value expense">$200</span>
+                        </div>
+                        <div class="cost-row">
+                            <span class="cost-label">실행량 제한</span>
+                            <span class="cost-value expense">1M 오퍼레이션/월</span>
+                        </div>
+                        <div class="cost-row">
+                            <span class="cost-label">연간 총 비용</span>
+                            <span class="cost-value">$22,788</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cost-card">
+                    <h3>Power Automate</h3>
+                    <div class="cost-comparison">
+                        <div class="cost-row">
+                            <span class="cost-label">사용자당 월 요금</span>
+                            <span class="cost-value expense">$15 × 50</span>
+                        </div>
+                        <div class="cost-row">
+                            <span class="cost-label">프리미엄 커넥터</span>
+                            <span class="cost-value expense">$300</span>
+                        </div>
+                        <div class="cost-row">
+                            <span class="cost-label">AI Builder 크레딧</span>
+                            <span class="cost-value expense">$400</span>
+                        </div>
+                        <div class="cost-row">
+                            <span class="cost-label">실행량 제한</span>
+                            <span class="cost-value expense">사용자별 제한</span>
+                        </div>
+                        <div class="cost-row">
+                            <span class="cost-label">연간 총 비용</span>
+                            <span class="cost-value">$17,400</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="roi-calculator">
+        <div class="container">
+            <h2 class="section-title" style="color: white;">ROI 계산기</h2>
+            
+            <div class="calculator-grid">
+                <div class="calculator-input">
+                    <h3>현재 상황 입력</h3>
+                    <div class="input-group">
+                        <label for="current-cost">현재 월 자동화 비용 ($)</label>
+                        <input type="number" id="current-cost" placeholder="2000" value="2000">
+                    </div>
+                    <div class="input-group">
+                        <label for="workflows">예상 워크플로우 수</label>
+                        <input type="number" id="workflows" placeholder="50" value="50">
+                    </div>
+                    <div class="input-group">
+                        <label for="executions">월 실행 횟수</label>
+                        <input type="number" id="executions" placeholder="100000" value="100000">
+                    </div>
+                    <div class="input-group">
+                        <label for="team-size">자동화 담당 인원</label>
+                        <input type="number" id="team-size" placeholder="3" value="3">
+                    </div>
+                </div>
+                
+                <div class="calculator-output">
+                    <h3>n8n 도입 효과</h3>
+                    <div class="roi-results">
+                        <div class="roi-metric">
+                            <span>n8n 연간 비용</span>
+                            <span class="savings">$11,000</span>
+                        </div>
+                        <div class="roi-metric">
+                            <span>기존 연간 비용</span>
+                            <span class="expense">$24,000</span>
+                        </div>
+                        <div class="roi-metric">
+                            <span>연간 절약액</span>
+                            <span class="savings">$13,000</span>
+                        </div>
+                        <div class="roi-metric">
+                            <span>투자 회수 기간</span>
+                            <span>5개월</span>
+                        </div>
+                        <div class="roi-metric">
+                            <span>3년 총 절약액</span>
+                            <span>$34,000</span>
+                        </div>
+                        <div class="roi-metric">
+                            <span><strong>ROI (3년)</strong></span>
+                            <span><strong>309%</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <div class="container">
+            <h2 class="section-title">총 소유 비용(TCO) 5년 비교</h2>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>비용 항목</th>
+                        <th>n8n</th>
+                        <th>Zapier</th>
+                        <th>Make</th>
+                        <th>Power Automate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="feature-category">
+                        <td><strong>1년차</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>라이선스 + 실행 비용</td>
+                        <td class="cost-highlight">$11,000</td>
+                        <td>$25,188</td>
+                        <td>$22,788</td>
+                        <td>$17,400</td>
+                    </tr>
+                    <tr class="feature-category">
+                        <td><strong>3년차 누적</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>총 누적 비용</td>
+                        <td class="cost-highlight">$33,000</td>
+                        <td>$75,564</td>
+                        <td>$68,364</td>
+                        <td>$52,200</td>
+                    </tr>
+                    <tr class="feature-category">
+                        <td><strong>5년차 누적</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>총 누적 비용</td>
+                        <td class="cost-highlight">$55,000</td>
+                        <td>$125,940</td>
+                        <td>$113,940</td>
+                        <td>$87,000</td>
+                    </tr>
+                    <tr class="feature-category">
+                        <td><strong>절약 효과 (5년)</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>vs n8n 절약액</td>
+                        <td class="cost-highlight">기준점</td>
+                        <td class="savings">$70,940</td>
+                        <td class="savings">$58,940</td>
+                        <td class="savings">$32,000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="tco-analysis">
+        <div class="container">
+            <div class="tco-chart">
+                <div class="chart-header">
+                    <h3>5년 누적 비용 비교</h3>
+                    <p>대규모 자동화 환경 기준 (월 100만 실행)</p>
+                </div>
+                <div class="chart-bars">
+                    <div class="chart-bar">
+                        <div class="bar bar-n8n" style="height: 100px;">
+                            <div class="bar-value">$55K</div>
+                        </div>
+                        <div class="bar-label">n8n<br>셀프호스팅</div>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="bar bar-power" style="height: 158px;">
+                            <div class="bar-value">$87K</div>
+                        </div>
+                        <div class="bar-label">Power<br>Automate</div>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="bar bar-make" style="height: 207px;">
+                            <div class="bar-value">$114K</div>
+                        </div>
+                        <div class="bar-label">Make<br>Enterprise</div>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="bar bar-zapier" style="height: 229px;">
+                            <div class="bar-value">$126K</div>
+                        </div>
+                        <div class="bar-label">Zapier<br>Professional</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="case-studies">
+        <div class="container">
+            <h2 class="section-title">실제 ROI 달성 사례</h2>
+            
+            <div class="case-study-grid">
+                <div class="case-study-card">
+                    <div class="case-study-header">
+                        <div class="company-logo">🏭</div>
+                        <div class="company-info">
+                            <h4>글로벌 제조업체</h4>
+                            <p>직원 5,000명 | 제조업</p>
+                        </div>
+                    </div>
+                    <p>
+                        Zapier에서 n8n으로 전환하여 공급망 관리, 품질 관리, 고객 서비스 프로세스를 
+                        완전 자동화했습니다. 월 200만 개 이상의 워크플로우 실행으로 엄청난 비용 절감을 달성했습니다.
+                    </p>
+                    <div class="roi-summary">
+                        <h5>ROI 성과</h5>
+                        <div class="roi-metrics">
+                            <div class="roi-metric-item">
+                                <div class="roi-metric-value">$180K</div>
+                                <div class="roi-metric-label">연간 절약액</div>
+                            </div>
+                            <div class="roi-metric-item">
+                                <div class="roi-metric-value">3개월</div>
+                                <div class="roi-metric-label">투자 회수</div>
+                            </div>
+                            <div class="roi-metric-item">
+                                <div class="roi-metric-value">450%</div>
+                                <div class="roi-metric-label">3년 ROI</div>
+                            </div>
+                            <div class="roi-metric-item">
+                                <div class="roi-metric-value">85%</div>
+                                <div class="roi-metric-label">운영비 절감</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="case-study-card">
+                    <div class="case-study-header">
+                        <div class="company-logo">💼</div>
+                        <div class="company-info">
+                            <h4>핀테크 스타트업</h4>
+                            <p>직원 200명 | 금융서비스</p>
+                        </div>
+                    </div>
+                    <p>
+                        규모 확장과 함께 급격히 증가하는 자동화 비용을 해결하기 위해 n8n을 도입했습니다. 
+                        고객 온보딩, KYC, 리스크 관리 프로세스를 자동화하며 비용 예측 가능성을 확보했습니다.
+                    </p>
+                    <div class="roi-summary">
+                        <h5>ROI 성과</h5>
+                        <div class="roi-metrics">
+                            <div class="roi-metric-item">
+                                <div class="roi-metric-value">$95K</div>
+                                <div class="roi-metric-label">연간 절약액</div>
+                            </div>
+                            <div class="roi-metric-item">
+                                <div class="roi-metric-value">4개월</div>
+                                <div class="roi-metric-label">투자 회수</div>
+                            </div>
+                            <div class="roi-metric-item">
+                                <div class="roi-metric-value">320%</div>
+                                <div class="roi-metric-label">3년 ROI</div>
+                            </div>
+                            <div class="roi-metric-item">
+                                <div class="roi-metric-value">70%</div>
+                                <div class="roi-metric-label">운영비 절감</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="case-study-card">
+                    <div class="case-study-header">
+                        <div class="company-logo">🛒</div>
+                        <div class="company-info">
+                            <h4>이커머스 플랫폼</h4>
+                            <p>직원 800명 | 소매업</p>
+                        </div>
+                    </div>
+                    <p>
+                        주문 처리, 재고 관리, 고객 지원 등 대용량 트랜잭션 처리를 위해 n8n을 선택했습니다. 
+                        성수기 트래픽 급증에도 안정적인 자동화 서비스를 제공하며 비용을 통제했습니다.
+                    </p>
+                    <div class="roi-summary">
+                        <h5>ROI 성과</h5>
+                        <div class="roi-metrics">
+                            <div class="roi-metric-item">
+                                <div class="roi-metric-value">$240K</div>
+                                <div class="roi-metric-label">연간 절약액</div>
+                            </div>
+                            <div class="roi-metric-item">
+                                <div class="roi-metric-value">2.5개월</div>
+                                <div class="roi-metric-label">투자 회수</div>
+                            </div>
+                            <div class="roi-metric-item">
+                                <div class="roi-metric-value">580%</div>
+                                <div class="roi-metric-label">3년 ROI</div>
+                            </div>
+                            <div class="roi-metric-item">
+                                <div class="roi-metric-value">90%</div>
+                                <div class="roi-metric-label">운영비 절감</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <div class="container">
+            <div class="hidden-costs">
+                <h3>경쟁사 솔루션의 숨겨진 비용들</h3>
+                <div class="hidden-costs-list">
+                    <div class="hidden-cost-item">
+                        <h4>실행량 초과 비용</h4>
+                        <p>예상치 못한 워크플로우 실행 급증 시 발생하는 추가 요금으로 월 예산을 크게 초과할 수 있습니다.</p>
+                    </div>
+                    <div class="hidden-cost-item">
+                        <h4>프리미엄 커넥터</h4>
+                        <p>주요 엔터프라이즈 앱 연동을 위한 별도 요금으로 기본 계획에 포함되지 않은 비용입니다.</p>
+                    </div>
+                    <div class="hidden-cost-item">
+                        <h4>데이터 전송 비용</h4>
+                        <p>대용량 데이터 처리 시 발생하는 네트워크 비용과 스토리지 비용이 누적됩니다.</p>
+                    </div>
+                    <div class="hidden-cost-item">
+                        <h4>벤더 락인 비용</h4>
+                        <p>특정 플랫폼에 종속되어 협상력을 잃고 지속적인 가격 인상에 노출됩니다.</p>
+                    </div>
+                    <div class="hidden-cost-item">
+                        <h4>규정 준수 비용</h4>
+                        <p>HIPAA, SOX 등 엔터프라이즈 규정 준수를 위한 별도 요금과 감사 비용이 발생합니다.</p>
+                    </div>
+                    <div class="hidden-cost-item">
+                        <h4>확장성 제약 비용</h4>
+                        <p>비즈니스 성장에 따른 플랜 업그레이드와 추가 라이선스 구매가 필요합니다.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title">경제적 가치 창출의 핵심</h2>
+            <p class="intro-text">
+                n8n은 단순한 비용 절약을 넘어서 <strong>예측 가능한 비용 구조</strong>와 <strong>무제한 확장성</strong>을 제공합니다. 
+                셀프 호스팅을 통해 실행량에 관계없이 고정된 운영비만 발생하므로, 
+                비즈니스 성장과 함께 자동화 ROI가 기하급수적으로 증가합니다. 
+                이는 특히 대규모 자동화를 계획하는 기업에게 <strong>전략적 경쟁 우위</strong>를 제공하며, 
+                디지털 트랜스포메이션 투자의 <strong>확실한 수익 보장</strong>을 가능하게 합니다.
+            </p>
+        </div>
+    </section>
+
+    <div class="navigation-footer">
+        <div class="container">
+            <div class="nav-buttons">
+                <a href="03-security-compliance.html" class="nav-button">← 이전: 보안 및 컴플라이언스</a>
+                <a href="05-technical-flexibility.html" class="nav-button">다음: 기술적 유연성 →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

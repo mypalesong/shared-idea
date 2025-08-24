@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>01. n8n vs 경쟁사 비교 분석 | n8n 워크플로우 자동화 백서</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fafafa;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav-header {
+            background: #1f2937;
+            color: white;
+            padding: 15px 0;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .nav-links a {
+            color: #9ca3af;
+            text-decoration: none;
+            margin-left: 20px;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 50px 0;
+            text-align: center;
+        }
+
+        .header-content h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .header-content .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content-section {
+            background: white;
+            padding: 60px 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #1f2937;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .intro-text {
+            font-size: 1.1rem;
+            color: #4b5563;
+            margin-bottom: 40px;
+            line-height: 1.7;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 40px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #1f2937;
+            color: white;
+            padding: 20px 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 20px 15px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        .feature-category {
+            font-weight: 600;
+            color: #1f2937;
+            background: #f3f4f6;
+        }
+
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .pros, .cons {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .pros {
+            border-left: 4px solid #10b981;
+        }
+
+        .cons {
+            border-left: 4px solid #ef4444;
+        }
+
+        .pros h3 {
+            color: #065f46;
+            margin-bottom: 20px;
+        }
+
+        .cons h3 {
+            color: #991b1b;
+            margin-bottom: 20px;
+        }
+
+        .pros ul, .cons ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .pros li, .cons li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .pros li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .cons li::before {
+            content: '✗';
+            position: absolute;
+            left: 0;
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .score-card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            border-top: 4px solid #3b82f6;
+        }
+
+        .score-card h4 {
+            font-size: 1.1rem;
+            color: #1f2937;
+            margin-bottom: 15px;
+        }
+
+        .score-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 10px;
+        }
+
+        .score-description {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .key-insights {
+            background: #f0f9ff;
+            padding: 30px;
+            border-radius: 8px;
+            border-left: 4px solid #0ea5e9;
+            margin: 40px 0;
+        }
+
+        .key-insights h3 {
+            color: #0c4a6e;
+            margin-bottom: 20px;
+        }
+
+        .key-insights ul {
+            list-style: disc;
+            padding-left: 20px;
+        }
+
+        .key-insights li {
+            margin-bottom: 10px;
+            color: #075985;
+        }
+
+        .navigation-footer {
+            background: #f9fafb;
+            padding: 30px 0;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 24px;
+            background: #3b82f6;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .nav-button:hover {
+            background: #2563eb;
+        }
+
+        .nav-button.disabled {
+            background: #9ca3af;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .header-content h1 {
+                font-size: 2rem;
+            }
+            
+            .pros-cons {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-header">
+        <div class="container">
+            <div class="nav-content">
+                <div class="nav-title">n8n 워크플로우 자동화 백서</div>
+                <div class="nav-links">
+                    <a href="index.html">홈</a>
+                    <a href="#next">다음 섹션</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1>01. n8n vs 경쟁사 비교 분석</h1>
+                <p class="subtitle">Zapier, Make, Power Automate 대비 n8n의 차별화된 경쟁 우위</p>
+            </div>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="container">
+            <h2 class="section-title">시장 현황 및 경쟁 환경</h2>
+            <p class="intro-text">
+                워크플로우 자동화 시장은 2025년 현재 급속한 성장을 보이고 있으며, 주요 플레이어들은 각기 다른 강점을 바탕으로 
+                시장 점유율을 확대하고 있습니다. n8n은 이러한 경쟁 환경에서 독특한 포지셔닝을 통해 차별화된 가치를 제공하고 있습니다.
+            </p>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>비교 항목</th>
+                        <th>n8n</th>
+                        <th>Zapier</th>
+                        <th>Make (Integromat)</th>
+                        <th>Power Automate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="feature-category">
+                        <td><strong>가격 정책</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>셀프 호스팅</td>
+                        <td><strong>무료 (오픈소스)</strong></td>
+                        <td>불가능</td>
+                        <td>불가능</td>
+                        <td>불가능</td>
+                    </tr>
+                    <tr>
+                        <td>클라우드 시작 가격</td>
+                        <td>$20/월 (5 워크플로우)</td>
+                        <td>$19.99/월 (750 태스크)</td>
+                        <td>$9/월 (1,000 오퍼레이션)</td>
+                        <td>$15/월 (사용자당)</td>
+                    </tr>
+                    <tr class="feature-category">
+                        <td><strong>기술적 특징</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>코드 통합</td>
+                        <td><strong>Python, JavaScript 완전 지원</strong></td>
+                        <td>제한적</td>
+                        <td>제한적</td>
+                        <td>Power Apps와 연동</td>
+                    </tr>
+                    <tr>
+                        <td>커스텀 노드 개발</td>
+                        <td><strong>완전 지원</strong></td>
+                        <td>불가능</td>
+                        <td>불가능</td>
+                        <td>제한적</td>
+                    </tr>
+                    <tr>
+                        <td>AI 기능 통합</td>
+                        <td><strong>RAG, AI 에이전트 내장</strong></td>
+                        <td>기본적</td>
+                        <td>기본적</td>
+                        <td>AI Builder 연동</td>
+                    </tr>
+                    <tr class="feature-category">
+                        <td><strong>성능 및 확장성</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>실행 속도</td>
+                        <td><strong>220 실행/초</strong></td>
+                        <td>제한적</td>
+                        <td>제한적</td>
+                        <td>변수적</td>
+                    </tr>
+                    <tr>
+                        <td>데이터 제어</td>
+                        <td><strong>완전한 온프레미스 제어</strong></td>
+                        <td>클라우드 종속</td>
+                        <td>클라우드 종속</td>
+                        <td>Microsoft 생태계</td>
+                    </tr>
+                    <tr class="feature-category">
+                        <td><strong>사용성</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>학습 곡선</td>
+                        <td>중간 (기술적 지식 필요)</td>
+                        <td><strong>낮음 (매우 직관적)</strong></td>
+                        <td>중간</td>
+                        <td>높음 (Microsoft 생태계 지식)</td>
+                    </tr>
+                    <tr>
+                        <td>통합 앱 수</td>
+                        <td>400+ (계속 증가)</td>
+                        <td><strong>6,000+</strong></td>
+                        <td>1,400+</td>
+                        <td>900+</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="score-grid">
+                <div class="score-card">
+                    <h4>비용 효율성</h4>
+                    <div class="score-value">9.5</div>
+                    <div class="score-description">셀프 호스팅으로 운영비 대폭 절감</div>
+                </div>
+                <div class="score-card">
+                    <h4>기술적 유연성</h4>
+                    <div class="score-value">9.8</div>
+                    <div class="score-description">코드 통합과 커스텀 노드 완전 지원</div>
+                </div>
+                <div class="score-card">
+                    <h4>AI 혁신성</h4>
+                    <div class="score-value">9.7</div>
+                    <div class="score-description">업계 최고 수준의 AI 통합 기능</div>
+                </div>
+                <div class="score-card">
+                    <h4>데이터 보안</h4>
+                    <div class="score-value">10</div>
+                    <div class="score-description">완전한 데이터 주권 보장</div>
+                </div>
+            </div>
+
+            <div class="pros-cons">
+                <div class="pros">
+                    <h3>n8n의 핵심 강점</h3>
+                    <ul>
+                        <li>오픈소스 기반으로 완전한 투명성과 커뮤니티 지원</li>
+                        <li>셀프 호스팅을 통한 데이터 완전 제어 및 비용 최적화</li>
+                        <li>Python, JavaScript 코드 완전 통합으로 무한한 확장성</li>
+                        <li>업계 최고 수준의 AI 기능 (RAG, AI 에이전트)</li>
+                        <li>초당 220개 워크플로우 실행의 뛰어난 성능</li>
+                        <li>커스텀 노드 개발로 특수 요구사항 완벽 대응</li>
+                        <li>GDPR, CCPA 등 글로벌 규정 완벽 준수</li>
+                        <li>급속한 성장세 (연간 500% 성장률)</li>
+                    </ul>
+                </div>
+                <div class="cons">
+                    <h3>고려사항</h3>
+                    <ul>
+                        <li>초기 설정에 기술적 지식 필요</li>
+                        <li>Zapier 대비 상대적으로 적은 사전 구성 통합</li>
+                        <li>비기술진을 위한 학습 곡선 존재</li>
+                        <li>셀프 호스팅 시 인프라 관리 책임</li>
+                        <li>상대적으로 작은 커뮤니티 (하지만 급성장 중)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="key-insights">
+                <h3>핵심 인사이트</h3>
+                <ul>
+                    <li><strong>비용 혁신:</strong> 셀프 호스팅으로 대규모 자동화 시 경쟁사 대비 80% 이상 비용 절감 가능</li>
+                    <li><strong>기술적 우위:</strong> 코드 통합과 AI 기능에서 경쟁사를 크게 앞서며, 복잡한 비즈니스 로직 구현에 최적</li>
+                    <li><strong>보안성:</strong> 온프레미스 배포로 금융, 헬스케어 등 규제 산업에서 압도적 우위</li>
+                    <li><strong>성장성:</strong> 오픈소스 생태계와 활발한 커뮤니티 기반으로 지속적인 혁신과 발전 보장</li>
+                    <li><strong>전략적 가치:</strong> 벤더 락인(Vendor Lock-in) 없이 디지털 자산의 완전한 통제권 확보</li>
+                </ul>
+            </div>
+
+            <h2 class="section-title">경쟁 우위 요약</h2>
+            <p class="intro-text">
+                n8n은 <strong>기술적 혁신성, 비용 효율성, 데이터 주권</strong>의 3대 축을 통해 경쟁사들과 차별화됩니다. 
+                특히 AI 통합, 오픈소스 투명성, 그리고 셀프 호스팅 옵션은 2025년 기업들이 직면한 
+                <strong>디지털 주권, 비용 최적화, 혁신 가속화</strong>의 핵심 과제를 동시에 해결하는 유일한 솔루션입니다.
+            </p>
+        </div>
+    </section>
+
+    <div class="navigation-footer">
+        <div class="container">
+            <div class="nav-buttons">
+                <a href="index.html" class="nav-button">← 메인으로</a>
+                <a href="02-ai-innovation.html" class="nav-button">다음: AI 통합 혁신 →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

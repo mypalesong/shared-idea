@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>일상의 미학 - 40대의 단순함</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+            background: #ffffff;
+            color: #1d1d1f;
+            line-height: 1.47059;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 40px;
+        }
+        
+        .nav-link {
+            color: #1d1d1f;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 400;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #0066cc;
+        }
+        
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            padding: 0 40px;
+        }
+        
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: #86868b;
+            margin-bottom: 40px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: #0071e3;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 24px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .cta-button:hover {
+            background: #0077ed;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 113, 227, 0.3);
+        }
+        
+        .section {
+            padding: 120px 0;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #1d1d1f;
+            text-align: center;
+            margin-bottom: 60px;
+            letter-spacing: -0.02em;
+        }
+        
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+        
+        .post-card {
+            background: #ffffff;
+            border-radius: 18px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .post-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .post-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+        
+        .post-content {
+            padding: 32px;
+        }
+        
+        .post-date {
+            font-size: 0.875rem;
+            color: #86868b;
+            margin-bottom: 12px;
+        }
+        
+        .post-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+        
+        .post-excerpt {
+            font-size: 1rem;
+            color: #515154;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        .read-more {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+        
+        .read-more:hover {
+            color: #0077ed;
+        }
+        
+        .read-more::after {
+            content: '→';
+            transition: transform 0.3s ease;
+        }
+        
+        .read-more:hover::after {
+            transform: translateX(4px);
+        }
+        
+        .featured-section {
+            background: #f5f5f7;
+            padding: 120px 0;
+        }
+        
+        .featured-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+        
+        .featured-text h2 {
+            font-size: 2.25rem;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+        
+        .featured-text p {
+            font-size: 1.125rem;
+            color: #515154;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+        
+        .featured-image {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .stats-section {
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 60px;
+            margin-top: 60px;
+        }
+        
+        .stat-item {
+            padding: 40px 20px;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #1d1d1f;
+            display: block;
+            margin-bottom: 12px;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: #86868b;
+        }
+        
+        .footer {
+            background: #f5f5f7;
+            padding: 60px 0;
+            text-align: center;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .footer-content {
+            color: #86868b;
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-content {
+                padding: 16px 20px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.25rem;
+            }
+            
+            .container {
+                padding: 0 20px;
+            }
+            
+            .featured-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .section {
+                padding: 80px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <div class="logo">Daily Life</div>
+            <div class="nav-links">
+                <a href="#home" class="nav-link">홈</a>
+                <a href="#posts" class="nav-link">포스트</a>
+                <a href="#about" class="nav-link">소개</a>
+                <a href="#contact" class="nav-link">연락</a>
+            </div>
+        </div>
+    </nav>
+    
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 class="hero-title">일상의 미학</h1>
+            <p class="hero-subtitle">40대 중반, 평범함 속에서 찾는 특별함</p>
+            <button class="cta-button">이야기 시작하기</button>
+        </div>
+    </section>
+    
+    <section class="section" id="posts">
+        <div class="container">
+            <h2 class="section-title">Latest Stories</h2>
+            <div class="posts-grid">
+                <article class="post-card">
+                    <div class="post-image">☕</div>
+                    <div class="post-content">
+                        <div class="post-date">2025년 8월 24일</div>
+                        <h3 class="post-title">완벽한 모닝 루틴</h3>
+                        <p class="post-excerpt">
+                            새벽 6시, 세상이 깨어나기 전 나만의 시간. 
+                            커피 한 잔으로 시작하는 하루의 의식.
+                        </p>
+                        <a href="#" class="read-more">더 보기</a>
+                    </div>
+                </article>
+                
+                <article class="post-card">
+                    <div class="post-image" style="background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);">👨‍👧‍👦</div>
+                    <div class="post-content">
+                        <div class="post-date">2025년 8월 23일</div>
+                        <h3 class="post-title">아버지라는 이름</h3>
+                        <p class="post-excerpt">
+                            아이들과 함께하는 주말 오후. 
+                            책임과 사랑 사이에서 배우는 진짜 어른의 의미.
+                        </p>
+                        <a href="#" class="read-more">더 보기</a>
+                    </div>
+                </article>
+                
+                <article class="post-card">
+                    <div class="post-image" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">💼</div>
+                    <div class="post-content">
+                        <div class="post-date">2025년 8월 22일</div>
+                        <h3 class="post-title">일과 삶의 균형</h3>
+                        <p class="post-excerpt">
+                            15년차 직장인의 깨달음. 
+                            성공의 정의가 바뀌는 순간들.
+                        </p>
+                        <a href="#" class="read-more">더 보기</a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+    
+    <section class="featured-section">
+        <div class="container">
+            <div class="featured-content">
+                <div class="featured-text">
+                    <h2>단순함의 힘</h2>
+                    <p>
+                        40대에 접어들면서 깨달은 것이 있다. 
+                        복잡한 것보다 단순한 것이 더 아름답다는 것. 
+                        과도한 장식보다는 본질에 집중하는 것이 
+                        진정한 성숙함이라는 것.
+                    </p>
+                    <p>
+                        매일 아침 마시는 커피 한 잔, 
+                        아이들과 나누는 대화, 
+                        아내와 함께하는 저녁 산책. 
+                        이런 평범한 순간들이야말로 
+                        인생에서 가장 소중한 것들이다.
+                    </p>
+                    <button class="cta-button">더 많은 이야기</button>
+                </div>
+                <div class="featured-image">🌱</div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="stats-section">
+        <div class="container">
+            <h2 class="section-title">Numbers That Matter</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">365</span>
+                    <div class="stat-label">일상의 순간들</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">2</span>
+                    <div class="stat-label">소중한 아이들</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">15</span>
+                    <div class="stat-label">년차 직장인</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>© 2025 일상의 미학. 평범함 속에서 찾는 특별함.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBQ 파티 - 불타는 주말</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .fire-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .fire-particle {
+            position: absolute;
+            width: 3px;
+            height: 10px;
+            background: linear-gradient(to top, #ff6b35, #f9ca24, #ff6b35);
+            border-radius: 50%;
+            animation: fireRise 3s linear infinite;
+        }
+        
+        .main-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
+        
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-shadow: 4px 4px 8px rgba(0,0,0,0.8);
+            background: linear-gradient(45deg, #ff6b35, #f9ca24, #ff6b35);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fireGlow 3s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .hero-title:hover {
+            transform: scale(1.05);
+            animation-duration: 1s;
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 50px;
+            opacity: 0.9;
+            animation: fadeInUp 2s ease-out 0.5s both;
+        }
+        
+        .interactive-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 200px);
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        
+        .grid-card {
+            position: relative;
+            height: 200px;
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 3px solid transparent;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .grid-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255,107,53,0.8), rgba(249,202,36,0.8));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .grid-card:hover {
+            transform: translateY(-20px) scale(1.1);
+            border-color: #f9ca24;
+            box-shadow: 0 20px 50px rgba(255,107,53,0.4);
+        }
+        
+        .grid-card:hover::before {
+            opacity: 1;
+        }
+        
+        .grid-card:nth-child(1) {
+            background-image: url('https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80');
+        }
+        
+        .grid-card:nth-child(2) {
+            background-image: url('https://images.unsplash.com/photo-1574391884720-bbc4fe48aa10?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80');
+        }
+        
+        .grid-card:nth-child(3) {
+            background-image: url('https://images.unsplash.com/photo-1540420773420-3366772f4999?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80');
+        }
+        
+        .grid-card:nth-child(4) {
+            background-image: url('https://images.unsplash.com/photo-1566737236500-c8ac43014a8e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80');
+        }
+        
+        .grid-card:nth-child(5) {
+            background-image: url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80');
+        }
+        
+        .grid-card:nth-child(6) {
+            background-image: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80');
+        }
+        
+        .card-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: white;
+            text-align: center;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .grid-card:hover .card-content {
+            transform: translateY(0);
+        }
+        
+        .card-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .card-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .event-details {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 25px;
+            border: 2px solid rgba(255,255,255,0.2);
+            margin-bottom: 40px;
+            max-width: 600px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .event-details:hover {
+            transform: scale(1.02);
+            border-color: #f9ca24;
+            box-shadow: 0 15px 40px rgba(249,202,36,0.3);
+        }
+        
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .detail-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .detail-item:hover {
+            background: rgba(255,107,53,0.2);
+            border-color: #ff6b35;
+            transform: translateY(-5px);
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            color: #f9ca24;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .detail-value {
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+        
+        .menu-highlight {
+            background: rgba(255,107,53,0.2);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #ff6b35;
+            margin-bottom: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .menu-highlight:hover {
+            background: rgba(255,107,53,0.3);
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255,107,53,0.4);
+        }
+        
+        .menu-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #f9ca24;
+            margin-bottom: 10px;
+        }
+        
+        .interactive-button {
+            background: linear-gradient(135deg, #ff6b35, #f9ca24);
+            color: white;
+            padding: 20px 50px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 25px rgba(255,107,53,0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .interactive-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .interactive-button:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(255,107,53,0.6);
+        }
+        
+        .interactive-button:hover::before {
+            left: 100%;
+        }
+        
+        @keyframes fireRise {
+            0% {
+                transform: translateY(100vh) scale(1);
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100px) scale(0.2);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes fireGlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 0.9; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="fire-particles" id="fireContainer"></div>
+    
+    <div class="container">
+        <div class="main-content">
+            <h1 class="hero-title" onmouseover="intensifyFire()" onmouseout="normalFire()">BBQ Party</h1>
+            <p class="subtitle">뜨거운 그릴과 함께하는 주말 파티</p>
+            
+            <div class="interactive-grid">
+                <div class="grid-card">
+                    <div class="card-content">
+                        <div class="card-title">프리미엄 고기</div>
+                        <div class="card-desc">최고급 한우와 수입 소고기</div>
+                    </div>
+                </div>
+                <div class="grid-card">
+                    <div class="card-content">
+                        <div class="card-title">시원한 맥주</div>
+                        <div class="card-desc">각종 수제맥주와 라거</div>
+                    </div>
+                </div>
+                <div class="grid-card">
+                    <div class="card-content">
+                        <div class="card-title">즐거운 게임</div>
+                        <div class="card-desc">보드게임과 레크리에이션</div>
+                    </div>
+                </div>
+                <div class="grid-card">
+                    <div class="card-content">
+                        <div class="card-title">멋진 뷰</div>
+                        <div class="card-desc">한강이 보이는 루프탑</div>
+                    </div>
+                </div>
+                <div class="grid-card">
+                    <div class="card-content">
+                        <div class="card-title">음악과 분위기</div>
+                        <div class="card-desc">감성적인 플레이리스트</div>
+                    </div>
+                </div>
+                <div class="grid-card">
+                    <div class="card-content">
+                        <div class="card-title">추억 만들기</div>
+                        <div class="card-desc">사진 촬영과 토크 타임</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="event-details">
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">파티 날짜</div>
+                        <div class="detail-value">10월 14일 (토)<br>오후 5시 시작</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">장소</div>
+                        <div class="detail-value">한강공원 BBQ존<br>뚝섬유원지 인근</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">참가비</div>
+                        <div class="detail-value">1인당 5만원<br>(음식 + 음료 포함)</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">준비물</div>
+                        <div class="detail-value">편한 복장<br>개인 음료 추가 가능</div>
+                    </div>
+                </div>
+                
+                <div class="menu-highlight">
+                    <div class="menu-title">🔥 특별 메뉴 🔥</div>
+                    <p>갈비살 + 삼겹살 + 소시지 + 각종 야채 + 김치찌개</p>
+                </div>
+                
+                <button class="interactive-button" onclick="createFireworks()">BBQ 파티 참가하기</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function createFireParticles() {
+            const container = document.getElementById('fireContainer');
+            
+            setInterval(() => {
+                const particle = document.createElement('div');
+                particle.className = 'fire-particle';
+                
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                
+                container.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 4000);
+            }, 200);
+        }
+        
+        function intensifyFire() {
+            const container = document.getElementById('fireContainer');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'fire-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = '1s';
+                particle.style.width = '5px';
+                particle.style.height = '15px';
+                container.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 1000);
+            }
+        }
+        
+        function normalFire() {
+            // 일반 파티클 효과 유지
+        }
+        
+        function createFireworks() {
+            const colors = ['#ff6b35', '#f9ca24', '#ff7675', '#74b9ff'];
+            
+            for (let i = 0; i < 50; i++) {
+                const firework = document.createElement('div');
+                firework.style.position = 'fixed';
+                firework.style.width = '4px';
+                firework.style.height = '4px';
+                firework.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                firework.style.borderRadius = '50%';
+                firework.style.left = '50%';
+                firework.style.top = '50%';
+                firework.style.pointerEvents = 'none';
+                firework.style.zIndex = '1000';
+                
+                const angle = Math.random() * 2 * Math.PI;
+                const velocity = Math.random() * 200 + 100;
+                const vx = Math.cos(angle) * velocity;
+                const vy = Math.sin(angle) * velocity;
+                
+                firework.animate([
+                    { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+                    { transform: `translate(${vx-50}%, ${vy-50}%) scale(0)`, opacity: 0 }
+                ], {
+                    duration: 1000,
+                    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                });
+                
+                document.body.appendChild(firework);
+                
+                setTimeout(() => {
+                    firework.remove();
+                }, 1000);
+            }
+        }
+        
+        createFireParticles();
+    </script>
+</body>
+</html>

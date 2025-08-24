@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Workspace Enterprise Suite</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #ffffff;
+            color: #3c4043;
+        }
+        
+        .header {
+            background: #ffffff;
+            border-bottom: 1px solid #e8eaed;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .google-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 32px;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(45deg, #4285f4, #34a853, #fbbc05, #ea4335);
+            border-radius: 50%;
+            position: relative;
+        }
+        
+        .logo-icon::after {
+            content: 'G';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        
+        .logo-text {
+            font-size: 20px;
+            color: #5f6368;
+        }
+        
+        .search-container {
+            flex: 1;
+            max-width: 600px;
+            position: relative;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 12px 48px 12px 16px;
+            border: 1px solid #dadce0;
+            border-radius: 24px;
+            font-size: 16px;
+            background: #f1f3f4;
+            outline: none;
+            transition: all 0.2s;
+        }
+        
+        .search-box:focus {
+            background: white;
+            box-shadow: 0 2px 8px rgba(60,64,67,0.15);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background: #5f6368;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-left: 32px;
+        }
+        
+        .apps-menu {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f8f9fa;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        
+        .apps-menu:hover {
+            background: #e8f0fe;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4285f4, #34a853);
+            cursor: pointer;
+        }
+        
+        .main-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: calc(100vh - 64px);
+        }
+        
+        .sidebar {
+            background: #f8f9fa;
+            padding: 24px 0;
+            border-right: 1px solid #e8eaed;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 32px;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #5f6368;
+            padding: 0 24px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.25px;
+        }
+        
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 24px;
+            color: #3c4043;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-right: 3px solid transparent;
+        }
+        
+        .sidebar-item:hover {
+            background: #e8f0fe;
+        }
+        
+        .sidebar-item.active {
+            background: #e8f0fe;
+            color: #1a73e8;
+            border-right-color: #1a73e8;
+        }
+        
+        .sidebar-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+        }
+        
+        .icon-gmail { background: linear-gradient(135deg, #ea4335, #d33b2c); }
+        .icon-calendar { background: linear-gradient(135deg, #4285f4, #1a73e8); }
+        .icon-drive { background: linear-gradient(135deg, #0f9d58, #34a853); }
+        .icon-docs { background: linear-gradient(135deg, #4285f4, #1a73e8); }
+        .icon-sheets { background: linear-gradient(135deg, #0f9d58, #34a853); }
+        .icon-slides { background: linear-gradient(135deg, #ff6d01, #f9ab00); }
+        .icon-meet { background: linear-gradient(135deg, #00acc1, #0097a7); }
+        .icon-chat { background: linear-gradient(135deg, #00bcd4, #0097a7); }
+        .icon-admin { background: linear-gradient(135deg, #5f6368, #3c4043); }
+        
+        .content-area {
+            padding: 32px;
+            background: #ffffff;
+        }
+        
+        .page-header {
+            margin-bottom: 32px;
+        }
+        
+        .page-title {
+            font-size: 32px;
+            font-weight: 400;
+            color: #202124;
+            margin-bottom: 8px;
+        }
+        
+        .page-subtitle {
+            font-size: 16px;
+            color: #5f6368;
+        }
+        
+        .quick-access {
+            background: white;
+            border: 1px solid #e8eaed;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(60,64,67,0.08);
+        }
+        
+        .quick-access h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #202124;
+        }
+        
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 16px;
+        }
+        
+        .app-shortcut {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .app-shortcut:hover {
+            background: #f8f9fa;
+        }
+        
+        .app-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .app-name {
+            font-size: 14px;
+            text-align: center;
+            color: #3c4043;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+        
+        .widget {
+            background: white;
+            border: 1px solid #e8eaed;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(60,64,67,0.08);
+        }
+        
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .widget-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: #202124;
+        }
+        
+        .widget-action {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .widget-action:hover {
+            text-decoration: underline;
+        }
+        
+        .recent-files {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .file-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .file-info {
+            flex: 1;
+        }
+        
+        .file-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: #202124;
+        }
+        
+        .file-meta {
+            font-size: 12px;
+            color: #5f6368;
+        }
+        
+        .calendar-widget {
+            height: fit-content;
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .calendar-month {
+            font-size: 16px;
+            font-weight: 500;
+            color: #202124;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            margin-bottom: 16px;
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .calendar-day.today {
+            background: #1a73e8;
+            color: white;
+        }
+        
+        .calendar-day.event {
+            background: #e8f0fe;
+            color: #1a73e8;
+        }
+        
+        .calendar-day:hover {
+            background: #f1f3f4;
+        }
+        
+        .calendar-day.today:hover {
+            background: #1557b0;
+        }
+        
+        .upcoming-events {
+            border-top: 1px solid #e8eaed;
+            padding-top: 16px;
+        }
+        
+        .event-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+        }
+        
+        .event-time {
+            font-size: 12px;
+            color: #5f6368;
+            min-width: 60px;
+        }
+        
+        .event-title {
+            font-size: 14px;
+            color: #202124;
+        }
+        
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-card {
+            background: white;
+            border: 1px solid #e8eaed;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(60,64,67,0.08);
+        }
+        
+        .stat-value {
+            font-size: 36px;
+            font-weight: 400;
+            color: #1a73e8;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #5f6368;
+            text-transform: uppercase;
+            letter-spacing: 0.25px;
+        }
+        
+        .activity-widget {
+            grid-column: span 2;
+        }
+        
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .activity-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        
+        .activity-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4285f4, #34a853);
+            flex-shrink: 0;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-text {
+            font-size: 14px;
+            color: #202124;
+            margin-bottom: 4px;
+        }
+        
+        .activity-time {
+            font-size: 12px;
+            color: #5f6368;
+        }
+        
+        .floating-compose {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(26,115,232,0.25);
+            transition: all 0.3s;
+        }
+        
+        .floating-compose:hover {
+            background: #1557b0;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="google-logo">
+            <div class="logo-icon"></div>
+            <span class="logo-text">Workspace</span>
+        </div>
+        
+        <div class="search-container">
+            <input type="text" class="search-box" placeholder="Search in Workspace">
+            <div class="search-icon"></div>
+        </div>
+        
+        <div class="header-actions">
+            <div class="apps-menu">⋮⋮⋮</div>
+            <div class="user-avatar"></div>
+        </div>
+    </header>
+    
+    <div class="main-container">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="section-title">Productivity</div>
+                <div class="sidebar-item active">
+                    <div class="sidebar-icon icon-gmail"></div>
+                    <span>Gmail</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon icon-calendar"></div>
+                    <span>Calendar</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon icon-drive"></div>
+                    <span>Drive</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="section-title">Collaboration</div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon icon-docs"></div>
+                    <span>Docs</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon icon-sheets"></div>
+                    <span>Sheets</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon icon-slides"></div>
+                    <span>Slides</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="section-title">Communication</div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon icon-meet"></div>
+                    <span>Meet</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon icon-chat"></div>
+                    <span>Chat</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="section-title">Administration</div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon icon-admin"></div>
+                    <span>Admin Console</span>
+                </div>
+            </div>
+        </aside>
+        
+        <main class="content-area">
+            <div class="page-header">
+                <h1 class="page-title">Your Workspace</h1>
+                <p class="page-subtitle">Access your most important work and stay connected with your team</p>
+            </div>
+            
+            <div class="quick-access">
+                <h3>Quick Access</h3>
+                <div class="apps-grid">
+                    <a href="#" class="app-shortcut">
+                        <div class="app-icon icon-gmail">📧</div>
+                        <div class="app-name">Gmail</div>
+                    </a>
+                    <a href="#" class="app-shortcut">
+                        <div class="app-icon icon-calendar">📅</div>
+                        <div class="app-name">Calendar</div>
+                    </a>
+                    <a href="#" class="app-shortcut">
+                        <div class="app-icon icon-drive">💾</div>
+                        <div class="app-name">Drive</div>
+                    </a>
+                    <a href="#" class="app-shortcut">
+                        <div class="app-icon icon-docs">📝</div>
+                        <div class="app-name">Docs</div>
+                    </a>
+                    <a href="#" class="app-shortcut">
+                        <div class="app-icon icon-sheets">📊</div>
+                        <div class="app-name">Sheets</div>
+                    </a>
+                    <a href="#" class="app-shortcut">
+                        <div class="app-icon icon-slides">🎨</div>
+                        <div class="app-name">Slides</div>
+                    </a>
+                    <a href="#" class="app-shortcut">
+                        <div class="app-icon icon-meet">🎥</div>
+                        <div class="app-name">Meet</div>
+                    </a>
+                    <a href="#" class="app-shortcut">
+                        <div class="app-icon icon-chat">💬</div>
+                        <div class="app-name">Chat</div>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-value">2,847</div>
+                    <div class="stat-label">Emails Today</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">156</div>
+                    <div class="stat-label">Files Shared</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">89%</div>
+                    <div class="stat-label">Storage Used</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Meetings Today</div>
+                </div>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="widget">
+                    <div class="widget-header">
+                        <h3 class="widget-title">Recent Files</h3>
+                        <a href="#" class="widget-action">View all</a>
+                    </div>
+                    <div class="recent-files">
+                        <div class="file-item">
+                            <div class="file-icon icon-docs">📄</div>
+                            <div class="file-info">
+                                <div class="file-name">Q4 마케팅 계획서</div>
+                                <div class="file-meta">김마케터 • 2시간 전 수정</div>
+                            </div>
+                        </div>
+                        <div class="file-item">
+                            <div class="file-icon icon-sheets">📊</div>
+                            <div class="file-info">
+                                <div class="file-name">2024 예산 분석</div>
+                                <div class="file-meta">이분석가 • 4시간 전 수정</div>
+                            </div>
+                        </div>
+                        <div class="file-item">
+                            <div class="file-icon icon-slides">🎨</div>
+                            <div class="file-info">
+                                <div class="file-name">제품 발표 자료</div>
+                                <div class="file-meta">박발표자 • 어제 수정</div>
+                            </div>
+                        </div>
+                        <div class="file-item">
+                            <div class="file-icon icon-docs">📄</div>
+                            <div class="file-info">
+                                <div class="file-name">팀 미팅 회의록</div>
+                                <div class="file-meta">최기록자 • 2일 전 수정</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="widget calendar-widget">
+                    <div class="widget-header">
+                        <h3 class="widget-title">Calendar</h3>
+                        <a href="#" class="widget-action">View all</a>
+                    </div>
+                    <div class="calendar-header">
+                        <div class="calendar-month">August 2024</div>
+                    </div>
+                    <div class="calendar-grid">
+                        <div class="calendar-day">1</div>
+                        <div class="calendar-day">2</div>
+                        <div class="calendar-day">3</div>
+                        <div class="calendar-day">4</div>
+                        <div class="calendar-day">5</div>
+                        <div class="calendar-day event">6</div>
+                        <div class="calendar-day">7</div>
+                        <div class="calendar-day">8</div>
+                        <div class="calendar-day event">9</div>
+                        <div class="calendar-day">10</div>
+                        <div class="calendar-day">11</div>
+                        <div class="calendar-day">12</div>
+                        <div class="calendar-day">13</div>
+                        <div class="calendar-day">14</div>
+                        <div class="calendar-day">15</div>
+                        <div class="calendar-day event">16</div>
+                        <div class="calendar-day">17</div>
+                        <div class="calendar-day">18</div>
+                        <div class="calendar-day">19</div>
+                        <div class="calendar-day">20</div>
+                        <div class="calendar-day">21</div>
+                        <div class="calendar-day">22</div>
+                        <div class="calendar-day">23</div>
+                        <div class="calendar-day today">24</div>
+                        <div class="calendar-day">25</div>
+                        <div class="calendar-day">26</div>
+                        <div class="calendar-day event">27</div>
+                        <div class="calendar-day">28</div>
+                        <div class="calendar-day">29</div>
+                        <div class="calendar-day">30</div>
+                        <div class="calendar-day">31</div>
+                    </div>
+                    <div class="upcoming-events">
+                        <div class="event-item">
+                            <div class="event-time">10:00</div>
+                            <div class="event-title">팀 스탠드업</div>
+                        </div>
+                        <div class="event-item">
+                            <div class="event-time">14:00</div>
+                            <div class="event-title">고객 미팅</div>
+                        </div>
+                        <div class="event-item">
+                            <div class="event-time">16:30</div>
+                            <div class="event-title">프로젝트 리뷰</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="widget activity-widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">Recent Activity</h3>
+                    <a href="#" class="widget-action">View all</a>
+                </div>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-avatar"></div>
+                        <div class="activity-content">
+                            <div class="activity-text"><strong>김협업자</strong>님이 "Q4 마케팅 계획서"를 공유했습니다.</div>
+                            <div class="activity-time">30분 전</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-avatar"></div>
+                        <div class="activity-content">
+                            <div class="activity-text"><strong>이편집자</strong>님이 "2024 예산 분석" 스프레드시트에 댓글을 남겼습니다.</div>
+                            <div class="activity-time">1시간 전</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-avatar"></div>
+                        <div class="activity-content">
+                            <div class="activity-text"><strong>박회의자</strong>님이 "주간 팀 미팅" 일정을 만들었습니다.</div>
+                            <div class="activity-time">2시간 전</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-avatar"></div>
+                        <div class="activity-content">
+                            <div class="activity-text"><strong>최공유자</strong>님이 새 Google Drive 폴더를 공유했습니다.</div>
+                            <div class="activity-time">3시간 전</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="floating-compose">✎</button>
+        </main>
+    </div>
+</body>
+</html>

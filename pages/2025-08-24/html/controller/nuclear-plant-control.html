@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuclear Plant Control Room</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background: radial-gradient(ellipse at center, #1a0000 0%, #330000 30%, #000000 100%);
+            height: 100vh;
+            overflow: hidden;
+            color: #00ff00;
+            position: relative;
+        }
+
+        .nuclear-container {
+            display: grid;
+            grid-template-columns: 350px 1fr 350px;
+            grid-template-rows: 90px 1fr 100px;
+            height: 100vh;
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .header-panel {
+            grid-column: 1 / 4;
+            grid-row: 1;
+            background: linear-gradient(135deg, #ffaa00, #ff6600);
+            border: 2px solid #ff0000;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            color: white;
+            box-shadow: 0 8px 25px rgba(255, 170, 0, 0.4);
+        }
+
+        .left-panel {
+            grid-column: 1;
+            grid-row: 2;
+            background: linear-gradient(145deg, #1a0000, #330000);
+            border: 2px solid #ff0000;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.3);
+        }
+
+        .center-display {
+            grid-column: 2;
+            grid-row: 2;
+            background: linear-gradient(135deg, #000000, #1a0000);
+            border: 3px solid #ffaa00;
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+        }
+
+        .right-panel {
+            grid-column: 3;
+            grid-row: 2;
+            background: linear-gradient(145deg, #1a0000, #330000);
+            border: 2px solid #ff6600;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: inset 0 0 20px rgba(255, 102, 0, 0.3);
+        }
+
+        .footer-panel {
+            grid-column: 1 / 4;
+            grid-row: 3;
+            background: linear-gradient(135deg, #333000, #666600);
+            border: 2px solid #ffaa00;
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            color: white;
+            box-shadow: 0 5px 20px rgba(255, 170, 0, 0.4);
+        }
+
+        .reactor-module {
+            background: rgba(51, 0, 0, 0.8);
+            border: 2px solid #ff0000;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .reactor-module::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #ff0000, transparent);
+            border-radius: 15px 15px 0 0;
+            animation: scanLine 3s linear infinite;
+        }
+
+        @keyframes scanLine {
+            0% { background: linear-gradient(90deg, transparent, #ff0000, transparent); }
+            50% { background: linear-gradient(90deg, #ff0000, transparent, #ff0000); }
+            100% { background: linear-gradient(90deg, transparent, #ff0000, transparent); }
+        }
+
+        .reactor-module:hover {
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .reactor-module.critical {
+            border-color: #ff0000;
+            animation: criticalPulse 1s infinite;
+        }
+
+        @keyframes criticalPulse {
+            0%, 100% { box-shadow: 0 0 20px #ff0000; }
+            50% { box-shadow: 0 0 40px #ff0000, inset 0 0 20px rgba(255, 0, 0, 0.3); }
+        }
+
+        .module-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff0000;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .module-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #00ff00;
+            margin: 10px 0;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .module-status {
+            font-size: 12px;
+            color: #ffaa00;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .radiation-symbol {
+            color: #ffaa00;
+            font-size: 20px;
+            animation: rotate 5s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .reactor-core {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: radial-gradient(circle at center, 
+                #ff6600 0%, 
+                #ff0000 30%, 
+                #660000 60%, 
+                #330000 80%, 
+                #000000 100%);
+            border-radius: 50%;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        .core-chamber {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle, 
+                rgba(255, 255, 255, 0.8) 0%, 
+                rgba(255, 170, 0, 0.6) 30%, 
+                rgba(255, 0, 0, 0.4) 70%, 
+                transparent 100%);
+            border-radius: 50%;
+            animation: coreReaction 2s ease-in-out infinite;
+        }
+
+        @keyframes coreReaction {
+            0%, 100% { 
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        .control-rod {
+            position: absolute;
+            width: 20px;
+            height: 60%;
+            background: linear-gradient(to bottom, #333, #666, #333);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-rod:hover {
+            box-shadow: 0 0 20px #00ff00;
+            transform: scale(1.1);
+        }
+
+        .rod-1 {
+            top: 20%;
+            left: 30%;
+            height: 45%;
+        }
+
+        .rod-2 {
+            top: 20%;
+            right: 30%;
+            height: 60%;
+        }
+
+        .rod-3 {
+            bottom: 20%;
+            left: 25%;
+            height: 40%;
+        }
+
+        .rod-4 {
+            bottom: 20%;
+            right: 25%;
+            height: 50%;
+        }
+
+        .reactor-stats {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ffaa00;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 12px;
+            color: #00ff00;
+        }
+
+        .coolant-system {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 200px;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #0099ff;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .coolant-flow {
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(90deg, #0099ff, #00ccff, #0099ff);
+            border-radius: 10px;
+            margin: 10px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .coolant-flow::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            animation: coolantFlow 2s linear infinite;
+        }
+
+        @keyframes coolantFlow {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .safety-system {
+            background: rgba(51, 0, 0, 0.9);
+            border: 2px solid #ff6600;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .safety-title {
+            font-size: 16px;
+            color: #ff6600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .safety-indicator {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 102, 0, 0.2);
+            font-size: 12px;
+        }
+
+        .safety-indicator:last-child {
+            border-bottom: none;
+        }
+
+        .indicator-status {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .indicator-status.safe {
+            background: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        .indicator-status.warning {
+            background: #ffaa00;
+            box-shadow: 0 0 10px #ffaa00;
+            animation: warningBlink 1.5s infinite;
+        }
+
+        .indicator-status.danger {
+            background: #ff0000;
+            box-shadow: 0 0 15px #ff0000;
+            animation: dangerBlink 0.8s infinite;
+        }
+
+        @keyframes warningBlink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        @keyframes dangerBlink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.1; }
+        }
+
+        .emergency-shutdown {
+            background: linear-gradient(145deg, #ff0000, #cc0000);
+            border: 4px solid #ffffff;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin: 20px auto;
+        }
+
+        .emergency-shutdown:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(255, 0, 0, 1);
+        }
+
+        .power-output {
+            background: rgba(51, 0, 0, 0.9);
+            border: 2px solid #00ff00;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .power-title {
+            font-size: 16px;
+            color: #00ff00;
+            margin-bottom: 10px;
+        }
+
+        .power-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ffaa00;
+            margin: 15px 0;
+            text-shadow: 0 0 15px #ffaa00;
+        }
+
+        .power-bar {
+            width: 100%;
+            height: 20px;
+            background: #330000;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .power-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #ffaa00, #ff6600);
+            border-radius: 10px;
+            width: 87%;
+            position: relative;
+            animation: powerPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes powerPulse {
+            0%, 100% { width: 87%; }
+            50% { width: 90%; }
+        }
+
+        .nuclear-button {
+            background: linear-gradient(145deg, #330000, #1a0000);
+            border: 2px solid #ff0000;
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: bold;
+            color: #ff0000;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .nuclear-button:hover {
+            background: linear-gradient(145deg, #ff0000, #cc0000);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.5);
+        }
+
+        .nuclear-button:active {
+            transform: translateY(0);
+        }
+
+        .nuclear-button.warning {
+            border-color: #ffaa00;
+            color: #ffaa00;
+        }
+
+        .nuclear-button.safe {
+            border-color: #00ff00;
+            color: #00ff00;
+        }
+
+        .nuclear-button.active {
+            background: linear-gradient(145deg, #00ff00, #00cc00);
+            color: #000000;
+        }
+
+        .temperature-gauge {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: conic-gradient(from 180deg, #00ff00 0deg, #ffaa00 120deg, #ff0000 240deg, #cc0000 360deg);
+            position: relative;
+            margin: 15px auto;
+            border: 3px solid #ffffff;
+        }
+
+        .temperature-gauge::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 80px;
+            height: 80px;
+            background: #000000;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .temp-needle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 35px;
+            background: #ffffff;
+            transform-origin: bottom center;
+            transform: translate(-50%, 0) rotate(135deg);
+            border-radius: 1px;
+            box-shadow: 0 0 8px #ffffff;
+        }
+
+        .temp-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+            font-weight: bold;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        .alarm-panel {
+            background: rgba(255, 0, 0, 0.1);
+            border: 2px solid #ff0000;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .alarm-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff0000;
+            text-align: center;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            animation: alarmFlash 2s infinite;
+        }
+
+        @keyframes alarmFlash {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        .alarm-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .alarm-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 0, 0, 0.2);
+            font-size: 12px;
+            color: #ff6600;
+        }
+
+        .alarm-item:last-child {
+            border-bottom: none;
+        }
+
+        .alarm-time {
+            font-size: 10px;
+            color: #999;
+        }
+
+        .neutron-flux {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .neutron {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #00ffff;
+            border-radius: 50%;
+            box-shadow: 0 0 5px #00ffff;
+            animation: neutronFlow 3s linear infinite;
+        }
+
+        @keyframes neutronFlow {
+            0% { 
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% { 
+                transform: translateY(-100px) scale(1);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nuclear-container">
+        <!-- Header Panel -->
+        <div class="header-panel">
+            <div>
+                <h2>⚛️ NUCLEAR POWER PLANT CONTROL ROOM</h2>
+                <div style="font-size: 14px; opacity: 0.9;">Unit 1 - Pressurized Water Reactor | License: NPO-2024-KR</div>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 18px;">Reactor Status</div>
+                <div style="font-size: 28px; font-weight: bold;" id="reactor-status">OPERATIONAL</div>
+            </div>
+        </div>
+
+        <!-- Left Panel - Reactor Systems -->
+        <div class="left-panel">
+            <div style="text-align: center; color: #ff0000; font-size: 16px; margin-bottom: 20px; font-weight: bold;">REACTOR PARAMETERS</div>
+            
+            <div class="reactor-module" onclick="systemControl('power')">
+                <div class="module-title">
+                    <span class="radiation-symbol">☢️</span>
+                    Nuclear Power
+                </div>
+                <div class="module-value" id="nuclear-power">2,847 MW</div>
+                <div class="module-status">
+                    <span>Thermal Output</span>
+                    <span style="color: #00ff00;">87%</span>
+                </div>
+            </div>
+
+            <div class="reactor-module" onclick="systemControl('temperature')">
+                <div class="module-title">
+                    🌡️ Core Temperature
+                </div>
+                <div class="module-value" id="core-temp">325°C</div>
+                <div class="module-status">
+                    <span>Primary Circuit</span>
+                    <span style="color: #ffaa00;">Normal</span>
+                </div>
+            </div>
+
+            <div class="reactor-module" onclick="systemControl('pressure')">
+                <div class="module-title">
+                    📊 Pressure
+                </div>
+                <div class="module-value" id="pressure">155 bar</div>
+                <div class="module-status">
+                    <span>Steam Generator</span>
+                    <span style="color: #00ff00;">Stable</span>
+                </div>
+            </div>
+
+            <div class="reactor-module" onclick="systemControl('neutron')">
+                <div class="module-title">
+                    ⚡ Neutron Flux
+                </div>
+                <div class="module-value" id="neutron-flux">1.2e14</div>
+                <div class="module-status">
+                    <span>n/cm²·s</span>
+                    <span style="color: #00ff00;">Critical</span>
+                </div>
+            </div>
+
+            <div class="reactor-module critical" onclick="systemControl('radiation')">
+                <div class="module-title">
+                    ☢️ Radiation Level
+                </div>
+                <div class="module-value" id="radiation-level">45.7 mSv/h</div>
+                <div class="module-status">
+                    <span>Containment</span>
+                    <span style="color: #ff0000;">High</span>
+                </div>
+            </div>
+
+            <div class="temperature-gauge">
+                <div class="temp-needle" id="temp-needle"></div>
+                <div class="temp-value">
+                    <div id="temp-display">325</div>
+                    <div style="font-size: 10px;">°C</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Display - Reactor Core -->
+        <div class="center-display">
+            <div class="reactor-core">
+                <div class="core-chamber"></div>
+                
+                <!-- Control Rods -->
+                <div class="control-rod rod-1" onclick="adjustControlRod('rod1')" title="Control Rod #1"></div>
+                <div class="control-rod rod-2" onclick="adjustControlRod('rod2')" title="Control Rod #2"></div>
+                <div class="control-rod rod-3" onclick="adjustControlRod('rod3')" title="Control Rod #3"></div>
+                <div class="control-rod rod-4" onclick="adjustControlRod('rod4')" title="Control Rod #4"></div>
+                
+                <div class="reactor-stats">
+                    <div><strong>Reactor Core Status</strong></div>
+                    <div>Fuel Assembly: 193 units</div>
+                    <div>Control Rods: 4/4 Operational</div>
+                    <div>Boron Concentration: 1,247 ppm</div>
+                    <div>Burn-up: 18,500 MWd/tU</div>
+                </div>
+                
+                <div class="coolant-system">
+                    <div style="color: #0099ff; font-size: 12px; font-weight: bold; text-align: center;">냉각수 순환</div>
+                    <div class="coolant-flow"></div>
+                    <div style="font-size: 10px; color: #00ccff; text-align: center;">Primary Loop: 15,000 m³/h</div>
+                </div>
+            </div>
+
+            <!-- Neutron Animation -->
+            <div class="neutron-flux" id="neutron-field"></div>
+        </div>
+
+        <!-- Right Panel - Safety & Control -->
+        <div class="right-panel">
+            <div style="text-align: center; color: #ff6600; font-size: 16px; margin-bottom: 20px; font-weight: bold;">안전 시스템</div>
+            
+            <div class="power-output">
+                <div class="power-title">⚡ 전력 출력</div>
+                <div class="power-value" id="power-output">1,247 MW</div>
+                <div class="power-bar">
+                    <div class="power-fill" id="power-fill"></div>
+                </div>
+                <div style="font-size: 12px; color: #999;">Grid Frequency: 60.00 Hz</div>
+            </div>
+
+            <div class="safety-system">
+                <div class="safety-title">⚠️ Safety Systems</div>
+                <div class="safety-indicator">
+                    <span>Emergency Core Cooling</span>
+                    <span class="indicator-status safe"></span>
+                </div>
+                <div class="safety-indicator">
+                    <span>Containment System</span>
+                    <span class="indicator-status safe"></span>
+                </div>
+                <div class="safety-indicator">
+                    <span>Reactor Protection System</span>
+                    <span class="indicator-status safe"></span>
+                </div>
+                <div class="safety-indicator">
+                    <span>Steam Generator</span>
+                    <span class="indicator-status warning"></span>
+                </div>
+                <div class="safety-indicator">
+                    <span>Backup Diesel Generator</span>
+                    <span class="indicator-status safe"></span>
+                </div>
+                <div class="safety-indicator">
+                    <span>Radiation Monitoring</span>
+                    <span class="indicator-status danger"></span>
+                </div>
+            </div>
+
+            <div class="alarm-panel">
+                <div class="alarm-title">🚨 Active Alarms</div>
+                <ul class="alarm-list">
+                    <li class="alarm-item">
+                        <span>High Radiation in Containment</span>
+                        <span class="alarm-time">14:23</span>
+                    </li>
+                    <li class="alarm-item">
+                        <span>Steam Generator B - Low Level</span>
+                        <span class="alarm-time">14:18</span>
+                    </li>
+                    <li class="alarm-item">
+                        <span>Control Rod Position Anomaly</span>
+                        <span class="alarm-time">13:45</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="emergency-shutdown" onclick="emergencyShutdown()">
+                EMERGENCY<br>
+                SCRAM<br>
+                ⛔
+            </div>
+        </div>
+
+        <!-- Footer Panel -->
+        <div class="footer-panel">
+            <button class="nuclear-button" onclick="plantOperation('startup')">Reactor Startup</button>
+            <button class="nuclear-button warning" onclick="plantOperation('load-follow')">Load Following</button>
+            <button class="nuclear-button" onclick="plantOperation('maintenance')">Maintenance Mode</button>
+            <button class="nuclear-button safe" onclick="plantOperation('cooldown')">Controlled Cooldown</button>
+            <button class="nuclear-button" onclick="plantOperation('refuel')">Refueling Mode</button>
+            <button class="nuclear-button" onclick="plantOperation('turbine')">Turbine Control</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let plantData = {
+                power: 2847,
+                temperature: 325,
+                pressure: 155,
+                neutronFlux: 1.2e14,
+                radiationLevel: 45.7,
+                powerOutput: 1247,
+                reactorStatus: 'OPERATIONAL',
+                emergencyMode: false,
+                controlRods: {
+                    rod1: 45, // percentage inserted
+                    rod2: 60,
+                    rod3: 40,
+                    rod4: 50
+                }
+            };
+
+            // Create neutron animation
+            function createNeutrons() {
+                const neutronField = document.getElementById('neutron-field');
+                
+                setInterval(() => {
+                    for (let i = 0; i < 3; i++) {
+                        const neutron = document.createElement('div');
+                        neutron.className = 'neutron';
+                        neutron.style.left = Math.random() * 100 + '%';
+                        neutron.style.animationDelay = Math.random() * 2 + 's';
+                        neutronField.appendChild(neutron);
+                        
+                        setTimeout(() => {
+                            if (neutron.parentNode) {
+                                neutron.parentNode.removeChild(neutron);
+                            }
+                        }, 3000);
+                    }
+                }, 1000);
+            }
+
+            // System Control
+            window.systemControl = function(system) {
+                const systemElement = document.querySelector(`[onclick="systemControl('${system}')"]`);
+                systemElement.style.transform = 'scale(0.95)';
+                
+                setTimeout(() => {
+                    systemElement.style.transform = 'scale(1)';
+                    
+                    switch(system) {
+                        case 'power':
+                            alert(`NUCLEAR POWER SYSTEM\\n\\nThermal Power: ${plantData.power} MW\\nElectrical Power: ${plantData.powerOutput} MW\\nEfficiency: ${((plantData.powerOutput/plantData.power)*100).toFixed(1)}%\\n\\nFuel Assemblies: 193/193\\nEnrichment: 3.7% U-235\\nBurn-up: 18,500 MWd/tU`);
+                            break;
+                        case 'temperature':
+                            alert(`CORE TEMPERATURE SYSTEM\\n\\nCore Temperature: ${plantData.temperature}°C\\nCoolant Inlet: 287°C\\nCoolant Outlet: 325°C\\nΔT: 38°C\\n\\nCooling System: Operational\\nFlow Rate: 15,000 m³/h`);
+                            break;
+                        case 'pressure':
+                            alert(`PRESSURE SYSTEM\\n\\nPrimary Pressure: ${plantData.pressure} bar\\nSteam Pressure: 68 bar\\nContainment: 1.2 bar\\n\\nPressurizer Level: 57%\\nSteam Generator Level: 48%`);
+                            break;
+                        case 'neutron':
+                            alert(`NEUTRON FLUX MONITORING\\n\\nThermal Flux: ${plantData.neutronFlux.toExponential(1)} n/cm²·s\\nFast Flux: 8.5e13 n/cm²·s\\n\\nReactivity: +0.002 Δk/k\\nCritical Status: Achieved\\nControl Worth: -8.7% Δk/k`);
+                            break;
+                        case 'radiation':
+                            alert(`⚠️ RADIATION MONITORING\\n\\nContainment: ${plantData.radiationLevel} mSv/h\\nReactor Building: 2.3 mSv/h\\nAuxiliary Building: 0.8 mSv/h\\n\\n🚨 WARNING: High radiation detected\\nPersonnel evacuation recommended`);
+                            break;
+                    }
+                }, 200);
+            };
+
+            // Control Rod Adjustment
+            window.adjustControlRod = function(rodId) {
+                const rodElement = document.querySelector(`.${rodId.replace('rod', 'rod-')}`);
+                rodElement.style.transform = 'scale(1.2)';
+                
+                setTimeout(() => {
+                    rodElement.style.transform = 'scale(1)';
+                    
+                    const currentPosition = plantData.controlRods[rodId];
+                    const newPosition = Math.max(0, Math.min(100, currentPosition + (Math.random() > 0.5 ? 10 : -10)));
+                    plantData.controlRods[rodId] = newPosition;
+                    
+                    // Adjust rod height based on position
+                    const heightPercentage = 40 + (newPosition / 100) * 20;
+                    rodElement.style.height = heightPercentage + '%';
+                    
+                    // Update reactor parameters based on rod position
+                    const avgRodPosition = Object.values(plantData.controlRods).reduce((a, b) => a + b, 0) / 4;
+                    plantData.power = 2500 + (100 - avgRodPosition) * 15;
+                    plantData.neutronFlux = (1.0 + (100 - avgRodPosition) / 500) * 1e14;
+                    
+                    updateDisplays();
+                    
+                    alert(`Control Rod ${rodId.replace('rod', '#')}\\n\\nNew Position: ${newPosition.toFixed(0)}% inserted\\nReactivity Worth: ${(newPosition * 0.08).toFixed(2)}% Δk/k\\n\\nReactor power adjusted to ${plantData.power.toFixed(0)} MW`);
+                }, 300);
+            };
+
+            // Plant Operations
+            window.plantOperation = function(operation) {
+                const button = document.querySelector(`[onclick="plantOperation('${operation}')"]`);
+                const originalText = button.textContent;
+                
+                button.classList.add('active');
+                button.textContent = 'EXECUTING...';
+                
+                setTimeout(() => {
+                    button.classList.remove('active');
+                    button.textContent = originalText;
+                    
+                    switch(operation) {
+                        case 'startup':
+                            plantData.reactorStatus = 'STARTING UP';
+                            plantData.temperature = 250;
+                            plantData.pressure = 120;
+                            updateDisplays();
+                            alert('REACTOR STARTUP SEQUENCE\\n\\n✓ Control rod withdrawal initiated\\n✓ Reactor criticality achieved\\n✓ Power ascension to 25%\\n\\nEstimated time to full power: 8 hours');
+                            break;
+                        case 'load-follow':
+                            alert('LOAD FOLLOWING MODE\\n\\n✓ Automatic power control enabled\\n✓ Grid frequency regulation active\\n✓ Control rod movement automated\\n\\nSystem will adjust power output based on grid demand');
+                            break;
+                        case 'maintenance':
+                            plantData.reactorStatus = 'MAINTENANCE';
+                            plantData.power = 0;
+                            plantData.powerOutput = 0;
+                            updateDisplays();
+                            alert('MAINTENANCE MODE ACTIVATED\\n\\n⚠️ Reactor shutdown initiated\\n⚠️ Cooldown sequence started\\n⚠️ All systems isolated\\n\\nSafe for maintenance operations');
+                            break;
+                        case 'cooldown':
+                            plantData.temperature -= 50;
+                            plantData.pressure -= 25;
+                            updateDisplays();
+                            alert('CONTROLLED COOLDOWN\\n\\n✓ Primary coolant temperature reducing\\n✓ Steam generator pressure lowering\\n✓ Decay heat removal active\\n\\nCooldown rate: 50°C/hour');
+                            break;
+                        case 'refuel':
+                            plantData.reactorStatus = 'REFUELING';
+                            alert('REFUELING MODE\\n\\n⚠️ Reactor vessel head removed\\n⚠️ Fuel handling in progress\\n⚠️ Containment isolated\\n\\nRefueling operations: 30% complete\\nEstimated completion: 45 days');
+                            break;
+                        case 'turbine':
+                            alert('TURBINE CONTROL SYSTEM\\n\\n✓ Steam turbine synchronized\\n✓ Generator connected to grid\\n✓ Condenser vacuum normal\\n✓ Feedwater system operational\\n\\nTurbine efficiency: 34.2%');
+                            break;
+                    }
+                }, 2000);
+            };
+
+            // Emergency Shutdown
+            window.emergencyShutdown = function() {
+                if (confirm('⛔ EMERGENCY SCRAM PROTOCOL ⛔\\n\\nThis will immediately shut down the reactor!\\n\\nAll control rods will be inserted rapidly.\\nReactor will enter emergency cooldown.\\n\\nConfirm emergency shutdown?')) {
+                    plantData.emergencyMode = true;
+                    plantData.reactorStatus = 'EMERGENCY SHUTDOWN';
+                    plantData.power = 0;
+                    plantData.powerOutput = 0;
+                    plantData.neutronFlux = 1e10;
+                    
+                    // Insert all control rods fully
+                    Object.keys(plantData.controlRods).forEach(rod => {
+                        plantData.controlRods[rod] = 100;
+                        const rodElement = document.querySelector(`.${rod.replace('rod', 'rod-')}`);
+                        rodElement.style.height = '60%';
+                    });
+                    
+                    updateDisplays();
+                    
+                    // Visual emergency feedback
+                    document.body.style.background = 'radial-gradient(ellipse at center, #ff0000 0%, #660000 30%, #000000 100%)';
+                    
+                    setTimeout(() => {
+                        document.body.style.background = '';
+                        plantData.emergencyMode = false;
+                    }, 5000);
+                    
+                    alert('🚨 EMERGENCY SCRAM ACTIVATED! 🚨\\n\\n⚠️ All control rods fully inserted\\n⚠️ Reactor shutdown complete\\n⚠️ Emergency core cooling activated\\n⚠️ Containment isolated\\n\\nReactor is in safe shutdown state');
+                }
+            };
+
+            // Update Displays
+            function updateDisplays() {
+                document.getElementById('nuclear-power').textContent = Math.round(plantData.power).toLocaleString() + ' MW';
+                document.getElementById('core-temp').textContent = Math.round(plantData.temperature) + '°C';
+                document.getElementById('pressure').textContent = Math.round(plantData.pressure) + ' bar';
+                document.getElementById('neutron-flux').textContent = plantData.neutronFlux.toExponential(1);
+                document.getElementById('radiation-level').textContent = plantData.radiationLevel.toFixed(1) + ' mSv/h';
+                document.getElementById('power-output').textContent = Math.round(plantData.powerOutput).toLocaleString() + ' MW';
+                document.getElementById('reactor-status').textContent = plantData.reactorStatus;
+                document.getElementById('temp-display').textContent = Math.round(plantData.temperature);
+                
+                // Update temperature needle
+                const tempRotation = ((plantData.temperature - 200) / 200) * 180 - 90;
+                document.getElementById('temp-needle').style.transform = `translate(-50%, 0) rotate(${tempRotation}deg)`;
+                
+                // Update power fill
+                const powerPercentage = (plantData.powerOutput / 1400) * 100;
+                document.getElementById('power-fill').style.width = Math.min(100, powerPercentage) + '%';
+            }
+
+            // Real-time simulation
+            setInterval(() => {
+                if (!plantData.emergencyMode && plantData.reactorStatus === 'OPERATIONAL') {
+                    // Simulate parameter fluctuations
+                    plantData.power += (Math.random() - 0.5) * 50;
+                    plantData.power = Math.max(2000, Math.min(3000, plantData.power));
+                    
+                    plantData.temperature += (Math.random() - 0.5) * 5;
+                    plantData.temperature = Math.max(300, Math.min(350, plantData.temperature));
+                    
+                    plantData.pressure += (Math.random() - 0.5) * 3;
+                    plantData.pressure = Math.max(145, Math.min(165, plantData.pressure));
+                    
+                    plantData.radiationLevel += (Math.random() - 0.5) * 2;
+                    plantData.radiationLevel = Math.max(30, Math.min(60, plantData.radiationLevel));
+                    
+                    plantData.powerOutput = plantData.power * 0.34; // ~34% thermal efficiency
+                    
+                    updateDisplays();
+                }
+            }, 3000);
+
+            // Initialize
+            createNeutrons();
+            updateDisplays();
+        });
+    </script>
+</body>
+</html>

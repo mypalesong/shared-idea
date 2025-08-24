@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mining Equipment Controller</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Roboto', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #2c1810 0%, #4a2c1a 50%, #2c1810 100%);
+            height: 100vh;
+            overflow: hidden;
+            color: #ffa500;
+            position: relative;
+        }
+
+        .mining-container {
+            display: grid;
+            grid-template-columns: 340px 1fr 340px;
+            grid-template-rows: 90px 1fr 110px;
+            height: 100vh;
+            gap: 12px;
+            padding: 12px;
+        }
+
+        .header-panel {
+            grid-column: 1 / 4;
+            grid-row: 1;
+            background: linear-gradient(135deg, #8b4513, #a0522d);
+            border: 2px solid #ffa500;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            color: white;
+            box-shadow: 0 8px 25px rgba(255, 165, 0, 0.4);
+        }
+
+        .left-panel {
+            grid-column: 1;
+            grid-row: 2;
+            background: linear-gradient(145deg, #2c1810, #4a2c1a);
+            border: 2px solid #cd853f;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: inset 0 0 20px rgba(205, 133, 63, 0.3);
+        }
+
+        .center-display {
+            grid-column: 2;
+            grid-row: 2;
+            background: linear-gradient(135deg, #1a1a1a, #2c1810);
+            border: 3px solid #ff6347;
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+        }
+
+        .right-panel {
+            grid-column: 3;
+            grid-row: 2;
+            background: linear-gradient(145deg, #2c1810, #4a2c1a);
+            border: 2px solid #daa520;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: inset 0 0 20px rgba(218, 165, 32, 0.3);
+        }
+
+        .footer-panel {
+            grid-column: 1 / 4;
+            grid-row: 3;
+            background: linear-gradient(135deg, #654321, #8b4513);
+            border: 2px solid #ffa500;
+            border-radius: 15px;
+            padding: 18px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            color: white;
+            box-shadow: 0 5px 20px rgba(255, 165, 0, 0.4);
+        }
+
+        .equipment-card {
+            background: rgba(74, 44, 26, 0.8);
+            border: 2px solid #cd853f;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .equipment-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #cd853f, transparent);
+            border-radius: 15px 15px 0 0;
+        }
+
+        .equipment-card:hover {
+            box-shadow: 0 8px 25px rgba(205, 133, 63, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .equipment-card.active {
+            border-color: #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+        }
+
+        .equipment-card.warning {
+            border-color: #ffa500;
+            animation: warningPulse 2s infinite;
+        }
+
+        .equipment-card.error {
+            border-color: #ff0000;
+            animation: errorPulse 1s infinite;
+        }
+
+        @keyframes warningPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 165, 0, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(255, 165, 0, 0.8); }
+        }
+
+        @keyframes errorPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.7); }
+            50% { box-shadow: 0 0 40px rgba(255, 0, 0, 1); }
+        }
+
+        .equipment-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #cd853f;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .equipment-status {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffa500;
+            margin: 10px 0;
+        }
+
+        .equipment-details {
+            font-size: 12px;
+            color: #d2b48c;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-led {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        .status-led.operational {
+            background: #00ff00;
+            box-shadow: 0 0 12px #00ff00;
+            animation: pulse-green 2s infinite;
+        }
+
+        .status-led.maintenance {
+            background: #ffa500;
+            box-shadow: 0 0 12px #ffa500;
+            animation: pulse-orange 1.5s infinite;
+        }
+
+        .status-led.fault {
+            background: #ff0000;
+            box-shadow: 0 0 15px #ff0000;
+            animation: pulse-red 1s infinite;
+        }
+
+        .status-led.offline {
+            background: #555555;
+            box-shadow: none;
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        @keyframes pulse-orange {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.2; }
+        }
+
+        .mine-layout {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: 
+                linear-gradient(45deg, transparent 49%, #654321 49%, #654321 51%, transparent 51%),
+                linear-gradient(-45deg, transparent 49%, #654321 49%, #654321 51%, transparent 51%),
+                radial-gradient(circle at 30% 40%, rgba(139, 69, 19, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(160, 82, 45, 0.3) 0%, transparent 50%),
+                #2c1810;
+            background-size: 40px 40px, 40px 40px, 300px 300px, 400px 400px, 100% 100%;
+        }
+
+        .tunnel {
+            position: absolute;
+            background: linear-gradient(90deg, #1a1a1a, #333333, #1a1a1a);
+            border: 2px solid #8b4513;
+            border-radius: 20px;
+        }
+
+        .tunnel-horizontal {
+            height: 40px;
+        }
+
+        .tunnel-vertical {
+            width: 40px;
+        }
+
+        .mining-vehicle {
+            position: absolute;
+            background: linear-gradient(135deg, #ffa500, #ff6347);
+            border: 3px solid #ffffff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            font-weight: bold;
+        }
+
+        .mining-vehicle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px rgba(255, 165, 0, 0.8);
+        }
+
+        .excavator {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff6347, #cd5c5c);
+        }
+
+        .dump-truck {
+            width: 80px;
+            height: 50px;
+            background: linear-gradient(135deg, #ffa500, #daa520);
+        }
+
+        .drill-rig {
+            width: 50px;
+            height: 70px;
+            background: linear-gradient(135deg, #4682b4, #5f9ea0);
+        }
+
+        .conveyor-belt {
+            position: absolute;
+            background: linear-gradient(90deg, #555555, #777777, #555555);
+            height: 20px;
+            border: 2px solid #ffa500;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .conveyor-belt::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -50px;
+            width: 50px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 165, 0, 0.5), transparent);
+            animation: conveyorMove 2s linear infinite;
+        }
+
+        @keyframes conveyorMove {
+            0% { left: -50px; }
+            100% { left: calc(100% + 50px); }
+        }
+
+        .production-display {
+            background: rgba(44, 24, 16, 0.9);
+            border: 2px solid #daa520;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .production-title {
+            font-size: 16px;
+            color: #daa520;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .production-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ffa500;
+            margin: 15px 0;
+        }
+
+        .production-chart {
+            width: 100%;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .production-bar {
+            position: absolute;
+            bottom: 0;
+            background: linear-gradient(to top, #daa520, #ffd700, #ffff00);
+            border-radius: 4px;
+            width: 20px;
+            animation: productionPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes productionPulse {
+            0%, 100% { height: 60%; }
+            50% { height: 80%; }
+        }
+
+        .safety-monitor {
+            background: rgba(44, 24, 16, 0.9);
+            border: 2px solid #ff6347;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .safety-title {
+            font-size: 16px;
+            color: #ff6347;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .safety-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 99, 71, 0.2);
+            font-size: 12px;
+            color: #d2b48c;
+        }
+
+        .safety-item:last-child {
+            border-bottom: none;
+        }
+
+        .mining-button {
+            background: linear-gradient(145deg, #2c1810, #4a2c1a);
+            border: 2px solid #ffa500;
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: bold;
+            color: #ffa500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(255, 165, 0, 0.2);
+        }
+
+        .mining-button:hover {
+            background: linear-gradient(145deg, #ffa500, #ff8c00);
+            color: #2c1810;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 165, 0, 0.4);
+        }
+
+        .mining-button:active {
+            transform: translateY(0);
+        }
+
+        .mining-button.warning {
+            border-color: #ff6347;
+            color: #ff6347;
+        }
+
+        .mining-button.success {
+            border-color: #32cd32;
+            color: #32cd32;
+        }
+
+        .mining-button.danger {
+            border-color: #ff0000;
+            color: #ff0000;
+        }
+
+        .mining-button.active {
+            background: linear-gradient(145deg, #32cd32, #228b22);
+            color: white;
+        }
+
+        .environment-monitor {
+            background: rgba(44, 24, 16, 0.9);
+            border: 2px solid #90ee90;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .environment-title {
+            font-size: 16px;
+            color: #90ee90;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .environment-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .env-item {
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        .env-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffa500;
+            margin-bottom: 5px;
+        }
+
+        .env-label {
+            font-size: 10px;
+            color: #d2b48c;
+            text-transform: uppercase;
+        }
+
+        .mineral-deposits {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #ffd700, #daa520);
+            border: 2px solid #ffff00;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: mineralGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes mineralGlow {
+            0%, 100% { 
+                box-shadow: 0 0 15px #ffd700;
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 25px #ffd700, 0 0 35px #daa520;
+                transform: scale(1.1);
+            }
+        }
+
+        .mineral-deposits:hover {
+            transform: scale(1.3);
+            box-shadow: 0 0 30px #ffd700;
+        }
+
+        .control-station {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ffa500;
+            border-radius: 15px;
+            padding: 15px;
+            min-width: 200px;
+        }
+
+        .station-title {
+            color: #ffa500;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .station-info {
+            color: #d2b48c;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .depth-indicator {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #8b4513;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .depth-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ffa500;
+            margin-bottom: 10px;
+        }
+
+        .depth-label {
+            color: #d2b48c;
+            font-size: 12px;
+        }
+
+        .depth-scale {
+            width: 20px;
+            height: 200px;
+            background: linear-gradient(to bottom, #87ceeb 0%, #daa520 50%, #8b4513 100%);
+            border-radius: 10px;
+            margin: 15px auto;
+            position: relative;
+        }
+
+        .depth-marker {
+            position: absolute;
+            left: -5px;
+            width: 30px;
+            height: 3px;
+            background: #ff0000;
+            border-radius: 2px;
+            top: 75%;
+        }
+
+        .dust-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .dust-particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(139, 69, 19, 0.6);
+            border-radius: 50%;
+            animation: dustFloat 10s linear infinite;
+        }
+
+        @keyframes dustFloat {
+            0% { 
+                transform: translateY(100vh) translateX(0px);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% { 
+                transform: translateY(-100px) translateX(50px);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mining-container">
+        <!-- Header Panel -->
+        <div class="header-panel">
+            <div>
+                <h2>⛏️ ADVANCED MINING OPERATIONS CENTER</h2>
+                <div style="font-size: 14px; opacity: 0.9;">Goldfields Mine Site Alpha | Deep Excavation Control</div>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 18px;">Daily Production</div>
+                <div style="font-size: 28px; font-weight: bold;" id="daily-production">2,847 tons</div>
+            </div>
+        </div>
+
+        <!-- Left Panel - Equipment Status -->
+        <div class="left-panel">
+            <div style="text-align: center; color: #cd853f; font-size: 16px; margin-bottom: 20px; font-weight: bold;">HEAVY EQUIPMENT</div>
+            
+            <div class="equipment-card active" onclick="selectEquipment('excavator1')">
+                <div class="equipment-title">
+                    🚜 Excavator Alpha-1
+                </div>
+                <div class="equipment-status">OPERATIONAL</div>
+                <div class="equipment-details">
+                    <span>Depth: 127m</span>
+                    <span class="status-led operational"></span>
+                </div>
+            </div>
+
+            <div class="equipment-card active" onclick="selectEquipment('truck1')">
+                <div class="equipment-title">
+                    🚛 Dump Truck Beta-1
+                </div>
+                <div class="equipment-status">LOADING</div>
+                <div class="equipment-details">
+                    <span>Load: 85%</span>
+                    <span class="status-led operational"></span>
+                </div>
+            </div>
+
+            <div class="equipment-card warning" onclick="selectEquipment('drill1')">
+                <div class="equipment-title">
+                    🔧 Drill Rig Gamma-1
+                </div>
+                <div class="equipment-status">MAINTENANCE</div>
+                <div class="equipment-details">
+                    <span>Scheduled: 2hrs</span>
+                    <span class="status-led maintenance"></span>
+                </div>
+            </div>
+
+            <div class="equipment-card active" onclick="selectEquipment('conveyor1')">
+                <div class="equipment-title">
+                    📦 Conveyor System
+                </div>
+                <div class="equipment-status">TRANSPORTING</div>
+                <div class="equipment-details">
+                    <span>Speed: 2.5 m/s</span>
+                    <span class="status-led operational"></span>
+                </div>
+            </div>
+
+            <div class="equipment-card error" onclick="selectEquipment('crusher1')">
+                <div class="equipment-title">
+                    ⚙️ Ore Crusher Delta-1
+                </div>
+                <div class="equipment-status">FAULT</div>
+                <div class="equipment-details">
+                    <span>Motor Overload</span>
+                    <span class="status-led fault"></span>
+                </div>
+            </div>
+
+            <div class="equipment-card active" onclick="selectEquipment('ventilation')">
+                <div class="equipment-title">
+                    💨 Ventilation System
+                </div>
+                <div class="equipment-status">96% CFM</div>
+                <div class="equipment-details">
+                    <span>Air Quality: Good</span>
+                    <span class="status-led operational"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Display - Mine Layout -->
+        <div class="center-display">
+            <div class="mine-layout">
+                <!-- Tunnels -->
+                <div class="tunnel tunnel-horizontal" style="top: 100px; left: 50px; width: 300px;"></div>
+                <div class="tunnel tunnel-horizontal" style="top: 200px; left: 100px; width: 400px;"></div>
+                <div class="tunnel tunnel-horizontal" style="top: 300px; left: 50px; width: 350px;"></div>
+                <div class="tunnel tunnel-vertical" style="top: 100px; left: 200px; height: 220px;"></div>
+                <div class="tunnel tunnel-vertical" style="top: 150px; left: 350px; height: 170px;"></div>
+                
+                <!-- Mining Vehicles -->
+                <div class="mining-vehicle excavator" style="top: 120px; left: 120px;" onclick="vehicleControl('excavator1')" title="Excavator Alpha-1">🚜</div>
+                <div class="mining-vehicle dump-truck" style="top: 220px; left: 180px;" onclick="vehicleControl('truck1')" title="Dump Truck Beta-1">🚛</div>
+                <div class="mining-vehicle drill-rig" style="top: 80px; left: 320px;" onclick="vehicleControl('drill1')" title="Drill Rig Gamma-1">🔧</div>
+                
+                <!-- Conveyor Belts -->
+                <div class="conveyor-belt" style="top: 320px; left: 100px; width: 250px;"></div>
+                <div class="conveyor-belt" style="top: 180px; left: 400px; width: 150px; transform: rotate(45deg);"></div>
+                
+                <!-- Mineral Deposits -->
+                <div class="mineral-deposits" style="top: 140px; left: 80px;" onclick="mineralInfo('gold')" title="Gold Deposit"></div>
+                <div class="mineral-deposits" style="top: 250px; left: 280px;" onclick="mineralInfo('copper')" title="Copper Deposit"></div>
+                <div class="mineral-deposits" style="top: 180px; left: 450px;" onclick="mineralInfo('iron')" title="Iron Ore"></div>
+                <div class="mineral-deposits" style="top: 300px; left: 150px;" onclick="mineralInfo('silver')" title="Silver Deposit"></div>
+                
+                <div class="control-station">
+                    <div class="station-title">CONTROL CENTER</div>
+                    <div class="station-info">Active Equipment: 6/7</div>
+                    <div class="station-info">Current Shift: Day (07:00-19:00)</div>
+                    <div class="station-info">Operators: 12 on duty</div>
+                    <div class="station-info">Safety Status: All Clear</div>
+                </div>
+
+                <div class="depth-indicator">
+                    <div class="depth-value" id="current-depth">127</div>
+                    <div class="depth-label">meters below surface</div>
+                    <div class="depth-scale">
+                        <div class="depth-marker"></div>
+                    </div>
+                </div>
+                
+                <!-- Dust Particles -->
+                <div class="dust-particles" id="dust-field"></div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Production & Safety -->
+        <div class="right-panel">
+            <div style="text-align: center; color: #daa520; font-size: 16px; margin-bottom: 20px; font-weight: bold;">PRODUCTION & SAFETY</div>
+            
+            <div class="production-display">
+                <div class="production-title">⚒️ Ore Production</div>
+                <div class="production-value" id="production-rate">847</div>
+                <div style="font-size: 14px; color: #d2b48c;">tons/hour</div>
+                <div class="production-chart">
+                    <div class="production-bar" style="left: 10%; height: 70%;"></div>
+                    <div class="production-bar" style="left: 30%; height: 85%;"></div>
+                    <div class="production-bar" style="left: 50%; height: 60%;"></div>
+                    <div class="production-bar" style="left: 70%; height: 90%;"></div>
+                </div>
+            </div>
+
+            <div class="environment-monitor">
+                <div class="environment-title">🌍 Environmental</div>
+                <div class="environment-grid">
+                    <div class="env-item">
+                        <div class="env-value" id="air-quality">Good</div>
+                        <div class="env-label">Air Quality</div>
+                    </div>
+                    <div class="env-item">
+                        <div class="env-value" id="noise-level">78</div>
+                        <div class="env-label">dB Noise</div>
+                    </div>
+                    <div class="env-item">
+                        <div class="env-value" id="dust-level">12</div>
+                        <div class="env-label">mg/m³ Dust</div>
+                    </div>
+                    <div class="env-item">
+                        <div class="env-value" id="gas-level">0.02</div>
+                        <div class="env-label">% Methane</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="safety-monitor">
+                <div class="safety-title">🛡️ Safety Systems</div>
+                <div class="safety-item">
+                    <span>Emergency Ventilation</span>
+                    <span class="status-led operational"></span>
+                </div>
+                <div class="safety-item">
+                    <span>Gas Detection System</span>
+                    <span class="status-led operational"></span>
+                </div>
+                <div class="safety-item">
+                    <span>Fire Suppression</span>
+                    <span class="status-led operational"></span>
+                </div>
+                <div class="safety-item">
+                    <span>Emergency Exits</span>
+                    <span class="status-led operational"></span>
+                </div>
+                <div class="safety-item">
+                    <span>Communication System</span>
+                    <span class="status-led maintenance"></span>
+                </div>
+                <div class="safety-item">
+                    <span>Ground Stability Monitor</span>
+                    <span class="status-led operational"></span>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+                <button class="mining-button success" onclick="safetyAction('evacuation')">Emergency Evacuation</button>
+                <button class="mining-button warning" onclick="safetyAction('ventilation')">Boost Ventilation</button>
+                <button class="mining-button" onclick="safetyAction('inspection')">Safety Inspection</button>
+                <button class="mining-button danger" onclick="safetyAction('lockdown')">Site Lockdown</button>
+            </div>
+        </div>
+
+        <!-- Footer Panel -->
+        <div class="footer-panel">
+            <button class="mining-button" onclick="operationCommand('start-shift')">Start New Shift</button>
+            <button class="mining-button" onclick="operationCommand('blast-sequence')">Controlled Blast</button>
+            <button class="mining-button warning" onclick="operationCommand('equipment-check')">Equipment Check</button>
+            <button class="mining-button success" onclick="operationCommand('production-boost')">Production Boost</button>
+            <button class="mining-button" onclick="operationCommand('maintenance-mode')">Maintenance Mode</button>
+            <button class="mining-button danger" onclick="operationCommand('emergency-stop')">Emergency Stop</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let miningData = {
+                dailyProduction: 2847,
+                productionRate: 847,
+                currentDepth: 127,
+                airQuality: 'Good',
+                noiseLevel: 78,
+                dustLevel: 12,
+                gasLevel: 0.02,
+                selectedEquipment: null,
+                equipment: {
+                    excavator1: { status: 'operational', depth: 127 },
+                    truck1: { status: 'operational', load: 85 },
+                    drill1: { status: 'maintenance', eta: 2 },
+                    conveyor1: { status: 'operational', speed: 2.5 },
+                    crusher1: { status: 'fault', issue: 'Motor Overload' },
+                    ventilation: { status: 'operational', cfm: 96 }
+                }
+            };
+
+            // Create dust particles
+            function createDustParticles() {
+                const dustField = document.getElementById('dust-field');
+                
+                setInterval(() => {
+                    for (let i = 0; i < 2; i++) {
+                        const particle = document.createElement('div');
+                        particle.className = 'dust-particle';
+                        particle.style.left = Math.random() * 100 + '%';
+                        particle.style.animationDelay = Math.random() * 2 + 's';
+                        particle.style.animationDuration = (8 + Math.random() * 4) + 's';
+                        dustField.appendChild(particle);
+                        
+                        setTimeout(() => {
+                            if (particle.parentNode) {
+                                particle.parentNode.removeChild(particle);
+                            }
+                        }, 12000);
+                    }
+                }, 3000);
+            }
+
+            // Equipment Selection
+            window.selectEquipment = function(equipmentId) {
+                miningData.selectedEquipment = equipmentId;
+                
+                document.querySelectorAll('.equipment-card').forEach(card => {
+                    card.style.borderWidth = '2px';
+                });
+                
+                const selectedCard = document.querySelector(`[onclick="selectEquipment('${equipmentId}')"]`);
+                selectedCard.style.borderWidth = '4px';
+            };
+
+            // Vehicle Control
+            window.vehicleControl = function(vehicleId) {
+                const vehicleElement = document.querySelector(`[onclick="vehicleControl('${vehicleId}')"]`);
+                vehicleElement.style.transform = 'scale(1.3)';
+                
+                setTimeout(() => {
+                    vehicleElement.style.transform = 'scale(1)';
+                    
+                    const equipment = miningData.equipment[vehicleId];
+                    let alertMessage = '';
+                    
+                    switch(vehicleId) {
+                        case 'excavator1':
+                            alertMessage = `EXCAVATOR ALPHA-1\\n\\nStatus: ${equipment.status.toUpperCase()}\\nOperating Depth: ${equipment.depth}m\\nBucket Capacity: 15 m³\\nOperator: Kim MinGu\\n\\nHours Today: 8.5\\nFuel Level: 78%`;
+                            break;
+                        case 'truck1':
+                            alertMessage = `DUMP TRUCK BETA-1\\n\\nStatus: ${equipment.status.toUpperCase()}\\nCurrent Load: ${equipment.load}%\\nPayload: 240 tons\\nOperator: Lee SuJin\\n\\nTrips Today: 23\\nFuel Level: 45%`;
+                            break;
+                        case 'drill1':
+                            alertMessage = `DRILL RIG GAMMA-1\\n\\nStatus: ${equipment.status.toUpperCase()}\\nMaintenance ETA: ${equipment.eta} hours\\nDrill Depth: 45m\\nOperator: Park DrillMaster\\n\\nLast Service: 3 days ago\\nNext Scheduled: Today`;
+                            break;
+                    }
+                    
+                    alert(alertMessage);
+                }, 300);
+            };
+
+            // Mineral Information
+            window.mineralInfo = function(mineralType) {
+                const mineralElement = document.querySelector(`[onclick="mineralInfo('${mineralType}')"]`);
+                mineralElement.style.transform = 'scale(1.5)';
+                
+                setTimeout(() => {
+                    mineralElement.style.transform = 'scale(1)';
+                    
+                    let mineralData = '';
+                    
+                    switch(mineralType) {
+                        case 'gold':
+                            mineralData = 'GOLD DEPOSIT\\n\\nGrade: 8.7 g/t\\nReserve: 2,400 kg\\nPurity: 94.2%\\nValue: $156M\\n\\nExtraction Rate: 85%\\nRecovery Method: Cyanidation';
+                            break;
+                        case 'copper':
+                            mineralData = 'COPPER DEPOSIT\\n\\nGrade: 2.3%\\nReserve: 45,000 tons\\nPurity: 97.8%\\nValue: $360M\\n\\nExtraction Rate: 92%\\nRecovery Method: Flotation';
+                            break;
+                        case 'iron':
+                            mineralData = 'IRON ORE DEPOSIT\\n\\nGrade: 67.2% Fe\\nReserve: 125,000 tons\\nType: Hematite\\nValue: $78M\\n\\nExtraction Rate: 95%\\nRecovery Method: Magnetic Separation';
+                            break;
+                        case 'silver':
+                            mineralData = 'SILVER DEPOSIT\\n\\nGrade: 145 g/t\\nReserve: 890 kg\\nPurity: 99.1%\\nValue: $23M\\n\\nExtraction Rate: 88%\\nRecovery Method: Amalgamation';
+                            break;
+                    }
+                    
+                    alert(mineralData);
+                }, 300);
+            };
+
+            // Safety Actions
+            window.safetyAction = function(action) {
+                const button = document.querySelector(`[onclick="safetyAction('${action}')"]`);
+                const originalText = button.textContent;
+                
+                button.classList.add('active');
+                button.textContent = 'EXECUTING...';
+                
+                setTimeout(() => {
+                    button.classList.remove('active');
+                    button.textContent = originalText;
+                    
+                    switch(action) {
+                        case 'evacuation':
+                            alert('🚨 EMERGENCY EVACUATION PROTOCOL\\n\\n⚠️ All personnel evacuate immediately\\n⚠️ Emergency sirens activated\\n⚠️ Exit routes illuminated\\n⚠️ Assembly point: Surface parking area\\n\\nEvacuation time: 12 minutes');
+                            break;
+                        case 'ventilation':
+                            miningData.airQuality = 'Excellent';
+                            document.getElementById('air-quality').textContent = 'Excellent';
+                            alert('VENTILATION BOOST ACTIVATED\\n\\n✓ Fan speed increased to 120%\\n✓ Emergency air shafts opened\\n✓ Air quality improving\\n✓ CO2 levels decreasing\\n\\nEstimated normalization: 15 minutes');
+                            break;
+                        case 'inspection':
+                            alert('SAFETY INSPECTION INITIATED\\n\\n✓ Ground stability check\\n✓ Equipment safety audit\\n✓ Gas level monitoring\\n✓ Ventilation system test\\n\\nInspection team deployed\\nETA: 45 minutes');
+                            break;
+                        case 'lockdown':
+                            alert('🔒 SITE LOCKDOWN ACTIVATED\\n\\n⚠️ All equipment stopped\\n⚠️ Access points secured\\n⚠️ Personnel accounted for\\n⚠️ Emergency services notified\\n\\nSite secured for investigation');
+                            break;
+                    }
+                }, 1500);
+            };
+
+            // Operation Commands
+            window.operationCommand = function(command) {
+                const button = document.querySelector(`[onclick="operationCommand('${command}')"]`);
+                const originalText = button.textContent;
+                
+                button.textContent = 'PROCESSING...';
+                button.style.opacity = '0.7';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.opacity = '1';
+                    
+                    switch(command) {
+                        case 'start-shift':
+                            alert('NEW SHIFT STARTED\\n\\n✓ Night crew relieved\\n✓ Equipment handover complete\\n✓ Safety briefing conducted\\n✓ Production targets set\\n\\nDay shift: 12 operators on duty\\nShift supervisor: Manager Chen');
+                            break;
+                        case 'blast-sequence':
+                            if (confirm('CONTROLLED BLAST SEQUENCE\\n\\nArea: Sector 7-Alpha\\nExplosive: 450kg PETN\\nEvacuation radius: 500m\\n\\nConfirm blast initiation?')) {
+                                alert('💥 BLAST SEQUENCE INITIATED\\n\\n✓ Area evacuated\\n✓ Blast holes loaded\\n✓ Detonation in 3...2...1...\\n✓ Blast successful\\n\\n2,400 tons of ore liberated\\nDebris clearing in progress');
+                                miningData.dailyProduction += 2400;
+                                document.getElementById('daily-production').textContent = miningData.dailyProduction.toLocaleString() + ' tons';
+                            }
+                            break;
+                        case 'equipment-check':
+                            alert('EQUIPMENT DIAGNOSTIC\\n\\n🚜 Excavator Alpha-1: OK\\n🚛 Dump Truck Beta-1: OK\\n🔧 Drill Rig Gamma-1: Maintenance\\n📦 Conveyor System: OK\\n⚙️ Ore Crusher Delta-1: FAULT\\n💨 Ventilation: OK\\n\\n5/6 systems operational');
+                            break;
+                        case 'production-boost':
+                            miningData.productionRate += 150;
+                            document.getElementById('production-rate').textContent = miningData.productionRate;
+                            alert('PRODUCTION BOOST ACTIVATED\\n\\n✓ Additional equipment deployed\\n✓ Extended operating hours\\n✓ Optimized load cycles\\n\\nProduction increased by 150 tons/hour\\nBoost duration: 4 hours');
+                            break;
+                        case 'maintenance-mode':
+                            alert('MAINTENANCE MODE\\n\\n🔧 All equipment stopping\\n🔧 Maintenance crews dispatched\\n🔧 Safety systems on standby\\n🔧 Scheduled maintenance begin\\n\\nEstimated downtime: 6 hours\\nProduction resume: 02:00');
+                            break;
+                        case 'emergency-stop':
+                            alert('🛑 EMERGENCY STOP ACTIVATED\\n\\n⚠️ ALL OPERATIONS HALTED\\n⚠️ Equipment emergency braking\\n⚠️ Power systems isolated\\n⚠️ Safety teams responding\\n\\nSite secured\\nAwait further instructions');
+                            break;
+                    }
+                }, 2000);
+            };
+
+            // Real-time data simulation
+            setInterval(() => {
+                // Update production rate
+                miningData.productionRate += (Math.random() - 0.5) * 20;
+                miningData.productionRate = Math.max(700, Math.min(1000, miningData.productionRate));
+                document.getElementById('production-rate').textContent = Math.round(miningData.productionRate);
+
+                // Update daily production
+                miningData.dailyProduction += Math.round(miningData.productionRate / 120); // per minute to per day approximation
+                document.getElementById('daily-production').textContent = miningData.dailyProduction.toLocaleString() + ' tons';
+
+                // Update environmental data
+                miningData.noiseLevel += (Math.random() - 0.5) * 4;
+                miningData.noiseLevel = Math.max(70, Math.min(85, miningData.noiseLevel));
+                document.getElementById('noise-level').textContent = Math.round(miningData.noiseLevel);
+
+                miningData.dustLevel += (Math.random() - 0.5) * 2;
+                miningData.dustLevel = Math.max(8, Math.min(18, miningData.dustLevel));
+                document.getElementById('dust-level').textContent = Math.round(miningData.dustLevel);
+
+                miningData.gasLevel += (Math.random() - 0.5) * 0.005;
+                miningData.gasLevel = Math.max(0.01, Math.min(0.05, miningData.gasLevel));
+                document.getElementById('gas-level').textContent = miningData.gasLevel.toFixed(2);
+
+                // Update depth
+                miningData.currentDepth += (Math.random() - 0.3) * 0.5;
+                miningData.currentDepth = Math.max(120, Math.min(140, miningData.currentDepth));
+                document.getElementById('current-depth').textContent = Math.round(miningData.currentDepth);
+            }, 4000);
+
+            // Initialize
+            createDustParticles();
+            selectEquipment('excavator1');
+        });
+    </script>
+</body>
+</html>

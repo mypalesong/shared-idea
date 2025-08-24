@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>백업 일정 안내</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f5f5f5; }
+        .container { max-width: 800px; margin: 20px auto; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+        .header h1 { font-size: 28px; margin-bottom: 10px; font-weight: 300; }
+        .header .subtitle { font-size: 16px; opacity: 0.9; }
+        .content { padding: 40px; }
+        .notice-type { background: #17a2b8; color: white; padding: 8px 20px; border-radius: 20px; display: inline-block; margin-bottom: 20px; font-size: 14px; font-weight: 500; }
+        .main-message { font-size: 18px; margin-bottom: 30px; color: #2c3e50; line-height: 1.8; }
+        .backup-overview { background: #e7f7fb; border-left: 4px solid #17a2b8; padding: 25px; margin: 20px 0; border-radius: 0 8px 8px 0; }
+        .backup-overview h3 { color: #138496; margin-bottom: 15px; font-size: 18px; }
+        .overview-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
+        .stat-item { background: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .stat-value { font-size: 24px; font-weight: bold; color: #17a2b8; margin-bottom: 5px; }
+        .stat-label { font-size: 14px; color: #6c757d; }
+        .backup-schedule { background: #f8f9fa; padding: 25px; border-radius: 8px; margin: 20px 0; }
+        .backup-schedule h3 { color: #2c3e50; margin-bottom: 20px; }
+        .schedule-table { width: 100%; border-collapse: collapse; background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .schedule-table th { background: #17a2b8; color: white; padding: 15px; text-align: left; font-weight: 600; }
+        .schedule-table td { padding: 12px 15px; border-bottom: 1px solid #dee2e6; }
+        .schedule-table tr:nth-child(even) { background: #f8f9fa; }
+        .backup-type { padding: 4px 8px; border-radius: 12px; font-size: 12px; color: white; }
+        .backup-type.full { background: #28a745; }
+        .backup-type.incremental { background: #ffc107; color: #212529; }
+        .backup-type.differential { background: #fd7e14; }
+        .backup-locations { background: #fff8e1; border: 1px solid #ffcc02; border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .backup-locations h4 { color: #ff8f00; margin-bottom: 15px; }
+        .location-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .location-item { background: white; padding: 15px; border-radius: 6px; border-left: 3px solid #ff8f00; }
+        .location-item h5 { color: #e65100; margin-bottom: 8px; }
+        .location-item .location-details { font-size: 14px; color: #6c757d; }
+        .important-notes { background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .important-notes h4 { color: #856404; margin-bottom: 15px; }
+        .notes-list { list-style: none; padding: 0; }
+        .notes-list li { padding: 8px 0; padding-left: 25px; position: relative; }
+        .notes-list li:before { content: "⚠️"; position: absolute; left: 0; }
+        .recovery-info { background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .recovery-info h4 { color: #155724; margin-bottom: 15px; }
+        .recovery-contact { background: white; padding: 15px; border-radius: 6px; margin-top: 15px; border-left: 3px solid #28a745; }
+        .backup-health { background: #f8f9fa; border-radius: 8px; padding: 25px; margin: 20px 0; }
+        .backup-health h3 { color: #2c3e50; margin-bottom: 20px; }
+        .health-indicators { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .health-item { background: white; padding: 15px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .health-status { display: flex; align-items: center; margin-bottom: 10px; }
+        .status-indicator { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
+        .status-indicator.good { background: #28a745; }
+        .status-indicator.warning { background: #ffc107; }
+        .status-indicator.error { background: #dc3545; }
+        .contact-info { background: #e8f5e8; padding: 20px; border-radius: 6px; margin-top: 30px; }
+        .contact-info h4 { color: #27ae60; margin-bottom: 10px; }
+        .footer { text-align: center; padding: 20px; color: #7f8c8d; font-size: 14px; border-top: 1px solid #ecf0f1; }
+        .logo { float: right; font-weight: bold; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">Backup Team</div>
+            <h1>데이터 백업 일정 안내</h1>
+            <div class="subtitle">Data Backup Schedule Notice</div>
+        </div>
+        
+        <div class="content">
+            <span class="notice-type">백업일정</span>
+            
+            <div class="main-message">
+                중요한 데이터 보호를 위한 정기 백업 작업이 예정되어 있습니다.<br>
+                백업 일정과 관련 안내사항을 확인해 주세요.
+            </div>
+            
+            <div class="backup-overview">
+                <h3>📊 백업 현황 개요</h3>
+                <p>현재 시스템의 백업 상태와 다음 백업 일정을 안내드립니다.</p>
+                <div class="overview-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">99.9%</div>
+                        <div class="stat-label">백업 성공률</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2.5TB</div>
+                        <div class="stat-label">총 백업 용량</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3개소</div>
+                        <div class="stat-label">백업 저장소</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">30일</div>
+                        <div class="stat-label">보관 기간</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="backup-schedule">
+                <h3>📅 백업 일정표</h3>
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>백업 유형</th>
+                            <th>실행 시간</th>
+                            <th>주기</th>
+                            <th>예상 소요시간</th>
+                            <th>영향도</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="backup-type full">전체 백업</span></td>
+                            <td>매주 일요일 02:00</td>
+                            <td>주 1회</td>
+                            <td>4-6시간</td>
+                            <td>서비스 속도 약간 저하</td>
+                        </tr>
+                        <tr>
+                            <td><span class="backup-type incremental">증분 백업</span></td>
+                            <td>매일 23:00</td>
+                            <td>일 1회</td>
+                            <td>30분-1시간</td>
+                            <td>영향 없음</td>
+                        </tr>
+                        <tr>
+                            <td><span class="backup-type differential">차등 백업</span></td>
+                            <td>매주 수요일 01:00</td>
+                            <td>주 1회</td>
+                            <td>2-3시간</td>
+                            <td>서비스 속도 약간 저하</td>
+                        </tr>
+                        <tr>
+                            <td><span class="backup-type full">시스템 백업</span></td>
+                            <td>매월 첫째 토요일 01:00</td>
+                            <td>월 1회</td>
+                            <td>6-8시간</td>
+                            <td>새벽시간 일부 서비스 중단</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="backup-locations">
+                <h4>🗄️ 백업 저장 위치</h4>
+                <div class="location-grid">
+                    <div class="location-item">
+                        <h5>주 저장소 (Primary)</h5>
+                        <div class="location-details">
+                            위치: 데이터센터 A<br>
+                            용량: 10TB<br>
+                            상태: 정상
+                        </div>
+                    </div>
+                    <div class="location-item">
+                        <h5>보조 저장소 (Secondary)</h5>
+                        <div class="location-details">
+                            위치: 데이터센터 B<br>
+                            용량: 10TB<br>
+                            상태: 정상
+                        </div>
+                    </div>
+                    <div class="location-item">
+                        <h5>오프사이트 백업</h5>
+                        <div class="location-details">
+                            위치: 클라우드 스토리지<br>
+                            용량: 무제한<br>
+                            상태: 정상
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="important-notes">
+                <h4>⚠️ 중요 안내사항</h4>
+                <ul class="notes-list">
+                    <li>백업 중에는 시스템 성능이 일시적으로 저하될 수 있습니다</li>
+                    <li>중요한 작업은 백업 시간을 피해서 진행해 주세요</li>
+                    <li>백업 중 시스템 종료나 재시작을 금지해 주세요</li>
+                    <li>대용량 파일 업로드는 백업 완료 후 진행을 권장합니다</li>
+                </ul>
+            </div>
+            
+            <div class="backup-health">
+                <h3>💚 백업 시스템 상태</h3>
+                <div class="health-indicators">
+                    <div class="health-item">
+                        <div class="health-status">
+                            <span class="status-indicator good"></span>
+                            <strong>데이터베이스 백업</strong>
+                        </div>
+                        <div>마지막 백업: 2025-08-23 23:15</div>
+                        <div>다음 백업: 2025-08-24 23:00</div>
+                    </div>
+                    <div class="health-item">
+                        <div class="health-status">
+                            <span class="status-indicator good"></span>
+                            <strong>파일 시스템 백업</strong>
+                        </div>
+                        <div>마지막 백업: 2025-08-23 23:30</div>
+                        <div>다음 백업: 2025-08-24 23:00</div>
+                    </div>
+                    <div class="health-item">
+                        <div class="health-status">
+                            <span class="status-indicator warning"></span>
+                            <strong>설정 파일 백업</strong>
+                        </div>
+                        <div>마지막 백업: 2025-08-20 02:15</div>
+                        <div>다음 백업: 2025-08-25 02:00</div>
+                    </div>
+                    <div class="health-item">
+                        <div class="health-status">
+                            <span class="status-indicator good"></span>
+                            <strong>로그 파일 백업</strong>
+                        </div>
+                        <div>마지막 백업: 2025-08-23 23:45</div>
+                        <div>다음 백업: 2025-08-24 23:00</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="recovery-info">
+                <h4>🔄 데이터 복구 안내</h4>
+                <p>백업된 데이터의 복구가 필요한 경우 아래 절차를 따라주세요:</p>
+                <div class="recovery-contact">
+                    <strong>📞 복구 요청 절차:</strong><br>
+                    1. IT지원팀에 복구 요청 티켓 생성<br>
+                    2. 복구 대상 및 시점 명시<br>
+                    3. 승인 후 복구 작업 진행<br>
+                    4. 복구 완료 확인 및 검증
+                </div>
+            </div>
+            
+            <div class="contact-info">
+                <h4>📞 백업 관련 문의</h4>
+                <div>백업관리팀: 내선 4000 | backup@company.com</div>
+                <div>긴급복구팀: 내선 4999 | recovery@company.com</div>
+                <div>24시간 긴급상황: 010-4444-4444</div>
+                <div>백업 모니터링: monitor@company.com</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            이 백업 일정 안내는 백업관리팀에서 발송되었습니다. | © 2025 Company Backup Team
+        </div>
+    </div>
+</body>
+</html>

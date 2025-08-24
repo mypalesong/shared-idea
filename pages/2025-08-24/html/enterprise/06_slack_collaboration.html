@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slack Enterprise Collaboration Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Slack', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #1a1d29;
+            color: #d1d2d3;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .app-container {
+            display: grid;
+            grid-template-columns: 70px 260px 1fr 300px;
+            height: 100vh;
+        }
+        
+        .workspace-sidebar {
+            background: #350d36;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            gap: 12px;
+        }
+        
+        .workspace-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+        
+        .workspace-icon.active {
+            border-radius: 12px;
+        }
+        
+        .workspace-icon.active::after {
+            content: '';
+            position: absolute;
+            left: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 20px;
+            background: white;
+            border-radius: 2px;
+        }
+        
+        .workspace-1 { background: linear-gradient(135deg, #4a154b, #350d36); }
+        .workspace-2 { background: linear-gradient(135deg, #1264a3, #0e4775); }
+        .workspace-3 { background: linear-gradient(135deg, #2eb67d, #1e7e34); }
+        
+        .add-workspace {
+            width: 40px;
+            height: 40px;
+            border: 2px dashed #8b8b8b;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #8b8b8b;
+            font-size: 20px;
+            transition: all 0.2s;
+        }
+        
+        .add-workspace:hover {
+            border-color: white;
+            color: white;
+        }
+        
+        .channels-sidebar {
+            background: #19171d;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #2c2d30;
+        }
+        
+        .team-header {
+            padding: 20px;
+            border-bottom: 1px solid #2c2d30;
+        }
+        
+        .team-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 4px;
+        }
+        
+        .team-status {
+            font-size: 14px;
+            color: #8b8b8b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #2eb67d;
+        }
+        
+        .channels-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 0;
+        }
+        
+        .channel-section {
+            margin-bottom: 24px;
+        }
+        
+        .section-header {
+            padding: 8px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #8b8b8b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+        
+        .section-toggle {
+            font-size: 12px;
+        }
+        
+        .channel-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative;
+        }
+        
+        .channel-item:hover {
+            background: rgba(255,255,255,0.04);
+        }
+        
+        .channel-item.active {
+            background: #1264a3;
+            color: white;
+        }
+        
+        .channel-icon {
+            font-size: 14px;
+            width: 16px;
+            text-align: center;
+        }
+        
+        .channel-name {
+            flex: 1;
+            font-size: 15px;
+        }
+        
+        .notification-badge {
+            background: #e01e5a;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 16px;
+            text-align: center;
+        }
+        
+        .unread-dot {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            background: #222529;
+        }
+        
+        .channel-header {
+            background: #222529;
+            border-bottom: 1px solid #2c2d30;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .channel-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .channel-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .member-count {
+            font-size: 14px;
+            color: #8b8b8b;
+        }
+        
+        .channel-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid #2c2d30;
+            background: transparent;
+            border-radius: 8px;
+            color: #8b8b8b;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .action-btn:hover {
+            border-color: #8b8b8b;
+            background: rgba(255,255,255,0.04);
+        }
+        
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+        }
+        
+        .message {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        
+        .message:hover {
+            background: rgba(255,255,255,0.02);
+        }
+        
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, #1264a3, #0e4775);
+            flex-shrink: 0;
+        }
+        
+        .message-content {
+            flex: 1;
+        }
+        
+        .message-header {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        
+        .message-author {
+            font-weight: 600;
+            color: white;
+            font-size: 15px;
+        }
+        
+        .message-time {
+            font-size: 12px;
+            color: #8b8b8b;
+        }
+        
+        .message-text {
+            color: #d1d2d3;
+            line-height: 1.5;
+            font-size: 15px;
+        }
+        
+        .message-reactions {
+            margin-top: 8px;
+            display: flex;
+            gap: 4px;
+        }
+        
+        .reaction {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 16px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .reaction:hover {
+            background: rgba(255,255,255,0.08);
+        }
+        
+        .message-input-container {
+            padding: 20px 24px;
+            border-top: 1px solid #2c2d30;
+        }
+        
+        .message-input {
+            background: #ffffff;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #1d1c1d;
+            font-size: 15px;
+            width: 100%;
+            min-height: 42px;
+            resize: none;
+            font-family: inherit;
+        }
+        
+        .message-input::placeholder {
+            color: #616061;
+        }
+        
+        .input-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .toolbar-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: transparent;
+            color: #8b8b8b;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .toolbar-btn:hover {
+            background: rgba(255,255,255,0.04);
+            color: white;
+        }
+        
+        .thread-panel {
+            background: #1a1d29;
+            border-left: 1px solid #2c2d30;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .thread-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #2c2d30;
+        }
+        
+        .thread-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 8px;
+        }
+        
+        .thread-info {
+            font-size: 14px;
+            color: #8b8b8b;
+        }
+        
+        .thread-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+        }
+        
+        .thread-message {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 8px;
+            border-radius: 8px;
+        }
+        
+        .thread-message:hover {
+            background: rgba(255,255,255,0.02);
+        }
+        
+        .thread-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, #2eb67d, #1e7e34);
+            flex-shrink: 0;
+        }
+        
+        .thread-content {
+            flex: 1;
+        }
+        
+        .thread-author {
+            font-weight: 600;
+            color: white;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+        
+        .thread-text {
+            color: #d1d2d3;
+            line-height: 1.4;
+            font-size: 14px;
+        }
+        
+        .thread-time {
+            font-size: 11px;
+            color: #8b8b8b;
+            margin-top: 4px;
+        }
+        
+        .presence-indicator {
+            position: relative;
+        }
+        
+        .presence-indicator::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid #19171d;
+        }
+        
+        .presence-online::after {
+            background: #2eb67d;
+        }
+        
+        .presence-away::after {
+            background: #ecb022;
+        }
+        
+        .presence-dnd::after {
+            background: #e01e5a;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Workspace Sidebar -->
+        <div class="workspace-sidebar">
+            <div class="workspace-icon workspace-1 active"></div>
+            <div class="workspace-icon workspace-2"></div>
+            <div class="workspace-icon workspace-3"></div>
+            <div class="add-workspace">+</div>
+        </div>
+        
+        <!-- Channels Sidebar -->
+        <div class="channels-sidebar">
+            <div class="team-header">
+                <div class="team-name">Acme Corp</div>
+                <div class="team-status">
+                    <div class="status-indicator"></div>
+                    <span>김철수</span>
+                </div>
+            </div>
+            
+            <div class="channels-list">
+                <div class="channel-section">
+                    <div class="section-header">
+                        <span>채널</span>
+                        <span class="section-toggle">▼</span>
+                    </div>
+                    <div class="channel-item active">
+                        <span class="channel-icon">#</span>
+                        <span class="channel-name">general</span>
+                        <div class="notification-badge">3</div>
+                    </div>
+                    <div class="channel-item">
+                        <span class="channel-icon">#</span>
+                        <span class="channel-name">product-dev</span>
+                        <div class="unread-dot"></div>
+                    </div>
+                    <div class="channel-item">
+                        <span class="channel-icon">#</span>
+                        <span class="channel-name">marketing</span>
+                    </div>
+                    <div class="channel-item">
+                        <span class="channel-icon">#</span>
+                        <span class="channel-name">design</span>
+                        <div class="notification-badge">1</div>
+                    </div>
+                    <div class="channel-item">
+                        <span class="channel-icon">#</span>
+                        <span class="channel-name">sales</span>
+                    </div>
+                </div>
+                
+                <div class="channel-section">
+                    <div class="section-header">
+                        <span>다이렉트 메시지</span>
+                        <span class="section-toggle">▼</span>
+                    </div>
+                    <div class="channel-item">
+                        <span class="channel-icon presence-indicator presence-online">●</span>
+                        <span class="channel-name">이영희</span>
+                        <div class="notification-badge">2</div>
+                    </div>
+                    <div class="channel-item">
+                        <span class="channel-icon presence-indicator presence-away">●</span>
+                        <span class="channel-name">박민수</span>
+                    </div>
+                    <div class="channel-item">
+                        <span class="channel-icon presence-indicator presence-online">●</span>
+                        <span class="channel-name">최은정</span>
+                        <div class="unread-dot"></div>
+                    </div>
+                    <div class="channel-item">
+                        <span class="channel-icon presence-indicator presence-dnd">●</span>
+                        <span class="channel-name">정현우</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="channel-header">
+                <div class="channel-info">
+                    <div class="channel-title"># general</div>
+                    <div class="member-count">247명</div>
+                </div>
+                <div class="channel-actions">
+                    <button class="action-btn">📞</button>
+                    <button class="action-btn">🔍</button>
+                    <button class="action-btn">⭐</button>
+                    <button class="action-btn">ℹ️</button>
+                </div>
+            </div>
+            
+            <div class="messages-container">
+                <div class="message">
+                    <div class="message-avatar presence-indicator presence-online"></div>
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="message-author">이영희</span>
+                            <span class="message-time">오후 2:34</span>
+                        </div>
+                        <div class="message-text">새로운 프로젝트 킥오프 미팅이 내일 오전 10시에 예정되어 있습니다. 회의실 A에서 진행됩니다.</div>
+                        <div class="message-reactions">
+                            <div class="reaction">👍 3</div>
+                            <div class="reaction">🎉 2</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="message">
+                    <div class="message-avatar presence-indicator presence-away"></div>
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="message-author">박민수</span>
+                            <span class="message-time">오후 2:45</span>
+                        </div>
+                        <div class="message-text">네, 참석하겠습니다. 미리 준비해야 할 자료가 있나요?</div>
+                    </div>
+                </div>
+                
+                <div class="message">
+                    <div class="message-avatar presence-indicator presence-online"></div>
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="message-author">최은정</span>
+                            <span class="message-time">오후 3:12</span>
+                        </div>
+                        <div class="message-text">프로젝트 개요서와 일정표를 공유해드렸습니다. 미리 검토해주시면 감사하겠습니다.</div>
+                        <div class="message-reactions">
+                            <div class="reaction">✅ 5</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="message">
+                    <div class="message-avatar presence-indicator presence-dnd"></div>
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="message-author">정현우</span>
+                            <span class="message-time">오후 4:23</span>
+                        </div>
+                        <div class="message-text">디자인 목업도 준비해서 가져가겠습니다. 피드백 부탁드립니다!</div>
+                        <div class="message-reactions">
+                            <div class="reaction">🎨 4</div>
+                            <div class="reaction">👏 2</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="message">
+                    <div class="message-avatar presence-indicator presence-online"></div>
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="message-author">김철수</span>
+                            <span class="message-time">방금</span>
+                        </div>
+                        <div class="message-text">모든 자료가 준비되었네요. 내일 미팅이 매우 생산적일 것 같습니다. 모두 수고하셨습니다!</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="message-input-container">
+                <textarea class="message-input" placeholder="#general에 메시지 보내기"></textarea>
+                <div class="input-toolbar">
+                    <button class="toolbar-btn">📎</button>
+                    <button class="toolbar-btn">😀</button>
+                    <button class="toolbar-btn">@</button>
+                    <button class="toolbar-btn">🎥</button>
+                    <button class="toolbar-btn">🎤</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Thread Panel -->
+        <div class="thread-panel">
+            <div class="thread-header">
+                <div class="thread-title">스레드</div>
+                <div class="thread-info">이영희의 메시지에 대한 답글 2개</div>
+            </div>
+            
+            <div class="thread-messages">
+                <div class="thread-message">
+                    <div class="thread-avatar presence-indicator presence-online"></div>
+                    <div class="thread-content">
+                        <div class="thread-author">박민수</div>
+                        <div class="thread-text">시간 변경 가능한가요? 오전 11시는 어떤가요?</div>
+                        <div class="thread-time">오후 2:47</div>
+                    </div>
+                </div>
+                
+                <div class="thread-message">
+                    <div class="thread-avatar presence-indicator presence-online"></div>
+                    <div class="thread-content">
+                        <div class="thread-author">이영희</div>
+                        <div class="thread-text">네, 11시로 조정하겠습니다. 다른 분들도 괜찮으시면 확정하겠습니다.</div>
+                        <div class="thread-time">오후 2:50</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="message-input-container">
+                <textarea class="message-input" placeholder="스레드에 답글 달기..."></textarea>
+                <div class="input-toolbar">
+                    <button class="toolbar-btn">📎</button>
+                    <button class="toolbar-btn">😀</button>
+                    <button class="toolbar-btn">@</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Grand Steakhouse - Premium American Dining</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #1a1a1a;
+            color: #f5f5f5;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 400"><rect fill="%23000" width="1920" height="400"/><rect fill="%23222" x="100" y="50" width="200" height="300" opacity="0.5"/><rect fill="%23333" x="400" y="100" width="150" height="250" opacity="0.4"/></svg>');
+            background-size: cover;
+            text-align: center;
+            padding: 80px 20px;
+            border-bottom: 3px solid #8B0000;
+        }
+        
+        h1 {
+            font-size: 3.5em;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+        }
+        
+        .tagline {
+            font-size: 1.3em;
+            color: #ccc;
+            font-style: italic;
+        }
+        
+        /* Navigation */
+        nav {
+            background-color: #8B0000;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        nav li {
+            margin: 0 30px;
+        }
+        
+        nav a {
+            color: #FFD700;
+            text-decoration: none;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: #fff;
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+        
+        .hero {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+        
+        .hero h2 {
+            font-size: 2.5em;
+            color: #FFD700;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: #ddd;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Menu Section */
+        .menu-section {
+            margin-bottom: 80px;
+        }
+        
+        .menu-section h2 {
+            font-size: 2.5em;
+            color: #FFD700;
+            text-align: center;
+            margin-bottom: 50px;
+            border-bottom: 2px solid #8B0000;
+            padding-bottom: 15px;
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+        
+        .menu-item {
+            background-color: #2a2a2a;
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #444;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(139,0,0,0.3);
+        }
+        
+        .menu-item h3 {
+            color: #FFD700;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+        
+        .menu-item .price {
+            color: #8B0000;
+            font-size: 1.5em;
+            font-weight: bold;
+            float: right;
+        }
+        
+        .menu-item p {
+            color: #bbb;
+            line-height: 1.6;
+            margin-top: 15px;
+        }
+        
+        /* Special Section */
+        .special {
+            background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+            padding: 60px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 80px;
+            border: 2px solid #8B0000;
+        }
+        
+        .special h2 {
+            color: #FFD700;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }
+        
+        .special-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .special-item {
+            background-color: rgba(139,0,0,0.1);
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #8B0000;
+        }
+        
+        .special-item h3 {
+            color: #FFD700;
+            margin-bottom: 15px;
+        }
+        
+        /* Reservation */
+        .reservation {
+            background-color: #8B0000;
+            padding: 60px 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .reservation h2 {
+            color: #FFD700;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }
+        
+        .reservation-info {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .reservation-info div {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .reservation-info h3 {
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+        
+        .reservation-info p {
+            color: #fff;
+            font-size: 1.1em;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #FFD700;
+            color: #1a1a1a;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 30px;
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+        
+        .btn:hover {
+            background-color: #FFA500;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #0a0a0a;
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 3px solid #8B0000;
+        }
+        
+        footer p {
+            color: #888;
+            margin-bottom: 10px;
+        }
+        
+        .social-links {
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            color: #FFD700;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.2em;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: #FFA500;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+            }
+            
+            nav li {
+                margin: 10px 15px;
+            }
+            
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .special {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>THE GRAND STEAKHOUSE</h1>
+        <p class="tagline">Premium Cuts • Classic American • Since 1985</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#home">홈</a></li>
+            <li><a href="#menu">메뉴</a></li>
+            <li><a href="#specials">스페셜</a></li>
+            <li><a href="#reservation">예약</a></li>
+            <li><a href="#contact">연락처</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <section class="hero" id="home">
+            <h2>최고급 스테이크의 전통</h2>
+            <p>40년 전통의 The Grand Steakhouse는 최상급 프라임 비프와 정통 미국식 가정 요리를 제공합니다. 
+            엄선된 드라이 에이징 스테이크와 신선한 해산물, 그리고 따뜻한 환대로 특별한 다이닝 경험을 선사합니다.</p>
+        </section>
+        
+        <section class="menu-section" id="menu">
+            <h2>SIGNATURE STEAKS</h2>
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <h3>Dry-Aged Ribeye <span class="price">$85</span></h3>
+                    <p>28일 드라이 에이징한 최상급 립아이 스테이크 (16oz). 
+                    깊고 진한 풍미와 완벽한 마블링이 특징입니다.</p>
+                </div>
+                <div class="menu-item">
+                    <h3>Filet Mignon <span class="price">$92</span></h3>
+                    <p>부드러운 안심 스테이크 (10oz). 
+                    버터처럼 부드러운 식감과 섬세한 맛이 일품입니다.</p>
+                </div>
+                <div class="menu-item">
+                    <h3>New York Strip <span class="price">$78</span></h3>
+                    <p>클래식 뉴욕 스트립 스테이크 (14oz). 
+                    적당한 지방과 쫄깃한 식감의 완벽한 조화.</p>
+                </div>
+                <div class="menu-item">
+                    <h3>Porterhouse <span class="price">$125</span></h3>
+                    <p>안심과 등심을 동시에 즐기는 포터하우스 (24oz). 
+                    두 가지 부위의 매력을 한 번에 경험하세요.</p>
+                </div>
+                <div class="menu-item">
+                    <h3>Tomahawk Ribeye <span class="price">$145</span></h3>
+                    <p>뼈가 붙은 토마호크 립아이 (32oz). 
+                    압도적인 비주얼과 풍미로 특별한 날을 더욱 특별하게.</p>
+                </div>
+                <div class="menu-item">
+                    <h3>Wagyu Beef Tenderloin <span class="price">$195</span></h3>
+                    <p>최고급 와규 안심 스테이크 (8oz). 
+                    입에서 녹는 부드러움과 진한 육향의 극치.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="special" id="specials">
+            <h2>AMERICAN CLASSICS</h2>
+            <div class="special-grid">
+                <div class="special-item">
+                    <h3>Mac & Cheese</h3>
+                    <p>네 가지 치즈로 만든 크리미한 맥앤치즈. 트러플 오일 추가 가능</p>
+                </div>
+                <div class="special-item">
+                    <h3>BBQ Baby Back Ribs</h3>
+                    <p>수제 바비큐 소스로 구운 부드러운 돼지갈비</p>
+                </div>
+                <div class="special-item">
+                    <h3>Southern Fried Chicken</h3>
+                    <p>바삭한 남부식 프라이드 치킨과 와플</p>
+                </div>
+                <div class="special-item">
+                    <h3>Lobster Bisque</h3>
+                    <p>진한 랍스터 비스크 수프</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="reservation" id="reservation">
+            <h2>RESERVATION</h2>
+            <div class="reservation-info">
+                <div>
+                    <h3>영업시간</h3>
+                    <p>월-목: 17:00 - 22:00<br>
+                    금-토: 17:00 - 23:00<br>
+                    일요일: 16:00 - 21:00</p>
+                </div>
+                <div>
+                    <h3>전화예약</h3>
+                    <p>02-555-0100<br>
+                    예약 전용 라인<br>
+                    매일 10:00 - 20:00</p>
+                </div>
+                <div>
+                    <h3>위치</h3>
+                    <p>서울특별시 강남구<br>
+                    청담동 123-45<br>
+                    그랜드 빌딩 2F</p>
+                </div>
+            </div>
+            <a href="#" class="btn">온라인 예약하기</a>
+        </section>
+    </div>
+    
+    <footer id="contact">
+        <p>© 2025 The Grand Steakhouse. All Rights Reserved.</p>
+        <p>Email: info@grandsteakhouse.com | Tel: 02-555-0100</p>
+        <div class="social-links">
+            <a href="#">Instagram</a>
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+        </div>
+    </footer>
+</body>
+</html>

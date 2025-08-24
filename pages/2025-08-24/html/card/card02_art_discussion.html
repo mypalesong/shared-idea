@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>현대미술 토론회 초대장</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            width: 700px;
+            height: 500px;
+            background: #111111;
+            border: 1px solid #333;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .geometric-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .triangle {
+            position: absolute;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            animation: rotateTriangle 20s linear infinite;
+        }
+
+        .triangle:nth-child(1) {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(45deg, rgba(255,255,255,0.05), rgba(255,255,255,0.1));
+            top: -50px;
+            left: 50px;
+            animation-delay: 0s;
+        }
+
+        .triangle:nth-child(2) {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.08));
+            top: 200px;
+            right: 80px;
+            animation-delay: -5s;
+        }
+
+        .triangle:nth-child(3) {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(225deg, rgba(255,255,255,0.04), rgba(255,255,255,0.09));
+            bottom: 50px;
+            left: 100px;
+            animation-delay: -10s;
+        }
+
+        @keyframes rotateTriangle {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(90deg) scale(1.1); }
+            50% { transform: rotate(180deg) scale(0.9); }
+            75% { transform: rotate(270deg) scale(1.05); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        .square {
+            position: absolute;
+            animation: floatSquare 15s ease-in-out infinite;
+        }
+
+        .square:nth-child(4) {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+            top: 100px;
+            left: 150px;
+            animation-delay: -3s;
+        }
+
+        .square:nth-child(5) {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.08));
+            top: 300px;
+            right: 200px;
+            animation-delay: -8s;
+        }
+
+        @keyframes floatSquare {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.4; }
+            33% { transform: translateY(-20px) rotate(120deg); opacity: 0.8; }
+            66% { transform: translateY(10px) rotate(240deg); opacity: 0.6; }
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            animation: pulseCircle 12s ease-in-out infinite;
+        }
+
+        .circle:nth-child(6) {
+            width: 90px;
+            height: 90px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+            top: 50px;
+            right: 150px;
+            animation-delay: -2s;
+        }
+
+        .circle:nth-child(7) {
+            width: 70px;
+            height: 70px;
+            background: radial-gradient(circle, rgba(255,255,255,0.06), rgba(255,255,255,0.01));
+            bottom: 100px;
+            right: 100px;
+            animation-delay: -6s;
+        }
+
+        @keyframes pulseCircle {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+            width: 80%;
+        }
+
+        .title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            animation: titleExpand 3s ease-out;
+        }
+
+        @keyframes titleExpand {
+            0% { 
+                opacity: 0; 
+                transform: scale(0.5) rotate(-10deg);
+                letter-spacing: -5px;
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1) rotate(0deg);
+                letter-spacing: 2px;
+            }
+        }
+
+        .korean-title {
+            font-size: 1.2rem;
+            color: #cccccc;
+            margin-bottom: 30px;
+            letter-spacing: 8px;
+            animation: koreanFade 2s ease-out 1s both;
+        }
+
+        @keyframes koreanFade {
+            0% { opacity: 0; transform: translateX(50px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        .divider {
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #ffffff, transparent);
+            margin: 20px auto;
+            animation: dividerGrow 2s ease-out 1.5s both;
+        }
+
+        @keyframes dividerGrow {
+            0% { width: 0; }
+            100% { width: 200px; }
+        }
+
+        .details {
+            line-height: 2;
+            font-size: 1rem;
+            color: #e0e0e0;
+        }
+
+        .detail-item {
+            margin: 15px 0;
+            animation: slideInLeft 1s ease-out both;
+        }
+
+        .detail-item:nth-child(1) { animation-delay: 2s; }
+        .detail-item:nth-child(2) { animation-delay: 2.2s; }
+        .detail-item:nth-child(3) { animation-delay: 2.4s; }
+        .detail-item:nth-child(4) { animation-delay: 2.6s; }
+        .detail-item:nth-child(5) { animation-delay: 2.8s; }
+
+        @keyframes slideInLeft {
+            0% { opacity: 0; transform: translateX(-30px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        .highlight {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .corner-lines {
+            position: absolute;
+            z-index: 5;
+        }
+
+        .corner-line-tl {
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            border-top: 2px solid rgba(255,255,255,0.3);
+            border-left: 2px solid rgba(255,255,255,0.3);
+            animation: cornerGlow 4s ease-in-out infinite;
+        }
+
+        .corner-line-br {
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            border-right: 2px solid rgba(255,255,255,0.3);
+            animation: cornerGlow 4s ease-in-out infinite 2s;
+        }
+
+        @keyframes cornerGlow {
+            0%, 100% { 
+                border-color: rgba(255,255,255,0.3);
+                box-shadow: none;
+            }
+            50% { 
+                border-color: rgba(255,255,255,0.8);
+                box-shadow: 0 0 20px rgba(255,255,255,0.3);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="geometric-bg">
+            <div class="triangle"></div>
+            <div class="triangle"></div>
+            <div class="triangle"></div>
+            <div class="square"></div>
+            <div class="square"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+        </div>
+        
+        <div class="corner-lines corner-line-tl"></div>
+        <div class="corner-lines corner-line-br"></div>
+        
+        <div class="content">
+            <h1 class="title">MODERN ART</h1>
+            <p class="korean-title">현대미술 토론모임</p>
+            
+            <div class="divider"></div>
+            
+            <div class="details">
+                <div class="detail-item"><span class="highlight">주제:</span> 디지털 시대의 미술</div>
+                <div class="detail-item"><span class="highlight">일시:</span> 2025년 9월 20일 오후 2시</div>
+                <div class="detail-item"><span class="highlight">장소:</span> 갤러리 모던스페이스</div>
+                <div class="detail-item"><span class="highlight">발표:</span> 김미술 큐레이터</div>
+                <div class="detail-item"><span class="highlight">문의:</span> modern.art.seoul@gmail.com</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

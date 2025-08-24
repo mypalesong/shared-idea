@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adobe Creative Cloud Enterprise Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Adobe Clean', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #2d2d30;
+            color: #f5f5f5;
+            overflow-x: hidden;
+        }
+        
+        .app-header {
+            background: #1e1e1e;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid #393939;
+            position: relative;
+            z-index: 100;
+        }
+        
+        .adobe-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logo-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #ff0000, #ff6600);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        
+        .logo-text {
+            color: #f5f5f5;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .header-nav {
+            display: flex;
+            gap: 32px;
+            margin-left: 40px;
+        }
+        
+        .header-nav a {
+            color: #b8b8b8;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 12px 0;
+            transition: color 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .header-nav a:hover,
+        .header-nav a.active {
+            color: #ff6600;
+            border-bottom-color: #ff6600;
+        }
+        
+        .header-actions {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .search-input {
+            background: #393939;
+            border: 1px solid #525252;
+            padding: 8px 12px;
+            border-radius: 4px;
+            color: #f5f5f5;
+            font-size: 14px;
+            width: 200px;
+        }
+        
+        .search-input::placeholder {
+            color: #b8b8b8;
+        }
+        
+        .user-profile {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6600, #ff0000);
+            cursor: pointer;
+        }
+        
+        .main-container {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            height: calc(100vh - 48px);
+        }
+        
+        .sidebar {
+            background: #252526;
+            border-right: 1px solid #393939;
+            padding: 24px 0;
+            overflow-y: auto;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 32px;
+        }
+        
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #b8b8b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0 24px;
+            margin-bottom: 12px;
+        }
+        
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: #f5f5f5;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        
+        .sidebar-item:hover {
+            background: #333334;
+        }
+        
+        .sidebar-item.active {
+            background: #ff6600;
+            border-left-color: #ffffff;
+        }
+        
+        .sidebar-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        .icon-photoshop { background: linear-gradient(135deg, #31a8ff, #0066cc); }
+        .icon-illustrator { background: linear-gradient(135deg, #ff9a00, #ff6600); }
+        .icon-indesign { background: linear-gradient(135deg, #ff3366, #cc0033); }
+        .icon-after-effects { background: linear-gradient(135deg, #9999ff, #6666cc); }
+        .icon-premiere { background: linear-gradient(135deg, #9999ff, #6666ff); }
+        .icon-xd { background: linear-gradient(135deg, #ff61f6, #cc33cc); }
+        .icon-lightroom { background: linear-gradient(135deg, #31a8ff, #0066cc); }
+        .icon-dimension { background: linear-gradient(135deg, #66ccff, #3399cc); }
+        
+        .content-area {
+            background: #2d2d30;
+            padding: 32px;
+            overflow-y: auto;
+        }
+        
+        .page-header {
+            margin-bottom: 32px;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 300;
+            color: #f5f5f5;
+            margin-bottom: 8px;
+        }
+        
+        .page-subtitle {
+            color: #b8b8b8;
+            font-size: 16px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: #1e1e1e;
+            border: 1px solid #393939;
+            border-radius: 8px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ff6600, #ff0000);
+        }
+        
+        .stat-value {
+            font-size: 36px;
+            font-weight: 300;
+            color: #f5f5f5;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            color: #b8b8b8;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 12px;
+            font-size: 12px;
+        }
+        
+        .trend-up {
+            color: #00cc66;
+        }
+        
+        .trend-down {
+            color: #ff3366;
+        }
+        
+        .creative-apps {
+            background: #1e1e1e;
+            border: 1px solid #393939;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .apps-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .apps-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #f5f5f5;
+        }
+        
+        .view-all-btn {
+            background: transparent;
+            border: 1px solid #ff6600;
+            color: #ff6600;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .view-all-btn:hover {
+            background: #ff6600;
+            color: white;
+        }
+        
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .app-card {
+            background: #252526;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        
+        .app-card:hover {
+            background: #333334;
+            border-color: #ff6600;
+            transform: translateY(-2px);
+        }
+        
+        .app-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .app-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        
+        .app-info {
+            flex: 1;
+        }
+        
+        .app-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #f5f5f5;
+            margin-bottom: 4px;
+        }
+        
+        .app-version {
+            font-size: 12px;
+            color: #b8b8b8;
+        }
+        
+        .app-usage {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #b8b8b8;
+        }
+        
+        .usage-label {
+            font-size: 12px;
+        }
+        
+        .usage-value {
+            color: #ff6600;
+            font-weight: 600;
+        }
+        
+        .projects-section {
+            background: #1e1e1e;
+            border: 1px solid #393939;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .projects-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .projects-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #f5f5f5;
+        }
+        
+        .projects-filters {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .filter-btn {
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid #525252;
+            color: #b8b8b8;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #ff6600;
+            color: white;
+            border-color: #ff6600;
+        }
+        
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .project-card {
+            background: #252526;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        
+        .project-card:hover {
+            border-color: #ff6600;
+            transform: translateY(-2px);
+        }
+        
+        .project-thumbnail {
+            height: 160px;
+            background: linear-gradient(135deg, #ff6600, #ff0000);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .project-thumbnail::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.2);
+        }
+        
+        .thumbnail-1 { background: linear-gradient(135deg, #31a8ff, #0066cc); }
+        .thumbnail-2 { background: linear-gradient(135deg, #ff9a00, #ff6600); }
+        .thumbnail-3 { background: linear-gradient(135deg, #ff3366, #cc0033); }
+        .thumbnail-4 { background: linear-gradient(135deg, #9999ff, #6666cc); }
+        .thumbnail-5 { background: linear-gradient(135deg, #ff61f6, #cc33cc); }
+        .thumbnail-6 { background: linear-gradient(135deg, #66ccff, #3399cc); }
+        
+        .project-info {
+            padding: 20px;
+        }
+        
+        .project-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #f5f5f5;
+            margin-bottom: 8px;
+        }
+        
+        .project-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #b8b8b8;
+            margin-bottom: 12px;
+        }
+        
+        .project-app {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .project-app-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 2px;
+        }
+        
+        .project-description {
+            font-size: 14px;
+            color: #b8b8b8;
+            line-height: 1.5;
+        }
+        
+        .activity-feed {
+            background: #1e1e1e;
+            border: 1px solid #393939;
+            border-radius: 8px;
+            padding: 24px;
+        }
+        
+        .activity-header {
+            font-size: 20px;
+            font-weight: 600;
+            color: #f5f5f5;
+            margin-bottom: 24px;
+        }
+        
+        .activity-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid #393939;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6600, #ff0000);
+            flex-shrink: 0;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-text {
+            color: #f5f5f5;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+        
+        .activity-time {
+            font-size: 12px;
+            color: #b8b8b8;
+        }
+        
+        .floating-action {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6600, #ff0000);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            box-shadow: 0 4px 20px rgba(255,102,0,0.3);
+            transition: all 0.3s;
+        }
+        
+        .floating-action:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 24px rgba(255,102,0,0.4);
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <div class="adobe-logo">
+            <div class="logo-icon">Cc</div>
+            <span class="logo-text">Creative Cloud</span>
+        </div>
+        <nav class="header-nav">
+            <a href="#" class="active">Dashboard</a>
+            <a href="#">Apps</a>
+            <a href="#">Assets</a>
+            <a href="#">Libraries</a>
+            <a href="#">Fonts</a>
+            <a href="#">Stock</a>
+        </nav>
+        <div class="header-actions">
+            <input type="text" class="search-input" placeholder="Search assets, projects...">
+            <div class="user-profile"></div>
+        </div>
+    </header>
+    
+    <div class="main-container">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="section-title">Creative Apps</div>
+                <div class="sidebar-item active">
+                    <div class="sidebar-icon icon-photoshop"></div>
+                    <span>Photoshop</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon icon-illustrator"></div>
+                    <span>Illustrator</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon icon-indesign"></div>
+                    <span>InDesign</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon icon-after-effects"></div>
+                    <span>After Effects</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon icon-premiere"></div>
+                    <span>Premiere Pro</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon icon-xd"></div>
+                    <span>XD</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon icon-lightroom"></div>
+                    <span>Lightroom</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="section-title">Services</div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon icon-dimension"></div>
+                    <span>Creative Libraries</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon icon-dimension"></div>
+                    <span>Adobe Stock</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon icon-dimension"></div>
+                    <span>Adobe Fonts</span>
+                </div>
+                <div class="sidebar-item">
+                    <div class="sidebar-icon icon-dimension"></div>
+                    <span>Behance</span>
+                </div>
+            </div>
+        </aside>
+        
+        <main class="content-area">
+            <div class="page-header">
+                <h1 class="page-title">Creative Dashboard</h1>
+                <p class="page-subtitle">Manage your creative workflow and collaborate with your team</p>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">1,247</div>
+                    <div class="stat-label">Active Projects</div>
+                    <div class="stat-trend trend-up">↑ 12% from last month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">89.7GB</div>
+                    <div class="stat-label">Storage Used</div>
+                    <div class="stat-trend trend-up">↑ 2.3GB this week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">2.4TB</div>
+                    <div class="stat-label">Assets Downloaded</div>
+                    <div class="stat-trend trend-up">↑ 15% increase</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">156</div>
+                    <div class="stat-label">Team Members</div>
+                    <div class="stat-trend trend-up">↑ 8 new members</div>
+                </div>
+            </div>
+            
+            <div class="creative-apps">
+                <div class="apps-header">
+                    <h2 class="apps-title">Your Creative Apps</h2>
+                    <button class="view-all-btn">View All Apps</button>
+                </div>
+                <div class="apps-grid">
+                    <div class="app-card">
+                        <div class="app-header">
+                            <div class="app-icon icon-photoshop">Ps</div>
+                            <div class="app-info">
+                                <div class="app-name">Photoshop</div>
+                                <div class="app-version">v24.7.0</div>
+                            </div>
+                        </div>
+                        <div class="app-usage">
+                            <span class="usage-label">Last used:</span>
+                            <span class="usage-value">2 hours ago</span>
+                        </div>
+                    </div>
+                    
+                    <div class="app-card">
+                        <div class="app-header">
+                            <div class="app-icon icon-illustrator">Ai</div>
+                            <div class="app-info">
+                                <div class="app-name">Illustrator</div>
+                                <div class="app-version">v27.8.1</div>
+                            </div>
+                        </div>
+                        <div class="app-usage">
+                            <span class="usage-label">Last used:</span>
+                            <span class="usage-value">Yesterday</span>
+                        </div>
+                    </div>
+                    
+                    <div class="app-card">
+                        <div class="app-header">
+                            <div class="app-icon icon-indesign">Id</div>
+                            <div class="app-info">
+                                <div class="app-name">InDesign</div>
+                                <div class="app-version">v18.5.0</div>
+                            </div>
+                        </div>
+                        <div class="app-usage">
+                            <span class="usage-label">Last used:</span>
+                            <span class="usage-value">3 days ago</span>
+                        </div>
+                    </div>
+                    
+                    <div class="app-card">
+                        <div class="app-header">
+                            <div class="app-icon icon-after-effects">Ae</div>
+                            <div class="app-info">
+                                <div class="app-name">After Effects</div>
+                                <div class="app-version">v23.6.0</div>
+                            </div>
+                        </div>
+                        <div class="app-usage">
+                            <span class="usage-label">Last used:</span>
+                            <span class="usage-value">1 week ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="projects-section">
+                <div class="projects-header">
+                    <h2 class="projects-title">Recent Projects</h2>
+                    <div class="projects-filters">
+                        <button class="filter-btn active">All</button>
+                        <button class="filter-btn">Photoshop</button>
+                        <button class="filter-btn">Illustrator</button>
+                        <button class="filter-btn">InDesign</button>
+                    </div>
+                </div>
+                <div class="projects-grid">
+                    <div class="project-card">
+                        <div class="project-thumbnail thumbnail-1"></div>
+                        <div class="project-info">
+                            <div class="project-name">브랜드 가이드라인 2024</div>
+                            <div class="project-meta">
+                                <div class="project-app">
+                                    <div class="project-app-icon icon-illustrator"></div>
+                                    <span>Illustrator</span>
+                                </div>
+                                <span>2 hours ago</span>
+                            </div>
+                            <div class="project-description">회사 브랜딩을 위한 종합적인 가이드라인 문서</div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-thumbnail thumbnail-2"></div>
+                        <div class="project-info">
+                            <div class="project-name">제품 카탈로그 디자인</div>
+                            <div class="project-meta">
+                                <div class="project-app">
+                                    <div class="project-app-icon icon-indesign"></div>
+                                    <span>InDesign</span>
+                                </div>
+                                <span>Yesterday</span>
+                            </div>
+                            <div class="project-description">신제품 라인업을 위한 카탈로그 레이아웃</div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-thumbnail thumbnail-3"></div>
+                        <div class="project-info">
+                            <div class="project-name">마케팅 캠페인 이미지</div>
+                            <div class="project-meta">
+                                <div class="project-app">
+                                    <div class="project-app-icon icon-photoshop"></div>
+                                    <span>Photoshop</span>
+                                </div>
+                                <span>3 days ago</span>
+                            </div>
+                            <div class="project-description">Q4 마케팅 캠페인을 위한 비주얼 에셋</div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-thumbnail thumbnail-4"></div>
+                        <div class="project-info">
+                            <div class="project-name">프로모션 비디오</div>
+                            <div class="project-meta">
+                                <div class="project-app">
+                                    <div class="project-app-icon icon-after-effects"></div>
+                                    <span>After Effects</span>
+                                </div>
+                                <span>1 week ago</span>
+                            </div>
+                            <div class="project-description">제품 출시를 위한 프로모션 애니메이션</div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-thumbnail thumbnail-5"></div>
+                        <div class="project-info">
+                            <div class="project-name">웹사이트 UI 디자인</div>
+                            <div class="project-meta">
+                                <div class="project-app">
+                                    <div class="project-app-icon icon-xd"></div>
+                                    <span>XD</span>
+                                </div>
+                                <span>2 weeks ago</span>
+                            </div>
+                            <div class="project-description">신규 웹사이트를 위한 사용자 인터페이스</div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card">
+                        <div class="project-thumbnail thumbnail-6"></div>
+                        <div class="project-info">
+                            <div class="project-name">패키지 디자인</div>
+                            <div class="project-meta">
+                                <div class="project-app">
+                                    <div class="project-app-icon icon-dimension"></div>
+                                    <span>Dimension</span>
+                                </div>
+                                <span>3 weeks ago</span>
+                            </div>
+                            <div class="project-description">프리미엄 제품을 위한 3D 패키지 디자인</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="activity-feed">
+                <h2 class="activity-header">Team Activity</h2>
+                <div class="activity-item">
+                    <div class="activity-avatar"></div>
+                    <div class="activity-content">
+                        <div class="activity-text"><strong>김디자이너</strong>님이 "브랜드 가이드라인 2024" 프로젝트를 업데이트했습니다.</div>
+                        <div class="activity-time">2시간 전</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-avatar"></div>
+                    <div class="activity-content">
+                        <div class="activity-text"><strong>박크리에이터</strong>님이 새 Creative Library를 생성했습니다.</div>
+                        <div class="activity-time">4시간 전</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-avatar"></div>
+                    <div class="activity-content">
+                        <div class="activity-text"><strong>이아티스트</strong>님이 25개의 Adobe Stock 이미지를 다운로드했습니다.</div>
+                        <div class="activity-time">어제</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-avatar"></div>
+                    <div class="activity-content">
+                        <div class="activity-text"><strong>최그래픽</strong>님이 "마케팅 캠페인 이미지"를 공유했습니다.</div>
+                        <div class="activity-time">2일 전</div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="floating-action">+</button>
+        </main>
+    </div>
+</body>
+</html>

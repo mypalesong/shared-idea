@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>일상 카드 - 40대의 소소한 일상들</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 50%, #6c5ce7 100%);
+            min-height: 100vh;
+            color: #2d3436;
+            line-height: 1.6;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px 80px;
+        }
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+        
+        .card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+        }
+        
+        .card-header {
+            height: 200px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+        }
+        
+        .card-morning { background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%); }
+        .card-work { background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); }
+        .card-family { background: linear-gradient(135deg, #00b894 0%, #00cec9 100%); }
+        .card-hobby { background: linear-gradient(135deg, #e17055 0%, #fab1a0 100%); }
+        .card-food { background: linear-gradient(135deg, #e84393 0%, #fd79a8 100%); }
+        .card-exercise { background: linear-gradient(135deg, #00b894 0%, #55a3ff 100%); }
+        .card-weekend { background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%); }
+        .card-thinking { background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%); }
+        
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.6));
+            padding: 30px 25px 20px;
+        }
+        
+        .card-category {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+            line-height: 1.3;
+        }
+        
+        .card-body {
+            padding: 30px 25px;
+        }
+        
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #636e72;
+        }
+        
+        .card-date {
+            font-weight: 500;
+        }
+        
+        .card-mood {
+            background: #ddd6fe;
+            color: #6c5ce7;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .card-content {
+            color: #2d3436;
+            margin-bottom: 25px;
+            line-height: 1.7;
+        }
+        
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .tag {
+            background: #f1f3f4;
+            color: #5f6368;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .card-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+            font-size: 0.85rem;
+            color: #636e72;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .featured-cards {
+            margin-top: 80px;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 50px;
+            font-weight: 300;
+        }
+        
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+        }
+        
+        .featured-card {
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .featured-header {
+            height: 250px;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            position: relative;
+        }
+        
+        .featured-body {
+            padding: 40px;
+        }
+        
+        .featured-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 20px;
+        }
+        
+        .featured-content {
+            color: #636e72;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        
+        .read-more {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .read-more:hover {
+            transform: translateY(-2px);
+        }
+        
+        .summary-stats {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 60px;
+            text-align: center;
+            color: white;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .stat-box {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 300;
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        @media (max-width: 768px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .featured-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>🎴 Daily Cards</h1>
+        <p class="subtitle">40대 아저씨의 일상을 카드로 담다</p>
+    </header>
+    
+    <div class="container">
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-header card-morning">
+                    ☀️
+                    <div class="card-overlay">
+                        <div class="card-category">모닝루틴</div>
+                        <div class="card-title">완벽한 아침 커피 한 잔</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-meta">
+                        <span class="card-date">2025.08.24</span>
+                        <span class="card-mood">☕ 상쾌함</span>
+                    </div>
+                    <div class="card-content">
+                        오늘 아침, 새로 산 원두로 내린 커피가 유독 맛있었다. 
+                        창가에 앉아 햇살을 받으며 마시는 첫 모금의 그 기분... 
+                        하루의 시작이 이렇게 완벽할 수 있구나.
+                    </div>
+                    <div class="card-tags">
+                        <span class="tag">#커피</span>
+                        <span class="tag">#아침</span>
+                        <span class="tag">#루틴</span>
+                    </div>
+                    <div class="card-stats">
+                        <span class="stat-item">⏰ 07:30</span>
+                        <span class="stat-item">☕ 3번째 컵</span>
+                        <span class="stat-item">😊 만족도 95%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header card-work">
+                    💼
+                    <div class="card-overlay">
+                        <div class="card-category">직장생활</div>
+                        <div class="card-title">프로젝트 마일스톤 달성</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-meta">
+                        <span class="card-date">2025.08.23</span>
+                        <span class="card-mood">🎯 성취감</span>
+                    </div>
+                    <div class="card-content">
+                        6개월간 진행해온 프로젝트의 중요한 단계를 완료했다. 
+                        팀원들과 함께 야근도 하고 고생도 많이 했지만, 
+                        결과가 나오니 모든 피로가 싹 사라진다.
+                    </div>
+                    <div class="card-tags">
+                        <span class="tag">#프로젝트</span>
+                        <span class="tag">#성과</span>
+                        <span class="tag">#팀워크</span>
+                    </div>
+                    <div class="card-stats">
+                        <span class="stat-item">⏰ 18:30</span>
+                        <span class="stat-item">👥 5명 참여</span>
+                        <span class="stat-item">🎉 목표 달성</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header card-family">
+                    👨‍👩‍👧‍👦
+                    <div class="card-overlay">
+                        <div class="card-category">가족시간</div>
+                        <div class="card-title">아이들과의 보드게임 대결</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-meta">
+                        <span class="card-date">2025.08.22</span>
+                        <span class="card-mood">😄 즐거움</span>
+                    </div>
+                    <div class="card-content">
+                        주말 저녁, 아이들과 함께 새로 산 보드게임을 했다. 
+                        처음엔 규칙을 이해하지 못해 헤맸지만, 
+                        나중엔 아이들이 나보다 훨씬 잘해서 깜짝 놀랐다.
+                    </div>
+                    <div class="card-tags">
+                        <span class="tag">#보드게임</span>
+                        <span class="tag">#가족</span>
+                        <span class="tag">#주말</span>
+                    </div>
+                    <div class="card-stats">
+                        <span class="stat-item">⏰ 19:00</span>
+                        <span class="stat-item">🎲 3게임</span>
+                        <span class="stat-item">🏆 아이들 승리</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header card-hobby">
+                    📚
+                    <div class="card-overlay">
+                        <div class="card-category">취미생활</div>
+                        <div class="card-title">밤늦은 독서 시간</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-meta">
+                        <span class="card-date">2025.08.21</span>
+                        <span class="card-mood">🤔 사색적</span>
+                    </div>
+                    <div class="card-content">
+                        모든 가족이 잠든 밤 11시, 나만의 독서 시간이 시작된다. 
+                        오늘은 철학 에세이를 읽으며 삶의 의미에 대해 깊이 생각해봤다. 
+                        40대에 읽는 책들은 20대 때와는 다른 깊이가 있다.
+                    </div>
+                    <div class="card-tags">
+                        <span class="tag">#독서</span>
+                        <span class="tag">#철학</span>
+                        <span class="tag">#성찰</span>
+                    </div>
+                    <div class="card-stats">
+                        <span class="stat-item">⏰ 23:00</span>
+                        <span class="stat-item">📖 50페이지</span>
+                        <span class="stat-item">💭 깊은사고</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header card-food">
+                    🍳
+                    <div class="card-overlay">
+                        <div class="card-category">요리도전</div>
+                        <div class="card-title">첫 파스타 도전기</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-meta">
+                        <span class="card-date">2025.08.20</span>
+                        <span class="card-mood">😅 도전적</span>
+                    </div>
+                    <div class="card-content">
+                        아내가 외출한 틈에 처음으로 파스타에 도전해봤다. 
+                        유튜브를 보며 따라 했는데... 결과는 생각보다 괜찮았다! 
+                        가족들이 맛있다고 하니 뿌듯하다.
+                    </div>
+                    <div class="card-tags">
+                        <span class="tag">#요리</span>
+                        <span class="tag">#파스타</span>
+                        <span class="tag">#첫도전</span>
+                    </div>
+                    <div class="card-stats">
+                        <span class="stat-item">⏰ 18:00</span>
+                        <span class="stat-item">👨‍🍳 45분 소요</span>
+                        <span class="stat-item">⭐ 성공!</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header card-exercise">
+                    🏃‍♂️
+                    <div class="card-overlay">
+                        <div class="card-category">건강관리</div>
+                        <div class="card-title">새벽 조깅의 상쾌함</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-meta">
+                        <span class="card-date">2025.08.19</span>
+                        <span class="card-mood">💪 활력충전</span>
+                    </div>
+                    <div class="card-content">
+                        오랜만에 새벽 6시에 일어나 조깅을 했다. 
+                        처음 10분은 힘들었지만, 공원을 한 바퀴 돌고 나니 
+                        온몸에 활력이 넘쳐났다. 이 기분을 잊지 말고 꾸준히 해보자.
+                    </div>
+                    <div class="card-tags">
+                        <span class="tag">#조깅</span>
+                        <span class="tag">#새벽</span>
+                        <span class="tag">#건강</span>
+                    </div>
+                    <div class="card-stats">
+                        <span class="stat-item">⏰ 06:00</span>
+                        <span class="stat-item">🏃‍♂️ 3km</span>
+                        <span class="stat-item">⚡ 25분</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <section class="featured-cards">
+            <h2 class="section-title">✨ 이주의 특별한 순간</h2>
+            <div class="featured-grid">
+                <div class="featured-card">
+                    <div class="featured-header">
+                        🎂
+                    </div>
+                    <div class="featured-body">
+                        <h3 class="featured-title">아내의 생일 서프라이즈</h3>
+                        <p class="featured-content">
+                            아내 생일을 맞아 한 달 전부터 준비한 서프라이즈 파티. 
+                            아이들과 함께 직접 만든 케이크와 정성스럽게 준비한 선물. 
+                            아내의 눈물과 함께 우리 가족의 사랑을 다시 한번 확인할 수 있었다.
+                            
+                            이런 순간들이 바로 인생에서 가장 소중한 것들이구나.
+                        </p>
+                        <button class="read-more">자세히 보기</button>
+                    </div>
+                </div>
+                
+                <div class="featured-card">
+                    <div class="featured-header card-thinking">
+                        💭
+                    </div>
+                    <div class="featured-body">
+                        <h3 class="featured-title">40대 중반의 성찰</h3>
+                        <p class="featured-content">
+                            어느새 40대 중반이 되었다. 젊었을 때 생각했던 '어른'의 모습과는 
+                            조금 다르지만, 나름대로 만족스럽다. 
+                            
+                            완벽하지는 않지만 최선을 다하며, 가족을 사랑하고, 
+                            작은 일상에서 행복을 찾는 법을 알게 되었다.
+                        </p>
+                        <button class="read-more">더 읽기</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="summary-stats">
+            <h2>📊 이달의 일상 통계</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span class="stat-number">28</span>
+                    <div class="stat-label">일상 카드 작성</div>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">15</span>
+                    <div class="stat-label">가족과의 시간</div>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">8</span>
+                    <div class="stat-label">새로운 도전</div>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">95%</span>
+                    <div class="stat-label">만족도 평균</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

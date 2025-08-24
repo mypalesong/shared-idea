@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제1장: 객체지향 설계 (Object-Oriented Design)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Times New Roman', Georgia, serif;
+            line-height: 1.8;
+            color: #333;
+            background-color: #fafafa;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .chapter {
+            background-color: white;
+            padding: 50px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .chapter-header {
+            text-align: center;
+            border-bottom: 3px solid #2980b9;
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .chapter-number {
+            color: #e74c3c;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .chapter-title {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .chapter-subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            font-style: italic;
+        }
+        
+        h2 {
+            color: #2980b9;
+            font-size: 1.8em;
+            margin: 30px 0 20px 0;
+            border-left: 5px solid #3498db;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #27ae60;
+            font-size: 1.4em;
+            margin: 25px 0 15px 0;
+        }
+        
+        .definition-box {
+            background: linear-gradient(135deg, #e8f4f8, #f0f8ff);
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .definition-title {
+            color: #2980b9;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .example-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .principles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .principle-card {
+            background: #fff;
+            border: 1px solid #e1e8ed;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .principle-title {
+            color: #e74c3c;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .advantages {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .disadvantages {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .real-world-example {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        ul, ol {
+            padding-left: 30px;
+            margin: 15px 0;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .highlight {
+            background-color: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        
+        .summary-box {
+            background: #e9ecef;
+            border: 2px solid #6c757d;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 10px;
+        }
+        
+        .summary-title {
+            color: #495057;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chapter">
+        <div class="chapter-header">
+            <div class="chapter-number">제1장</div>
+            <h1 class="chapter-title">객체지향 설계</h1>
+            <div class="chapter-subtitle">Object-Oriented Design</div>
+        </div>
+
+        <div class="definition-box">
+            <div class="definition-title">정의</div>
+            <p>객체지향 설계(Object-Oriented Design, OOD)는 실세계의 개체(Entity)를 객체(Object)로 모델링하여 소프트웨어를 설계하는 방법론입니다. 데이터와 그 데이터를 조작하는 메서드를 하나의 단위로 캡슐화하여 복잡한 시스템을 관리 가능한 단위로 분해합니다.</p>
+        </div>
+
+        <h2>1.1 객체지향의 핵심 개념</h2>
+
+        <div class="principles-grid">
+            <div class="principle-card">
+                <div class="principle-title">캡슐화 (Encapsulation)</div>
+                <p>데이터와 메서드를 하나의 단위로 묶고, 외부에서 직접 접근을 제한하여 데이터 무결성을 보장합니다.</p>
+            </div>
+            
+            <div class="principle-card">
+                <div class="principle-title">상속 (Inheritance)</div>
+                <p>기존 클래스의 속성과 메서드를 새로운 클래스에서 재사용할 수 있게 하는 메커니즘입니다.</p>
+            </div>
+            
+            <div class="principle-card">
+                <div class="principle-title">다형성 (Polymorphism)</div>
+                <p>동일한 인터페이스를 통해 서로 다른 타입의 객체들을 다룰 수 있는 능력입니다.</p>
+            </div>
+            
+            <div class="principle-card">
+                <div class="principle-title">추상화 (Abstraction)</div>
+                <p>복잡한 실세계 문제를 단순화하여 핵심적인 특징만을 모델링하는 과정입니다.</p>
+            </div>
+        </div>
+
+        <h2>1.2 SOLID 원칙</h2>
+
+        <h3>단일 책임 원칙 (Single Responsibility Principle)</h3>
+        <p>클래스는 하나의 책임만 가져야 하며, 클래스가 변경되는 이유는 오직 하나여야 합니다.</p>
+
+        <div class="code-example">
+// 잘못된 예: 여러 책임을 가진 클래스
+class User {
+    private String name;
+    private String email;
+    
+    public void save() { /* 데이터베이스 저장 */ }
+    public void sendEmail() { /* 이메일 발송 */ }
+    public String generateReport() { /* 보고서 생성 */ }
+}
+
+// 올바른 예: 책임을 분리한 클래스들
+class User {
+    private String name;
+    private String email;
+    // getter, setter 메서드
+}
+
+class UserRepository {
+    public void save(User user) { /* 데이터베이스 저장 */ }
+}
+
+class EmailService {
+    public void sendEmail(User user) { /* 이메일 발송 */ }
+}
+        </div>
+
+        <h3>개방-폐쇄 원칙 (Open-Closed Principle)</h3>
+        <p>소프트웨어 개체는 확장에는 열려 있어야 하고, 수정에는 닫혀 있어야 합니다.</p>
+
+        <div class="code-example">
+// 확장 가능한 설계 예제
+abstract class Shape {
+    abstract double calculateArea();
+}
+
+class Rectangle extends Shape {
+    private double width, height;
+    
+    @Override
+    double calculateArea() {
+        return width * height;
+    }
+}
+
+class Circle extends Shape {
+    private double radius;
+    
+    @Override
+    double calculateArea() {
+        return Math.PI * radius * radius;
+    }
+}
+
+class AreaCalculator {
+    public double totalArea(List&lt;Shape&gt; shapes) {
+        return shapes.stream()
+                    .mapToDouble(Shape::calculateArea)
+                    .sum();
+    }
+}
+        </div>
+
+        <h2>1.3 디자인 패턴</h2>
+
+        <h3>생성 패턴 (Creational Patterns)</h3>
+        <div class="example-box">
+            <strong>싱글톤 패턴 (Singleton Pattern)</strong>
+            <p>클래스의 인스턴스가 오직 하나만 생성되도록 보장하는 패턴입니다.</p>
+            
+            <div class="code-example">
+public class DatabaseConnection {
+    private static DatabaseConnection instance;
+    
+    private DatabaseConnection() {}
+    
+    public static synchronized DatabaseConnection getInstance() {
+        if (instance == null) {
+            instance = new DatabaseConnection();
+        }
+        return instance;
+    }
+}
+            </div>
+        </div>
+
+        <h3>구조 패턴 (Structural Patterns)</h3>
+        <div class="example-box">
+            <strong>어댑터 패턴 (Adapter Pattern)</strong>
+            <p>호환되지 않는 인터페이스를 가진 클래스들이 함께 동작할 수 있도록 하는 패턴입니다.</p>
+        </div>
+
+        <h3>행위 패턴 (Behavioral Patterns)</h3>
+        <div class="example-box">
+            <strong>옵서버 패턴 (Observer Pattern)</strong>
+            <p>객체 간의 일대다 의존 관계를 정의하여, 한 객체의 상태가 변경되면 의존하는 모든 객체에게 알리는 패턴입니다.</p>
+        </div>
+
+        <h2>1.4 장단점 분석</h2>
+
+        <div class="advantages">
+            <h3>장점</h3>
+            <ul>
+                <li><strong>재사용성:</strong> 한번 작성된 클래스는 다른 프로젝트에서 재사용 가능</li>
+                <li><strong>유지보수성:</strong> 캡슐화를 통해 코드 변경 시 영향 범위 최소화</li>
+                <li><strong>확장성:</strong> 상속과 다형성을 통한 기능 확장 용이</li>
+                <li><strong>모듈화:</strong> 복잡한 시스템을 독립적인 모듈로 분해</li>
+                <li><strong>직관적 모델링:</strong> 실세계 개념을 자연스럽게 소프트웨어로 표현</li>
+            </ul>
+        </div>
+
+        <div class="disadvantages">
+            <h3>단점</h3>
+            <ul>
+                <li><strong>복잡성 증가:</strong> 간단한 문제에도 과도한 추상화 적용 가능성</li>
+                <li><strong>성능 오버헤드:</strong> 객체 생성과 메서드 호출로 인한 성능 저하</li>
+                <li><strong>학습 곡선:</strong> 객체지향 개념 이해에 시간 필요</li>
+                <li><strong>메모리 사용량:</strong> 객체 생성으로 인한 메모리 사용량 증가</li>
+            </ul>
+        </div>
+
+        <h2>1.5 실제 적용 사례</h2>
+
+        <div class="real-world-example">
+            <h3>전자상거래 시스템 설계</h3>
+            <p>온라인 쇼핑몰 시스템을 객체지향으로 설계하는 예제입니다.</p>
+            
+            <div class="code-example">
+// 핵심 도메인 모델
+class Product {
+    private String id;
+    private String name;
+    private BigDecimal price;
+    private int stockQuantity;
+    
+    public boolean isAvailable(int quantity) {
+        return stockQuantity >= quantity;
+    }
+    
+    public void reduceStock(int quantity) {
+        if (!isAvailable(quantity)) {
+            throw new InsufficientStockException();
+        }
+        this.stockQuantity -= quantity;
+    }
+}
+
+class ShoppingCart {
+    private List&lt;CartItem&gt; items = new ArrayList&lt;&gt;();
+    
+    public void addItem(Product product, int quantity) {
+        if (product.isAvailable(quantity)) {
+            items.add(new CartItem(product, quantity));
+        }
+    }
+    
+    public BigDecimal getTotalPrice() {
+        return items.stream()
+                   .map(CartItem::getTotalPrice)
+                   .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+}
+
+class Order {
+    private String orderId;
+    private Customer customer;
+    private List&lt;OrderItem&gt; items;
+    private OrderStatus status;
+    
+    public void process() {
+        validateOrder();
+        processPayment();
+        updateInventory();
+        this.status = OrderStatus.PROCESSED;
+    }
+}
+            </div>
+        </div>
+
+        <h2>1.6 최신 동향과 발전</h2>
+
+        <h3>함수형 프로그래밍과의 융합</h3>
+        <p>현대 객체지향 언어들은 함수형 프로그래밍 요소를 도입하여 더욱 표현력 있는 코드 작성을 가능하게 합니다.</p>
+
+        <div class="code-example">
+// Java 8+ 스트림 API와 람다 표현식
+public class OrderService {
+    public List&lt;Order&gt; getHighValueOrders(List&lt;Order&gt; orders, BigDecimal threshold) {
+        return orders.stream()
+                    .filter(order -&gt; order.getTotalAmount().compareTo(threshold) &gt; 0)
+                    .sorted(Comparator.comparing(Order::getOrderDate))
+                    .collect(Collectors.toList());
+    }
+}
+        </div>
+
+        <h3>마이크로서비스와 객체지향</h3>
+        <p>마이크로서비스 아키텍처에서 객체지향 설계 원칙은 서비스 경계를 정의하고 도메인을 모델링하는 데 중요한 역할을 합니다.</p>
+
+        <div class="summary-box">
+            <div class="summary-title">핵심 요약</div>
+            <ul>
+                <li>객체지향 설계는 <span class="highlight">캡슐화, 상속, 다형성, 추상화</span>를 핵심 원칙으로 합니다.</li>
+                <li><span class="highlight">SOLID 원칙</span>을 준수하면 유지보수 가능한 코드를 작성할 수 있습니다.</li>
+                <li><span class="highlight">디자인 패턴</span>은 검증된 설계 솔루션을 제공합니다.</li>
+                <li>현실적인 <span class="highlight">장단점을 고려</span>하여 적절히 적용해야 합니다.</li>
+                <li>함수형 프로그래밍과의 융합을 통해 더욱 발전하고 있습니다.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

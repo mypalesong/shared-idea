@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>맥주 모임 - 금요일의 여유</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            overflow: hidden;
+            color: white;
+            perspective: 1000px;
+        }
+        
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+        
+        .title-section {
+            text-align: center;
+            margin-bottom: 50px;
+            z-index: 10;
+        }
+        
+        .main-title {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            animation: titlePulse 3s ease-in-out infinite;
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            opacity: 0.9;
+            animation: fadeIn 2s ease-out 0.5s both;
+        }
+        
+        .carousel-container {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            margin: 50px auto;
+            transform-style: preserve-3d;
+            animation: rotate3D 15s linear infinite;
+        }
+        
+        .carousel-item {
+            position: absolute;
+            width: 200px;
+            height: 150px;
+            border-radius: 15px;
+            background-size: cover;
+            background-position: center;
+            border: 3px solid rgba(255,255,255,0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .carousel-item:nth-child(1) {
+            background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1574391884720-bbc4fe48aa10?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80');
+            transform: rotateY(0deg) translateZ(150px);
+        }
+        
+        .carousel-item:nth-child(2) {
+            background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80');
+            transform: rotateY(72deg) translateZ(150px);
+        }
+        
+        .carousel-item:nth-child(3) {
+            background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1540420773420-3366772f4999?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80');
+            transform: rotateY(144deg) translateZ(150px);
+        }
+        
+        .carousel-item:nth-child(4) {
+            background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1566737236500-c8ac43014a8e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80');
+            transform: rotateY(216deg) translateZ(150px);
+        }
+        
+        .carousel-item:nth-child(5) {
+            background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80');
+            transform: rotateY(288deg) translateZ(150px);
+        }
+        
+        .info-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 40px;
+            border-radius: 25px;
+            text-align: center;
+            max-width: 500px;
+            margin-top: 30px;
+            animation: cardFloat 6s ease-in-out infinite;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .event-details {
+            margin-bottom: 30px;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .detail-value {
+            font-size: 1.1rem;
+        }
+        
+        .floating-bubbles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            animation: bubbleFloat 8s linear infinite;
+        }
+        
+        .bubble:nth-child(odd) {
+            background: rgba(255,215,0,0.2);
+        }
+        
+        .action-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 18px 45px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: buttonShine 4s ease-in-out infinite;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(255, 107, 107, 0.6);
+        }
+        
+        @keyframes titlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 0.9; transform: translateY(0); }
+        }
+        
+        @keyframes rotate3D {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+        
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        @keyframes bubbleFloat {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes buttonShine {
+            0%, 100% { box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4); }
+            50% { box-shadow: 0 12px 35px rgba(255, 107, 107, 0.7); }
+        }
+        
+        .carousel-container:hover {
+            animation-play-state: paused;
+        }
+        
+        .carousel-item:hover {
+            transform: scale(1.1) translateZ(50px);
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-bubbles" id="bubblesContainer"></div>
+    
+    <div class="main-container">
+        <div class="title-section">
+            <h1 class="main-title">Friday Beer Night</h1>
+            <p class="subtitle">한 주의 피로를 시원한 맥주로 날려보자</p>
+        </div>
+        
+        <div class="carousel-container">
+            <div class="carousel-item"></div>
+            <div class="carousel-item"></div>
+            <div class="carousel-item"></div>
+            <div class="carousel-item"></div>
+            <div class="carousel-item"></div>
+        </div>
+        
+        <div class="info-card">
+            <div class="event-details">
+                <div class="detail-row">
+                    <span class="detail-label">날짜</span>
+                    <span class="detail-value">매주 금요일</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">시간</span>
+                    <span class="detail-value">오후 7시 30분</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">장소</span>
+                    <span class="detail-value">홍대 맥주골목</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">테마</span>
+                    <span class="detail-value">자유로운 분위기</span>
+                </div>
+            </div>
+            
+            <button class="action-btn">참여 신청하기</button>
+        </div>
+    </div>
+
+    <script>
+        function createBubbles() {
+            const container = document.getElementById('bubblesContainer');
+            
+            setInterval(() => {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                
+                const size = Math.random() * 60 + 20;
+                bubble.style.width = size + 'px';
+                bubble.style.height = size + 'px';
+                bubble.style.left = Math.random() * 100 + '%';
+                bubble.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                
+                container.appendChild(bubble);
+                
+                setTimeout(() => {
+                    bubble.remove();
+                }, 8000);
+            }, 300);
+        }
+        
+        createBubbles();
+    </script>
+</body>
+</html>

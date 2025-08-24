@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>~ ajae@life:$ blog --vintage-terminal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: #0a0a0a;
+            color: #00ff00;
+            line-height: 1.4;
+            overflow-x: hidden;
+        }
+        
+        .terminal-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.1);
+            position: relative;
+        }
+        
+        .terminal-header {
+            background: #333;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 8px 8px 0 0;
+            border-bottom: 1px solid #555;
+        }
+        
+        .terminal-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .close { background: #ff5f57; }
+        .minimize { background: #ffbd2e; }
+        .maximize { background: #28ca42; }
+        
+        .terminal-title {
+            margin-left: 20px;
+            font-size: 0.8rem;
+            color: #888;
+        }
+        
+        .terminal-body {
+            padding: 20px;
+            min-height: 80vh;
+            background: #0a0a0a;
+            position: relative;
+        }
+        
+        .prompt-line {
+            display: flex;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .prompt {
+            color: #00ffff;
+            margin-right: 10px;
+        }
+        
+        .command {
+            color: #ffff00;
+            margin-right: 10px;
+        }
+        
+        .output {
+            color: #00ff00;
+            white-space: pre-line;
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .error {
+            color: #ff6b6b;
+        }
+        
+        .success {
+            color: #51cf66;
+        }
+        
+        .warning {
+            color: #ffd43b;
+        }
+        
+        .info {
+            color: #74c0fc;
+        }
+        
+        .post-entry {
+            border: 1px solid #333;
+            margin: 20px 0;
+            padding: 15px;
+            background: #111;
+            border-radius: 5px;
+        }
+        
+        .post-header {
+            color: #00ffff;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .post-content {
+            color: #cccccc;
+            line-height: 1.6;
+        }
+        
+        .post-meta {
+            color: #666;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            border-top: 1px solid #333;
+            padding-top: 10px;
+        }
+        
+        .cursor {
+            background: #00ff00;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .loading {
+            color: #ffd43b;
+        }
+        
+        .loading::after {
+            content: '';
+            animation: dots 1.5s infinite;
+        }
+        
+        @keyframes dots {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+            100% { content: ''; }
+        }
+        
+        .tree-structure {
+            color: #888;
+            font-size: 0.85rem;
+        }
+        
+        .highlight {
+            color: #ff79c6;
+            font-weight: bold;
+        }
+        
+        .ascii-art {
+            color: #50fa7b;
+            font-size: 0.7rem;
+            line-height: 1.2;
+            margin: 20px 0;
+        }
+        
+        .stats-table {
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .stats-table td {
+            padding: 5px 15px;
+            border: 1px solid #333;
+            color: #cccccc;
+        }
+        
+        .stats-table th {
+            padding: 8px 15px;
+            border: 1px solid #333;
+            color: #00ffff;
+            background: #1a1a1a;
+        }
+        
+        .typing-effect {
+            overflow: hidden;
+            white-space: nowrap;
+            animation: typing 2s steps(40, end);
+        }
+        
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        .glitch {
+            animation: glitch 0.3s infinite;
+        }
+        
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-container">
+        <div class="terminal-header">
+            <div class="terminal-button close"></div>
+            <div class="terminal-button minimize"></div>
+            <div class="terminal-button maximize"></div>
+            <div class="terminal-title">ajae@life: ~/blog</div>
+        </div>
+        
+        <div class="terminal-body">
+            <div class="prompt-line">
+                <span class="prompt">ajae@life:~/blog$</span>
+                <span class="command">whoami</span>
+            </div>
+            <div class="output">40대 중반의 평범한 아저씨
+시스템 분석가 / 아빠 / 취미 프로그래머
+런타임: 45년 2개월 24일</div>
+            
+            <div class="prompt-line">
+                <span class="prompt">ajae@life:~/blog$</span>
+                <span class="command">ls -la /thoughts/</span>
+            </div>
+            <div class="output tree-structure">total 12
+drwxr-xr-x  5 ajae family  512 Aug 24 08:30 .
+drwxr-xr-x 15 ajae family  512 Aug 24 07:00 ..
+-rw-r--r--  1 ajae family 2048 Aug 24 08:30 coffee_thoughts.txt
+-rw-r--r--  1 ajae family 1024 Aug 23 22:15 family_time.log
+-rw-r--r--  1 ajae family 4096 Aug 22 23:45 weekend_reflection.md
+drwxr-xr-x  2 ajae family  256 Aug 21 19:30 memories/
+drwxr-xr-x  2 ajae family  256 Aug 20 15:20 projects/</div>
+            
+            <div class="prompt-line">
+                <span class="prompt">ajae@life:~/blog$</span>
+                <span class="command">cat coffee_thoughts.txt</span>
+            </div>
+            <div class="post-entry">
+                <div class="post-header">[POST] 새벽 커피와 코딩의 시너지</div>
+                <div class="post-content">
+아이들이 모두 잠든 새벽 6시, 나만의 시간이 시작된다.
+커피머신이 웅웅거리는 소리와 함께 하루가 시작된다.
+
+원두를 갈고, 물 온도를 맞추고, 추출 시간을 계산하는 이 과정...
+마치 코딩할 때처럼 정밀하고 논리적이다.
+
+첫 모금을 마시며 IDE를 열면, 
+카페인과 함께 창의성도 깨어난다.
+
+어제 못 푼 알고리즘 문제가 
+오늘 아침엔 명확하게 보인다.
+
+STDOUT: "Perfect morning routine initiated..."
+                </div>
+                <div class="post-meta">
+Created: 2025-08-24 06:30:00 KST | Size: 512 bytes | Tags: #coffee #coding #morning
+                </div>
+            </div>
+            
+            <div class="prompt-line">
+                <span class="prompt">ajae@life:~/blog$</span>
+                <span class="command">tail -f family_time.log</span>
+            </div>
+            <div class="output loading">Loading recent family activities</div>
+            
+            <div class="post-entry">
+                <div class="post-header">[LOG] 가족 활동 모니터링</div>
+                <div class="post-content">
+[2025-08-23 19:30:00] INFO: 저녁식사 시작 - 메뉴: 아내표 김치찌개
+[2025-08-23 19:45:00] DEBUG: 아이들 반응 분석 완료 - 만족도: 95%
+[2025-08-23 20:00:00] INFO: 설거지 프로세스 실행 중... (자동화 필요)
+[2025-08-23 20:30:00] WARN: TV 리모컨 분쟁 발생 - 중재 알고리즘 실행
+[2025-08-23 21:00:00] SUCCESS: 가족 영화 시청 합의 완료
+[2025-08-23 22:00:00] INFO: 아이들 취침 루틴 시작
+[2025-08-23 22:30:00] DEBUG: 동화책 읽기 완료 - 3회 반복 요청
+[2025-08-23 23:00:00] SUCCESS: 모든 프로세스 정상 종료
+[2025-08-23 23:15:00] INFO: 아내와의 하루 일과 디브리핑 세션
+
+ERROR_COUNT: 0
+HAPPINESS_INDEX: 9.2/10
+FAMILY_UPTIME: 100%
+                </div>
+                <div class="post-meta">
+Process ID: 20250823 | Runtime: 4h 45m | Status: COMPLETED
+                </div>
+            </div>
+            
+            <div class="prompt-line">
+                <span class="prompt">ajae@life:~/blog$</span>
+                <span class="command">grep -r "추억" memories/</span>
+            </div>
+            <div class="output">memories/childhood.db:1990년대 오락실에서의 추억들
+memories/youth.log:대학시절 MT의 달콤한 추억
+memories/wedding.dat:결혼식날의 소중한 추억
+memories/first_child.txt:첫 아이 출생의 감동적인 추억</div>
+            
+            <div class="prompt-line">
+                <span class="prompt">ajae@life:~/blog$</span>
+                <span class="command">ps aux | grep "life_status"</span>
+            </div>
+            <div class="output">
+<table class="stats-table">
+<tr><th>PID</th><th>PROCESS</th><th>CPU%</th><th>MEM%</th><th>STATUS</th></tr>
+<tr><td>4521</td><td>work.exe</td><td>35%</td><td>25%</td><td class="success">RUNNING</td></tr>
+<tr><td>4522</td><td>family.service</td><td>45%</td><td>40%</td><td class="success">PRIORITY</td></tr>
+<tr><td>4523</td><td>health.daemon</td><td>10%</td><td>8%</td><td class="warning">NEEDS_UPDATE</td></tr>
+<tr><td>4524</td><td>hobby.cron</td><td>8%</td><td>15%</td><td class="info">SCHEDULED</td></tr>
+<tr><td>4525</td><td>sleep.process</td><td>2%</td><td>12%</td><td class="error">INSUFFICIENT</td></tr>
+</table>
+            </div>
+            
+            <div class="prompt-line">
+                <span class="prompt">ajae@life:~/blog$</span>
+                <span class="command">sudo systemctl status happiness.service</span>
+            </div>
+            <div class="output success">
+● happiness.service - 40대 행복 관리 시스템
+   Loaded: loaded (/etc/systemd/user/happiness.service; enabled)
+   Active: <span class="highlight">active (running)</span> since 1980-03-15 00:00:00 KST; 45 years ago
+     Docs: man:life(1) man:family(7)
+ Main PID: 1 (init_happiness)
+   Memory: 512.0G (of ∞)
+   CGroup: /user.slice/happiness.service
+           ├─ 1980 coffee_routine --daily
+           ├─ 2010 marriage.exe --with=soulmate
+           ├─ 2015 children.daemon --count=2
+           └─ 2025 wisdom.service --level=intermediate
+
+Aug 24 08:30:00 life systemd[1]: Started 40대 행복 관리 시스템.
+Aug 24 08:30:01 life happiness[1]: 오늘도 평범하지만 소중한 하루 시작
+Aug 24 08:30:02 life happiness[1]: 가족 상태: 모두 건강
+Aug 24 08:30:03 life happiness[1]: 커피 연료 공급 완료
+Aug 24 08:30:04 life happiness[1]: 감사 모듈 정상 작동 중...
+</div>
+            
+            <div class="prompt-line">
+                <span class="prompt">ajae@life:~/blog$</span>
+                <span class="command">figlet "40대의 철학"</span>
+            </div>
+            <div class="ascii-art">
+ _  _    ___        _         _   _         _                     
+| || |  / _ \   __| |   ___ | | | |  ___  | |    ___    ___  ___ 
+| || |_| | | | / _` |  / _ \| |_| | / _ \ | |   / _ \  / __|/ _ \
+|__   _| |_| || (_| | |  __/|  _  ||  __/ | |  | (_) | \__ \  __/
+   |_|  \___/  \__,_|  \___||_| |_| \___| |_|   \___/  |___/\___|
+   
+   철     학     =     작은 것에서 큰 기쁨을 찾기
+</div>
+            
+            <div class="prompt-line">
+                <span class="prompt">ajae@life:~/blog$</span>
+                <span class="command">history | tail -5</span>
+            </div>
+            <div class="output">
+ 1001  아이들과_공원가기 --weather=sunny --energy=high
+ 1002  아내에게_꽃사주기 --occasion=no_reason --surprise=true
+ 1003  개인프로젝트_커밋 --message="작은_진전이지만_의미있다"
+ 1004  건강검진_예약하기 --clinic=동네병원 --date=next_week
+ 1005  blog --mode=terminal --style=retro
+</div>
+            
+            <div class="prompt-line">
+                <span class="prompt">ajae@life:~/blog$</span>
+                <span class="command">echo "오늘의 다짐" > daily_resolution.txt</span>
+            </div>
+            <div class="output info">
+"하루하루 성실하게, 가족과 함께 웃으며, 
+ 작은 것에 감사하며, 계속 배우며 성장하자.
+ 
+ 40대는 끝이 아니라 새로운 시작이다.
+ 경험이 쌓인 지금이야말로 진짜 인생의 시작점이다."
+
+File created: daily_resolution.txt
+Permissions: -rw-r--r-- 1 ajae family 156 bytes
+</div>
+            
+            <div class="prompt-line">
+                <span class="prompt">ajae@life:~/blog$</span>
+                <span class="command">uptime</span>
+            </div>
+            <div class="output success">
+ 08:30:24 up 45 years, 5 months, 24 days, 8:30,  1 user,  
+ load average: 0.42, 0.38, 0.35
+ 
+ System status: STABLE
+ Life satisfaction: HIGH
+ Family happiness: OPTIMAL
+ Coffee level: SUFFICIENT
+</div>
+            
+            <div class="prompt-line">
+                <span class="prompt">ajae@life:~/blog$</span>
+                <span class="command typing-effect">exit</span>
+            </div>
+            <div class="output">
+Saving session...
+...copying shared history...
+...saving history...truncating history files...
+...completed.
+
+감사합니다. 오늘도 좋은 하루 되세요!
+
+[프로세스가 정상적으로 종료되었습니다]
+</div>
+            
+            <div class="prompt-line">
+                <span class="prompt">ajae@life:~/blog$</span>
+                <span class="cursor">_</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

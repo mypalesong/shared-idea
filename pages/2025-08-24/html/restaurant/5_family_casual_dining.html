@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranch House Family Restaurant - Where Families Gather</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-red: #e74c3c;
+            --warm-orange: #f39c12;
+            --forest-green: #27ae60;
+            --sky-blue: #3498db;
+            --sunshine-yellow: #f1c40f;
+            --cream: #fef9e7;
+            --brown: #8b4513;
+            --dark-brown: #5d2f0a;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', 'Trebuchet MS', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--cream) 0%, #fdf2e9 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Fun Background Pattern */
+        .fun-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.02;
+            background-image: 
+                radial-gradient(circle at 20% 20%, var(--sky-blue) 2px, transparent 2px),
+                radial-gradient(circle at 40% 40%, var(--primary-red) 2px, transparent 2px),
+                radial-gradient(circle at 60% 60%, var(--forest-green) 2px, transparent 2px),
+                radial-gradient(circle at 80% 80%, var(--warm-orange) 2px, transparent 2px);
+            background-size: 50px 50px, 70px 70px, 90px 90px, 60px 60px;
+            z-index: -1;
+        }
+        
+        /* Playful Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-red), var(--warm-orange));
+            padding: 20px 0;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '🍔🍕🍟🥤🍰';
+            position: absolute;
+            top: 10px;
+            left: -100px;
+            font-size: 2em;
+            animation: float 15s linear infinite;
+            opacity: 0.3;
+        }
+        
+        header::after {
+            content: '🌟⭐🎉🎊🎈';
+            position: absolute;
+            bottom: 10px;
+            right: -100px;
+            font-size: 1.5em;
+            animation: float 20s linear infinite reverse;
+            opacity: 0.3;
+        }
+        
+        @keyframes float {
+            from {
+                transform: translateX(0);
+            }
+            to {
+                transform: translateX(calc(100vw + 100px));
+            }
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .restaurant-logo {
+            font-size: 4em;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .tagline {
+            color: white;
+            font-size: 1.5em;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        /* Colorful Navigation */
+        nav {
+            background: var(--forest-green);
+            padding: 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        nav li {
+            position: relative;
+        }
+        
+        nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 18px 25px;
+            font-size: 1.2em;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        nav a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--sunshine-yellow);
+            transform: scaleY(0);
+            transform-origin: bottom;
+            transition: transform 0.3s ease;
+            z-index: -1;
+        }
+        
+        nav a:hover::before {
+            transform: scaleY(1);
+        }
+        
+        nav a:hover {
+            color: var(--dark-brown);
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        /* Fun Welcome Section */
+        .welcome {
+            text-align: center;
+            padding: 60px 30px;
+            background: linear-gradient(135deg, white, #f8f9fa);
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            margin-bottom: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .welcome::before {
+            content: '🎪';
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            font-size: 3em;
+            animation: spin 4s linear infinite;
+        }
+        
+        .welcome::after {
+            content: '🎠';
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 3em;
+            animation: spin 4s linear infinite reverse;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .welcome h2 {
+            font-size: 3em;
+            color: var(--primary-red);
+            margin-bottom: 25px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .welcome p {
+            font-size: 1.3em;
+            line-height: 1.8;
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Fun Stats */
+        .fun-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .stat-card {
+            background: var(--sky-blue);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 20px;
+            text-align: center;
+            transform: rotate(-2deg);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .stat-card:nth-child(2) {
+            background: var(--warm-orange);
+            transform: rotate(1deg);
+        }
+        
+        .stat-card:nth-child(3) {
+            background: var(--forest-green);
+            transform: rotate(-1deg);
+        }
+        
+        .stat-card:nth-child(4) {
+            background: var(--primary-red);
+            transform: rotate(2deg);
+        }
+        
+        .stat-card:hover {
+            transform: rotate(0deg) scale(1.05);
+        }
+        
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        
+        /* Colorful Menu Section */
+        .menu-showcase {
+            margin-bottom: 60px;
+        }
+        
+        .section-title {
+            font-size: 3em;
+            text-align: center;
+            color: var(--primary-red);
+            margin-bottom: 50px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .section-title::before,
+        .section-title::after {
+            content: '⭐';
+            position: absolute;
+            top: 50%;
+            font-size: 0.6em;
+            color: var(--sunshine-yellow);
+            animation: twinkle 1.5s ease-in-out infinite;
+        }
+        
+        .section-title::before {
+            left: -60px;
+        }
+        
+        .section-title::after {
+            right: -60px;
+            animation-delay: 0.7s;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; transform: translateY(-50%) scale(1); }
+            50% { opacity: 1; transform: translateY(-50%) scale(1.2); }
+        }
+        
+        .menu-categories {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+        }
+        
+        .menu-category {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            border-top: 8px solid var(--warm-orange);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .menu-category:nth-child(2) {
+            border-top-color: var(--forest-green);
+        }
+        
+        .menu-category:nth-child(3) {
+            border-top-color: var(--sky-blue);
+        }
+        
+        .menu-category:nth-child(4) {
+            border-top-color: var(--primary-red);
+        }
+        
+        .category-icon {
+            font-size: 4em;
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            opacity: 0.1;
+        }
+        
+        .menu-category h3 {
+            font-size: 2.2em;
+            color: var(--dark-brown);
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+        
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #eee;
+        }
+        
+        .menu-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .menu-item h4 {
+            color: var(--dark-brown);
+            font-size: 1.3em;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .menu-item p {
+            color: #666;
+            font-size: 1em;
+            line-height: 1.5;
+        }
+        
+        .menu-price {
+            color: var(--primary-red);
+            font-size: 1.4em;
+            font-weight: bold;
+            min-width: 80px;
+            text-align: right;
+        }
+        
+        /* Kids Zone */
+        .kids-zone {
+            background: linear-gradient(135deg, var(--sunshine-yellow), #ffeaa7);
+            border-radius: 25px;
+            padding: 60px 40px;
+            margin-bottom: 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .kids-zone::before {
+            content: '🎨🎪🎭🎪🎨';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            font-size: 1.5em;
+            opacity: 0.3;
+        }
+        
+        .kids-zone h2 {
+            font-size: 2.8em;
+            color: var(--primary-red);
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        
+        .kids-features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .kids-feature {
+            background: white;
+            padding: 30px 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .kids-feature:hover {
+            transform: translateY(-10px);
+        }
+        
+        .kids-feature-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .kids-feature h4 {
+            color: var(--dark-brown);
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .kids-feature p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        /* Special Events */
+        .events-banner {
+            background: var(--sky-blue);
+            color: white;
+            padding: 60px 40px;
+            border-radius: 25px;
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .events-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 20px,
+                rgba(255,255,255,0.1) 20px,
+                rgba(255,255,255,0.1) 40px
+            );
+            animation: slide 25s linear infinite;
+        }
+        
+        @keyframes slide {
+            from { transform: translate(0, 0) rotate(0deg); }
+            to { transform: translate(50px, 50px) rotate(360deg); }
+        }
+        
+        .events-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .events-banner h2 {
+            font-size: 3em;
+            margin-bottom: 30px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .event-card {
+            background: rgba(255,255,255,0.15);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        .event-card h4 {
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .event-card p {
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+        
+        /* Location & Contact */
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        .info-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            border-top: 6px solid var(--warm-orange);
+        }
+        
+        .info-card:nth-child(2) {
+            border-top-color: var(--forest-green);
+        }
+        
+        .info-card:nth-child(3) {
+            border-top-color: var(--primary-red);
+        }
+        
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .info-card-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .info-card h3 {
+            color: var(--dark-brown);
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .info-card p {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark-brown);
+            color: white;
+            padding: 60px 20px 30px;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-sections {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 50px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-section h4 {
+            color: var(--sunshine-yellow);
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+        
+        .footer-section p,
+        .footer-section li {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .social-icons {
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+        
+        .social-icons span {
+            margin: 0 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .social-icons span:hover {
+            transform: scale(1.3);
+        }
+        
+        .footer-bottom {
+            border-top: 2px solid rgba(255,255,255,0.2);
+            padding-top: 30px;
+            color: rgba(255,255,255,0.7);
+            font-size: 1.1em;
+        }
+        
+        /* Responsive */
+        @media (max-width: 968px) {
+            .restaurant-logo {
+                font-size: 2.5em;
+            }
+            
+            nav a {
+                padding: 15px 20px;
+                font-size: 1.1em;
+            }
+            
+            .fun-stats,
+            .menu-categories,
+            .kids-features,
+            .events-grid,
+            .contact-info,
+            .footer-sections {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                font-size: 2.2em;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .fun-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="fun-bg"></div>
+    
+    <header>
+        <div class="header-content">
+            <h1 class="restaurant-logo">RANCH HOUSE</h1>
+            <p class="tagline">Family Restaurant • Fun & Delicious Since 1998</p>
+        </div>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#home">홈</a></li>
+            <li><a href="#menu">메뉴</a></li>
+            <li><a href="#kids">키즈존</a></li>
+            <li><a href="#events">이벤트</a></li>
+            <li><a href="#contact">오시는 길</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <section class="welcome" id="home">
+            <h2>Welcome to Ranch House!</h2>
+            <p>1998년부터 가족들의 행복한 시간을 함께해온 Ranch House입니다! 
+            푸짐한 양과 맛있는 음식, 그리고 아이들이 마음껏 뛰어놀 수 있는 안전한 놀이공간까지! 
+            온 가족이 함께 즐거운 시간을 보낼 수 있는 특별한 공간을 만들어갑니다.</p>
+            
+            <div class="fun-stats">
+                <div class="stat-card">
+                    <div class="stat-number">50만+</div>
+                    <div class="stat-label">방문 가족 수</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">25년</div>
+                    <div class="stat-label">전통의 맛</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">만족도</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">365일</div>
+                    <div class="stat-label">행복한 서비스</div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="menu-showcase" id="menu">
+            <h2 class="section-title">가족 메뉴</h2>
+            <div class="menu-categories">
+                <div class="menu-category">
+                    <div class="category-icon">🍔</div>
+                    <h3>버거 & 스테이크</h3>
+                    <div class="menu-item">
+                        <div>
+                            <h4>랜치 패밀리 버거</h4>
+                            <p>더블 패티, 신선한 야채, 감자튀김</p>
+                        </div>
+                        <div class="menu-price">$16</div>
+                    </div>
+                    <div class="menu-item">
+                        <div>
+                            <h4>홈스타일 스테이크</h4>
+                            <p>200g 안심, 매쉬드 포테이토, 야채</p>
+                        </div>
+                        <div class="menu-price">$28</div>
+                    </div>
+                    <div class="menu-item">
+                        <div>
+                            <h4>치킨 텐더</h4>
+                            <p>바삭한 치킨, 허니머스타드 소스</p>
+                        </div>
+                        <div class="menu-price">$14</div>
+                    </div>
+                </div>
+                
+                <div class="menu-category">
+                    <div class="category-icon">🍕</div>
+                    <h3>피자 & 파스타</h3>
+                    <div class="menu-item">
+                        <div>
+                            <h4>패밀리 피자 (L)</h4>
+                            <p>4가지 토핑, 두꺼운 치즈</p>
+                        </div>
+                        <div class="menu-price">$24</div>
+                    </div>
+                    <div class="menu-item">
+                        <div>
+                            <h4>크림 파스타</h4>
+                            <p>새우, 버섯, 크림소스</p>
+                        </div>
+                        <div class="menu-price">$18</div>
+                    </div>
+                    <div class="menu-item">
+                        <div>
+                            <h4>미트볼 스파게티</h4>
+                            <p>홈메이드 미트볼, 토마토 소스</p>
+                        </div>
+                        <div class="menu-price">$16</div>
+                    </div>
+                </div>
+                
+                <div class="menu-category">
+                    <div class="category-icon">🍎</div>
+                    <h3>키즈 메뉴</h3>
+                    <div class="menu-item">
+                        <div>
+                            <h4>미니 버거 세트</h4>
+                            <p>작은 버거, 감자튀김, 주스</p>
+                        </div>
+                        <div class="menu-price">$9</div>
+                    </div>
+                    <div class="menu-item">
+                        <div>
+                            <h4>치킨 너겟</h4>
+                            <p>6조각, 케첩, 야채스틱</p>
+                        </div>
+                        <div class="menu-price">$8</div>
+                    </div>
+                    <div class="menu-item">
+                        <div>
+                            <h4>치즈 퀘사디아</h4>
+                            <p>멕시칸 치즈, 사워크림</p>
+                        </div>
+                        <div class="menu-price">$7</div>
+                    </div>
+                </div>
+                
+                <div class="menu-category">
+                    <div class="category-icon">🍰</div>
+                    <h3>디저트 & 음료</h3>
+                    <div class="menu-item">
+                        <div>
+                            <h4>초콜릿 브라우니</h4>
+                            <p>바닐라 아이스크림, 견과류</p>
+                        </div>
+                        <div class="menu-price">$7</div>
+                    </div>
+                    <div class="menu-item">
+                        <div>
+                            <h4>밀크셰이크</h4>
+                            <p>바닐라, 딸기, 초콜릿 중 선택</p>
+                        </div>
+                        <div class="menu-price">$6</div>
+                    </div>
+                    <div class="menu-item">
+                        <div>
+                            <h4>프룻 주스</h4>
+                            <p>오렌지, 사과, 포도 중 선택</p>
+                        </div>
+                        <div class="menu-price">$4</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="kids-zone" id="kids">
+            <h2>🎪 키즈 플레이존 🎪</h2>
+            <p style="font-size: 1.4em; margin-bottom: 20px;">아이들이 안전하고 재미있게 놀 수 있는 특별한 공간!</p>
+            
+            <div class="kids-features">
+                <div class="kids-feature">
+                    <div class="kids-feature-icon">🎠</div>
+                    <h4>놀이시설</h4>
+                    <p>미끄럼틀, 볼풀장, 트램펄린 등 다양한 놀이기구가 준비되어 있어요!</p>
+                </div>
+                <div class="kids-feature">
+                    <div class="kids-feature-icon">🎨</div>
+                    <h4>체험활동</h4>
+                    <p>쿠키 만들기, 그림 그리기 등 창의적인 활동으로 즐거운 시간을!</p>
+                </div>
+                <div class="kids-feature">
+                    <div class="kids-feature-icon">🎁</div>
+                    <h4>생일파티</h4>
+                    <p>생일 파티 예약 시 케이크와 풍선, 파티용품을 무료로 제공해드려요!</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="events-banner" id="events">
+            <div class="events-content">
+                <h2>🎉 특별 이벤트 🎉</h2>
+                <p style="font-size: 1.3em; margin-bottom: 30px;">매월 새로운 이벤트로 더욱 즐거운 Ranch House!</p>
+                
+                <div class="events-grid">
+                    <div class="event-card">
+                        <h4>주말 패밀리 데이</h4>
+                        <p>주말 방문 시 키즈메뉴 50% 할인!<br>
+                        온 가족이 함께 오세요!</p>
+                    </div>
+                    <div class="event-card">
+                        <h4>생일 축하 이벤트</h4>
+                        <p>생일인 분께 특별한 디저트와<br>
+                        생일 축하송을 선물해드려요!</p>
+                    </div>
+                    <div class="event-card">
+                        <h4>학기말 축하파티</h4>
+                        <p>성적표 지참 시 아이스크림<br>
+                        무료 제공! (A학점당 1개)</p>
+                    </div>
+                    <div class="event-card">
+                        <h4>패밀리 쿠킹 클래스</h4>
+                        <p>매주 토요일 오후 2시<br>
+                        부모님과 함께하는 요리교실!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="contact-info" id="contact">
+            <div class="info-card">
+                <div class="info-card-icon">🏠</div>
+                <h3>위치 정보</h3>
+                <p>서울특별시 마포구<br>
+                상암동 1681<br>
+                Ranch House Family Restaurant<br>
+                지하철 6호선 상암역 3번 출구</p>
+            </div>
+            <div class="info-card">
+                <div class="info-card-icon">⏰</div>
+                <h3>영업시간</h3>
+                <p>평일: 11:00 AM - 10:00 PM<br>
+                주말: 10:00 AM - 11:00 PM<br>
+                키즈존: 10:00 AM - 9:00 PM<br>
+                연중무휴</p>
+            </div>
+            <div class="info-card">
+                <div class="info-card-icon">📞</div>
+                <h3>예약 & 문의</h3>
+                <p>전화: 02-333-4567<br>
+                카카오톡: @RanchHouse<br>
+                이메일: info@ranchhouse.kr<br>
+                생일파티 예약 환영!</p>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-sections">
+                <div class="footer-section">
+                    <h4>Ranch House</h4>
+                    <p>25년 전통의 가족 레스토랑으로<br>
+                    온 가족이 함께 행복한 시간을<br>
+                    보낼 수 있는 특별한 공간입니다.</p>
+                    <div class="social-icons">
+                        <span>📘</span>
+                        <span>📷</span>
+                        <span>🐦</span>
+                        <span>📺</span>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>서비스</h4>
+                    <ul>
+                        <li>패밀리 다이닝</li>
+                        <li>키즈 플레이존</li>
+                        <li>생일파티 예약</li>
+                        <li>단체 예약</li>
+                        <li>쿠킹 클래스</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>안전 정책</h4>
+                    <ul>
+                        <li>놀이시설 정기 안전점검</li>
+                        <li>아동 안전 전문 직원</li>
+                        <li>CCTV 완비</li>
+                        <li>응급처치 시설</li>
+                        <li>알레르기 대응</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Ranch House Family Restaurant. All Rights Reserved. | 가족의 행복한 식사시간을 함께합니다 🏡</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

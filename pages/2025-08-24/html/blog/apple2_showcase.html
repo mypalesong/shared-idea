@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Pro - 40대를 위한 프리미엄 라이프스타일</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+            background: #000000;
+            color: #f5f5f7;
+            line-height: 1.47059;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #f5f5f7;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 40px;
+        }
+        
+        .nav-link {
+            color: #f5f5f7;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 400;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #0a84ff;
+        }
+        
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: radial-gradient(ellipse at center, #1a1a1a 0%, #000000 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="%23333333" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.1;
+        }
+        
+        .hero-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 30px;
+            z-index: 2;
+            position: relative;
+        }
+        
+        .hero-title {
+            font-size: 5rem;
+            font-weight: 700;
+            color: #f5f5f7;
+            margin-bottom: 24px;
+            letter-spacing: -0.03em;
+            z-index: 2;
+            position: relative;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.75rem;
+            font-weight: 400;
+            color: #86868b;
+            margin-bottom: 50px;
+            max-width: 800px;
+            z-index: 2;
+            position: relative;
+        }
+        
+        .hero-cta {
+            display: flex;
+            gap: 20px;
+            z-index: 2;
+            position: relative;
+        }
+        
+        .cta-primary {
+            background: #0a84ff;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 24px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-primary:hover {
+            background: #0077ed;
+            transform: scale(1.05);
+        }
+        
+        .cta-secondary {
+            border: 2px solid #0a84ff;
+            color: #0a84ff;
+            padding: 14px 30px;
+            border-radius: 24px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-secondary:hover {
+            background: #0a84ff;
+            color: white;
+        }
+        
+        .showcase-section {
+            padding: 120px 0;
+            background: #000000;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+        
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 60px;
+        }
+        
+        .showcase-item {
+            text-align: center;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .showcase-item:hover {
+            transform: translateY(-10px);
+            background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+            border-color: rgba(10, 132, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(10, 132, 255, 0.1);
+        }
+        
+        .showcase-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+        
+        .showcase-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #f5f5f7;
+            margin-bottom: 16px;
+        }
+        
+        .showcase-description {
+            font-size: 1rem;
+            color: #86868b;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        
+        .showcase-features {
+            list-style: none;
+            text-align: left;
+        }
+        
+        .showcase-features li {
+            color: #a1a1a6;
+            font-size: 0.875rem;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .showcase-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #0a84ff;
+            font-weight: bold;
+        }
+        
+        .feature-section {
+            padding: 120px 0;
+            background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+        }
+        
+        .feature-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            align-items: center;
+        }
+        
+        .feature-text h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #f5f5f7;
+            margin-bottom: 30px;
+            letter-spacing: -0.02em;
+        }
+        
+        .feature-text p {
+            font-size: 1.25rem;
+            color: #86868b;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+        
+        .feature-highlights {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .highlight-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .highlight-item:hover {
+            background: rgba(10, 132, 255, 0.1);
+            border: 1px solid rgba(10, 132, 255, 0.3);
+        }
+        
+        .highlight-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #0a84ff, #007aff);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .highlight-text {
+            color: #f5f5f7;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        
+        .feature-visual {
+            height: 500px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            color: rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-visual::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 255, 255, 0.1) 10px,
+                rgba(255, 255, 255, 0.1) 20px
+            );
+            animation: slide 20s linear infinite;
+        }
+        
+        @keyframes slide {
+            0% { transform: translateX(-50px) translateY(-50px); }
+            100% { transform: translateX(0) translateY(0); }
+        }
+        
+        .stats-section {
+            padding: 100px 0;
+            background: #000000;
+            text-align: center;
+        }
+        
+        .stats-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #f5f5f7;
+            margin-bottom: 60px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 60px;
+        }
+        
+        .stat-item {
+            padding: 40px 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #0a84ff;
+            display: block;
+            margin-bottom: 12px;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: #86868b;
+        }
+        
+        .footer {
+            background: #1a1a1a;
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            color: #86868b;
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.25rem;
+            }
+            
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .showcase-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .feature-content {
+                grid-template-columns: 1fr;
+                gap: 60px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <div class="logo">Life Pro</div>
+            <div class="nav-links">
+                <a href="#home" class="nav-link">홈</a>
+                <a href="#features" class="nav-link">특징</a>
+                <a href="#about" class="nav-link">소개</a>
+                <a href="#contact" class="nav-link">연락</a>
+            </div>
+        </div>
+    </nav>
+    
+    <section class="hero" id="home">
+        <div class="hero-badge">NEW</div>
+        <h1 class="hero-title">Life Pro</h1>
+        <p class="hero-subtitle">40대를 위한 프리미엄 라이프스타일. 경험과 지혜가 만나는 곳.</p>
+        <div class="hero-cta">
+            <a href="#features" class="cta-primary">경험해보기</a>
+            <a href="#about" class="cta-secondary">더 알아보기</a>
+        </div>
+    </section>
+    
+    <section class="showcase-section" id="features">
+        <div class="container">
+            <div class="showcase-grid">
+                <div class="showcase-item">
+                    <div class="showcase-icon">☕</div>
+                    <h3 class="showcase-title">Morning Ritual</h3>
+                    <p class="showcase-description">
+                        완벽한 하루를 위한 모닝 루틴. 
+                        품질 좋은 원두와 정확한 추출로 시작하는 프리미엄 모닝.
+                    </p>
+                    <ul class="showcase-features">
+                        <li>엄선된 프리미엄 원두</li>
+                        <li>정밀한 추출 타이밍</li>
+                        <li>개인 맞춤 농도 조절</li>
+                        <li>평온한 사색 시간</li>
+                    </ul>
+                </div>
+                
+                <div class="showcase-item">
+                    <div class="showcase-icon" style="background: linear-gradient(135deg, #fd79a8, #fdcb6e);">👨‍💼</div>
+                    <h3 class="showcase-title">Work-Life Balance</h3>
+                    <p class="showcase-description">
+                        15년 경력의 노하우로 완성한 일과 삶의 균형. 
+                        효율성과 만족도를 동시에 추구하는 프로페셔널 라이프.
+                    </p>
+                    <ul class="showcase-features">
+                        <li>최적화된 업무 프로세스</li>
+                        <li>스트레스 관리 시스템</li>
+                        <li>가족과의 품질 시간</li>
+                        <li>지속 가능한 성과 창출</li>
+                    </ul>
+                </div>
+                
+                <div class="showcase-item">
+                    <div class="showcase-icon" style="background: linear-gradient(135deg, #a8edea, #fed6e3);">👨‍👧‍👦</div>
+                    <h3 class="showcase-title">Family Premium</h3>
+                    <p class="showcase-description">
+                        아버지로서의 성숙함과 지혜. 
+                        아이들과 함께 성장하며 만들어가는 진짜 가족의 시간.
+                    </p>
+                    <ul class="showcase-features">
+                        <li>의미 있는 대화 기술</li>
+                        <li>창의적인 놀이 활동</li>
+                        <li>교육적 가족 여행</li>
+                        <li>추억이 되는 순간들</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="feature-section">
+        <div class="container">
+            <div class="feature-content">
+                <div class="feature-text">
+                    <h2>Designed for<br>Excellence</h2>
+                    <p>
+                        40대는 인생의 프리미엄 타임. 
+                        경험과 지혜가 쌓인 지금이야말로 
+                        진정한 품질을 추구할 때입니다.
+                    </p>
+                    <div class="feature-highlights">
+                        <div class="highlight-item">
+                            <div class="highlight-icon">⚡</div>
+                            <div class="highlight-text">효율성을 극대화한 라이프스타일</div>
+                        </div>
+                        <div class="highlight-item">
+                            <div class="highlight-icon">🎯</div>
+                            <div class="highlight-text">목표 지향적 일상 관리</div>
+                        </div>
+                        <div class="highlight-item">
+                            <div class="highlight-icon">💎</div>
+                            <div class="highlight-text">프리미엄 품질 추구</div>
+                        </div>
+                        <div class="highlight-item">
+                            <div class="highlight-icon">🚀</div>
+                            <div class="highlight-text">지속적인 자기계발</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-visual">
+                    🏆
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="stats-section">
+        <div class="container">
+            <h2 class="stats-title">Performance Metrics</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">15+</span>
+                    <div class="stat-label">Years Experience</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">2</span>
+                    <div class="stat-label">Amazing Kids</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">365</span>
+                    <div class="stat-label">Days of Growth</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">∞</span>
+                    <div class="stat-label">Possibilities</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>© 2025 Life Pro. Designed for the modern gentleman.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

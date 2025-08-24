@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>익스트림 프로그래밍 - Extreme Programming (XP)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e17055 0%, #fd79a8 50%, #6c5ce7 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 30px;
+        }
+        
+        .three-container {
+            width: 100%;
+            height: 400px;
+            margin: 30px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .content-section {
+            background: rgba(255,255,255,0.95);
+            padding: 40px;
+            margin: 30px 0;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .content-section h2 {
+            font-size: 2.5rem;
+            color: #e17055;
+            margin-bottom: 25px;
+            border-left: 5px solid #e17055;
+            padding-left: 20px;
+        }
+        
+        .content-section h3 {
+            font-size: 1.8rem;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+        
+        .content-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #4a5568;
+        }
+        
+        .xp-values {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .value-card {
+            background: linear-gradient(135deg, #e17055, #fd79a8);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .value-card:hover {
+            transform: translateY(-8px) scale(1.05);
+        }
+        
+        .value-card h4 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+        
+        .value-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .practices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .practice-card {
+            background: linear-gradient(135deg, #fd79a8, #6c5ce7);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .practice-card:hover {
+            transform: translateY(-5px) rotate(1deg);
+        }
+        
+        .practice-card h4 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+        
+        .pair-programming {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .pair-setup {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin: 20px 0;
+        }
+        
+        .programmer {
+            background: linear-gradient(135deg, #e17055, #fd79a8);
+            color: white;
+            padding: 20px;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .connection {
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #e17055, #fd79a8);
+            border-radius: 2px;
+        }
+        
+        .tdd-cycle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .tdd-step {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            padding: 20px;
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .tdd-step:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .tdd-step h5 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .tdd-arrow {
+            font-size: 2rem;
+            color: #6c5ce7;
+            margin: 0 20px;
+        }
+        
+        .refactoring-visual {
+            background: linear-gradient(135deg, #fd79a8, #6c5ce7);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .code-quality {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .quality-metric {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 150px;
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .benefits-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .benefit-item {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #e17055;
+            transition: all 0.3s ease;
+        }
+        
+        .benefit-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .benefit-item h4 {
+            color: #e17055;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 50px;
+            border-radius: 20px;
+        }
+        
+        footer p {
+            color: white;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>익스트림 프로그래밍</h1>
+            <p class="subtitle">극한의 소프트웨어 개발 프랙티스로 품질과 생산성을 극대화</p>
+        </header>
+        
+        <div class="three-container" id="three-container"></div>
+        
+        <div class="content-section">
+            <h2>익스트림 프로그래밍이란?</h2>
+            <p>익스트림 프로그래밍(Extreme Programming, XP)은 켄트 백(Kent Beck)이 1996년에 개발한 애자일 소프트웨어 개발 방법론입니다. XP는 좋다고 알려진 개발 프랙티스들을 '극한(Extreme)'까지 밀어붙여 최고의 품질과 생산성을 달성하는 것을 목표로 합니다.</p>
+            
+            <p>XP의 핵심은 짧은 개발 주기, 지속적인 피드백, 높은 코드 품질을 통해 변화하는 요구사항에 유연하게 대응하는 것입니다. 특히 기술적 우수성에 중점을 두어 개발팀이 자신있게 코드를 변경할 수 있는 환경을 만듭니다.</p>
+        </div>
+        
+        <div class="content-section">
+            <h2>XP의 5가지 핵심 가치</h2>
+            <div class="xp-values">
+                <div class="value-card">
+                    <div class="value-icon">💬</div>
+                    <h4>의사소통</h4>
+                    <p>팀원 간의 활발한 소통과 정보 공유</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🎯</div>
+                    <h4>단순성</h4>
+                    <p>필요한 것만 구현하고 복잡성 제거</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🔄</div>
+                    <h4>피드백</h4>
+                    <p>빠르고 지속적인 피드백 수집</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">💪</div>
+                    <h4>용기</h4>
+                    <p>변화와 도전을 두려워하지 않는 용기</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🤝</div>
+                    <h4>존중</h4>
+                    <p>팀원 간의 상호 존중과 신뢰</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>XP의 12가지 핵심 프랙티스</h2>
+            <div class="practices-grid">
+                <div class="practice-card">
+                    <h4>계획 게임</h4>
+                    <p>고객과 개발자가 함께 범위, 우선순위, 일정을 결정하는 협력적 계획 수립</p>
+                </div>
+                <div class="practice-card">
+                    <h4>소규모 릴리즈</h4>
+                    <p>작고 빈번한 릴리즈를 통해 빠른 피드백과 가치 제공</p>
+                </div>
+                <div class="practice-card">
+                    <h4>메타포</h4>
+                    <p>시스템을 이해하기 쉬운 은유로 표현하여 공통 이해 형성</p>
+                </div>
+                <div class="practice-card">
+                    <h4>단순한 설계</h4>
+                    <p>현재 필요한 기능만 구현하고 과도한 설계 피하기</p>
+                </div>
+                <div class="practice-card">
+                    <h4>테스트 주도 개발</h4>
+                    <p>테스트를 먼저 작성하고 코드를 구현하는 TDD 프랙티스</p>
+                </div>
+                <div class="practice-card">
+                    <h4>리팩터링</h4>
+                    <p>기능 변경 없이 코드 구조를 지속적으로 개선</p>
+                </div>
+                <div class="practice-card">
+                    <h4>페어 프로그래밍</h4>
+                    <p>두 명의 개발자가 하나의 컴퓨터에서 함께 코드 작성</p>
+                </div>
+                <div class="practice-card">
+                    <h4>집단 코드 소유권</h4>
+                    <p>모든 팀원이 모든 코드를 수정할 수 있는 권한과 책임</p>
+                </div>
+                <div class="practice-card">
+                    <h4>지속적 통합</h4>
+                    <p>코드 변경을 자주 통합하고 자동화된 빌드/테스트 실행</p>
+                </div>
+                <div class="practice-card">
+                    <h4>40시간 근무</h4>
+                    <p>지속 가능한 개발 페이스 유지로 번아웃 방지</p>
+                </div>
+                <div class="practice-card">
+                    <h4>현장 고객</h4>
+                    <p>개발팀과 함께 일하며 실시간으로 요구사항 제공</p>
+                </div>
+                <div class="practice-card">
+                    <h4>코딩 표준</h4>
+                    <p>일관된 코딩 스타일로 가독성과 유지보수성 향상</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>페어 프로그래밍</h2>
+            <p>XP의 가장 특징적인 프랙티스 중 하나인 페어 프로그래밍은 두 명의 개발자가 하나의 워크스테이션에서 함께 작업하는 방식입니다.</p>
+            
+            <div class="pair-programming">
+                <div class="pair-setup">
+                    <div class="programmer">드라이버<br>(Driver)</div>
+                    <div class="connection"></div>
+                    <div class="programmer">내비게이터<br>(Navigator)</div>
+                </div>
+                
+                <h3>역할 분담</h3>
+                <p><strong>드라이버:</strong> 키보드를 직접 조작하며 코드를 작성합니다.</p>
+                <p><strong>내비게이터:</strong> 전체적인 방향을 제시하고 코드를 검토합니다.</p>
+                
+                <h3>페어 프로그래밍의 이점</h3>
+                <ul>
+                    <li>실시간 코드 리뷰로 품질 향상</li>
+                    <li>지식 공유와 학습 촉진</li>
+                    <li>설계 결정에 대한 토론과 개선</li>
+                    <li>버그 감소와 빠른 문제 해결</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>테스트 주도 개발 (TDD)</h2>
+            <p>TDD는 XP의 핵심 프랙티스로, 실패하는 테스트를 먼저 작성하고, 테스트를 통과하는 최소한의 코드를 구현한 후, 리팩터링을 하는 3단계 사이클을 반복합니다.</p>
+            
+            <div class="tdd-cycle">
+                <div class="tdd-step" style="background: linear-gradient(135deg, #ff6b6b, #ee5a52);">
+                    <h5>Red</h5>
+                    <p>실패하는 테스트 작성</p>
+                </div>
+                <div class="tdd-arrow">→</div>
+                <div class="tdd-step" style="background: linear-gradient(135deg, #00b894, #55efc4);">
+                    <h5>Green</h5>
+                    <p>테스트를 통과하는 코드 구현</p>
+                </div>
+                <div class="tdd-arrow">→</div>
+                <div class="tdd-step" style="background: linear-gradient(135deg, #0984e3, #74b9ff);">
+                    <h5>Refactor</h5>
+                    <p>코드 개선 및 최적화</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>리팩터링과 코드 품질</h2>
+            <div class="refactoring-visual">
+                <h3>지속적인 코드 개선</h3>
+                <p>XP에서는 리팩터링을 통해 코드의 품질을 지속적으로 향상시킵니다.</p>
+                
+                <div class="code-quality">
+                    <div class="quality-metric">
+                        <div class="metric-value">95%</div>
+                        <p>테스트 커버리지</p>
+                    </div>
+                    <div class="quality-metric">
+                        <div class="metric-value">2.1</div>
+                        <p>순환 복잡도</p>
+                    </div>
+                    <div class="quality-metric">
+                        <div class="metric-value">0.3%</div>
+                        <p>버그 발생률</p>
+                    </div>
+                    <div class="quality-metric">
+                        <div class="metric-value">A+</div>
+                        <p>코드 품질 등급</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>XP의 이점</h2>
+            <div class="benefits-container">
+                <div class="benefit-item">
+                    <h4>높은 코드 품질</h4>
+                    <p>TDD, 페어 프로그래밍, 지속적인 리팩터링을 통해 높은 품질의 코드를 유지합니다.</p>
+                </div>
+                <div class="benefit-item">
+                    <h4>빠른 피드백</h4>
+                    <p>소규모 릴리즈와 지속적 통합을 통해 빠른 피드백 루프를 구축합니다.</p>
+                </div>
+                <div class="benefit-item">
+                    <h4>변화 대응력</h4>
+                    <p>단순한 설계와 테스트로 보호되는 코드로 변화에 유연하게 대응합니다.</p>
+                </div>
+                <div class="benefit-item">
+                    <h4>팀 협업 강화</h4>
+                    <p>페어 프로그래밍과 집단 코드 소유권으로 팀의 협업과 지식 공유가 활발해집니다.</p>
+                </div>
+                <div class="benefit-item">
+                    <h4>버그 감소</h4>
+                    <p>테스트 우선 접근법과 지속적인 코드 검토로 버그 발생률을 현저히 낮춥니다.</p>
+                </div>
+                <div class="benefit-item">
+                    <h4>개발자 만족도</h4>
+                    <p>지속 가능한 개발 페이스와 기술적 우수성 추구로 개발자 만족도가 향상됩니다.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>XP 도입 시 고려사항</h2>
+            <h3>성공 요인</h3>
+            <p>XP의 성공적인 도입을 위해서는 팀원들의 기술적 역량과 협업 의지, 고객의 적극적인 참여가 필요합니다. 또한 조직의 문화적 변화와 지속적인 학습에 대한 투자가 중요합니다.</p>
+            
+            <h3>주의사항</h3>
+            <p>페어 프로그래밍은 초기에 생산성 저하를 가져올 수 있으며, TDD는 학습 곡선이 있어 충분한 교육과 연습이 필요합니다. 모든 프랙티스를 한 번에 도입하기보다는 점진적으로 적용하는 것이 바람직합니다.</p>
+        </div>
+        
+        <footer>
+            <p>XP는 기술적 우수성과 팀워크를 통해 지속 가능하고 품질 높은 소프트웨어 개발을 실현하는 강력한 방법론입니다.</p>
+        </footer>
+    </div>
+    
+    <script>
+        let scene, camera, renderer, xpElements = [], testCycles = [];
+        
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            
+            const container = document.getElementById('three-container');
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            renderer.setClearColor(0xe17055);
+            container.appendChild(renderer.domElement);
+            
+            // Create TDD cycle visualization
+            const tddColors = [0xff6b6b, 0x00b894, 0x0984e3]; // Red, Green, Blue
+            const tddLabels = ['RED', 'GREEN', 'REFACTOR'];
+            const tddRadius = 3;
+            
+            for (let i = 0; i < 3; i++) {
+                const angle = (i / 3) * Math.PI * 2 - Math.PI / 2;
+                const geometry = new THREE.CylinderGeometry(0.8, 0.8, 0.3, 16);
+                const material = new THREE.MeshPhongMaterial({ 
+                    color: tddColors[i],
+                    emissive: tddColors[i],
+                    emissiveIntensity: 0.1
+                });
+                const cycle = new THREE.Mesh(geometry, material);
+                
+                cycle.position.x = Math.cos(angle) * tddRadius;
+                cycle.position.z = Math.sin(angle) * tddRadius;
+                cycle.position.y = 0;
+                
+                cycle.userData = {
+                    angle: angle,
+                    originalY: 0,
+                    phase: i,
+                    label: tddLabels[i]
+                };
+                
+                scene.add(cycle);
+                testCycles.push(cycle);
+            }
+            
+            // Create connecting arrows for TDD cycle
+            testCycles.forEach((cycle, index) => {
+                const nextIndex = (index + 1) % testCycles.length;
+                const currentPos = cycle.position;
+                const nextPos = testCycles[nextIndex].position;
+                
+                const direction = new THREE.Vector3().subVectors(nextPos, currentPos);
+                const arrowGeometry = new THREE.ConeGeometry(0.2, 0.8, 8);
+                const arrowMaterial = new THREE.MeshPhongMaterial({ 
+                    color: 0xffffff,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const arrow = new THREE.Mesh(arrowGeometry, arrowMaterial);
+                
+                arrow.position.copy(currentPos);
+                arrow.position.add(direction.clone().normalize().multiplyScalar(1.2));
+                arrow.lookAt(nextPos);
+                arrow.rotateX(Math.PI / 2);
+                
+                scene.add(arrow);
+            });
+            
+            // Create pair programming representation
+            const programmer1Geometry = new THREE.SphereGeometry(0.5, 16, 16);
+            const programmer1Material = new THREE.MeshPhongMaterial({ 
+                color: 0xfd79a8,
+                emissive: 0xfd79a8,
+                emissiveIntensity: 0.1
+            });
+            const programmer1 = new THREE.Mesh(programmer1Geometry, programmer1Material);
+            programmer1.position.set(-2, 2, 2);
+            scene.add(programmer1);
+            
+            const programmer2Geometry = new THREE.SphereGeometry(0.5, 16, 16);
+            const programmer2Material = new THREE.MeshPhongMaterial({ 
+                color: 0x6c5ce7,
+                emissive: 0x6c5ce7,
+                emissiveIntensity: 0.1
+            });
+            const programmer2 = new THREE.Mesh(programmer2Geometry, programmer2Material);
+            programmer2.position.set(-0.5, 2, 2);
+            scene.add(programmer2);
+            
+            // Connection line between pair programmers
+            const lineGeometry = new THREE.BufferGeometry();
+            lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute([
+                programmer1.position.x, programmer1.position.y, programmer1.position.z,
+                programmer2.position.x, programmer2.position.y, programmer2.position.z
+            ], 3));
+            
+            const lineMaterial = new THREE.LineBasicMaterial({ 
+                color: 0xffffff,
+                linewidth: 3
+            });
+            const connection = new THREE.Line(lineGeometry, lineMaterial);
+            scene.add(connection);
+            
+            // Create refactoring particles
+            for (let i = 0; i < 40; i++) {
+                const particleGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+                const particleMaterial = new THREE.MeshBasicMaterial({ 
+                    color: Math.random() * 0xffffff,
+                    transparent: true,
+                    opacity: 0.7
+                });
+                const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+                
+                particle.position.x = (Math.random() - 0.5) * 12;
+                particle.position.y = (Math.random() - 0.5) * 8;
+                particle.position.z = (Math.random() - 0.5) * 12;
+                
+                particle.userData = {
+                    velocity: new THREE.Vector3(
+                        (Math.random() - 0.5) * 0.03,
+                        (Math.random() - 0.5) * 0.03,
+                        (Math.random() - 0.5) * 0.03
+                    ),
+                    rotationSpeed: Math.random() * 0.1
+                };
+                
+                scene.add(particle);
+                xpElements.push(particle);
+            }
+            
+            // Create continuous integration pipeline
+            const pipelineGeometry = new THREE.CylinderGeometry(0.1, 0.1, 10, 16);
+            const pipelineMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0xa29bfe,
+                transparent: true,
+                opacity: 0.6
+            });
+            const pipeline = new THREE.Mesh(pipelineGeometry, pipelineMaterial);
+            pipeline.rotation.z = Math.PI / 2;
+            pipeline.position.set(0, -2, 0);
+            scene.add(pipeline);
+            
+            // Create code commits moving through pipeline
+            for (let i = 0; i < 8; i++) {
+                const commitGeometry = new THREE.SphereGeometry(0.15, 12, 12);
+                const commitMaterial = new THREE.MeshPhongMaterial({ 
+                    color: 0x00cec9
+                });
+                const commit = new THREE.Mesh(commitGeometry, commitMaterial);
+                
+                commit.position.set(-5 + i * 1.2, -2, 0);
+                commit.userData = {
+                    speed: 0.02 + Math.random() * 0.02,
+                    originalX: commit.position.x
+                };
+                
+                scene.add(commit);
+            }
+            
+            // Create XP values floating around
+            const valuePositions = [
+                { x: 4, y: 3, z: 1 },
+                { x: -4, y: 3, z: -1 },
+                { x: 2, y: -3, z: 3 },
+                { x: -2, y: -3, z: -3 },
+                { x: 0, y: 4, z: 0 }
+            ];
+            
+            const valueColors = [0xe17055, 0xfd79a8, 0x6c5ce7, 0x00cec9, 0xfeca57];
+            
+            valuePositions.forEach((pos, index) => {
+                const valueGeometry = new THREE.OctahedronGeometry(0.3);
+                const valueMaterial = new THREE.MeshPhongMaterial({ 
+                    color: valueColors[index],
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const value = new THREE.Mesh(valueGeometry, valueMaterial);
+                
+                value.position.set(pos.x, pos.y, pos.z);
+                value.userData = {
+                    originalPosition: value.position.clone(),
+                    floatSpeed: 0.8 + Math.random() * 0.4
+                };
+                
+                scene.add(value);
+            });
+            
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(10, 10, 5);
+            scene.add(directionalLight);
+            
+            const pointLight1 = new THREE.PointLight(0xe17055, 0.8, 100);
+            pointLight1.position.set(0, 5, 0);
+            scene.add(pointLight1);
+            
+            const pointLight2 = new THREE.PointLight(0x6c5ce7, 0.6, 100);
+            pointLight2.position.set(0, -5, 5);
+            scene.add(pointLight2);
+            
+            camera.position.set(0, 3, 10);
+            camera.lookAt(0, 0, 0);
+            
+            animate();
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const time = Date.now() * 0.001;
+            
+            // Animate TDD cycle
+            testCycles.forEach((cycle, index) => {
+                const newAngle = cycle.userData.angle + time * 0.3;
+                cycle.position.x = Math.cos(newAngle) * 3;
+                cycle.position.z = Math.sin(newAngle) * 3;
+                cycle.position.y = cycle.userData.originalY + Math.sin(time * 2 + index * 0.8) * 0.3;
+                cycle.rotation.y = time * 2;
+            });
+            
+            // Animate pair programmers (synchronized movement)
+            scene.children.forEach(child => {
+                if (child.geometry instanceof THREE.SphereGeometry && child.position.y > 1.5) {
+                    child.position.y = 2 + Math.sin(time * 2) * 0.2;
+                    child.rotation.y = time * 1.5;
+                }
+            });
+            
+            // Animate refactoring particles
+            xpElements.forEach(particle => {
+                particle.position.add(particle.userData.velocity);
+                particle.rotation.x += particle.userData.rotationSpeed;
+                particle.rotation.y += particle.userData.rotationSpeed;
+                particle.rotation.z += particle.userData.rotationSpeed;
+                
+                // Reset particles that move too far
+                if (particle.position.length() > 8) {
+                    particle.position.normalize().multiplyScalar(2);
+                    // Change color to represent code improvement
+                    particle.material.color.setHSL(Math.random() * 0.3 + 0.5, 0.8, 0.6);
+                }
+            });
+            
+            // Animate CI/CD pipeline commits
+            scene.children.forEach(child => {
+                if (child.userData.speed && child.material.color.getHex() === 0x00cec9) {
+                    child.position.x += child.userData.speed;
+                    child.rotation.y += 0.1;
+                    
+                    // Reset commits that reach the end
+                    if (child.position.x > 5) {
+                        child.position.x = -5;
+                        // Flash to represent successful integration
+                        child.material.emissive.setHex(0x00b894);
+                        setTimeout(() => {
+                            child.material.emissive.setHex(0x000000);
+                        }, 200);
+                    }
+                }
+            });
+            
+            // Animate XP values floating
+            scene.children.forEach(child => {
+                if (child.geometry instanceof THREE.OctahedronGeometry && child.userData.originalPosition) {
+                    const floatOffset = Math.sin(time * child.userData.floatSpeed) * 0.5;
+                    child.position.y = child.userData.originalPosition.y + floatOffset;
+                    child.rotation.x = time * 0.8;
+                    child.rotation.y = time * 1.2;
+                }
+            });
+            
+            // Camera movement
+            const radius = 10;
+            camera.position.x = Math.sin(time * 0.15) * radius;
+            camera.position.z = Math.cos(time * 0.15) * radius;
+            camera.position.y = 3 + Math.sin(time * 0.08) * 2;
+            camera.lookAt(0, 0, 0);
+            
+            renderer.render(scene, camera);
+        }
+        
+        window.addEventListener('resize', () => {
+            const container = document.getElementById('three-container');
+            camera.aspect = container.offsetWidth / container.offsetHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+        });
+        
+        init3D();
+    </script>
+</body>
+</html>

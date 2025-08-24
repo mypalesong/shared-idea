@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submarine Navigation Controller</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background: radial-gradient(ellipse at center, #001122 0%, #002244 30%, #000811 100%);
+            height: 100vh;
+            overflow: hidden;
+            color: #00ffff;
+            position: relative;
+        }
+
+        .submarine-container {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            grid-template-rows: 90px 1fr 110px;
+            height: 100vh;
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .header-panel {
+            grid-column: 1 / 4;
+            grid-row: 1;
+            background: linear-gradient(135deg, #0077be, #005577);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0, 119, 190, 0.4);
+            border: 2px solid #00ffff;
+        }
+
+        .left-panel {
+            grid-column: 1;
+            grid-row: 2;
+            background: linear-gradient(145deg, #001122, #002244);
+            border: 2px solid #00ffff;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+
+        .center-display {
+            grid-column: 2;
+            grid-row: 2;
+            background: linear-gradient(135deg, #000811, #001122);
+            border: 3px solid #ffa500;
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        }
+
+        .right-panel {
+            grid-column: 3;
+            grid-row: 2;
+            background: linear-gradient(145deg, #001122, #002244);
+            border: 2px solid #ff6347;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: inset 0 0 20px rgba(255, 99, 71, 0.2);
+        }
+
+        .footer-panel {
+            grid-column: 1 / 4;
+            grid-row: 3;
+            background: linear-gradient(135deg, #334455, #223344);
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            color: white;
+            box-shadow: 0 5px 20px rgba(34, 51, 68, 0.5);
+        }
+
+        .depth-gauge {
+            background: rgba(0, 34, 68, 0.8);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .depth-title {
+            font-size: 14px;
+            color: #00ffff;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .depth-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ffa500;
+            margin: 10px 0;
+        }
+
+        .depth-bar {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(to bottom, #87ceeb 0%, #4682b4 30%, #191970 70%, #000080 100%);
+            border-radius: 10px;
+            position: relative;
+            margin: 15px 0;
+            border: 2px solid #00ffff;
+        }
+
+        .depth-indicator {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 3px;
+            background: #ff0000;
+            box-shadow: 0 0 10px #ff0000;
+            top: 45%;
+            transition: all 0.3s ease;
+        }
+
+        .sonar-display {
+            flex: 1;
+            background: radial-gradient(circle at center, #001122 0%, #000811 100%);
+            margin: 20px;
+            border-radius: 50%;
+            position: relative;
+            border: 3px solid #00ffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sonar-grid {
+            width: 90%;
+            height: 90%;
+            border-radius: 50%;
+            position: relative;
+            background: 
+                radial-gradient(circle at 50% 50%, transparent 15%, rgba(0, 255, 255, 0.1) 16%, transparent 17%),
+                radial-gradient(circle at 50% 50%, transparent 30%, rgba(0, 255, 255, 0.1) 31%, transparent 32%),
+                radial-gradient(circle at 50% 50%, transparent 45%, rgba(0, 255, 255, 0.1) 46%, transparent 47%);
+        }
+
+        .sonar-grid::before,
+        .sonar-grid::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .sonar-grid::before {
+            width: 2px;
+            height: 100%;
+            background: rgba(0, 255, 255, 0.3);
+        }
+
+        .sonar-grid::after {
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 255, 255, 0.3);
+        }
+
+        .sonar-sweep {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 45%;
+            background: linear-gradient(to top, #00ffff, transparent);
+            transform-origin: bottom;
+            animation: sonarSweep 4s linear infinite;
+        }
+
+        @keyframes sonarSweep {
+            0% { transform: translate(-50%, 0) rotate(0deg); }
+            100% { transform: translate(-50%, 0) rotate(360deg); }
+        }
+
+        .sonar-contact {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #ff0000;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ff0000;
+            animation: contactPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes contactPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.5); }
+        }
+
+        .navigation-controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .nav-control {
+            background: rgba(0, 34, 68, 0.8);
+            border: 2px solid #00ffff;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-control:hover {
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .nav-label {
+            font-size: 12px;
+            color: #87ceeb;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .nav-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00ffff;
+        }
+
+        .compass-display {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #000811, #001122);
+            border: 3px solid #ffa500;
+            position: relative;
+            margin: 20px auto;
+        }
+
+        .compass-needle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 3px;
+            height: 60px;
+            background: linear-gradient(to top, #ff0000, #ffffff);
+            transform-origin: bottom center;
+            transform: translate(-50%, 0) rotate(45deg);
+            border-radius: 2px;
+            animation: compassFlutter 6s ease-in-out infinite;
+        }
+
+        @keyframes compassFlutter {
+            0%, 100% { transform: translate(-50%, 0) rotate(45deg); }
+            25% { transform: translate(-50%, 0) rotate(50deg); }
+            75% { transform: translate(-50%, 0) rotate(40deg); }
+        }
+
+        .compass-degrees {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffa500;
+            text-align: center;
+        }
+
+        .system-status {
+            background: rgba(0, 34, 68, 0.8);
+            border: 2px solid #87ceeb;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .status-title {
+            font-size: 14px;
+            color: #87ceeb;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .status-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(135, 206, 235, 0.2);
+            font-size: 12px;
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-indicator.green {
+            background: #00ff00;
+            box-shadow: 0 0 8px #00ff00;
+        }
+
+        .status-indicator.yellow {
+            background: #ffff00;
+            box-shadow: 0 0 8px #ffff00;
+        }
+
+        .status-indicator.red {
+            background: #ff0000;
+            box-shadow: 0 0 8px #ff0000;
+            animation: criticalPulse 1s infinite;
+        }
+
+        @keyframes criticalPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .ballast-controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .ballast-tank {
+            background: rgba(0, 34, 68, 0.8);
+            border: 2px solid #ff6347;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ballast-tank:hover {
+            box-shadow: 0 0 15px rgba(255, 99, 71, 0.5);
+        }
+
+        .tank-label {
+            font-size: 10px;
+            color: #ff6347;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .tank-level {
+            font-size: 16px;
+            font-weight: bold;
+            color: #87ceeb;
+        }
+
+        .tank-bar {
+            width: 100%;
+            height: 8px;
+            background: #001122;
+            border-radius: 4px;
+            margin: 8px 0;
+            overflow: hidden;
+        }
+
+        .tank-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #ffff00, #ff0000);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .submarine-button {
+            background: linear-gradient(145deg, #001122, #002244);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            padding: 12px 18px;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: bold;
+            color: #00ffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.2);
+        }
+
+        .submarine-button:hover {
+            background: linear-gradient(145deg, #00ffff, #0088aa);
+            color: #001122;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 255, 255, 0.4);
+        }
+
+        .submarine-button:active {
+            transform: translateY(0);
+        }
+
+        .submarine-button.warning {
+            border-color: #ffa500;
+            color: #ffa500;
+        }
+
+        .submarine-button.danger {
+            border-color: #ff6347;
+            color: #ff6347;
+        }
+
+        .submarine-button.active {
+            background: linear-gradient(145deg, #00ff00, #00aa00);
+            color: #001122;
+        }
+
+        .periscope-view {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 120px;
+            height: 80px;
+            background: linear-gradient(135deg, #87ceeb 0%, #4682b4 100%);
+            border: 3px solid #ffa500;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .horizon-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #ffffff;
+            transform: translateY(-50%);
+        }
+
+        .periscope-target {
+            position: absolute;
+            top: 30%;
+            left: 60%;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ff0000;
+            border-radius: 50%;
+            animation: targetBlink 1.5s infinite;
+        }
+
+        @keyframes targetBlink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        .torpedo-tubes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .torpedo-tube {
+            background: rgba(0, 34, 68, 0.8);
+            border: 2px solid #ff6347;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .torpedo-tube:hover {
+            box-shadow: 0 0 15px rgba(255, 99, 71, 0.5);
+        }
+
+        .tube-label {
+            font-size: 10px;
+            color: #ff6347;
+            margin-bottom: 5px;
+        }
+
+        .tube-status {
+            font-size: 14px;
+            font-weight: bold;
+            color: #00ff00;
+        }
+
+        .tube-status.empty {
+            color: #ff0000;
+        }
+
+        .coordinates-display {
+            background: rgba(0, 34, 68, 0.9);
+            border: 2px solid #ffa500;
+            border-radius: 10px;
+            padding: 15px;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 12px;
+        }
+
+        .coord-title {
+            color: #ffa500;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .coord-value {
+            color: #00ffff;
+            margin-bottom: 4px;
+        }
+
+        .emergency-surface {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(145deg, #ff0000, #cc0000);
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .emergency-surface:hover {
+            transform: translateX(-50%) scale(1.1);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 1);
+        }
+    </style>
+</head>
+<body>
+    <div class="submarine-container">
+        <!-- Header Panel -->
+        <div class="header-panel">
+            <div>
+                <h2>USS NAUTILUS - SUBMARINE COMMAND</h2>
+                <div style="font-size: 14px; opacity: 0.9;">SSN-571 | Deep Sea Operations</div>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 18px;">Current Depth</div>
+                <div style="font-size: 28px; font-weight: bold;" id="header-depth">-125m</div>
+            </div>
+        </div>
+
+        <!-- Left Panel - Navigation & Controls -->
+        <div class="left-panel">
+            <div style="text-align: center; color: #00ffff; font-size: 16px; margin-bottom: 20px; font-weight: bold;">NAVIGATION</div>
+            
+            <div class="depth-gauge">
+                <div class="depth-title">Depth Control</div>
+                <div class="depth-value" id="depth-value">125</div>
+                <div style="font-size: 12px; color: #87ceeb;">meters</div>
+                <div class="depth-bar">
+                    <div class="depth-indicator" id="depth-indicator"></div>
+                </div>
+            </div>
+
+            <div class="compass-display">
+                <div class="compass-needle" id="compass-needle"></div>
+                <div class="compass-degrees">
+                    <div id="heading-value">045°</div>
+                    <div style="font-size: 10px; color: #87ceeb;">NE</div>
+                </div>
+            </div>
+
+            <div class="navigation-controls">
+                <div class="nav-control" onclick="adjustControl('speed')">
+                    <div class="nav-label">Speed</div>
+                    <div class="nav-value" id="speed-value">12</div>
+                    <div style="font-size: 10px; color: #87ceeb;">knots</div>
+                </div>
+                
+                <div class="nav-control" onclick="adjustControl('bearing')">
+                    <div class="nav-label">Bearing</div>
+                    <div class="nav-value" id="bearing-value">045°</div>
+                </div>
+                
+                <div class="nav-control" onclick="adjustControl('trim')">
+                    <div class="nav-label">Trim</div>
+                    <div class="nav-value" id="trim-value">0.0°</div>
+                </div>
+                
+                <div class="nav-control" onclick="adjustControl('rudder')">
+                    <div class="nav-label">Rudder</div>
+                    <div class="nav-value" id="rudder-value">0°</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Display - Sonar -->
+        <div class="center-display">
+            <div class="sonar-display">
+                <div class="sonar-grid">
+                    <div class="sonar-sweep"></div>
+                    <!-- Sonar Contacts -->
+                    <div class="sonar-contact" style="top: 30%; left: 70%;" title="Surface Vessel"></div>
+                    <div class="sonar-contact" style="top: 60%; left: 40%; background: #ffff00; box-shadow: 0 0 10px #ffff00;" title="Unknown Contact"></div>
+                    <div class="sonar-contact" style="top: 80%; left: 80%; background: #00ff00; box-shadow: 0 0 10px #00ff00;" title="Whale"></div>
+                </div>
+            </div>
+            
+            <div class="coordinates-display">
+                <div class="coord-title">Current Position</div>
+                <div class="coord-value">Lat: 35°42'N</div>
+                <div class="coord-value">Lon: 129°15'E</div>
+                <div class="coord-value">Course: 045°</div>
+                <div class="coord-value">Speed: 12 knots</div>
+            </div>
+
+            <div class="periscope-view">
+                <div class="horizon-line"></div>
+                <div class="periscope-target"></div>
+                <div style="position: absolute; bottom: 5px; left: 5px; font-size: 8px; color: white;">PERISCOPE VIEW</div>
+            </div>
+
+            <div class="emergency-surface" onclick="emergencySurface()">
+                EMERGENCY<br>SURFACE
+            </div>
+        </div>
+
+        <!-- Right Panel - Systems Status -->
+        <div class="right-panel">
+            <div style="text-align: center; color: #ff6347; font-size: 16px; margin-bottom: 20px; font-weight: bold;">SYSTEMS</div>
+            
+            <div class="system-status">
+                <div class="status-title">Core Systems</div>
+                <ul class="status-list">
+                    <li class="status-item">
+                        <span>Nuclear Reactor</span>
+                        <span class="status-indicator green"></span>
+                    </li>
+                    <li class="status-item">
+                        <span>Life Support</span>
+                        <span class="status-indicator green"></span>
+                    </li>
+                    <li class="status-item">
+                        <span>Sonar Array</span>
+                        <span class="status-indicator green"></span>
+                    </li>
+                    <li class="status-item">
+                        <span>Navigation</span>
+                        <span class="status-indicator yellow"></span>
+                    </li>
+                    <li class="status-item">
+                        <span>Communications</span>
+                        <span class="status-indicator red"></span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="system-status">
+                <div class="status-title">Environmental</div>
+                <ul class="status-list">
+                    <li class="status-item">
+                        <span>Hull Pressure</span>
+                        <span style="color: #00ffff; font-size: 11px;">2.8 MPa</span>
+                    </li>
+                    <li class="status-item">
+                        <span>Water Temp</span>
+                        <span style="color: #87ceeb; font-size: 11px;">4.2°C</span>
+                    </li>
+                    <li class="status-item">
+                        <span>Salinity</span>
+                        <span style="color: #87ceeb; font-size: 11px;">3.5%</span>
+                    </li>
+                    <li class="status-item">
+                        <span>Current</span>
+                        <span style="color: #87ceeb; font-size: 11px;">1.2 kts E</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div style="margin: 20px 0;">
+                <div style="font-size: 14px; color: #ff6347; margin-bottom: 10px; text-align: center;">Ballast Tanks</div>
+                <div class="ballast-controls">
+                    <div class="ballast-tank" onclick="controlBallast('main')">
+                        <div class="tank-label">Main</div>
+                        <div class="tank-level">45%</div>
+                        <div class="tank-bar">
+                            <div class="tank-fill" style="width: 45%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="ballast-tank" onclick="controlBallast('auxiliary')">
+                        <div class="tank-label">Auxiliary</div>
+                        <div class="tank-level">30%</div>
+                        <div class="tank-bar">
+                            <div class="tank-fill" style="width: 30%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="ballast-tank" onclick="controlBallast('trim')">
+                        <div class="tank-label">Trim Forward</div>
+                        <div class="tank-level">60%</div>
+                        <div class="tank-bar">
+                            <div class="tank-fill" style="width: 60%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="ballast-tank" onclick="controlBallast('trim-aft')">
+                        <div class="tank-label">Trim Aft</div>
+                        <div class="tank-level">55%</div>
+                        <div class="tank-bar">
+                            <div class="tank-fill" style="width: 55%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 15px;">
+                <div style="font-size: 14px; color: #ff6347; margin-bottom: 10px; text-align: center;">Torpedo Tubes</div>
+                <div class="torpedo-tubes">
+                    <div class="torpedo-tube" onclick="manageTorpedo('tube1')">
+                        <div class="tube-label">Tube 1</div>
+                        <div class="tube-status">READY</div>
+                    </div>
+                    
+                    <div class="torpedo-tube" onclick="manageTorpedo('tube2')">
+                        <div class="tube-label">Tube 2</div>
+                        <div class="tube-status">READY</div>
+                    </div>
+                    
+                    <div class="torpedo-tube" onclick="manageTorpedo('tube3')">
+                        <div class="tube-label">Tube 3</div>
+                        <div class="tube-status empty">EMPTY</div>
+                    </div>
+                    
+                    <div class="torpedo-tube" onclick="manageTorpedo('tube4')">
+                        <div class="tube-label">Tube 4</div>
+                        <div class="tube-status">READY</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Panel -->
+        <div class="footer-panel">
+            <button class="submarine-button" onclick="systemCommand('silent-running')">Silent Running</button>
+            <button class="submarine-button warning" onclick="systemCommand('surface')">Surface</button>
+            <button class="submarine-button" onclick="systemCommand('dive')">Dive</button>
+            <button class="submarine-button warning" onclick="systemCommand('periscope')">Periscope</button>
+            <button class="submarine-button danger" onclick="systemCommand('battle-stations')">Battle Stations</button>
+            <button class="submarine-button" onclick="systemCommand('sonar-ping')">Active Ping</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let submarineData = {
+                depth: 125,
+                heading: 45,
+                speed: 12,
+                bearing: 45,
+                trim: 0,
+                rudder: 0,
+                silentRunning: false,
+                battleStations: false
+            };
+
+            // Navigation Control Adjustments
+            window.adjustControl = function(control) {
+                const controlElement = document.querySelector(`[onclick="adjustControl('${control}')"]`);
+                controlElement.style.transform = 'scale(0.95)';
+                
+                switch(control) {
+                    case 'speed':
+                        submarineData.speed = Math.max(0, Math.min(25, submarineData.speed + (Math.random() > 0.5 ? 2 : -2)));
+                        document.getElementById('speed-value').textContent = submarineData.speed;
+                        break;
+                    case 'bearing':
+                        submarineData.bearing = (submarineData.bearing + (Math.random() > 0.5 ? 10 : -10) + 360) % 360;
+                        submarineData.heading = submarineData.bearing;
+                        document.getElementById('bearing-value').textContent = String(submarineData.bearing).padStart(3, '0') + '°';
+                        document.getElementById('heading-value').textContent = String(submarineData.heading).padStart(3, '0') + '°';
+                        updateCompass();
+                        break;
+                    case 'trim':
+                        submarineData.trim += (Math.random() > 0.5 ? 0.5 : -0.5);
+                        submarineData.trim = Math.max(-5, Math.min(5, submarineData.trim));
+                        document.getElementById('trim-value').textContent = submarineData.trim.toFixed(1) + '°';
+                        break;
+                    case 'rudder':
+                        submarineData.rudder = Math.max(-30, Math.min(30, submarineData.rudder + (Math.random() > 0.5 ? 5 : -5)));
+                        document.getElementById('rudder-value').textContent = submarineData.rudder + '°';
+                        break;
+                }
+                
+                setTimeout(() => {
+                    controlElement.style.transform = 'scale(1)';
+                }, 200);
+            };
+
+            // Ballast Tank Control
+            window.controlBallast = function(tank) {
+                const tankElement = document.querySelector(`[onclick="controlBallast('${tank}')"]`);
+                const fillElement = tankElement.querySelector('.tank-fill');
+                const levelElement = tankElement.querySelector('.tank-level');
+                
+                tankElement.style.transform = 'scale(0.95)';
+                
+                let currentLevel = parseInt(levelElement.textContent);
+                let newLevel = Math.max(0, Math.min(100, currentLevel + (Math.random() > 0.5 ? 10 : -10)));
+                
+                levelElement.textContent = newLevel + '%';
+                fillElement.style.width = newLevel + '%';
+                
+                // Update depth based on ballast changes
+                if (tank === 'main' || tank === 'auxiliary') {
+                    submarineData.depth += (newLevel - currentLevel) * 0.5;
+                    submarineData.depth = Math.max(0, Math.min(400, submarineData.depth));
+                    updateDepthDisplay();
+                }
+                
+                setTimeout(() => {
+                    tankElement.style.transform = 'scale(1)';
+                }, 200);
+            };
+
+            // Torpedo Management
+            window.manageTorpedo = function(tube) {
+                const tubeElement = document.querySelector(`[onclick="manageTorpedo('${tube}')"]`);
+                const statusElement = tubeElement.querySelector('.tube-status');
+                
+                tubeElement.style.transform = 'scale(0.95)';
+                
+                if (statusElement.textContent === 'READY') {
+                    statusElement.textContent = 'LOADING';
+                    statusElement.style.color = '#ffff00';
+                    
+                    setTimeout(() => {
+                        statusElement.textContent = 'READY';
+                        statusElement.style.color = '#00ff00';
+                    }, 2000);
+                } else if (statusElement.textContent === 'EMPTY') {
+                    statusElement.textContent = 'LOADING';
+                    statusElement.style.color = '#ffff00';
+                    
+                    setTimeout(() => {
+                        statusElement.textContent = 'READY';
+                        statusElement.style.color = '#00ff00';
+                        statusElement.classList.remove('empty');
+                    }, 3000);
+                }
+                
+                setTimeout(() => {
+                    tubeElement.style.transform = 'scale(1)';
+                }, 200);
+            };
+
+            // System Commands
+            window.systemCommand = function(command) {
+                const button = document.querySelector(`[onclick="systemCommand('${command}')"]`);
+                const originalText = button.textContent;
+                
+                button.classList.add('active');
+                button.textContent = 'EXECUTING...';
+                
+                setTimeout(() => {
+                    button.classList.remove('active');
+                    button.textContent = originalText;
+                    
+                    switch(command) {
+                        case 'silent-running':
+                            submarineData.silentRunning = !submarineData.silentRunning;
+                            alert(submarineData.silentRunning ? 'Silent Running ENGAGED' : 'Silent Running DISENGAGED');
+                            break;
+                        case 'surface':
+                            submarineData.depth = Math.max(0, submarineData.depth - 50);
+                            updateDepthDisplay();
+                            alert('Surfacing initiated. Current depth: ' + submarineData.depth + 'm');
+                            break;
+                        case 'dive':
+                            submarineData.depth = Math.min(400, submarineData.depth + 30);
+                            updateDepthDisplay();
+                            alert('Diving initiated. Current depth: ' + submarineData.depth + 'm');
+                            break;
+                        case 'periscope':
+                            if (submarineData.depth <= 20) {
+                                alert('Periscope UP. Visual contact established.');
+                            } else {
+                                alert('Too deep for periscope operation. Current depth: ' + submarineData.depth + 'm');
+                            }
+                            break;
+                        case 'battle-stations':
+                            submarineData.battleStations = !submarineData.battleStations;
+                            alert(submarineData.battleStations ? 'Battle Stations! All hands to combat positions!' : 'Stand down from Battle Stations.');
+                            break;
+                        case 'sonar-ping':
+                            alert('Active sonar ping transmitted. Contacts updated.');
+                            // Add temporary sonar contact
+                            const sonarGrid = document.querySelector('.sonar-grid');
+                            const newContact = document.createElement('div');
+                            newContact.className = 'sonar-contact';
+                            newContact.style.top = Math.random() * 80 + 10 + '%';
+                            newContact.style.left = Math.random() * 80 + 10 + '%';
+                            newContact.style.background = '#ffff00';
+                            newContact.style.boxShadow = '0 0 10px #ffff00';
+                            sonarGrid.appendChild(newContact);
+                            
+                            setTimeout(() => {
+                                if (newContact.parentNode) {
+                                    newContact.parentNode.removeChild(newContact);
+                                }
+                            }, 10000);
+                            break;
+                    }
+                }, 1500);
+            };
+
+            // Emergency Surface
+            window.emergencySurface = function() {
+                if (confirm('EMERGENCY SURFACE PROTOCOL\\n\\nThis will rapidly surface the submarine!\\n\\nConfirm emergency surface?')) {
+                    submarineData.depth = 0;
+                    updateDepthDisplay();
+                    alert('EMERGENCY SURFACE INITIATED!\\nAll ballast tanks blown!\\nSurfacing at maximum rate!');
+                    
+                    // Visual feedback
+                    document.body.style.background = 'radial-gradient(ellipse at center, #ff0000 0%, #660000 30%, #000000 100%)';
+                    setTimeout(() => {
+                        document.body.style.background = '';
+                    }, 3000);
+                }
+            };
+
+            // Update Functions
+            function updateDepthDisplay() {
+                document.getElementById('depth-value').textContent = Math.round(submarineData.depth);
+                document.getElementById('header-depth').textContent = '-' + Math.round(submarineData.depth) + 'm';
+                
+                const depthPercentage = (submarineData.depth / 400) * 100;
+                const indicator = document.getElementById('depth-indicator');
+                indicator.style.top = Math.min(95, Math.max(5, depthPercentage)) + '%';
+                
+                // Color change based on depth
+                if (submarineData.depth > 300) {
+                    indicator.style.background = '#ff0000';
+                    indicator.style.boxShadow = '0 0 15px #ff0000';
+                } else if (submarineData.depth > 200) {
+                    indicator.style.background = '#ffa500';
+                    indicator.style.boxShadow = '0 0 15px #ffa500';
+                } else {
+                    indicator.style.background = '#00ff00';
+                    indicator.style.boxShadow = '0 0 15px #00ff00';
+                }
+            }
+
+            function updateCompass() {
+                const needle = document.getElementById('compass-needle');
+                const rotation = submarineData.heading;
+                needle.style.transform = `translate(-50%, 0) rotate(${rotation}deg)`;
+                
+                // Update direction indicator
+                const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+                const directionIndex = Math.round(submarineData.heading / 45) % 8;
+                const directionElement = document.querySelector('.compass-degrees div:last-child');
+                directionElement.textContent = directions[directionIndex];
+            }
+
+            // Real-time system updates
+            setInterval(() => {
+                // Simulate minor heading fluctuations
+                submarineData.heading += (Math.random() - 0.5) * 2;
+                submarineData.heading = (submarineData.heading + 360) % 360;
+                document.getElementById('heading-value').textContent = String(Math.round(submarineData.heading)).padStart(3, '0') + '°';
+                updateCompass();
+
+                // Simulate minor depth changes
+                submarineData.depth += (Math.random() - 0.5) * 1;
+                submarineData.depth = Math.max(0, Math.min(400, submarineData.depth));
+                updateDepthDisplay();
+
+                // Simulate speed variations
+                submarineData.speed += (Math.random() - 0.5) * 0.5;
+                submarineData.speed = Math.max(0, Math.min(25, submarineData.speed));
+                document.getElementById('speed-value').textContent = Math.round(submarineData.speed);
+            }, 3000);
+
+            // Initialize displays
+            updateDepthDisplay();
+            updateCompass();
+        });
+    </script>
+</body>
+</html>

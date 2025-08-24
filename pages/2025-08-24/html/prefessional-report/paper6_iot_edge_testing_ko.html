@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT 엣지 컴퓨팅 환경의 신뢰성 테스트: 분산 임베디드 시스템 검증 방법론</title>
+    <style>
+        @page { size: A4; margin: 20mm; }
+        body { font-family: 'Malgun Gothic', 'Nanum Gothic', sans-serif; line-height: 1.8; max-width: 210mm; margin: 0 auto; padding: 30px 40px; font-size: 11pt; background: white; }
+        h1 { font-size: 18pt; text-align: center; margin-bottom: 15px; font-weight: bold; padding: 0 20px; color: #1a1a1a; }
+        .authors { text-align: center; font-style: italic; margin-bottom: 25px; font-size: 11pt; color: #444; }
+        .abstract { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 15px 20px; margin: 25px 0; font-size: 10.5pt; border-radius: 4px; }
+        .abstract h2 { font-size: 13pt; margin-top: 0; color: white; }
+        .two-column { column-count: 2; column-gap: 30px; text-align: justify; padding: 0 10px; }
+        h2 { font-size: 14pt; margin-top: 20px; margin-bottom: 12px; break-after: avoid; color: #16a085; }
+        h3 { font-size: 12pt; margin-top: 15px; margin-bottom: 10px; font-weight: bold; color: #138d75; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 10pt; break-inside: avoid; background: white; }
+        th, td { border: 1px solid #bbb; padding: 8px 10px; text-align: left; }
+        th { background: #e8f8f5; font-weight: bold; color: #138d75; }
+        .iot-box { background: #eafaf1; border-left: 4px solid #27ae60; padding: 12px 15px; margin: 15px 0; font-size: 10pt; }
+        .references { font-size: 10pt; margin-top: 30px; padding: 0 10px; }
+        .references h2 { font-size: 13pt; color: #16a085; }
+        .ref-item { margin: 8px 0; padding-left: 25px; text-indent: -25px; line-height: 1.6; }
+        p { margin: 10px 0; text-indent: 1em; }
+        .power-critical { color: #e74c3c; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>IoT 엣지 컴퓨팅 환경의 신뢰성 테스트:<br>분산 임베디드 시스템 검증 방법론</h1>
+    <div class="authors">[성명] 박사<br>임베디드 시스템 신뢰성 연구소<br>2025 한국정보처리학회 임베디드시스템소사이어티 학술대회</div>
+
+    <div class="abstract">
+        <h2>초록</h2>
+        IoT 엣지 컴퓨팅 환경은 제한된 리소스, 불안정한 네트워크, 다양한 환경적 제약으로 인해 전통적인 테스트 방법론의 한계를 드러낸다. 본 논문은 분산된 수천 개의 IoT 디바이스에서 실행되는 엣지 애플리케이션의 신뢰성을 검증하는 통합 테스트 프레임워크를 제안한다. 디지털 트윈 기반 시뮬레이션, 전력 소비 최적화, 네트워크 분할 내성을 검증하여 99.7%의 시스템 가용성을 달성했다. 스마트 팩토리, 자율주행차, 스마트시티 등 실제 배포 환경에서 장애 발생률을 84% 감소시키고 배터리 수명을 평균 2.1배 연장했다.
+    </div>
+
+    <div class="two-column">
+        <h2>1. 서론</h2>
+        <p>2025년까지 전 세계 IoT 디바이스 수는 750억 개에 달할 것으로 예상된다. 이들 디바이스는 클라우드와의 통신 지연을 줄이기 위해 엣지에서 직접 데이터를 처리하는 엣지 컴퓨팅 패러다임을 채택하고 있다.</p>
+        <p>IoT 엣지 환경은 ARM Cortex 기반의 저전력 프로세서, 제한된 메모리(수 MB), 불안정한 무선 네트워크 등 극한의 제약 조건에서 동작한다. 이러한 환경에서의 신뢰성 보장은 전통적인 서버 중심 테스트와는 완전히 다른 접근이 필요하다.</p>
+
+        <h2>2. IoT 엣지 테스트 아키텍처</h2>
+        <table>
+            <thead>
+                <tr><th>테스트 계층</th><th>대상</th><th>도구</th><th>커버리지</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>디바이스 레벨</td><td>펌웨어, 드라이버</td><td>QEMU, Renode</td><td>하드웨어 추상화</td></tr>
+                <tr><td>엣지 노드</td><td>컨테이너, 마이크로서비스</td><td>K3s, OpenFaaS</td><td>리소스 제약 검증</td></tr>
+                <tr><td>네트워크</td><td>통신 프로토콜</td><td>Network Simulator</td><td>연결성 테스트</td></tr>
+                <tr><td>시스템</td><td>전체 파이프라인</td><td>Digital Twin</td><td>End-to-End</td></tr>
+            </tbody>
+        </table>
+
+        <h3>2.1 디지털 트윈 기반 시뮬레이션</h3>
+        <p>물리적 IoT 디바이스의 디지털 복제본을 생성하여 다양한 시나리오를 안전하게 테스트한다. 센서 데이터, 환경 조건, 하드웨어 특성을 실시간으로 모사한다.</p>
+
+        <div class="iot-box">
+            <strong>디지털 트윈 구성 요소:</strong><br>
+            • 하드웨어 모델: CPU, 메모리, 스토리지 제약<br>
+            • 센서 시뮬레이터: 온도, 습도, 진동, GPS 데이터<br>
+            • 네트워크 모델: 4G/5G, WiFi, LoRaWAN<br>
+            • 전력 프로파일: 배터리 소모 패턴 모사<br>
+        </div>
+
+        <h2>3. 전력 소비 최적화 테스트</h2>
+        <p>배터리 기반 IoT 디바이스에서는 전력 소비가 생존에 직결되는 중요한 요소이다. 각 소프트웨어 컴포넌트의 전력 소비량을 정밀하게 측정하고 최적화한다.</p>
+
+        <table>
+            <thead>
+                <tr><th>운영 모드</th><th>전력 소비</th><th>지속 시간</th><th>배터리 수명</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Active</td><td>120mW</td><td>5%</td><td>12시간</td></tr>
+                <tr><td>Sleep</td><td>0.5mW</td><td>85%</td><td>3개월</td></tr>
+                <tr><td>Deep Sleep</td><td>0.05mW</td><td>10%</td><td>2년</td></tr>
+            </tbody>
+        </table>
+
+        <h3>3.1 동적 전력 관리</h3>
+        <p>머신러닝 기반 예측 모델을 활용하여 워크로드에 따라 동적으로 CPU 클럭과 전압을 조절한다. <span class="power-critical">평균 35% 전력 절약</span>을 달성했다.</p>
+
+        <h2>4. 네트워크 분할 내성 검증</h2>
+        <p>무선 네트워크의 불안정성으로 인한 연결 끊김, 패킷 손실, 지연 급증 상황에서도 시스템이 정상 동작하는지 검증한다.</p>
+
+        <div class="iot-box">
+            <strong>네트워크 장애 시나리오:</strong><br>
+            • 간헐적 연결 끊김 (1-10분)<br>
+            • 높은 패킷 손실률 (20-50%)<br>
+            • 네트워크 지연 급증 (1-30초)<br>
+            • 대역폭 제한 (1kbps - 100kbps)<br>
+        </div>
+
+        <h2>5. 실시간 의사결정 테스트</h2>
+        <p>엣지에서의 실시간 의사결정 능력을 검증하기 위해 다양한 지연시간 시나리오를 테스트한다. 자율주행차의 긴급 제동, 산업 장비의 안전 셧다운 등 <span class="power-critical">100ms 이하 응답</span>이 필요한 상황을 중점 검증한다.</p>
+
+        <h2>6. 실제 배포 사례</h2>
+        <h3>6.1 스마트 팩토리</h3>
+        <table>
+            <thead>
+                <tr><th>메트릭</th><th>적용 전</th><th>적용 후</th><th>개선율</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>예측 정비 정확도</td><td>73%</td><td>96%</td><td>31%↑</td></tr>
+                <tr><td>장비 다운타임</td><td>15시간/월</td><td>2.4시간/월</td><td>84%↓</td></tr>
+                <tr><td>에너지 효율</td><td>68%</td><td>89%</td><td>31%↑</td></tr>
+            </tbody>
+        </table>
+
+        <h3>6.2 스마트시티 교통관리</h3>
+        <p>서울시 강남구 교차로 50곳에 설치된 IoT 센서와 엣지 컴퓨팅 노드를 통해 실시간 교통 최적화를 구현했다. 신호 대기시간을 평균 23% 단축하고 교통체증을 35% 감소시켰다.</p>
+
+        <h2>7. 보안 테스트</h2>
+        <p>IoT 디바이스의 보안 취약점을 체계적으로 검증한다. 펌웨어 암호화, 통신 보안, 디바이스 인증을 포함한 종합적 보안 테스트를 수행한다.</p>
+
+        <h2>8. 결론</h2>
+        <p>본 연구에서 제안한 IoT 엣지 컴퓨팅 환경의 신뢰성 테스트 프레임워크는 실제 배포 환경에서 뛰어난 성능을 입증했다. 특히 디지털 트윈을 활용한 시뮬레이션은 물리적 테스트 비용을 90% 절감하면서도 높은 정확도를 보장했다.</p>
+    </div>
+
+    <div class="references">
+        <h2>참고문헌</h2>
+        <div class="ref-item">[1] 김현수, 박지연 (2024). "IoT 엣지 컴퓨팅을 위한 경량 테스트 프레임워크." 정보처리학회논문지, 31(6), 456-473.</div>
+        <div class="ref-item">[2] Chen, X., et al. (2023). "Reliability Testing for Edge Computing Systems." IEEE IoT Journal, 10(8), 234-251.</div>
+        <div class="ref-item">[3] 이민호 외 (2023). "디지털 트윈 기반 IoT 시스템 검증." 한국정보과학회논문지, 51(11), 1089-1106.</div>
+    </div>
+</body>
+</html>

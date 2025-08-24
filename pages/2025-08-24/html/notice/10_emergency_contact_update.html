@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>긴급 연락처 업데이트 안내</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f5f5f5; }
+        .container { max-width: 800px; margin: 20px auto; background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #fd7e14 0%, #e55d00 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+        .header h1 { font-size: 28px; margin-bottom: 10px; font-weight: 300; }
+        .header .subtitle { font-size: 16px; opacity: 0.9; }
+        .content { padding: 40px; }
+        .notice-type { background: #fd7e14; color: white; padding: 8px 20px; border-radius: 20px; display: inline-block; margin-bottom: 20px; font-size: 14px; font-weight: 500; }
+        .urgent-banner { background: linear-gradient(45deg, #ff6b6b, #ee5a24); color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3); }
+        .urgent-banner h2 { font-size: 22px; margin-bottom: 10px; }
+        .urgent-banner p { font-size: 16px; }
+        .main-message { font-size: 18px; margin-bottom: 30px; color: #2c3e50; line-height: 1.8; }
+        .contact-sections { margin: 20px 0; }
+        .contact-section { background: #fff8e1; border-left: 4px solid #fd7e14; padding: 25px; margin-bottom: 20px; border-radius: 0 8px 8px 0; }
+        .section-header { display: flex; align-items: center; justify-content: between; margin-bottom: 20px; }
+        .section-title { color: #e55d00; font-size: 20px; font-weight: 600; }
+        .section-badge { background: #fd7e14; color: white; padding: 4px 12px; border-radius: 12px; font-size: 12px; margin-left: 15px; }
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+        .contact-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-left: 3px solid #fd7e14; }
+        .contact-card h4 { color: #e55d00; margin-bottom: 15px; font-size: 16px; display: flex; align-items: center; }
+        .contact-card .icon { margin-right: 8px; font-size: 18px; }
+        .contact-info { margin-bottom: 10px; }
+        .contact-label { font-weight: 600; color: #555; margin-right: 10px; min-width: 80px; display: inline-block; }
+        .contact-value { color: #2c3e50; }
+        .phone-highlight { background: #e8f5e8; padding: 8px 12px; border-radius: 6px; font-weight: bold; color: #27ae60; display: inline-block; margin-top: 5px; }
+        .changes-section { background: #f8d7da; border: 2px solid #dc3545; border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .changes-section h3 { color: #721c24; margin-bottom: 15px; }
+        .change-item { background: white; padding: 15px; border-radius: 6px; margin-bottom: 10px; border-left: 3px solid #dc3545; }
+        .change-item .change-type { background: #dc3545; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-bottom: 8px; display: inline-block; }
+        .old-new-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        .comparison-item { padding: 10px; border-radius: 4px; }
+        .old-value { background: #ffebee; border-left: 3px solid #f44336; }
+        .new-value { background: #e8f5e8; border-left: 3px solid #4caf50; }
+        .emergency-procedures { background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .emergency-procedures h4 { color: #856404; margin-bottom: 15px; }
+        .procedure-steps { list-style: none; padding: 0; }
+        .procedure-steps li { padding: 10px; margin-bottom: 8px; background: white; border-radius: 6px; padding-left: 35px; position: relative; }
+        .procedure-steps li:before { content: ""; width: 20px; height: 20px; background: #ffc107; border-radius: 50%; position: absolute; left: 8px; top: 50%; transform: translateY(-50%); color: white; text-align: center; line-height: 20px; font-size: 12px; font-weight: bold; }
+        .procedure-steps li:nth-child(1):before { content: "1"; }
+        .procedure-steps li:nth-child(2):before { content: "2"; }
+        .procedure-steps li:nth-child(3):before { content: "3"; }
+        .procedure-steps li:nth-child(4):before { content: "4"; }
+        .quick-reference { background: #d1ecf1; border-radius: 8px; padding: 25px; margin: 20px 0; }
+        .quick-reference h3 { color: #0c5460; margin-bottom: 20px; text-align: center; }
+        .quick-contacts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .quick-contact { background: white; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .quick-contact .contact-type { font-size: 14px; color: #6c757d; margin-bottom: 5px; }
+        .quick-contact .contact-number { font-size: 18px; font-weight: bold; color: #0c5460; }
+        .update-reminder { background: #e2e3e5; border: 1px solid #ced4da; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center; }
+        .update-reminder h4 { color: #495057; margin-bottom: 15px; }
+        .update-button { display: inline-block; background: #fd7e14; color: white; padding: 12px 24px; border-radius: 25px; text-decoration: none; font-weight: 600; margin: 5px; }
+        .update-button:hover { background: #e55d00; text-decoration: none; color: white; }
+        .contact-info-footer { background: #e8f5e8; padding: 20px; border-radius: 6px; margin-top: 30px; }
+        .contact-info-footer h4 { color: #27ae60; margin-bottom: 10px; }
+        .footer { text-align: center; padding: 20px; color: #7f8c8d; font-size: 14px; border-top: 1px solid #ecf0f1; }
+        .logo { float: right; font-weight: bold; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">Emergency</div>
+            <h1>긴급 연락처 업데이트 안내</h1>
+            <div class="subtitle">Emergency Contact Update Notice</div>
+        </div>
+        
+        <div class="content">
+            <span class="notice-type">긴급연락처</span>
+            
+            <div class="urgent-banner">
+                <h2>🚨 긴급 연락처 정보가 변경되었습니다</h2>
+                <p>즉시 새로운 연락처 정보를 확인하고 업데이트해 주세요</p>
+            </div>
+            
+            <div class="main-message">
+                조직 개편 및 담당자 변경으로 인해 긴급 상황 대응 연락처가 업데이트되었습니다.<br>
+                모든 직원은 새로운 연락처를 숙지하고 개인 연락처를 업데이트해 주시기 바랍니다.
+            </div>
+            
+            <div class="changes-section">
+                <h3>📝 주요 변경사항</h3>
+                
+                <div class="change-item">
+                    <span class="change-type">변경</span>
+                    <strong>IT 장애 대응팀 핫라인</strong>
+                    <div class="old-new-comparison">
+                        <div class="comparison-item old-value">
+                            <strong>기존:</strong> 1588-1004
+                        </div>
+                        <div class="comparison-item new-value">
+                            <strong>신규:</strong> 1588-9999
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="change-item">
+                    <span class="change-type">신설</span>
+                    <strong>보안 침해 신고 전용라인</strong>
+                    <div class="new-value" style="margin-top: 10px;">
+                        <strong>신규:</strong> 1588-0000 (24시간 운영)
+                    </div>
+                </div>
+                
+                <div class="change-item">
+                    <span class="change-type">변경</span>
+                    <strong>시설 관리 긴급상황</strong>
+                    <div class="old-new-comparison">
+                        <div class="comparison-item old-value">
+                            <strong>기존:</strong> 010-1234-5678 (김시설)
+                        </div>
+                        <div class="comparison-item new-value">
+                            <strong>신규:</strong> 010-9876-5432 (박관리)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="contact-sections">
+                <div class="contact-section">
+                    <div class="section-header">
+                        <h3 class="section-title">🚨 IT 시스템 긴급상황</h3>
+                        <span class="section-badge">업데이트</span>
+                    </div>
+                    <div class="contact-grid">
+                        <div class="contact-card">
+                            <h4><span class="icon">🔧</span>시스템 장애</h4>
+                            <div class="contact-info">
+                                <span class="contact-label">핫라인:</span>
+                                <span class="contact-value phone-highlight">1588-9999</span>
+                            </div>
+                            <div class="contact-info">
+                                <span class="contact-label">이메일:</span>
+                                <span class="contact-value">emergency@company.com</span>
+                            </div>
+                            <div class="contact-info">
+                                <span class="contact-label">담당자:</span>
+                                <span class="contact-value">이응급 팀장 (010-9999-1111)</span>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-card">
+                            <h4><span class="icon">🛡️</span>보안 침해</h4>
+                            <div class="contact-info">
+                                <span class="contact-label">신고라인:</span>
+                                <span class="contact-value phone-highlight">1588-0000</span>
+                            </div>
+                            <div class="contact-info">
+                                <span class="contact-label">이메일:</span>
+                                <span class="contact-value">security-alert@company.com</span>
+                            </div>
+                            <div class="contact-info">
+                                <span class="contact-label">담당자:</span>
+                                <span class="contact-value">김보안 부장 (010-0000-1111)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-section">
+                    <div class="section-header">
+                        <h3 class="section-title">🏢 시설 관리 긴급상황</h3>
+                        <span class="section-badge">변경</span>
+                    </div>
+                    <div class="contact-grid">
+                        <div class="contact-card">
+                            <h4><span class="icon">⚡</span>전력/네트워크</h4>
+                            <div class="contact-info">
+                                <span class="contact-label">관리실:</span>
+                                <span class="contact-value phone-highlight">내선 9911</span>
+                            </div>
+                            <div class="contact-info">
+                                <span class="contact-label">담당자:</span>
+                                <span class="contact-value">박관리 과장 (010-9876-5432)</span>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-card">
+                            <h4><span class="icon">🔥</span>화재/안전</h4>
+                            <div class="contact-info">
+                                <span class="contact-label">비상벨:</span>
+                                <span class="contact-value phone-highlight">내선 119</span>
+                            </div>
+                            <div class="contact-info">
+                                <span class="contact-label">안전팀:</span>
+                                <span class="contact-value">최안전 차장 (010-1122-3344)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-section">
+                    <div class="section-header">
+                        <h3 class="section-title">👥 경영진 비상연락망</h3>
+                    </div>
+                    <div class="contact-grid">
+                        <div class="contact-card">
+                            <h4><span class="icon">📞</span>최고경영진</h4>
+                            <div class="contact-info">
+                                <span class="contact-label">대표실:</span>
+                                <span class="contact-value phone-highlight">내선 1000</span>
+                            </div>
+                            <div class="contact-info">
+                                <span class="contact-label">비서실:</span>
+                                <span class="contact-value">ceo-office@company.com</span>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-card">
+                            <h4><span class="icon">💼</span>IT 임원</h4>
+                            <div class="contact-info">
+                                <span class="contact-label">CTO:</span>
+                                <span class="contact-value">김기술 이사 (010-1000-2000)</span>
+                            </div>
+                            <div class="contact-info">
+                                <span class="contact-label">CISO:</span>
+                                <span class="contact-value">정보안 이사 (010-2000-3000)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="emergency-procedures">
+                <h4>📋 긴급상황 대응 절차</h4>
+                <ul class="procedure-steps">
+                    <li>상황 발생 즉시 해당 부서 긴급 연락처로 신고</li>
+                    <li>상황의 심각성을 판단하여 상급 연락망 가동</li>
+                    <li>초기 대응팀 구성 및 현장 대응 시작</li>
+                    <li>경영진 보고 및 전사적 대응체계 가동</li>
+                </ul>
+            </div>
+            
+            <div class="quick-reference">
+                <h3>📱 빠른 참조 - 자주 사용하는 연락처</h3>
+                <div class="quick-contacts">
+                    <div class="quick-contact">
+                        <div class="contact-type">시스템 장애</div>
+                        <div class="contact-number">1588-9999</div>
+                    </div>
+                    <div class="quick-contact">
+                        <div class="contact-type">보안 신고</div>
+                        <div class="contact-number">1588-0000</div>
+                    </div>
+                    <div class="quick-contact">
+                        <div class="contact-type">헬프데스크</div>
+                        <div class="contact-number">내선 1004</div>
+                    </div>
+                    <div class="quick-contact">
+                        <div class="contact-type">시설 관리</div>
+                        <div class="contact-number">내선 9911</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="update-reminder">
+                <h4>📲 개인 연락처 업데이트 필수</h4>
+                <p>모든 직원은 새로운 긴급 연락처를 개인 휴대폰과 사내 시스템에 업데이트해 주세요.</p>
+                <a href="#phone-update" class="update-button">📱 휴대폰 업데이트</a>
+                <a href="#system-update" class="update-button">💻 시스템 업데이트</a>
+            </div>
+            
+            <div class="contact-info-footer">
+                <h4>📞 연락처 업데이트 관련 문의</h4>
+                <div>총무팀: 내선 2000 | admin@company.com</div>
+                <div>IT지원팀: 내선 1004 | helpdesk@company.com</div>
+                <div>비상계획팀: emergency-plan@company.com</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            이 긴급 연락처 안내는 총무팀에서 발송되었습니다. | © 2025 Company Administration Team
+        </div>
+    </div>
+</body>
+</html>

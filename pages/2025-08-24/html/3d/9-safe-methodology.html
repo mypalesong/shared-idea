@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAFe 방법론 - Scaled Agile Framework</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2d3436 0%, #636e72 25%, #00b894 50%, #0984e3 75%, #6c5ce7 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 30px;
+        }
+        
+        .three-container {
+            width: 100%;
+            height: 400px;
+            margin: 30px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .content-section {
+            background: rgba(255,255,255,0.95);
+            padding: 40px;
+            margin: 30px 0;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .content-section h2 {
+            font-size: 2.5rem;
+            color: #00b894;
+            margin-bottom: 25px;
+            border-left: 5px solid #00b894;
+            padding-left: 20px;
+        }
+        
+        .content-section h3 {
+            font-size: 1.8rem;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+        
+        .content-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #4a5568;
+        }
+        
+        .safe-levels {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .level-container {
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            color: white;
+            text-align: center;
+        }
+        
+        .portfolio-level { background: linear-gradient(135deg, #2d3436, #636e72); }
+        .solution-level { background: linear-gradient(135deg, #636e72, #00b894); }
+        .program-level { background: linear-gradient(135deg, #00b894, #0984e3); }
+        .team-level { background: linear-gradient(135deg, #0984e3, #6c5ce7); }
+        
+        .level-container h4 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+        
+        .level-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .level-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .core-values {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .value-card {
+            background: linear-gradient(135deg, #00b894, #0984e3);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .value-card:hover {
+            transform: translateY(-8px) scale(1.05);
+        }
+        
+        .value-card h4 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+        
+        .value-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .pi-planning {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .pi-timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            overflow-x: auto;
+            padding: 20px 0;
+        }
+        
+        .pi-event {
+            background: linear-gradient(135deg, #0984e3, #6c5ce7);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 120px;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .pi-event:hover {
+            transform: scale(1.05);
+        }
+        
+        .pi-arrow {
+            font-size: 1.5rem;
+            color: #0984e3;
+        }
+        
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .role-card {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .role-card:hover {
+            transform: translateY(-5px) rotate(1deg);
+        }
+        
+        .role-card h5 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+        }
+        
+        .artifacts-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .artifact-item {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #00b894;
+            transition: all 0.3s ease;
+        }
+        
+        .artifact-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .artifact-item h4 {
+            color: #00b894;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .benefits-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .comparison-side {
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .before-safe {
+            background: linear-gradient(135deg, #fab1a0, #e17055);
+            color: white;
+        }
+        
+        .after-safe {
+            background: linear-gradient(135deg, #55efc4, #00b894);
+            color: white;
+        }
+        
+        .comparison-side h4 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .metrics-dashboard {
+            background: linear-gradient(135deg, #2d3436, #636e72);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minWidth(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .metric-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #00b894;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 50px;
+            border-radius: 20px;
+        }
+        
+        footer p {
+            color: white;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SAFe 방법론</h1>
+            <p class="subtitle">대규모 조직을 위한 확장된 애자일 프레임워크</p>
+        </header>
+        
+        <div class="three-container" id="three-container"></div>
+        
+        <div class="content-section">
+            <h2>SAFe란?</h2>
+            <p>SAFe(Scaled Agile Framework)는 딘 레핑웰(Dean Leffingwell)이 개발한 대규모 엔터프라이즈 환경에서 애자일과 린 원칙을 적용하기 위한 프레임워크입니다. 수십 개 또는 수백 개의 팀이 참여하는 대규모 소프트웨어 개발 프로젝트에서 애자일의 이점을 실현할 수 있도록 설계되었습니다.</p>
+            
+            <p>SAFe는 포트폴리오, 솔루션, 프로그램, 팀의 4개 레벨로 구성되어 있으며, 각 레벨에서 역할, 활동, 산출물을 명확히 정의하여 대규모 조직의 복잡성을 관리합니다. 2011년 처음 소개된 이후 지속적으로 발전하여 현재 전 세계 수많은 대기업에서 활용되고 있습니다.</p>
+        </div>
+        
+        <div class="content-section">
+            <h2>SAFe의 4가지 레벨</h2>
+            <div class="safe-levels">
+                <div class="level-container portfolio-level">
+                    <h4>포트폴리오 레벨 (Portfolio Level)</h4>
+                    <p>전략과 투자 자금 조달, 거버넌스를 담당하는 최고 레벨</p>
+                    <div class="level-details">
+                        <div class="level-item">
+                            <h5>전략 테마</h5>
+                            <p>비즈니스 목표와 연계된 주요 전략 방향</p>
+                        </div>
+                        <div class="level-item">
+                            <h5>포트폴리오 백로그</h5>
+                            <p>Epic들의 우선순위가 정해진 목록</p>
+                        </div>
+                        <div class="level-item">
+                            <h5>포트폴리오 칸반</h5>
+                            <p>Epic 흐름을 시각화하는 도구</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="level-container solution-level">
+                    <h4>솔루션 레벨 (Solution Level)</h4>
+                    <p>대규모 복합 솔루션 구축을 위한 협업과 조정</p>
+                    <div class="level-details">
+                        <div class="level-item">
+                            <h5>솔루션 트레인</h5>
+                            <p>여러 ART가 참여하는 대규모 솔루션 개발</p>
+                        </div>
+                        <div class="level-item">
+                            <h5>능력</h5>
+                            <p>솔루션이 제공하는 고차원적 서비스</p>
+                        </div>
+                        <div class="level-item">
+                            <h5>솔루션 인텐트</h5>
+                            <p>솔루션의 목적과 행동을 기술</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="level-container program-level">
+                    <h4>프로그램 레벨 (Program Level)</h4>
+                    <p>애자일 릴리즈 트레인(ART)을 통한 가치 스트림 실행</p>
+                    <div class="level-details">
+                        <div class="level-item">
+                            <h5>ART</h5>
+                            <p>5-12개 애자일 팀으로 구성된 가상 조직</p>
+                        </div>
+                        <div class="level-item">
+                            <h5>PI 계획</h5>
+                            <p>프로그램 증분 계획 수립 이벤트</p>
+                        </div>
+                        <div class="level-item">
+                            <h5>프로그램 백로그</h5>
+                            <p>Feature들의 우선순위 목록</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="level-container team-level">
+                    <h4>팀 레벨 (Team Level)</h4>
+                    <p>애자일 팀이 고품질 솔루션을 신속하게 개발</p>
+                    <div class="level-details">
+                        <div class="level-item">
+                            <h5>스크럼/칸반</h5>
+                            <p>애자일 팀 운영 방식</p>
+                        </div>
+                        <div class="level-item">
+                            <h5>팀 백로그</h5>
+                            <p>사용자 스토리들의 우선순위 목록</p>
+                        </div>
+                        <div class="level-item">
+                            <h5>반복</h5>
+                            <p>2주간의 개발 주기</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>SAFe의 핵심 가치</h2>
+            <div class="core-values">
+                <div class="value-card">
+                    <div class="value-icon">⚖️</div>
+                    <h4>정렬 (Alignment)</h4>
+                    <p>모든 레벨이 공통 목표를 향해 정렬되어 일관성 있는 방향으로 진행</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🏗️</div>
+                    <h4>품질 내재화</h4>
+                    <p>지속 가능한 개발 속도를 위해 처음부터 품질을 고려</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🔍</div>
+                    <h4>투명성</h4>
+                    <p>실행 가능한 정보에 기반한 신뢰와 의사결정 구축</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🚀</div>
+                    <h4>프로그램 실행</h4>
+                    <p>고객 가치 제공에 집중한 신뢰성 있는 실행</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">👥</div>
+                    <h4>리더십</h4>
+                    <p>린-애자일 리더십을 통한 변화 추진</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>PI 계획 (Program Increment Planning)</h2>
+            <p>PI 계획은 SAFe의 핵심 이벤트로, 8-12주 동안의 프로그램 증분을 계획하는 2일간의 대면 이벤트입니다.</p>
+            
+            <div class="pi-planning">
+                <h3>PI 계획 프로세스</h3>
+                <div class="pi-timeline">
+                    <div class="pi-event">비즈니스<br>컨텍스트</div>
+                    <div class="pi-arrow">→</div>
+                    <div class="pi-event">제품/솔루션<br>비전</div>
+                    <div class="pi-arrow">→</div>
+                    <div class="pi-event">아키텍처<br>비전</div>
+                    <div class="pi-arrow">→</div>
+                    <div class="pi-event">계획<br>분석</div>
+                    <div class="pi-arrow">→</div>
+                    <div class="pi-event">팀<br>브레이크아웃</div>
+                    <div class="pi-arrow">→</div>
+                    <div class="pi-event">실행<br>검토</div>
+                </div>
+                
+                <h3>PI 계획의 결과물</h3>
+                <ul>
+                    <li>팀별 PI 목표와 커밋</li>
+                    <li>프로그램 보드 (의존성과 마일스톤)</li>
+                    <li>신뢰도 투표 결과</li>
+                    <li>위험과 이슈 목록</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>주요 역할</h2>
+            <div class="roles-grid">
+                <div class="role-card">
+                    <h5>릴리즈 트레인 엔지니어 (RTE)</h5>
+                    <p>ART의 서번트 리더로 프로세스를 촉진하고 임피던스를 제거합니다.</p>
+                </div>
+                <div class="role-card">
+                    <h5>제품 관리자 (Product Manager)</h5>
+                    <p>프로그램 레벨에서 고객 요구사항을 정의하고 백로그를 관리합니다.</p>
+                </div>
+                <div class="role-card">
+                    <h5>시스템 아키텍트</h5>
+                    <p>기술적 비전을 제시하고 아키텍처 설계를 가이드합니다.</p>
+                </div>
+                <div class="role-card">
+                    <h5>비즈니스 오너</h5>
+                    <p>거버넌스를 담당하고 ROI와 프로그램 성과에 책임집니다.</p>
+                </div>
+                <div class="role-card">
+                    <h5>Epic 오너</h5>
+                    <p>Epic의 정의, 개발, 구현을 책임지는 주요 이해관계자입니다.</p>
+                </div>
+                <div class="role-card">
+                    <h5>솔루션 아키텍트</h5>
+                    <p>솔루션 레벨에서 기술적 리더십을 제공합니다.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>주요 산출물</h2>
+            <div class="artifacts-showcase">
+                <div class="artifact-item">
+                    <h4>Epic</h4>
+                    <p>상당한 투자가 필요한 큰 개발 이니셔티브로 여러 PI에 걸쳐 구현됩니다.</p>
+                </div>
+                <div class="artifact-item">
+                    <h4>Feature</h4>
+                    <p>고객에게 가치를 제공하는 서비스 기능으로 하나의 PI 내에서 완성 가능합니다.</p>
+                </div>
+                <div class="artifact-item">
+                    <h4>사용자 스토리</h4>
+                    <p>팀 레벨에서 구현되는 작은 단위의 기능으로 하나의 반복에서 완료됩니다.</p>
+                </div>
+                <div class="artifact-item">
+                    <h4>PI 목표</h4>
+                    <p>각 PI에서 달성해야 할 비즈니스와 기술적 목표를 요약한 것입니다.</p>
+                </div>
+                <div class="artifact-item">
+                    <h4>솔루션</h4>
+                    <p>고객의 문제를 해결하거나 기회를 활용하는 제품, 서비스, 시스템의 집합입니다.</p>
+                </div>
+                <div class="artifact-item">
+                    <h4>가치 스트림</h4>
+                    <p>고객에게 지속적인 가치를 제공하는 일련의 단계입니다.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>SAFe 도입 효과</h2>
+            <div class="benefits-comparison">
+                <div class="comparison-side before-safe">
+                    <h4>도입 전</h4>
+                    <ul>
+                        <li>부서 간 사일로 현상</li>
+                        <li>긴 개발 주기와 지연</li>
+                        <li>불명확한 우선순위</li>
+                        <li>낮은 예측 가능성</li>
+                        <li>제한적인 가시성</li>
+                        <li>느린 의사결정</li>
+                    </ul>
+                </div>
+                <div class="comparison-side after-safe">
+                    <h4>도입 후</h4>
+                    <ul>
+                        <li>조직 전체 정렬 달성</li>
+                        <li>빠른 가치 제공</li>
+                        <li>명확한 우선순위 설정</li>
+                        <li>높은 예측 가능성</li>
+                        <li>투명한 진행 상황</li>
+                        <li>신속한 의사결정</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>SAFe 성과 지표</h2>
+            <div class="metrics-dashboard">
+                <h3>주요 성과 메트릭</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">30-75%</div>
+                        <p>생산성 향상</p>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">20-50%</div>
+                        <p>출시 시간 단축</p>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">25-75%</div>
+                        <p>품질 향상</p>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">10-50%</div>
+                        <p>직원 만족도 증가</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>SAFe 도입 가이드</h2>
+            <h3>1. 조직 준비성 평가</h3>
+            <p>현재 조직의 애자일 성숙도와 변화 준비성을 평가하고 SAFe 도입의 필요성을 확인합니다.</p>
+            
+            <h3>2. 린-애자일 리더 교육</h3>
+            <p>경영진과 관리자들에게 린-애자일 원칙과 SAFe에 대한 교육을 실시합니다.</p>
+            
+            <h3>3. 구현 전략 수립</h3>
+            <p>조직의 상황에 맞는 SAFe 구성을 선택하고 단계별 구현 계획을 수립합니다.</p>
+            
+            <h3>4. ART 형성과 론칭</h3>
+            <p>첫 번째 애자일 릴리즈 트레인을 구성하고 PI 계획을 통해 론칭합니다.</p>
+            
+            <h3>5. 점검과 적응</h3>
+            <p>정기적인 성과 측정과 피드백을 통해 지속적으로 프로세스를 개선합니다.</p>
+        </div>
+        
+        <footer>
+            <p>SAFe는 대규모 조직에서 애자일의 이점을 실현하면서도 기업의 거버넌스와 규율을 유지할 수 있는 검증된 프레임워크입니다.</p>
+        </footer>
+    </div>
+    
+    <script>
+        let scene, camera, renderer, safeStructure = [], artElements = [];
+        
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            
+            const container = document.getElementById('three-container');
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            renderer.setClearColor(0x2d3436);
+            container.appendChild(renderer.domElement);
+            
+            // Create SAFe 4-level structure
+            const levels = [
+                { name: 'Portfolio', y: 3, color: 0x2d3436, size: 0.3 },
+                { name: 'Solution', y: 2, color: 0x636e72, size: 0.4 },
+                { name: 'Program', y: 1, color: 0x00b894, size: 0.5 },
+                { name: 'Team', y: 0, color: 0x0984e3, size: 0.6 }
+            ];
+            
+            levels.forEach((level, levelIndex) => {
+                // Create multiple elements for each level
+                const elementsPerLevel = [1, 2, 3, 8][levelIndex];
+                
+                for (let i = 0; i < elementsPerLevel; i++) {
+                    const geometry = new THREE.CylinderGeometry(level.size, level.size, 0.2, 16);
+                    const material = new THREE.MeshPhongMaterial({ 
+                        color: level.color,
+                        emissive: level.color,
+                        emissiveIntensity: 0.1
+                    });
+                    const element = new THREE.Mesh(geometry, material);
+                    
+                    if (elementsPerLevel === 1) {
+                        element.position.set(0, level.y, 0);
+                    } else {
+                        const angle = (i / elementsPerLevel) * Math.PI * 2;
+                        const radius = levelIndex * 0.5 + 1;
+                        element.position.x = Math.cos(angle) * radius;
+                        element.position.z = Math.sin(angle) * radius;
+                        element.position.y = level.y;
+                    }
+                    
+                    element.userData = {
+                        level: levelIndex,
+                        originalPosition: element.position.clone(),
+                        name: level.name
+                    };
+                    
+                    scene.add(element);
+                    safeStructure.push(element);
+                }
+            });
+            
+            // Create connecting lines between levels
+            for (let i = 0; i < levels.length - 1; i++) {
+                const currentLevel = safeStructure.filter(el => el.userData.level === i);
+                const nextLevel = safeStructure.filter(el => el.userData.level === i + 1);
+                
+                currentLevel.forEach(currentEl => {
+                    nextLevel.forEach(nextEl => {
+                        const lineGeometry = new THREE.BufferGeometry();
+                        lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute([
+                            currentEl.position.x, currentEl.position.y - 0.1, currentEl.position.z,
+                            nextEl.position.x, nextEl.position.y + 0.1, nextEl.position.z
+                        ], 3));
+                        
+                        const lineMaterial = new THREE.LineBasicMaterial({ 
+                            color: 0xffffff,
+                            transparent: true,
+                            opacity: 0.3
+                        });
+                        const line = new THREE.Line(lineGeometry, lineMaterial);
+                        scene.add(line);
+                    });
+                });
+            }
+            
+            // Create PI (Program Increment) visualization
+            const piGeometry = new THREE.TorusGeometry(4, 0.2, 16, 100);
+            const piMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0x6c5ce7,
+                transparent: true,
+                opacity: 0.6
+            });
+            const piRing = new THREE.Mesh(piGeometry, piMaterial);
+            piRing.rotation.x = Math.PI / 2;
+            piRing.position.y = -1;
+            scene.add(piRing);
+            
+            // Create ART (Agile Release Train) elements
+            for (let i = 0; i < 12; i++) {
+                const artGeometry = new THREE.BoxGeometry(0.3, 0.3, 0.3);
+                const artMaterial = new THREE.MeshPhongMaterial({ 
+                    color: 0x0984e3,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const artElement = new THREE.Mesh(artGeometry, artMaterial);
+                
+                const angle = (i / 12) * Math.PI * 2;
+                artElement.position.x = Math.cos(angle) * 4;
+                artElement.position.z = Math.sin(angle) * 4;
+                artElement.position.y = -1;
+                
+                artElement.userData = {
+                    angle: angle,
+                    speed: 0.01 + Math.random() * 0.02
+                };
+                
+                scene.add(artElement);
+                artElements.push(artElement);
+            }
+            
+            // Create value stream flow
+            for (let i = 0; i < 30; i++) {
+                const valueGeometry = new THREE.SphereGeometry(0.08, 8, 8);
+                const valueMaterial = new THREE.MeshBasicMaterial({ 
+                    color: 0x00b894,
+                    transparent: true,
+                    opacity: 0.7
+                });
+                const value = new THREE.Mesh(valueGeometry, valueMaterial);
+                
+                value.position.x = (Math.random() - 0.5) * 10;
+                value.position.y = -2 + Math.random() * 6;
+                value.position.z = (Math.random() - 0.5) * 10;
+                
+                value.userData = {
+                    velocity: new THREE.Vector3(
+                        (Math.random() - 0.5) * 0.02,
+                        Math.random() * 0.01,
+                        (Math.random() - 0.5) * 0.02
+                    )
+                };
+                
+                scene.add(value);
+            }
+            
+            // Create innovation particles
+            for (let i = 0; i < 20; i++) {
+                const innovationGeometry = new THREE.OctahedronGeometry(0.15);
+                const innovationMaterial = new THREE.MeshBasicMaterial({ 
+                    color: Math.random() * 0xffffff,
+                    transparent: true,
+                    opacity: 0.6
+                });
+                const innovation = new THREE.Mesh(innovationGeometry, innovationMaterial);
+                
+                innovation.position.x = (Math.random() - 0.5) * 12;
+                innovation.position.y = (Math.random() - 0.5) * 8;
+                innovation.position.z = (Math.random() - 0.5) * 12;
+                
+                innovation.userData = {
+                    rotationSpeed: Math.random() * 0.1,
+                    floatSpeed: 0.5 + Math.random() * 1
+                };
+                
+                scene.add(innovation);
+            }
+            
+            // Create alignment arrows pointing to center
+            for (let i = 0; i < 8; i++) {
+                const arrowGeometry = new THREE.ConeGeometry(0.15, 1, 8);
+                const arrowMaterial = new THREE.MeshPhongMaterial({ 
+                    color: 0xffffff,
+                    transparent: true,
+                    opacity: 0.7
+                });
+                const arrow = new THREE.Mesh(arrowGeometry, arrowMaterial);
+                
+                const angle = (i / 8) * Math.PI * 2;
+                arrow.position.x = Math.cos(angle) * 6;
+                arrow.position.z = Math.sin(angle) * 6;
+                arrow.position.y = 1.5;
+                arrow.lookAt(0, 1.5, 0);
+                
+                scene.add(arrow);
+            }
+            
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(10, 10, 5);
+            scene.add(directionalLight);
+            
+            const pointLight1 = new THREE.PointLight(0x00b894, 0.8, 100);
+            pointLight1.position.set(0, 5, 0);
+            scene.add(pointLight1);
+            
+            const pointLight2 = new THREE.PointLight(0x6c5ce7, 0.6, 100);
+            pointLight2.position.set(0, -5, 5);
+            scene.add(pointLight2);
+            
+            camera.position.set(0, 4, 12);
+            camera.lookAt(0, 1, 0);
+            
+            animate();
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const time = Date.now() * 0.001;
+            
+            // Animate SAFe structure elements
+            safeStructure.forEach((element, index) => {
+                element.position.y = element.userData.originalPosition.y + Math.sin(time * 1.5 + index * 0.3) * 0.1;
+                element.rotation.y = time * 0.5;
+            });
+            
+            // Animate ART elements around PI ring
+            artElements.forEach(art => {
+                art.userData.angle += art.userData.speed;
+                art.position.x = Math.cos(art.userData.angle) * 4;
+                art.position.z = Math.sin(art.userData.angle) * 4;
+                art.rotation.x += 0.02;
+                art.rotation.y += 0.03;
+            });
+            
+            // Animate PI ring
+            scene.children.forEach(child => {
+                if (child.geometry instanceof THREE.TorusGeometry) {
+                    child.rotation.z = time * 0.5;
+                    child.position.y = -1 + Math.sin(time * 2) * 0.1;
+                }
+            });
+            
+            // Animate value stream particles
+            scene.children.forEach(child => {
+                if (child.geometry instanceof THREE.SphereGeometry && 
+                    child.material.color.getHex() === 0x00b894 && 
+                    child.userData.velocity) {
+                    
+                    child.position.add(child.userData.velocity);
+                    
+                    // Reset particles that move too far
+                    if (child.position.length() > 8) {
+                        child.position.normalize().multiplyScalar(2);
+                    }
+                    
+                    // Create flow effect
+                    child.position.y += Math.sin(time * 3 + child.position.x) * 0.01;
+                }
+            });
+            
+            // Animate innovation particles
+            scene.children.forEach(child => {
+                if (child.geometry instanceof THREE.OctahedronGeometry && child.userData.floatSpeed) {
+                    child.rotation.x += child.userData.rotationSpeed;
+                    child.rotation.y += child.userData.rotationSpeed;
+                    child.position.y += Math.sin(time * child.userData.floatSpeed) * 0.01;
+                }
+            });
+            
+            // Animate alignment arrows
+            scene.children.forEach(child => {
+                if (child.geometry instanceof THREE.ConeGeometry && child.position.y > 1) {
+                    child.material.opacity = 0.5 + Math.sin(time * 2) * 0.2;
+                    child.scale.y = 1 + Math.sin(time * 3) * 0.2;
+                }
+            });
+            
+            // Camera orbital movement
+            const radius = 12;
+            camera.position.x = Math.sin(time * 0.08) * radius;
+            camera.position.z = Math.cos(time * 0.08) * radius;
+            camera.position.y = 4 + Math.sin(time * 0.05) * 2;
+            camera.lookAt(0, 1, 0);
+            
+            renderer.render(scene, camera);
+        }
+        
+        window.addEventListener('resize', () => {
+            const container = document.getElementById('three-container');
+            camera.aspect = container.offsetWidth / container.offsetHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+        });
+        
+        init3D();
+    </script>
+</body>
+</html>

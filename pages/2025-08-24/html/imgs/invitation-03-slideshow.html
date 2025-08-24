@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회사 동기들 모임 - 추억을 나누며</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1e1e1e;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .slideshow-container {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+        }
+        
+        .slide.active {
+            opacity: 1;
+        }
+        
+        .slide:nth-child(1) {
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1517457373958-b7bdd4587205?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .slide:nth-child(2) {
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .slide:nth-child(3) {
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1544027993-37dbfe43562a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .slide:nth-child(4) {
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1541963463532-d68292c34d19?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .slide-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+        }
+        
+        .main-title {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+            animation: fadeInScale 2s ease-out;
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            animation: fadeInUp 2s ease-out 0.5s both;
+        }
+        
+        .info-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 40px;
+            border-radius: 20px;
+            margin: 0 auto;
+            max-width: 600px;
+            animation: fadeInUp 2s ease-out 1s both;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        
+        .info-item {
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 5px;
+        }
+        
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .floating-element {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background-size: cover;
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: floatAround 15s linear infinite;
+        }
+        
+        .floating-element:nth-child(1) {
+            background-image: url('https://images.unsplash.com/photo-1574391884720-bbc4fe48aa10?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80');
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .floating-element:nth-child(2) {
+            background-image: url('https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80');
+            top: 60%;
+            right: 15%;
+            animation-delay: 5s;
+        }
+        
+        .floating-element:nth-child(3) {
+            background-image: url('https://images.unsplash.com/photo-1540420773420-3366772f4999?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80');
+            bottom: 30%;
+            left: 20%;
+            animation-delay: 10s;
+        }
+        
+        .cta-button {
+            background: linear-gradient(45deg, #ff7675, #d63031);
+            color: white;
+            padding: 20px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(214, 48, 49, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(214, 48, 49, 0.6);
+        }
+        
+        .slide-indicators {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+        }
+        
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .indicator.active {
+            background: white;
+        }
+        
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes floatAround {
+            0% { transform: translateX(0) translateY(0) rotate(0deg); }
+            25% { transform: translateX(100px) translateY(-50px) rotate(90deg); }
+            50% { transform: translateX(-50px) translateY(-100px) rotate(180deg); }
+            75% { transform: translateX(-100px) translateY(50px) rotate(270deg); }
+            100% { transform: translateX(0) translateY(0) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="slideshow-container">
+        <div class="slide active">
+            <div class="slide-content">
+                <h1 class="main-title">회사 동기들 모임</h1>
+                <p class="subtitle">오랜만에 만나는 소중한 시간</p>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="main-title">추억을 나누며</h2>
+                <p class="subtitle">함께했던 그 시절을 회상하며</p>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="main-title">맛있는 식사와 함께</h2>
+                <p class="subtitle">정성스런 음식과 따뜻한 대화</p>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <div class="slide-content">
+                <div class="info-card">
+                    <h2 style="margin-bottom: 30px; font-size: 2.5rem;">모임 정보</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">날짜</div>
+                            <div>2025년 5월 10일 (토)</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">시간</div>
+                            <div>오후 6시 30분</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">장소</div>
+                            <div>한정식집 "미락"</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">회비</div>
+                            <div>1인당 8만원</div>
+                        </div>
+                    </div>
+                    <button class="cta-button">참석 확인</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="floating-elements">
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+        </div>
+        
+        <div class="slide-indicators">
+            <div class="indicator active"></div>
+            <div class="indicator"></div>
+            <div class="indicator"></div>
+            <div class="indicator"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const indicators = document.querySelectorAll('.indicator');
+        
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            indicators[currentSlide].classList.remove('active');
+            
+            currentSlide = (n + slides.length) % slides.length;
+            
+            slides[currentSlide].classList.add('active');
+            indicators[currentSlide].classList.add('active');
+        }
+        
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+        
+        setInterval(nextSlide, 4000);
+        
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => showSlide(index));
+        });
+    </script>
+</body>
+</html>

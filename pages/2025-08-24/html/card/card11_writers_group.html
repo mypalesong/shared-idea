@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>작가 모임 초대장</title>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif KR', serif;
+            background: #f5f5dc;
+            color: #2c2c2c;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            width: 680px;
+            height: 480px;
+            background: #fffef7;
+            border: 1px solid #ddd;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .typewriter-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px);
+            background-size: 100% 20px;
+            animation: paperShift 15s ease-in-out infinite;
+        }
+
+        @keyframes paperShift {
+            0%, 100% { background-position: 0 0; }
+            50% { background-position: 0 10px; }
+        }
+
+        .typewriter-text {
+            position: absolute;
+            font-family: 'Courier Prime', monospace;
+            font-size: 14px;
+            color: rgba(44, 44, 44, 0.3);
+            animation: typewrite 1s steps(20) both;
+            white-space: nowrap;
+        }
+
+        .text-1 {
+            top: 100px;
+            left: 50px;
+            animation-delay: 2s;
+        }
+
+        .text-2 {
+            top: 140px;
+            left: 70px;
+            animation-delay: 3s;
+        }
+
+        .text-3 {
+            bottom: 150px;
+            right: 80px;
+            animation-delay: 4s;
+        }
+
+        @keyframes typewrite {
+            0% { width: 0; opacity: 0; }
+            100% { width: 100%; opacity: 1; }
+        }
+
+        .ink-spot {
+            position: absolute;
+            background: radial-gradient(circle, 
+                rgba(44, 44, 44, 0.4) 0%,
+                rgba(44, 44, 44, 0.2) 40%,
+                transparent 70%);
+            border-radius: 50%;
+            animation: inkSpread 5s ease-out infinite;
+        }
+
+        .spot-1 {
+            width: 20px;
+            height: 15px;
+            top: 80px;
+            right: 120px;
+            animation-delay: 0s;
+        }
+
+        .spot-2 {
+            width: 15px;
+            height: 20px;
+            bottom: 200px;
+            left: 100px;
+            animation-delay: -2s;
+        }
+
+        @keyframes inkSpread {
+            0%, 100% { transform: scale(1); opacity: 0.4; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+            width: 80%;
+        }
+
+        .title {
+            font-family: 'Courier Prime', monospace;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #2c2c2c;
+            margin-bottom: 20px;
+            animation: titleType 3s steps(20) both;
+        }
+
+        @keyframes titleType {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            animation: subtitleFade 2s ease-out 1s both;
+        }
+
+        @keyframes subtitleFade {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .writing-prompt {
+            background: rgba(255, 255, 255, 0.8);
+            border-left: 4px solid #8b4513;
+            padding: 25px;
+            margin: 20px 0;
+            font-style: italic;
+            animation: promptSlide 2s ease-out 1.5s both;
+        }
+
+        @keyframes promptSlide {
+            0% { opacity: 0; transform: translateX(-30px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        .prompt-title {
+            font-family: 'Courier Prime', monospace;
+            font-size: 1.5rem;
+            color: #8b4513;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .prompt-text {
+            font-size: 1rem;
+            color: #2c2c2c;
+            line-height: 1.6;
+        }
+
+        .meeting-details {
+            line-height: 1.8;
+            color: #2c2c2c;
+            animation: detailsType 2s ease-out 2s both;
+        }
+
+        @keyframes detailsType {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .detail-label {
+            color: #8b4513;
+            font-weight: 600;
+            margin-right: 10px;
+            min-width: 80px;
+        }
+
+        .quill {
+            position: absolute;
+            top: 60px;
+            left: 60px;
+            font-size: 3rem;
+            color: rgba(139, 69, 19, 0.3);
+            animation: quillWrite 6s ease-in-out infinite;
+        }
+
+        @keyframes quillWrite {
+            0%, 100% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+        }
+
+        .manuscript-corner {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
+
+        .corner-fold {
+            top: 0;
+            right: 0;
+            border-left: 30px solid transparent;
+            border-top: 30px solid #e8e8e8;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="typewriter-bg"></div>
+        
+        <div class="manuscript-corner corner-fold"></div>
+        
+        <div class="typewriter-text text-1">Once upon a time in a land far away...</div>
+        <div class="typewriter-text text-2">The pen is mightier than the sword.</div>
+        <div class="typewriter-text text-3">Words have the power to change worlds.</div>
+        
+        <div class="ink-spot spot-1"></div>
+        <div class="ink-spot spot-2"></div>
+        
+        <div class="quill">🪶</div>
+        
+        <div class="content">
+            <h1 class="title">Writers' Circle</h1>
+            <p class="subtitle">창작 작가 모임</p>
+            
+            <div class="writing-prompt">
+                <div class="prompt-title">이달의 주제</div>
+                <div class="prompt-text">
+                    "기억 속 한 장면을 소설로 써보세요"<br>
+                    개인적 경험을 문학으로 승화시키는 방법을 함께 배워봅시다
+                </div>
+            </div>
+            
+            <div class="meeting-details">
+                <div class="detail-row">
+                    <span class="detail-label">일시:</span>
+                    <span>2025년 11월 20일 오후 7시</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">장소:</span>
+                    <span>북카페 글담 2층 모임실</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">준비:</span>
+                    <span>원고지 또는 노트북</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">문의:</span>
+                    <span>writers.circle.seoul@gmail.com</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

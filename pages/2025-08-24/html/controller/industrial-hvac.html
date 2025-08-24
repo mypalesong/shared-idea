@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Industrial HVAC Controller</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(145deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
+            height: 100vh;
+            overflow: hidden;
+            color: #ecf0f1;
+            position: relative;
+        }
+
+        .hvac-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            grid-template-rows: 100px 1fr 100px;
+            height: 100vh;
+            gap: 12px;
+            padding: 12px;
+        }
+
+        .header-panel {
+            grid-column: 1 / 4;
+            grid-row: 1;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            color: white;
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+        }
+
+        .left-panel {
+            grid-column: 1;
+            grid-row: 2;
+            background: linear-gradient(145deg, #34495e, #2c3e50);
+            border: 2px solid #3498db;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: inset 0 0 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .center-display {
+            grid-column: 2;
+            grid-row: 2;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border: 3px solid #f39c12;
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .right-panel {
+            grid-column: 3;
+            grid-row: 2;
+            background: linear-gradient(145deg, #34495e, #2c3e50);
+            border: 2px solid #e67e22;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: inset 0 0 20px rgba(230, 126, 34, 0.3);
+        }
+
+        .footer-panel {
+            grid-column: 1 / 4;
+            grid-row: 3;
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            color: white;
+            box-shadow: 0 5px 20px rgba(127, 140, 141, 0.4);
+        }
+
+        .zone-display {
+            background: rgba(52, 73, 94, 0.8);
+            border: 2px solid #3498db;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .zone-display:hover {
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .zone-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .zone-temp {
+            font-size: 32px;
+            font-weight: bold;
+            color: #f39c12;
+            margin: 8px 0;
+        }
+
+        .zone-status {
+            font-size: 12px;
+            color: #95a5a6;
+            text-transform: uppercase;
+        }
+
+        .zone-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .hvac-gauge {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: conic-gradient(from 180deg, #3498db 0deg, #f39c12 120deg, #e74c3c 240deg, #3498db 360deg);
+            position: relative;
+            margin: 20px auto;
+            border: 4px solid #ecf0f1;
+        }
+
+        .hvac-gauge::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 110px;
+            height: 110px;
+            background: #2c3e50;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .gauge-needle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 3px;
+            height: 50px;
+            background: #f39c12;
+            transform-origin: bottom center;
+            transform: translate(-50%, 0) rotate(45deg);
+            border-radius: 2px;
+            box-shadow: 0 0 10px #f39c12;
+        }
+
+        .gauge-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            font-weight: bold;
+            color: #f39c12;
+            text-align: center;
+        }
+
+        .system-schematic {
+            flex: 1;
+            background: rgba(44, 62, 80, 0.9);
+            margin: 20px;
+            border-radius: 20px;
+            padding: 25px;
+            position: relative;
+            border: 2px solid #f39c12;
+        }
+
+        .schematic-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f39c12;
+            text-align: center;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .air-flow {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, #3498db, transparent);
+            height: 4px;
+            border-radius: 2px;
+            animation: airFlow 3s linear infinite;
+        }
+
+        @keyframes airFlow {
+            0% { width: 0; left: 20px; }
+            50% { width: 200px; left: 50px; }
+            100% { width: 0; left: 250px; }
+        }
+
+        .ductwork {
+            position: absolute;
+            border: 3px solid #95a5a6;
+            border-radius: 10px;
+            background: rgba(149, 165, 166, 0.1);
+        }
+
+        .fan-unit {
+            width: 60px;
+            height: 60px;
+            border: 3px solid #3498db;
+            border-radius: 50%;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(52, 152, 219, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .fan-unit:hover {
+            box-shadow: 0 0 20px #3498db;
+            transform: scale(1.1);
+        }
+
+        .fan-blade {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #3498db;
+            position: relative;
+            animation: fanRotate 1s linear infinite;
+        }
+
+        .fan-blade::before,
+        .fan-blade::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .fan-blade::before {
+            width: 2px;
+            height: 30px;
+            background: #3498db;
+        }
+
+        .fan-blade::after {
+            width: 30px;
+            height: 2px;
+            background: #3498db;
+        }
+
+        @keyframes fanRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .control-slider {
+            width: 100%;
+            height: 8px;
+            background: #34495e;
+            border-radius: 4px;
+            margin: 15px 0;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .slider-track {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #f39c12, #e74c3c);
+            border-radius: 4px;
+            width: 70%;
+            transition: all 0.3s ease;
+        }
+
+        .slider-handle {
+            position: absolute;
+            top: -8px;
+            left: 70%;
+            width: 24px;
+            height: 24px;
+            background: #ecf0f1;
+            border-radius: 50%;
+            cursor: grab;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .slider-handle:active {
+            cursor: grabbing;
+            transform: scale(1.2);
+        }
+
+        .status-indicator {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .status-indicator.active {
+            background: #27ae60;
+            box-shadow: 0 0 10px #27ae60;
+        }
+
+        .status-indicator.warning {
+            background: #f39c12;
+            box-shadow: 0 0 10px #f39c12;
+        }
+
+        .status-indicator.error {
+            background: #e74c3c;
+            box-shadow: 0 0 10px #e74c3c;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .hvac-button {
+            background: linear-gradient(145deg, #34495e, #2c3e50);
+            border: 2px solid #3498db;
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: bold;
+            color: #3498db;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+        }
+
+        .hvac-button:hover {
+            background: linear-gradient(145deg, #3498db, #2980b9);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+        }
+
+        .hvac-button:active {
+            transform: translateY(0);
+        }
+
+        .hvac-button.active {
+            background: linear-gradient(145deg, #27ae60, #229954);
+            border-color: #27ae60;
+            color: white;
+        }
+
+        .hvac-button.warning {
+            border-color: #f39c12;
+            color: #f39c12;
+        }
+
+        .hvac-button.danger {
+            border-color: #e74c3c;
+            color: #e74c3c;
+        }
+
+        .parameter-display {
+            background: rgba(44, 62, 80, 0.8);
+            border: 2px solid #95a5a6;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .parameter-label {
+            font-size: 12px;
+            color: #95a5a6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .parameter-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ecf0f1;
+        }
+
+        .parameter-unit {
+            font-size: 14px;
+            color: #95a5a6;
+            margin-left: 5px;
+        }
+
+        .alarm-panel {
+            background: rgba(231, 76, 60, 0.1);
+            border: 2px solid #e74c3c;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .alarm-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #e74c3c;
+            text-align: center;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .alarm-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .alarm-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(231, 76, 60, 0.2);
+            font-size: 12px;
+            color: #e74c3c;
+        }
+
+        .alarm-list li:last-child {
+            border-bottom: none;
+        }
+
+        .efficiency-display {
+            text-align: center;
+            padding: 20px;
+            background: rgba(39, 174, 96, 0.1);
+            border: 2px solid #27ae60;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .efficiency-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #27ae60;
+            margin: 10px 0;
+        }
+
+        .efficiency-label {
+            font-size: 12px;
+            color: #95a5a6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="hvac-container">
+        <!-- Header Panel -->
+        <div class="header-panel">
+            <div>
+                <h2>INDUSTRIAL HVAC CONTROL SYSTEM</h2>
+                <div style="font-size: 14px; opacity: 0.9;">Building A | Central Plant Control</div>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 18px;">Total Power Consumption</div>
+                <div style="font-size: 28px; font-weight: bold;">2,847 kW</div>
+            </div>
+        </div>
+
+        <!-- Left Panel - Zone Controls -->
+        <div class="left-panel">
+            <div style="text-align: center; color: #3498db; font-size: 18px; margin-bottom: 20px; font-weight: bold;">ZONE CONTROL</div>
+            
+            <div class="zone-display" onclick="selectZone('zone1')">
+                <div class="zone-title">Zone 1 - Office</div>
+                <div class="zone-temp">22°C</div>
+                <div class="zone-status">
+                    <span class="status-indicator active"></span>Active
+                </div>
+                <div class="zone-controls">
+                    <span style="font-size: 12px; color: #95a5a6;">Target: 23°C</span>
+                    <span style="font-size: 12px; color: #f39c12;">CFM: 1200</span>
+                </div>
+            </div>
+
+            <div class="zone-display" onclick="selectZone('zone2')">
+                <div class="zone-title">Zone 2 - Production</div>
+                <div class="zone-temp">18°C</div>
+                <div class="zone-status">
+                    <span class="status-indicator active"></span>Active
+                </div>
+                <div class="zone-controls">
+                    <span style="font-size: 12px; color: #95a5a6;">Target: 18°C</span>
+                    <span style="font-size: 12px; color: #f39c12;">CFM: 2400</span>
+                </div>
+            </div>
+
+            <div class="zone-display" onclick="selectZone('zone3')">
+                <div class="zone-title">Zone 3 - Storage</div>
+                <div class="zone-temp">15°C</div>
+                <div class="zone-status">
+                    <span class="status-indicator warning"></span>Maintenance
+                </div>
+                <div class="zone-controls">
+                    <span style="font-size: 12px; color: #95a5a6;">Target: 16°C</span>
+                    <span style="font-size: 12px; color: #f39c12;">CFM: 800</span>
+                </div>
+            </div>
+
+            <div class="zone-display" onclick="selectZone('zone4')">
+                <div class="zone-title">Zone 4 - Server Room</div>
+                <div class="zone-temp">20°C</div>
+                <div class="zone-status">
+                    <span class="status-indicator error"></span>High Temp
+                </div>
+                <div class="zone-controls">
+                    <span style="font-size: 12px; color: #95a5a6;">Target: 18°C</span>
+                    <span style="font-size: 12px; color: #f39c12;">CFM: 1800</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Display - System Schematic -->
+        <div class="center-display">
+            <div class="system-schematic">
+                <div class="schematic-title">HVAC System Layout</div>
+                
+                <!-- Main Ductwork -->
+                <div class="ductwork" style="top: 100px; left: 50px; width: 300px; height: 40px;"></div>
+                <div class="ductwork" style="top: 100px; left: 350px; width: 40px; height: 200px;"></div>
+                <div class="ductwork" style="top: 300px; left: 350px; width: 200px; height: 40px;"></div>
+                
+                <!-- Air Flow Animation -->
+                <div class="air-flow" style="top: 118px;"></div>
+                <div class="air-flow" style="top: 200px; left: 368px; width: 4px; height: 100px; animation: airFlowVertical 2s linear infinite;"></div>
+                <div class="air-flow" style="top: 318px; left: 350px; animation: airFlowHorizontal 2.5s linear infinite;"></div>
+                
+                <!-- Fan Units -->
+                <div class="fan-unit" style="top: 80px; left: 80px;" onclick="controlFan('fan1')">
+                    <div class="fan-blade"></div>
+                </div>
+                
+                <div class="fan-unit" style="top: 80px; left: 180px;" onclick="controlFan('fan2')">
+                    <div class="fan-blade"></div>
+                </div>
+                
+                <div class="fan-unit" style="top: 80px; left: 280px;" onclick="controlFan('fan3')">
+                    <div class="fan-blade"></div>
+                </div>
+                
+                <!-- Temperature Sensors -->
+                <div style="position: absolute; top: 200px; left: 100px; background: rgba(243, 156, 18, 0.8); padding: 10px; border-radius: 8px; font-size: 12px; color: #2c3e50;">
+                    <strong>T1: 22°C</strong><br>
+                    RH: 45%
+                </div>
+                
+                <div style="position: absolute; top: 200px; left: 250px; background: rgba(243, 156, 18, 0.8); padding: 10px; border-radius: 8px; font-size: 12px; color: #2c3e50;">
+                    <strong>T2: 18°C</strong><br>
+                    RH: 38%
+                </div>
+                
+                <div style="position: absolute; top: 350px; left: 450px; background: rgba(231, 76, 60, 0.8); padding: 10px; border-radius: 8px; font-size: 12px; color: white;">
+                    <strong>T3: 20°C</strong><br>
+                    RH: 42%
+                    <div style="font-size: 10px; margin-top: 5px;">⚠ HIGH TEMP</div>
+                </div>
+                
+                <!-- Control Panels -->
+                <div style="position: absolute; bottom: 20px; left: 20px;">
+                    <div class="hvac-gauge">
+                        <div class="gauge-needle" id="pressure-needle"></div>
+                        <div class="gauge-value">
+                            <div id="pressure-value">8.5</div>
+                            <div style="font-size: 12px;">PSI</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="position: absolute; bottom: 20px; right: 20px;">
+                    <div class="hvac-gauge">
+                        <div class="gauge-needle" id="flow-needle" style="transform: translate(-50%, 0) rotate(90deg);"></div>
+                        <div class="gauge-value">
+                            <div id="flow-value">4200</div>
+                            <div style="font-size: 12px;">CFM</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Status & Controls -->
+        <div class="right-panel">
+            <div style="text-align: center; color: #e67e22; font-size: 18px; margin-bottom: 20px; font-weight: bold;">SYSTEM STATUS</div>
+            
+            <div class="efficiency-display">
+                <div class="efficiency-label">Energy Efficiency</div>
+                <div class="efficiency-score">92%</div>
+                <div class="efficiency-label">Optimal Performance</div>
+            </div>
+
+            <div class="parameter-display">
+                <div class="parameter-label">Outside Air Temp</div>
+                <div class="parameter-value">28<span class="parameter-unit">°C</span></div>
+            </div>
+
+            <div class="parameter-display">
+                <div class="parameter-label">Humidity</div>
+                <div class="parameter-value">65<span class="parameter-unit">%</span></div>
+            </div>
+
+            <div class="parameter-display">
+                <div class="parameter-label">CO2 Level</div>
+                <div class="parameter-value">420<span class="parameter-unit">ppm</span></div>
+            </div>
+
+            <div class="alarm-panel">
+                <div class="alarm-title">🚨 Active Alarms</div>
+                <ul class="alarm-list">
+                    <li>Zone 4: Temperature exceeded threshold</li>
+                    <li>Zone 3: Scheduled maintenance required</li>
+                    <li>Filter replacement due in 5 days</li>
+                </ul>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <div style="font-size: 14px; font-weight: bold; color: #ecf0f1; margin-bottom: 15px;">Master Controls</div>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <button class="hvac-button active" onclick="masterControl('cooling')">Cooling System</button>
+                    <button class="hvac-button" onclick="masterControl('heating')">Heating System</button>
+                    <button class="hvac-button active" onclick="masterControl('ventilation')">Ventilation</button>
+                    <button class="hvac-button warning" onclick="masterControl('economizer')">Economizer</button>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <div style="font-size: 12px; color: #95a5a6; margin-bottom: 10px;">Supply Air Temperature</div>
+                <div class="control-slider" onclick="adjustTemperature(event)">
+                    <div class="slider-track" id="temp-track"></div>
+                    <div class="slider-handle" id="temp-handle"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 10px; color: #95a5a6;">
+                    <span>15°C</span>
+                    <span>25°C</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Panel -->
+        <div class="footer-panel">
+            <button class="hvac-button" onclick="systemAction('schedule')">Schedule Override</button>
+            <button class="hvac-button" onclick="systemAction('maintenance')">Maintenance Mode</button>
+            <button class="hvac-button danger" onclick="systemAction('emergency')">Emergency Stop</button>
+            <button class="hvac-button" onclick="systemAction('report')">Generate Report</button>
+            <button class="hvac-button" onclick="systemAction('settings')">System Settings</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let selectedZone = null;
+            let systemData = {
+                zones: {
+                    zone1: { temp: 22, target: 23, cfm: 1200, status: 'active' },
+                    zone2: { temp: 18, target: 18, cfm: 2400, status: 'active' },
+                    zone3: { temp: 15, target: 16, cfm: 800, status: 'maintenance' },
+                    zone4: { temp: 20, target: 18, cfm: 1800, status: 'alarm' }
+                },
+                pressure: 8.5,
+                flow: 4200
+            };
+
+            // Zone Selection
+            window.selectZone = function(zoneId) {
+                selectedZone = zoneId;
+                document.querySelectorAll('.zone-display').forEach(zone => {
+                    zone.style.boxShadow = '';
+                    zone.style.borderColor = '#3498db';
+                });
+                
+                const selectedElement = document.querySelector(`[onclick="selectZone('${zoneId}')"]`);
+                selectedElement.style.boxShadow = '0 0 20px #3498db';
+                selectedElement.style.borderColor = '#f39c12';
+            };
+
+            // Fan Control
+            window.controlFan = function(fanId) {
+                const fanElement = document.querySelector(`[onclick="controlFan('${fanId}')"]`);
+                const fanBlade = fanElement.querySelector('.fan-blade');
+                
+                if (fanBlade.style.animationPlayState === 'paused') {
+                    fanBlade.style.animationPlayState = 'running';
+                    fanElement.style.borderColor = '#3498db';
+                } else {
+                    fanBlade.style.animationPlayState = 'paused';
+                    fanElement.style.borderColor = '#95a5a6';
+                }
+            };
+
+            // Master Control
+            window.masterControl = function(system) {
+                const button = document.querySelector(`[onclick="masterControl('${system}')"]`);
+                button.classList.toggle('active');
+                
+                // Visual feedback
+                button.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    button.style.transform = 'scale(1)';
+                }, 150);
+            };
+
+            // Temperature Adjustment
+            window.adjustTemperature = function(event) {
+                const slider = event.currentTarget;
+                const rect = slider.getBoundingClientRect();
+                const percentage = ((event.clientX - rect.left) / rect.width) * 100;
+                const clampedPercentage = Math.max(0, Math.min(100, percentage));
+                
+                const track = document.getElementById('temp-track');
+                const handle = document.getElementById('temp-handle');
+                
+                track.style.width = clampedPercentage + '%';
+                handle.style.left = clampedPercentage + '%';
+                
+                const temperature = 15 + (clampedPercentage / 100) * 10;
+                console.log(`Temperature set to: ${temperature.toFixed(1)}°C`);
+            };
+
+            // System Actions
+            window.systemAction = function(action) {
+                const button = document.querySelector(`[onclick="systemAction('${action}')"]`);
+                const originalText = button.textContent;
+                
+                button.textContent = 'Processing...';
+                button.style.opacity = '0.7';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.opacity = '1';
+                    
+                    switch(action) {
+                        case 'emergency':
+                            alert('Emergency stop activated! All systems shutting down.');
+                            break;
+                        case 'maintenance':
+                            alert('Maintenance mode enabled. Non-critical systems paused.');
+                            break;
+                        case 'schedule':
+                            alert('Schedule override activated for next 2 hours.');
+                            break;
+                        case 'report':
+                            alert('System report generated and saved to server.');
+                            break;
+                        case 'settings':
+                            alert('System settings panel opened.');
+                            break;
+                    }
+                }, 1500);
+            };
+
+            // Drag functionality for temperature slider
+            let isDragging = false;
+            const tempHandle = document.getElementById('temp-handle');
+            const tempSlider = tempHandle.parentElement;
+
+            tempHandle.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    const rect = tempSlider.getBoundingClientRect();
+                    const percentage = ((e.clientX - rect.left) / rect.width) * 100;
+                    const clampedPercentage = Math.max(0, Math.min(100, percentage));
+                    
+                    const track = document.getElementById('temp-track');
+                    track.style.width = clampedPercentage + '%';
+                    tempHandle.style.left = clampedPercentage + '%';
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+
+            // Simulate real-time data updates
+            setInterval(() => {
+                // Update power consumption
+                const powerElement = document.querySelector('.header-panel div:last-child div:last-child');
+                const currentPower = parseFloat(powerElement.textContent);
+                const newPower = currentPower + (Math.random() - 0.5) * 100;
+                powerElement.textContent = Math.max(2500, Math.min(3200, newPower)).toFixed(0) + ' kW';
+
+                // Update gauges
+                systemData.pressure += (Math.random() - 0.5) * 0.5;
+                systemData.pressure = Math.max(7, Math.min(10, systemData.pressure));
+                document.getElementById('pressure-value').textContent = systemData.pressure.toFixed(1);
+                
+                systemData.flow += (Math.random() - 0.5) * 200;
+                systemData.flow = Math.max(3800, Math.min(4600, systemData.flow));
+                document.getElementById('flow-value').textContent = Math.round(systemData.flow);
+                
+                // Update needle positions
+                const pressureRotation = ((systemData.pressure - 7) / 3) * 180 - 90;
+                document.getElementById('pressure-needle').style.transform = `translate(-50%, 0) rotate(${pressureRotation}deg)`;
+                
+                const flowRotation = ((systemData.flow - 3800) / 800) * 180 - 90;
+                document.getElementById('flow-needle').style.transform = `translate(-50%, 0) rotate(${flowRotation}deg)`;
+            }, 3000);
+
+            // CSS for additional animations
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes airFlowVertical {
+                    0% { height: 0; top: 140px; }
+                    50% { height: 100px; top: 140px; }
+                    100% { height: 0; top: 240px; }
+                }
+                
+                @keyframes airFlowHorizontal {
+                    0% { width: 0; left: 370px; }
+                    50% { width: 150px; left: 370px; }
+                    100% { width: 0; left: 520px; }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>

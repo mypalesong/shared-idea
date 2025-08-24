@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2024 Q4 생산 현황 대시보드 | Global Manufacturing Corp.</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+        
+        .meta-info {
+            display: flex;
+            gap: 30px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .meta-info span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px;
+            background: #f8f9fa;
+        }
+        
+        .kpi-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        
+        .kpi-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2a5298;
+            margin-bottom: 5px;
+        }
+        
+        .kpi-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .kpi-change {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .positive {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .negative {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+        }
+        
+        h2 {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            display: inline-block;
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        
+        .production-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .production-table thead {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .production-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .production-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .production-table tbody tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .status-running {
+            background: #cfe2ff;
+            color: #084298;
+        }
+        
+        .status-maintenance {
+            background: #fff3cd;
+            color: #664d03;
+        }
+        
+        .status-stopped {
+            background: #f8d7da;
+            color: #842029;
+        }
+        
+        .alert-box {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .alert-icon {
+            font-size: 2em;
+        }
+        
+        .recommendations {
+            background: #f0f7ff;
+            border-left: 4px solid #0066cc;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        
+        .recommendations h3 {
+            color: #0066cc;
+            margin-bottom: 15px;
+        }
+        
+        .recommendations ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .recommendations li {
+            padding: 10px 0;
+            border-bottom: 1px solid #d0e3f4;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .recommendations li:last-child {
+            border-bottom: none;
+        }
+        
+        .recommendations li::before {
+            content: '→';
+            color: #0066cc;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .production-table {
+                font-size: 0.9em;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+            }
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .trend-chart {
+            height: 300px;
+            background: linear-gradient(to bottom, rgba(102, 126, 234, 0.1), transparent);
+            border-radius: 10px;
+            position: relative;
+            margin-top: 20px;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>2024년 4분기 생산 현황 종합 보고서</h1>
+                <p class="subtitle">Global Manufacturing Corporation - 아시아 태평양 생산 거점</p>
+                <div class="meta-info">
+                    <span>📅 2024년 12월 24일</span>
+                    <span>👤 작성자: 김철수 상무</span>
+                    <span>🏭 생산운영본부</span>
+                    <span>📊 월간 정기 보고</span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-value">94.7%</div>
+                <div class="kpi-label">종합 가동률 (OEE)</div>
+                <span class="kpi-change positive">▲ 3.2% 전월 대비</span>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">1.2M</div>
+                <div class="kpi-label">월간 생산량 (Units)</div>
+                <span class="kpi-change positive">▲ 8.5% YoY</span>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">99.4%</div>
+                <div class="kpi-label">품질 합격률</div>
+                <span class="kpi-change positive">▲ 0.3% 개선</span>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">0.08</div>
+                <div class="kpi-label">사고율 (TRIR)</div>
+                <span class="kpi-change positive">▼ 15% 감소</span>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="alert-box">
+                <span class="alert-icon">⚠️</span>
+                <div>
+                    <strong>긴급 공지:</strong> 12월 28일 Line 3 계획 정비 예정. 생산 일정 조정 필요.
+                </div>
+            </div>
+            
+            <section class="section">
+                <h2>📈 주요 성과 지표 분석</h2>
+                <div class="chart-container">
+                    <h3>월별 생산량 추이</h3>
+                    <div class="trend-chart"></div>
+                    <p style="margin-top: 20px; color: #666;">
+                        4분기 들어 지속적인 생산량 증가 추세를 보이고 있으며, 특히 11월 이후 
+                        스마트 팩토리 시스템 도입으로 생산성이 12% 향상되었습니다. 
+                        연말 수요 증가에 따른 생산 목표를 초과 달성할 것으로 예상됩니다.
+                    </p>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>🏭 생산 라인별 현황</h2>
+                <table class="production-table">
+                    <thead>
+                        <tr>
+                            <th>라인명</th>
+                            <th>제품군</th>
+                            <th>가동률</th>
+                            <th>일일 생산량</th>
+                            <th>품질 지수</th>
+                            <th>상태</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Line 1</strong></td>
+                            <td>전자부품 A</td>
+                            <td>96.5%</td>
+                            <td>42,000 units</td>
+                            <td>99.8%</td>
+                            <td><span class="status-badge status-running">정상 가동</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Line 2</strong></td>
+                            <td>전자부품 B</td>
+                            <td>93.2%</td>
+                            <td>38,500 units</td>
+                            <td>99.5%</td>
+                            <td><span class="status-badge status-running">정상 가동</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Line 3</strong></td>
+                            <td>고정밀 센서</td>
+                            <td>89.8%</td>
+                            <td>22,000 units</td>
+                            <td>99.9%</td>
+                            <td><span class="status-badge status-maintenance">정비 예정</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Line 4</strong></td>
+                            <td>디스플레이 모듈</td>
+                            <td>95.1%</td>
+                            <td>18,000 units</td>
+                            <td>99.3%</td>
+                            <td><span class="status-badge status-running">정상 가동</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Line 5</strong></td>
+                            <td>배터리 팩</td>
+                            <td>0%</td>
+                            <td>0 units</td>
+                            <td>-</td>
+                            <td><span class="status-badge status-stopped">임시 중단</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            
+            <section class="section">
+                <h2>🎯 목표 달성률</h2>
+                <div class="chart-container">
+                    <h3>연간 목표 대비 실적</h3>
+                    <div style="margin-top: 20px;">
+                        <div style="margin-bottom: 20px;">
+                            <strong>생산량 목표</strong>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 108%;"></div>
+                            </div>
+                            <p style="margin-top: 5px; color: #666;">108% 달성 (목표: 12M units / 실적: 13M units)</p>
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <strong>품질 목표</strong>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 99.4%;"></div>
+                            </div>
+                            <p style="margin-top: 5px; color: #666;">99.4% 달성 (목표: 99% 이상)</p>
+                        </div>
+                        <div>
+                            <strong>원가 절감</strong>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 87%;"></div>
+                            </div>
+                            <p style="margin-top: 5px; color: #666;">87% 달성 (목표: 15% 절감 / 실적: 13% 절감)</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>💡 주요 이슈 및 대응 방안</h2>
+                <div class="recommendations">
+                    <h3>긴급 대응 필요 사항</h3>
+                    <ul>
+                        <li>Line 5 배터리 팩 라인 화재 안전 점검으로 인한 임시 중단 - 12/26 재가동 예정</li>
+                        <li>원자재 공급망 불안정으로 인한 재고 부족 위험 - 대체 공급처 확보 진행 중</li>
+                        <li>숙련 기술자 3명 퇴직 예정 - 신규 인력 교육 프로그램 가속화 필요</li>
+                    </ul>
+                </div>
+                
+                <div class="recommendations" style="margin-top: 20px;">
+                    <h3>개선 제안 사항</h3>
+                    <ul>
+                        <li>AI 기반 예측 정비 시스템 도입으로 다운타임 30% 감소 예상</li>
+                        <li>에너지 효율화 프로젝트를 통한 전력 비용 연간 2억원 절감 가능</li>
+                        <li>자동화 로봇 추가 도입으로 Line 2 생산성 20% 향상 기대</li>
+                        <li>품질 검사 AI 비전 시스템 업그레이드로 불량률 0.1% 추가 감소 목표</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2>📊 재무 영향 분석</h2>
+                <div class="chart-container">
+                    <p>
+                        <strong>매출 영향:</strong> 생산량 증가로 인한 4분기 매출 15% 상승 예상<br>
+                        <strong>비용 절감:</strong> 공정 최적화로 단위당 생산 비용 8% 감소<br>
+                        <strong>투자 수익률:</strong> 스마트 팩토리 투자 ROI 18개월 내 회수 전망
+                    </p>
+                </div>
+            </section>
+        </div>
+        
+        <footer>
+            <div class="footer-content">
+                <div>
+                    <strong>Global Manufacturing Corporation</strong><br>
+                    © 2024 All Rights Reserved. Confidential Document.
+                </div>
+                <div class="footer-links">
+                    <a href="#">이전 보고서</a>
+                    <a href="#">데이터 소스</a>
+                    <a href="#">문의하기</a>
+                    <a href="#">인쇄 버전</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

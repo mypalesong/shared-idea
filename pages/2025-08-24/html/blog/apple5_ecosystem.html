@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Ecosystem - 40대 연결된 일상</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+            background: #f5f5f7;
+            color: #1d1d1f;
+            line-height: 1.47059;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(245, 245, 247, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1d1d1f;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+        
+        .nav-link {
+            color: #1d1d1f;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 400;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #0066cc;
+        }
+        
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><defs><pattern id="ecosystem-pattern" width="50" height="50" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="2" fill="%23ffffff" opacity="0.1"/><circle cx="10" cy="10" r="1" fill="%23ffffff" opacity="0.05"/><circle cx="40" cy="10" r="1" fill="%23ffffff" opacity="0.05"/><circle cx="10" cy="40" r="1" fill="%23ffffff" opacity="0.05"/><circle cx="40" cy="40" r="1" fill="%23ffffff" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23ecosystem-pattern)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(1deg); }
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            z-index: 2;
+            position: relative;
+        }
+        
+        .hero-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 32px;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+        }
+        
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 48px;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+        
+        .cta-button {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 18px 36px;
+            border-radius: 28px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .cta-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .ecosystem-section {
+            padding: 120px 0;
+            background: #f5f5f7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+        
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #1d1d1f;
+            text-align: center;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+        
+        .section-subtitle {
+            font-size: 1.25rem;
+            color: #86868b;
+            text-align: center;
+            margin-bottom: 80px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .ecosystem-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+        
+        .ecosystem-item {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ecosystem-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+        
+        .ecosystem-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .ecosystem-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .ecosystem-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 16px;
+        }
+        
+        .ecosystem-description {
+            font-size: 1rem;
+            color: #86868b;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        
+        .ecosystem-features {
+            list-style: none;
+            text-align: left;
+        }
+        
+        .ecosystem-features li {
+            color: #515154;
+            font-size: 0.875rem;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+            padding-left: 24px;
+        }
+        
+        .ecosystem-features li:last-child {
+            border-bottom: none;
+        }
+        
+        .ecosystem-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #34c759;
+            font-weight: 600;
+        }
+        
+        .connection-section {
+            padding: 120px 0;
+            background: linear-gradient(135deg, #1d1d1f 0%, #2d2d2f 100%);
+            color: white;
+            position: relative;
+        }
+        
+        .connection-visual {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 60px;
+            align-items: center;
+            margin-top: 80px;
+        }
+        
+        .connection-node {
+            text-align: center;
+            position: relative;
+        }
+        
+        .connection-circle {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            margin: 0 auto 20px;
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { 
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 0 20px rgba(102, 126, 234, 0);
+                transform: scale(1.05);
+            }
+        }
+        
+        .connection-label {
+            font-size: 1rem;
+            font-weight: 500;
+            color: rgba(245, 245, 247, 0.8);
+        }
+        
+        .connection-node::after {
+            content: '';
+            position: absolute;
+            top: 60px;
+            left: 100%;
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, transparent);
+            z-index: 1;
+        }
+        
+        .connection-node:last-child::after {
+            display: none;
+        }
+        
+        .stats-section {
+            padding: 100px 0;
+            background: white;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 60px;
+            text-align: center;
+        }
+        
+        .stat-item {
+            padding: 40px 20px;
+        }
+        
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #667eea;
+            display: block;
+            margin-bottom: 12px;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: #86868b;
+            font-weight: 500;
+        }
+        
+        .integration-section {
+            padding: 120px 0;
+            background: #f5f5f7;
+        }
+        
+        .integration-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+        
+        .integration-content h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+        
+        .integration-content p {
+            font-size: 1.125rem;
+            color: #515154;
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+        
+        .integration-features {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .integration-feature {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .integration-feature:hover {
+            transform: translateX(8px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .feature-text {
+            flex: 1;
+        }
+        
+        .feature-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 4px;
+        }
+        
+        .feature-description {
+            font-size: 0.875rem;
+            color: #86868b;
+        }
+        
+        .integration-visual {
+            height: 500px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            color: rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .integration-visual::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-conic-gradient(
+                from 0deg,
+                transparent 0deg,
+                rgba(255, 255, 255, 0.1) 20deg,
+                transparent 40deg
+            );
+            animation: rotate 30s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .footer {
+            background: #1d1d1f;
+            color: white;
+            padding: 80px 0 40px;
+        }
+        
+        .footer-content {
+            text-align: center;
+        }
+        
+        .footer-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+        .footer-text {
+            font-size: 1rem;
+            color: #86868b;
+            margin-bottom: 40px;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid #424245;
+            padding-top: 40px;
+            text-align: center;
+            color: #86868b;
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .ecosystem-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .connection-visual {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 40px;
+            }
+            
+            .integration-grid {
+                grid-template-columns: 1fr;
+                gap: 60px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.25rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 40px;
+            }
+            
+            .connection-visual {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .connection-node::after {
+                display: none;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <div class="logo">Life Ecosystem</div>
+            <div class="nav-links">
+                <a href="#home" class="nav-link">홈</a>
+                <a href="#ecosystem" class="nav-link">생태계</a>
+                <a href="#connections" class="nav-link">연결</a>
+                <a href="#stats" class="nav-link">통계</a>
+            </div>
+        </div>
+    </nav>
+    
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-badge">Connected Life</div>
+            <h1 class="hero-title">Life Ecosystem</h1>
+            <p class="hero-subtitle">40대의 모든 순간이 연결되어 만들어내는 완전한 라이프스타일</p>
+            <a href="#ecosystem" class="cta-button">생태계 탐험하기</a>
+        </div>
+    </section>
+    
+    <section class="ecosystem-section" id="ecosystem">
+        <div class="container">
+            <h2 class="section-title">Connected Experiences</h2>
+            <p class="section-subtitle">일상의 모든 영역이 하나로 연결되어 시너지를 만들어냅니다</p>
+            
+            <div class="ecosystem-grid">
+                <div class="ecosystem-item">
+                    <div class="ecosystem-icon">🏠</div>
+                    <h3 class="ecosystem-title">Home Life</h3>
+                    <p class="ecosystem-description">가족과 함께하는 소중한 시간들이 모든 것의 중심입니다.</p>
+                    <ul class="ecosystem-features">
+                        <li>스마트 홈 시스템 연동</li>
+                        <li>가족 일정 공유</li>
+                        <li>홈 엔터테인먼트</li>
+                        <li>건강한 식단 관리</li>
+                    </ul>
+                </div>
+                
+                <div class="ecosystem-item">
+                    <div class="ecosystem-icon" style="background: linear-gradient(135deg, #fd79a8, #fdcb6e);">💼</div>
+                    <h3 class="ecosystem-title">Work Flow</h3>
+                    <p class="ecosystem-description">효율적인 업무 환경과 생산성 도구들의 완벽한 조화.</p>
+                    <ul class="ecosystem-features">
+                        <li>클라우드 동기화</li>
+                        <li>모바일 오피스</li>
+                        <li>AI 어시스턴트</li>
+                        <li>화상 회의 시스템</li>
+                    </ul>
+                </div>
+                
+                <div class="ecosystem-item">
+                    <div class="ecosystem-icon" style="background: linear-gradient(135deg, #a8edea, #fed6e3);">💪</div>
+                    <h3 class="ecosystem-title">Health & Fitness</h3>
+                    <p class="ecosystem-description">건강한 40대를 위한 통합 헬스케어 솔루션.</p>
+                    <ul class="ecosystem-features">
+                        <li>운동량 자동 추적</li>
+                        <li>건강 데이터 분석</li>
+                        <li>개인 맞춤 운동</li>
+                        <li>수면 패턴 관리</li>
+                    </ul>
+                </div>
+                
+                <div class="ecosystem-item">
+                    <div class="ecosystem-icon" style="background: linear-gradient(135deg, #ff9a9e, #fecfef);">🎯</div>
+                    <h3 class="ecosystem-title">Personal Growth</h3>
+                    <p class="ecosystem-description">지속적인 학습과 성장을 위한 개인 발전 도구.</p>
+                    <ul class="ecosystem-features">
+                        <li>독서 목표 관리</li>
+                        <li>온라인 강의 연동</li>
+                        <li>스킬 트래킹</li>
+                        <li>멘토링 플랫폼</li>
+                    </ul>
+                </div>
+                
+                <div class="ecosystem-item">
+                    <div class="ecosystem-icon" style="background: linear-gradient(135deg, #ffecd2, #fcb69f);">🌍</div>
+                    <h3 class="ecosystem-title">Social Network</h3>
+                    <p class="ecosystem-description">의미 있는 인간관계를 유지하고 확장하는 소셜 허브.</p>
+                    <ul class="ecosystem-features">
+                        <li>가족 소통 채널</li>
+                        <li>친구 관계 관리</li>
+                        <li>커뮤니티 참여</li>
+                        <li>네트워킹 도구</li>
+                    </ul>
+                </div>
+                
+                <div class="ecosystem-item">
+                    <div class="ecosystem-icon" style="background: linear-gradient(135deg, #ff6b6b, #feca57);">🎨</div>
+                    <h3 class="ecosystem-title">Creative Space</h3>
+                    <p class="ecosystem-description">창의성을 발휘하고 취미 활동을 즐기는 개인 공간.</p>
+                    <ul class="ecosystem-features">
+                        <li>사진 자동 정리</li>
+                        <li>블로그 글 작성</li>
+                        <li>취미 프로젝트</li>
+                        <li>아트 컬렉션</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="connection-section" id="connections">
+        <div class="container">
+            <h2 class="section-title">Seamless Integration</h2>
+            <p class="section-subtitle">모든 영역이 하나의 생태계로 연결되어 작동합니다</p>
+            
+            <div class="connection-visual">
+                <div class="connection-node">
+                    <div class="connection-circle">☕</div>
+                    <div class="connection-label">Morning</div>
+                </div>
+                <div class="connection-node">
+                    <div class="connection-circle">💼</div>
+                    <div class="connection-label">Work</div>
+                </div>
+                <div class="connection-node">
+                    <div class="connection-circle">👨‍👩‍👧‍👦</div>
+                    <div class="connection-label">Family</div>
+                </div>
+                <div class="connection-node">
+                    <div class="connection-circle">🌙</div>
+                    <div class="connection-label">Evening</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="stats-section" id="stats">
+        <div class="container">
+            <h2 class="section-title">Ecosystem Performance</h2>
+            <p class="section-subtitle">데이터로 보는 연결된 일상의 효과</p>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">98%</span>
+                    <div class="stat-label">동기화 완성도</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">24/7</span>
+                    <div class="stat-label">연결 상태</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">6</span>
+                    <div class="stat-label">연결된 영역</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">∞</span>
+                    <div class="stat-label">확장 가능성</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="integration-section">
+        <div class="container">
+            <div class="integration-grid">
+                <div class="integration-content">
+                    <h2>Everything Works Together</h2>
+                    <p>40대의 바쁜 일상 속에서도 모든 것이 자연스럽게 연결되어 작동합니다. 하나의 행동이 전체 생태계에 긍정적인 영향을 미치는 완벽한 라이프스타일을 경험해보세요.</p>
+                    
+                    <div class="integration-features">
+                        <div class="integration-feature">
+                            <div class="feature-icon">⚡</div>
+                            <div class="feature-text">
+                                <div class="feature-title">자동 동기화</div>
+                                <div class="feature-description">모든 기기와 서비스가 실시간으로 연결</div>
+                            </div>
+                        </div>
+                        
+                        <div class="integration-feature">
+                            <div class="feature-icon">🎯</div>
+                            <div class="feature-text">
+                                <div class="feature-title">맞춤형 제안</div>
+                                <div class="feature-description">AI가 분석한 개인 패턴 기반 추천</div>
+                            </div>
+                        </div>
+                        
+                        <div class="integration-feature">
+                            <div class="feature-icon">🔒</div>
+                            <div class="feature-text">
+                                <div class="feature-title">프라이버시 보호</div>
+                                <div class="feature-description">모든 데이터는 암호화되어 안전하게 보관</div>
+                            </div>
+                        </div>
+                        
+                        <div class="integration-feature">
+                            <div class="feature-icon">📱</div>
+                            <div class="feature-text">
+                                <div class="feature-title">크로스 플랫폼</div>
+                                <div class="feature-description">모바일, 데스크톱, 웹에서 동일한 경험</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="integration-visual">
+                    🔗
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <h2 class="footer-title">Life Ecosystem</h2>
+                <p class="footer-text">40대를 위한 연결된 라이프스타일의 미래</p>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Life Ecosystem. 모든 순간이 연결되어 완성되는 일상.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

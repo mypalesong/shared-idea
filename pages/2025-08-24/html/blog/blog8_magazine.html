@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIFE 40+ Magazine - 프리미엄 라이프스타일</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700;900&family=Noto+Sans+KR:wght@300;400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #f8f9fa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+        
+        .magazine-cover {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 50%, #9b59b6 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .magazine-cover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .magazine-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .magazine-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .issue-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            padding: 20px 30px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .issue-number {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 80px 40px;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .section-desc {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .main-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 60px;
+            margin-bottom: 80px;
+        }
+        
+        .main-articles {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+        
+        .featured-article {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .featured-article:hover {
+            transform: translateY(-10px);
+        }
+        
+        .article-image {
+            height: 350px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            color: rgba(255,255,255,0.7);
+            position: relative;
+        }
+        
+        .article-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .article-content {
+            padding: 40px;
+        }
+        
+        .article-category {
+            color: #3498db;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+        
+        .article-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+        
+        .article-excerpt {
+            font-size: 1.1rem;
+            color: #5d6d7e;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
+            font-size: 0.9rem;
+            color: #95a5a6;
+        }
+        
+        .read-time {
+            background: #ecf0f1;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+        
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        
+        .sidebar-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        
+        .sidebar-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .sidebar-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .sidebar-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .sidebar-icon {
+            flex-shrink: 0;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #3498db, #9b59b6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .sidebar-content {
+            flex: 1;
+        }
+        
+        .sidebar-item-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+        
+        .sidebar-item-text {
+            color: #7f8c8d;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        
+        .lifestyle-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 80px;
+        }
+        
+        .lifestyle-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .lifestyle-card:hover {
+            transform: translateY(-8px);
+        }
+        
+        .card-image {
+            height: 200px;
+            background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+        
+        .card-content {
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .card-text {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .premium-section {
+            background: linear-gradient(135deg, #2c3e50 0%, #4a6741 100%);
+            color: white;
+            padding: 80px 60px;
+            border-radius: 25px;
+            text-align: center;
+            margin-top: 100px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .premium-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" fill="none"/><circle cx="30" cy="30" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="15" cy="15" r="1" fill="%23ffffff" opacity="0.05"/><circle cx="45" cy="45" r="1" fill="%23ffffff" opacity="0.08"/></svg>');
+            opacity: 0.4;
+        }
+        
+        .premium-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .premium-text {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .premium-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-top: 60px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .stat {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .lifestyle-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 25px;
+            }
+            
+            .premium-stats {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .magazine-title {
+                font-size: 2.8rem;
+            }
+            
+            .container {
+                padding: 40px 20px;
+            }
+            
+            .lifestyle-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .issue-info {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="magazine-cover">
+        <h1 class="magazine-title">LIFE 40+</h1>
+        <p class="magazine-subtitle">Premium Lifestyle Magazine for the Modern Gentleman</p>
+        <div class="issue-info">
+            <div class="issue-number">Vol. 12 | August 2025</div>
+            <div>40대 남성을 위한 프리미엄 라이프스타일</div>
+            <div>₩15,000</div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">This Month's Features</h2>
+            <p class="section-desc">40대 남성의 품격 있는 일상을 위한 특별한 이야기들</p>
+        </div>
+        
+        <div class="main-layout">
+            <main class="main-articles">
+                <article class="featured-article">
+                    <div class="article-image">
+                        ⌚
+                        <div class="article-overlay">COVER STORY</div>
+                    </div>
+                    <div class="article-content">
+                        <div class="article-category">LIFESTYLE</div>
+                        <h3 class="article-title">시간의 가치를 아는 40대의 시계 철학</h3>
+                        <p class="article-excerpt">
+                            시계는 단순히 시간을 알려주는 도구가 아니다. 40대에 접어들면서 
+                            시간의 소중함을 깨달은 남성들에게 시계는 인생의 동반자가 된다. 
+                            기계식 시계의 매력부터 스마트워치의 실용성까지, 
+                            현대 신사가 알아야 할 시계의 모든 것을 담았다.
+                        </p>
+                        <div class="article-meta">
+                            <span>김시계 에디터</span>
+                            <span class="read-time">8분 읽기</span>
+                        </div>
+                    </div>
+                </article>
+                
+                <article class="featured-article">
+                    <div class="article-image" style="background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);">
+                        🍷
+                        <div class="article-overlay">SPECIAL</div>
+                    </div>
+                    <div class="article-content">
+                        <div class="article-category">CULTURE</div>
+                        <h3 class="article-title">집에서 즐기는 프리미엄 와인 컬렉션</h3>
+                        <p class="article-excerpt">
+                            바쁜 일상 속에서도 품격을 잃지 않는 40대 남성들을 위한 
+                            홈 와인 컬렉션 가이드. 가족과 함께, 혹은 혼자만의 시간에 
+                            마시기 좋은 와인들과 올바른 보관법, 그리고 와인과 함께하는 
+                            특별한 저녁 시간을 만드는 방법을 소개한다.
+                        </p>
+                        <div class="article-meta">
+                            <span>박소믈리에</span>
+                            <span class="read-time">12분 읽기</span>
+                        </div>
+                    </div>
+                </article>
+            </main>
+            
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Editor's Pick</h3>
+                    <div class="sidebar-item">
+                        <div class="sidebar-icon">📚</div>
+                        <div class="sidebar-content">
+                            <div class="sidebar-item-title">40대가 읽어야 할 책</div>
+                            <div class="sidebar-item-text">
+                                인생의 중반부에서 읽으면 좋은 책들을 엄선했습니다.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sidebar-item">
+                        <div class="sidebar-icon">💼</div>
+                        <div class="sidebar-content">
+                            <div class="sidebar-item-title">커리어 전환 가이드</div>
+                            <div class="sidebar-item-text">
+                                40대 커리어 전환을 성공적으로 이끄는 전략들을 소개합니다.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sidebar-item">
+                        <div class="sidebar-icon">🏋️‍♂️</div>
+                        <div class="sidebar-content">
+                            <div class="sidebar-item-title">40대 남성 헬스</div>
+                            <div class="sidebar-item-text">
+                                무리하지 않으면서도 효과적인 운동 루틴을 제안합니다.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Trending Now</h3>
+                    <div class="sidebar-item">
+                        <div class="sidebar-icon">🎵</div>
+                        <div class="sidebar-content">
+                            <div class="sidebar-item-title">40대 음악 취향</div>
+                            <div class="sidebar-item-text">
+                                추억과 현재가 공존하는 플레이리스트 큐레이션
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sidebar-item">
+                        <div class="sidebar-icon">🚗</div>
+                        <div class="sidebar-content">
+                            <div class="sidebar-item-title">패밀리카 선택 가이드</div>
+                            <div class="sidebar-item-text">
+                                가족과 함께 타기 좋은 차량 추천 및 구매 팁
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sidebar-item">
+                        <div class="sidebar-icon">🏠</div>
+                        <div class="sidebar-content">
+                            <div class="sidebar-item-title">홈 오피스 인테리어</div>
+                            <div class="sidebar-item-text">
+                                재택근무에 최적화된 공간 연출법을 제안합니다.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+        
+        <section class="lifestyle-grid">
+            <div class="lifestyle-card">
+                <div class="card-image">☕</div>
+                <div class="card-content">
+                    <h4 class="card-title">모닝 루틴의 힘</h4>
+                    <p class="card-text">
+                        성공한 40대 남성들의 아침 습관을 
+                        분석하고 실천 가능한 루틴을 제안합니다.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="lifestyle-card">
+                <div class="card-image" style="background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);">👨‍👧‍👦</div>
+                <div class="card-content">
+                    <h4 class="card-title">아빠의 육아 철학</h4>
+                    <p class="card-text">
+                        일과 육아의 균형을 맞추며 
+                        아이들과 깊이 있는 관계를 만드는 법을 알아봅니다.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="lifestyle-card">
+                <div class="card-image" style="background: linear-gradient(135deg, #e17055 0%, #fab1a0 100%);">🎯</div>
+                <div class="card-content">
+                    <h4 class="card-title">목표 달성 전략</h4>
+                    <p class="card-text">
+                        40대에 설정해야 할 현실적인 목표들과 
+                        이를 달성하기 위한 구체적인 방법론을 제시합니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="premium-section">
+            <h2 class="premium-title">LIFE 40+ Premium</h2>
+            <p class="premium-text">
+                더 깊이 있는 콘텐츠와 개인 맞춤 서비스를 원한다면 
+                프리미엄 멤버십을 경험해보세요. 40대 남성만을 위한 
+                특별한 라이프스타일 가이드가 여러분을 기다립니다.
+            </p>
+            <div class="premium-stats">
+                <div class="stat">
+                    <div class="stat-number">1,200+</div>
+                    <div class="stat-label">프리미엄 콘텐츠</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">전문가 상담</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">만족도</div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>추억의 재회 - 친구들과의 모임</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .parallax-container {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .parallax-bg {
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1566737236500-c8ac43014a8e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            animation: parallaxMove 20s ease-in-out infinite;
+        }
+        
+        @keyframes parallaxMove {
+            0%, 100% { transform: scale(1) translateX(0) translateY(0); }
+            33% { transform: scale(1.1) translateX(-2%) translateY(-1%); }
+            66% { transform: scale(1.05) translateX(1%) translateY(1%); }
+        }
+        
+        .content {
+            position: relative;
+            z-index: 10;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+        
+        .title {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+            opacity: 0;
+            animation: fadeInUp 2s ease-out 0.5s forwards;
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeInUp 2s ease-out 1s forwards;
+        }
+        
+        .date-info {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeInUp 2s ease-out 1.5s forwards;
+        }
+        
+        .floating-images {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+        }
+        
+        .floating-img {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .floating-img:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            background: url('https://images.unsplash.com/photo-1574391884720-bbc4fe48aa10?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80') center/cover;
+            animation-delay: 0s;
+        }
+        
+        .floating-img:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 30%;
+            right: 15%;
+            background: url('https://images.unsplash.com/photo-1540420773420-3366772f4999?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80') center/cover;
+            animation-delay: 2s;
+        }
+        
+        .floating-img:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            bottom: 30%;
+            left: 20%;
+            background: url('https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80') center/cover;
+            animation-delay: 4s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            opacity: 0;
+            animation: fadeInUp 2s ease-out 2s forwards;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="parallax-container">
+        <div class="parallax-bg"></div>
+        <div class="floating-images">
+            <div class="floating-img"></div>
+            <div class="floating-img"></div>
+            <div class="floating-img"></div>
+        </div>
+        <div class="content">
+            <h1 class="title">추억의 재회</h1>
+            <p class="subtitle">오랜만에 만나는 소중한 시간</p>
+            <div class="date-info">
+                <h3>2025년 3월 15일 토요일</h3>
+                <p>오후 7시 | 강남 맛집</p>
+                <p>오랜 친구들과의 따뜻한 만남</p>
+            </div>
+            <button class="btn">참석 의사 전달하기</button>
+        </div>
+    </div>
+</body>
+</html>

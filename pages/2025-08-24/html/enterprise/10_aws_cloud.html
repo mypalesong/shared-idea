@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Management Console</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Amazon Ember', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f2f3f3;
+            color: #0d1117;
+        }
+        
+        .aws-header {
+            background: #232f3e;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .aws-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 32px;
+        }
+        
+        .logo-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #ff9900, #ffb84d);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        
+        .logo-text {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .header-nav {
+            display: flex;
+            gap: 24px;
+            flex: 1;
+        }
+        
+        .header-nav a {
+            color: #d5dbdb;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 12px 8px;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .header-nav a:hover {
+            color: white;
+            border-bottom-color: #ff9900;
+        }
+        
+        .header-nav a.active {
+            color: white;
+            border-bottom-color: #ff9900;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .region-selector {
+            background: #3c4043;
+            border: 1px solid #545b64;
+            padding: 6px 12px;
+            border-radius: 4px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .support-link {
+            color: #d5dbdb;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        
+        .user-menu {
+            background: #3c4043;
+            border: 1px solid #545b64;
+            padding: 6px 12px;
+            border-radius: 4px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .breadcrumb {
+            background: white;
+            padding: 12px 16px;
+            border-bottom: 1px solid #d5dbdb;
+            font-size: 14px;
+        }
+        
+        .breadcrumb a {
+            color: #0073bb;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .main-container {
+            padding: 24px 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .page-header {
+            margin-bottom: 32px;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 400;
+            color: #0d1117;
+            margin-bottom: 8px;
+        }
+        
+        .page-description {
+            color: #545b64;
+            font-size: 16px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .service-card {
+            background: white;
+            border: 1px solid #d5dbdb;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .service-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: #ff9900;
+        }
+        
+        .service-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .service-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .icon-ec2 { background: linear-gradient(135deg, #ff9900, #ffb84d); }
+        .icon-s3 { background: linear-gradient(135deg, #3f9142, #5fb85f); }
+        .icon-rds { background: linear-gradient(135deg, #527fff, #7090ff); }
+        .icon-lambda { background: linear-gradient(135deg, #ff9900, #ffb84d); }
+        .icon-cloudwatch { background: linear-gradient(135deg, #8c4fff, #a869ff); }
+        .icon-iam { background: linear-gradient(135deg, #dd344c, #ff5b70); }
+        .icon-vpc { background: linear-gradient(135deg, #146eb4, #2e8ce6); }
+        .icon-cloudfront { background: linear-gradient(135deg, #ff6b6b, #ff8a8a); }
+        
+        .service-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0d1117;
+        }
+        
+        .service-description {
+            color: #545b64;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+        
+        .service-stats {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #0073bb;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #545b64;
+            text-transform: uppercase;
+        }
+        
+        .resource-overview {
+            background: white;
+            border: 1px solid #d5dbdb;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .overview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .overview-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #0d1117;
+        }
+        
+        .view-all-btn {
+            background: #ff9900;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .view-all-btn:hover {
+            background: #e88900;
+        }
+        
+        .resource-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        
+        .resource-table th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 1px solid #d5dbdb;
+            color: #0d1117;
+        }
+        
+        .resource-table td {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .resource-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-running {
+            background: #d1f2eb;
+            color: #00875a;
+        }
+        
+        .status-stopped {
+            background: #ffebe6;
+            color: #de350b;
+        }
+        
+        .status-pending {
+            background: #fff4e6;
+            color: #ff8b00;
+        }
+        
+        .monitoring-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .metrics-chart {
+            background: white;
+            border: 1px solid #d5dbdb;
+            border-radius: 8px;
+            padding: 24px;
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0d1117;
+        }
+        
+        .time-selector {
+            background: #f8f9fa;
+            border: 1px solid #d5dbdb;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .chart-area {
+            height: 250px;
+            background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+            border-radius: 4px;
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+            gap: 4px;
+        }
+        
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(180deg, #ff9900, #e88900);
+            border-radius: 2px 2px 0 0;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .chart-bar:hover {
+            opacity: 0.8;
+        }
+        
+        .chart-bar:nth-child(1) { height: 60%; }
+        .chart-bar:nth-child(2) { height: 75%; }
+        .chart-bar:nth-child(3) { height: 45%; }
+        .chart-bar:nth-child(4) { height: 85%; }
+        .chart-bar:nth-child(5) { height: 70%; }
+        .chart-bar:nth-child(6) { height: 90%; }
+        .chart-bar:nth-child(7) { height: 65%; }
+        .chart-bar:nth-child(8) { height: 80%; }
+        .chart-bar:nth-child(9) { height: 55%; }
+        .chart-bar:nth-child(10) { height: 95%; }
+        
+        .alerts-panel {
+            background: white;
+            border: 1px solid #d5dbdb;
+            border-radius: 8px;
+            padding: 24px;
+        }
+        
+        .alerts-header {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0d1117;
+            margin-bottom: 20px;
+        }
+        
+        .alert-item {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            border-left: 4px solid;
+        }
+        
+        .alert-item.warning {
+            background: #fff4e6;
+            border-left-color: #ff8b00;
+        }
+        
+        .alert-item.error {
+            background: #ffebe6;
+            border-left-color: #de350b;
+        }
+        
+        .alert-item.info {
+            background: #e6f7ff;
+            border-left-color: #0073bb;
+        }
+        
+        .alert-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .alert-icon.warning { background: #ff8b00; }
+        .alert-icon.error { background: #de350b; }
+        .alert-icon.info { background: #0073bb; }
+        
+        .alert-content {
+            flex: 1;
+        }
+        
+        .alert-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .alert-message {
+            font-size: 14px;
+            color: #545b64;
+            line-height: 1.4;
+        }
+        
+        .alert-time {
+            font-size: 12px;
+            color: #879196;
+            margin-top: 8px;
+        }
+        
+        .cost-widget {
+            background: white;
+            border: 1px solid #d5dbdb;
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+        }
+        
+        .cost-header {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0d1117;
+            margin-bottom: 20px;
+        }
+        
+        .cost-amount {
+            font-size: 36px;
+            font-weight: 300;
+            color: #ff9900;
+            margin-bottom: 8px;
+        }
+        
+        .cost-period {
+            font-size: 14px;
+            color: #545b64;
+            margin-bottom: 16px;
+        }
+        
+        .cost-trend {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .trend-up {
+            background: #ffebe6;
+            color: #de350b;
+        }
+        
+        .trend-down {
+            background: #d1f2eb;
+            color: #00875a;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 32px;
+        }
+        
+        .action-btn {
+            background: white;
+            border: 1px solid #d5dbdb;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .action-btn:hover {
+            border-color: #ff9900;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .action-icon {
+            width: 32px;
+            height: 32px;
+            margin: 0 auto 8px;
+            background: #ff9900;
+            border-radius: 50%;
+        }
+        
+        .action-text {
+            font-size: 14px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <header class="aws-header">
+        <div class="aws-logo">
+            <div class="logo-icon">AWS</div>
+            <span class="logo-text">Management Console</span>
+        </div>
+        <nav class="header-nav">
+            <a href="#" class="active">Console Home</a>
+            <a href="#">Services</a>
+            <a href="#">Resource Groups</a>
+            <a href="#">AWS Config</a>
+            <a href="#">CloudShell</a>
+        </nav>
+        <div class="header-actions">
+            <select class="region-selector">
+                <option>Asia Pacific (Seoul)</option>
+                <option>US East (N. Virginia)</option>
+                <option>US West (Oregon)</option>
+            </select>
+            <a href="#" class="support-link">Support</a>
+            <div class="user-menu">admin ▼</div>
+        </div>
+    </header>
+    
+    <div class="breadcrumb">
+        <a href="#">Console Home</a> > Dashboard
+    </div>
+    
+    <div class="main-container">
+        <div class="page-header">
+            <h1 class="page-title">AWS Management Console</h1>
+            <p class="page-description">Monitor and manage your AWS resources from a centralized dashboard</p>
+        </div>
+        
+        <div class="dashboard-grid">
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon icon-ec2">🖥️</div>
+                    <h3 class="service-title">EC2</h3>
+                </div>
+                <p class="service-description">Virtual servers in the cloud</p>
+                <div class="service-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Running</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Stopped</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon icon-s3">🪣</div>
+                    <h3 class="service-title">S3</h3>
+                </div>
+                <p class="service-description">Scalable storage in the cloud</p>
+                <div class="service-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">47</div>
+                        <div class="stat-label">Buckets</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2.4TB</div>
+                        <div class="stat-label">Storage</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon icon-rds">🗄️</div>
+                    <h3 class="service-title">RDS</h3>
+                </div>
+                <p class="service-description">Managed relational database</p>
+                <div class="service-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Instances</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">99.9%</div>
+                        <div class="stat-label">Uptime</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon icon-lambda">⚡</div>
+                    <h3 class="service-title">Lambda</h3>
+                </div>
+                <p class="service-description">Run code without servers</p>
+                <div class="service-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">156</div>
+                        <div class="stat-label">Functions</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2.4M</div>
+                        <div class="stat-label">Invocations</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon icon-cloudwatch">📊</div>
+                    <h3 class="service-title">CloudWatch</h3>
+                </div>
+                <p class="service-description">Monitoring and observability</p>
+                <div class="service-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">89</div>
+                        <div class="stat-label">Alarms</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">23</div>
+                        <div class="stat-label">Dashboards</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-header">
+                    <div class="service-icon icon-iam">👤</div>
+                    <h3 class="service-title">IAM</h3>
+                </div>
+                <p class="service-description">Identity and access management</p>
+                <div class="service-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">247</div>
+                        <div class="stat-label">Users</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">45</div>
+                        <div class="stat-label">Roles</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="resource-overview">
+            <div class="overview-header">
+                <h2 class="overview-title">Recent Resources</h2>
+                <button class="view-all-btn">View All Resources</button>
+            </div>
+            <table class="resource-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Region</th>
+                        <th>Last Modified</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>web-server-prod-01</td>
+                        <td>EC2 Instance</td>
+                        <td><span class="status-badge status-running">Running</span></td>
+                        <td>ap-northeast-2</td>
+                        <td>2시간 전</td>
+                    </tr>
+                    <tr>
+                        <td>app-database-main</td>
+                        <td>RDS MySQL</td>
+                        <td><span class="status-badge status-running">Running</span></td>
+                        <td>ap-northeast-2</td>
+                        <td>4시간 전</td>
+                    </tr>
+                    <tr>
+                        <td>static-assets-bucket</td>
+                        <td>S3 Bucket</td>
+                        <td><span class="status-badge status-running">Active</span></td>
+                        <td>ap-northeast-2</td>
+                        <td>어제</td>
+                    </tr>
+                    <tr>
+                        <td>api-gateway-v2</td>
+                        <td>API Gateway</td>
+                        <td><span class="status-badge status-running">Active</span></td>
+                        <td>ap-northeast-2</td>
+                        <td>2일 전</td>
+                    </tr>
+                    <tr>
+                        <td>backup-server</td>
+                        <td>EC2 Instance</td>
+                        <td><span class="status-badge status-stopped">Stopped</span></td>
+                        <td>ap-northeast-2</td>
+                        <td>1주 전</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="monitoring-section">
+            <div class="metrics-chart">
+                <div class="chart-header">
+                    <h3 class="chart-title">Resource Utilization</h3>
+                    <select class="time-selector">
+                        <option>Last 24 hours</option>
+                        <option>Last 7 days</option>
+                        <option>Last 30 days</option>
+                    </select>
+                </div>
+                <div class="chart-area">
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                    <div class="chart-bar"></div>
+                </div>
+            </div>
+            
+            <div class="alerts-panel">
+                <h3 class="alerts-header">CloudWatch Alarms</h3>
+                <div class="alert-item warning">
+                    <div class="alert-icon warning"></div>
+                    <div class="alert-content">
+                        <div class="alert-title">High CPU Utilization</div>
+                        <div class="alert-message">EC2 instance web-server-prod-01 CPU usage above 85%</div>
+                        <div class="alert-time">15분 전</div>
+                    </div>
+                </div>
+                <div class="alert-item error">
+                    <div class="alert-icon error"></div>
+                    <div class="alert-content">
+                        <div class="alert-title">Database Connection Error</div>
+                        <div class="alert-message">RDS instance app-database-main connection timeout</div>
+                        <div class="alert-time">1시간 전</div>
+                    </div>
+                </div>
+                <div class="alert-item info">
+                    <div class="alert-icon info"></div>
+                    <div class="alert-content">
+                        <div class="alert-title">Backup Completed</div>
+                        <div class="alert-message">Automated backup for S3 bucket completed successfully</div>
+                        <div class="alert-time">3시간 전</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cost-widget">
+            <h3 class="cost-header">Monthly Billing</h3>
+            <div class="cost-amount">$2,847.23</div>
+            <div class="cost-period">Current Month-to-Date</div>
+            <div class="cost-trend trend-up">↑ 12% from last month</div>
+        </div>
+        
+        <div class="quick-actions">
+            <a href="#" class="action-btn">
+                <div class="action-icon"></div>
+                <div class="action-text">Launch Instance</div>
+            </a>
+            <a href="#" class="action-btn">
+                <div class="action-icon"></div>
+                <div class="action-text">Create Bucket</div>
+            </a>
+            <a href="#" class="action-btn">
+                <div class="action-icon"></div>
+                <div class="action-text">Deploy Function</div>
+            </a>
+            <a href="#" class="action-btn">
+                <div class="action-icon"></div>
+                <div class="action-text">Create Database</div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

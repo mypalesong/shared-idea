@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber JSON Viewer</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="cyber-grid"></div>
+    
+    <div class="app">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="header-title">
+                    <span class="cyber-icon">⧨</span>
+                    CYBER JSON VIEWER
+                    <span class="version">v2.1</span>
+                </h1>
+                <div class="header-stats">
+                    <div class="stat-badge">
+                        <span class="stat-label">STATUS</span>
+                        <span class="stat-value" id="systemStatus">READY</span>
+                    </div>
+                    <div class="stat-badge">
+                        <span class="stat-label">MODE</span>
+                        <span class="stat-value" id="currentMode">SINGLE</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="command-bar">
+            <div class="command-section">
+                <button id="loadFileBtn" class="cyber-btn primary" data-command="LOAD_FILE">
+                    <span class="btn-glow"></span>
+                    <span class="btn-text">LOAD FILE</span>
+                </button>
+                <button id="loadSampleBtn" class="cyber-btn" data-command="LOAD_SAMPLE">
+                    <span class="btn-glow"></span>
+                    <span class="btn-text">SAMPLE DATA</span>
+                </button>
+                <button id="rawInputBtn" class="cyber-btn" data-command="RAW_INPUT">
+                    <span class="btn-glow"></span>
+                    <span class="btn-text">RAW INPUT</span>
+                </button>
+            </div>
+            
+            <div class="command-section">
+                <button id="diffBtn" class="cyber-btn warning" data-command="DIFF_MODE">
+                    <span class="btn-glow"></span>
+                    <span class="btn-text">DIFF MODE</span>
+                </button>
+                <button id="analyzeBtn" class="cyber-btn success" data-command="ANALYZE">
+                    <span class="btn-glow"></span>
+                    <span class="btn-text">ANALYZE</span>
+                </button>
+                <button id="hackBtn" class="cyber-btn danger" data-command="HACK">
+                    <span class="btn-glow"></span>
+                    <span class="btn-text">HACK MODE</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <div class="control-group">
+                <label class="cyber-checkbox">
+                    <input type="checkbox" id="filterEmpty" checked>
+                    <span class="checkmark"></span>
+                    <span class="label">FILTER_EMPTY_VALUES</span>
+                </label>
+                <label class="cyber-checkbox">
+                    <input type="checkbox" id="glowEffect" checked>
+                    <span class="checkmark"></span>
+                    <span class="label">GLOW_EFFECTS</span>
+                </label>
+                <label class="cyber-checkbox">
+                    <input type="checkbox" id="matrixMode">
+                    <span class="checkmark"></span>
+                    <span class="label">MATRIX_MODE</span>
+                </label>
+            </div>
+            
+            <div class="search-terminal">
+                <span class="terminal-prompt">search></span>
+                <input type="text" id="searchInput" placeholder="enter search query..." class="terminal-input">
+                <div class="cursor-blink"></div>
+            </div>
+            
+            <div class="action-buttons">
+                <button id="expandAll" class="action-btn">EXPAND_ALL</button>
+                <button id="collapseAll" class="action-btn">COLLAPSE_ALL</button>
+                <button id="clearData" class="action-btn danger">CLEAR_DATA</button>
+            </div>
+        </div>
+
+        <main class="main-content">
+            <!-- Stats Hologram -->
+            <div class="stats-hologram" id="statsHologram">
+                <div class="hologram-header">
+                    <h3>SYSTEM ANALYSIS</h3>
+                    <button id="toggleStats" class="hologram-toggle">◢</button>
+                </div>
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-cell">
+                        <div class="stat-number" id="totalKeys">0</div>
+                        <div class="stat-desc">TOTAL_KEYS</div>
+                        <div class="stat-bar"><div class="stat-fill"></div></div>
+                    </div>
+                    <div class="stat-cell">
+                        <div class="stat-number" id="totalValues">0</div>
+                        <div class="stat-desc">VALUES</div>
+                        <div class="stat-bar"><div class="stat-fill"></div></div>
+                    </div>
+                    <div class="stat-cell">
+                        <div class="stat-number" id="emptyValues">0</div>
+                        <div class="stat-desc">EMPTY</div>
+                        <div class="stat-bar"><div class="stat-fill"></div></div>
+                    </div>
+                    <div class="stat-cell">
+                        <div class="stat-number" id="dataSize">0B</div>
+                        <div class="stat-desc">SIZE</div>
+                        <div class="stat-bar"><div class="stat-fill"></div></div>
+                    </div>
+                    <div class="stat-cell">
+                        <div class="stat-number" id="maxDepth">0</div>
+                        <div class="stat-desc">DEPTH</div>
+                        <div class="stat-bar"><div class="stat-fill"></div></div>
+                    </div>
+                    <div class="stat-cell">
+                        <div class="stat-number" id="arrayCount">0</div>
+                        <div class="stat-desc">ARRAYS</div>
+                        <div class="stat-bar"><div class="stat-fill"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Single View Mode -->
+            <div class="view-container" id="singleViewMode">
+                <div class="data-panel">
+                    <div class="panel-header">
+                        <h3>DATA_STRUCTURE</h3>
+                        <div class="panel-controls">
+                            <span class="connection-status">CONNECTION: ACTIVE</span>
+                        </div>
+                    </div>
+                    <div class="json-terminal" id="jsonViewer">
+                        <div class="terminal-boot">
+                            <div class="boot-line">CYBER_JSON_VIEWER v2.1.0</div>
+                            <div class="boot-line">INITIALIZING SYSTEMS...</div>
+                            <div class="boot-line">READY FOR DATA INPUT</div>
+                            <div class="boot-line">> LOAD JSON FILE TO BEGIN</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-panel">
+                    <div class="panel-header">
+                        <h3 id="detailTitle">OBJECT_ANALYZER</h3>
+                        <button id="closeDetail" class="close-btn">×</button>
+                    </div>
+                    <div class="detail-screen" id="detailViewer">
+                        <div class="scan-lines"></div>
+                        <div class="detail-content">
+                            <div class="waiting-message">
+                                <div class="scanning-text">SCANNING...</div>
+                                <div class="scan-instruction">SELECT OBJECT TO ANALYZE</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diff Mode -->
+            <div class="diff-container" id="diffViewMode" style="display: none;">
+                <div class="diff-header">
+                    <h3>DIFFERENTIAL ANALYSIS</h3>
+                    <div class="diff-controls">
+                        <button id="loadDiffFile1" class="cyber-btn small">LOAD_A</button>
+                        <button id="loadDiffFile2" class="cyber-btn small">LOAD_B</button>
+                        <button id="closeDiff" class="cyber-btn small danger">EXIT</button>
+                    </div>
+                </div>
+                
+                <div class="diff-grid">
+                    <div class="diff-screen">
+                        <div class="screen-header">DATA_A</div>
+                        <div class="diff-viewer" id="diffViewer1">
+                            <div class="empty-diff">NO DATA LOADED</div>
+                        </div>
+                    </div>
+                    
+                    <div class="diff-screen">
+                        <div class="screen-header">DATA_B</div>
+                        <div class="diff-viewer" id="diffViewer2">
+                            <div class="empty-diff">NO DATA LOADED</div>
+                        </div>
+                    </div>
+                    
+                    <div class="diff-screen">
+                        <div class="screen-header">ANALYSIS</div>
+                        <div class="diff-result" id="diffResult">
+                            <div class="diff-waiting">
+                                <div class="analysis-text">AWAITING DATA...</div>
+                                <div class="analysis-bar">
+                                    <div class="analysis-fill"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Raw Input Terminal -->
+    <div class="terminal-modal" id="rawInputModal">
+        <div class="terminal-window">
+            <div class="terminal-titlebar">
+                <div class="terminal-title">RAW_DATA_INPUT.exe</div>
+                <div class="terminal-buttons">
+                    <button class="terminal-btn minimize">_</button>
+                    <button class="terminal-btn maximize">□</button>
+                    <button id="closeRawInput" class="terminal-btn close">×</button>
+                </div>
+            </div>
+            <div class="terminal-content">
+                <div class="terminal-header">
+                    <div class="prompt-line">> PASTE JSON DATA BELOW</div>
+                    <div class="prompt-line">> CTRL+ENTER TO EXECUTE</div>
+                </div>
+                <textarea id="rawJsonInput" class="code-input" placeholder="// Paste your JSON here...
+{
+  &quot;message&quot;: &quot;Hello, Cyber World&quot;
+}"></textarea>
+                <div class="terminal-actions">
+                    <button id="parseRawJson" class="cyber-btn primary">EXECUTE</button>
+                    <button id="clearRawInput" class="cyber-btn">CLEAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file inputs -->
+    <input type="file" id="fileInput" accept=".json" style="display: none;">
+    <input type="file" id="diffFile1Input" accept=".json" style="display: none;">
+    <input type="file" id="diffFile2Input" accept=".json" style="display: none;">
+
+    <script src="script.js"></script>
+</body>
+</html>

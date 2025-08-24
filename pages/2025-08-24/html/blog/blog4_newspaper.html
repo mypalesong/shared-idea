@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>일상신문 - 40대 아저씨의 소소한 뉴스</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Serif KR', serif;
+            background: #f8f8f5;
+            color: #2c2c2c;
+            line-height: 1.6;
+        }
+        
+        .newspaper {
+            max-width: 1200px;
+            margin: 20px auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            border-bottom: 4px double #333;
+            padding: 30px 40px;
+            text-align: center;
+            background: linear-gradient(to bottom, #fff 0%, #f5f5f5 100%);
+        }
+        
+        .masthead {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+            color: #1a1a1a;
+            text-shadow: 2px 2px 0px #ccc;
+        }
+        
+        .date-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .issue-info {
+            border: 2px solid #333;
+            padding: 5px 15px;
+            background: #333;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .tagline {
+            font-size: 1.1rem;
+            font-style: italic;
+            color: #555;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+            margin: 15px 0;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            padding: 40px;
+        }
+        
+        .headlines {
+            border-right: 2px solid #ccc;
+            padding-right: 30px;
+        }
+        
+        .sidebar {
+            padding-left: 20px;
+        }
+        
+        .lead-story {
+            margin-bottom: 40px;
+            border-bottom: 3px solid #333;
+            padding-bottom: 30px;
+        }
+        
+        .lead-headline {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            line-height: 1.1;
+            color: #1a1a1a;
+        }
+        
+        .byline {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        
+        .lead-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            text-align: justify;
+            column-count: 2;
+            column-gap: 30px;
+            column-rule: 1px solid #ddd;
+        }
+        
+        .story {
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 25px;
+        }
+        
+        .headline {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .subheadline {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 12px;
+            font-weight: 400;
+        }
+        
+        .story-text {
+            text-align: justify;
+        }
+        
+        .breaking {
+            background: #ff4444;
+            color: white;
+            padding: 3px 8px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-right: 10px;
+            display: inline-block;
+        }
+        
+        .sidebar-section {
+            background: #f9f9f9;
+            border: 2px solid #333;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+        
+        .sidebar-title {
+            background: #333;
+            color: white;
+            margin: -20px -20px 20px -20px;
+            padding: 10px 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .weather-box {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #87CEEB 0%, #98D8E8 100%);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .weather-temp {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+        
+        .opinion-box {
+            border-left: 4px solid #333;
+            padding-left: 15px;
+            font-style: italic;
+            background: #f0f0f0;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .classifieds {
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        
+        .classified-item {
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dotted #ccc;
+        }
+        
+        .footer {
+            border-top: 4px double #333;
+            padding: 20px 40px;
+            text-align: center;
+            background: #f5f5f5;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                padding: 20px;
+            }
+            
+            .headlines {
+                border-right: none;
+                padding-right: 0;
+                border-bottom: 2px solid #ccc;
+                padding-bottom: 30px;
+            }
+            
+            .sidebar {
+                padding-left: 0;
+            }
+            
+            .lead-text {
+                column-count: 1;
+            }
+            
+            .masthead {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="newspaper">
+        <header class="header">
+            <div class="date-line">
+                <span>토요일, 2025년 8월 24일</span>
+                <div class="issue-info">제1권 제365호</div>
+                <span>맑음, 28°C</span>
+            </div>
+            <h1 class="masthead">일상신문</h1>
+            <p class="tagline">"평범한 하루도 뉴스가 된다" - 40대 아저씨의 소소한 일상 보도</p>
+        </header>
+        
+        <div class="main-content">
+            <main class="headlines">
+                <article class="lead-story">
+                    <h2 class="lead-headline">
+                        <span class="breaking">속보</span>
+                        동네 카페에서 발견한 완벽한 커피
+                    </h2>
+                    <p class="byline">본지 기자 김일상 | 2025.08.24 오전 8:30</p>
+                    <div class="lead-text">
+                        어제 아침 평소보다 10분 일찍 집을 나선 기자는 우연히 새로 문을 연 
+                        '소소한 커피'라는 카페를 발견했다. 호기심에 들어간 이 카페에서 
+                        기자는 지난 20년간 마셔본 커피 중 가장 완벽한 한 잔을 만났다고 보고했다.
+                        
+                        사장 김바리스타(35)씨는 "손님 하나하나에게 정성을 다해 커피를 내린다"며 
+                        "특히 40대 손님들께서 많이 찾아주신다"고 밝혔다. 기자가 주문한 
+                        '아메리카노 딥'은 은은한 산미와 깊은 바디감이 절묘하게 어우러진 
+                        작품이었다는 평가다.
+                    </div>
+                </article>
+                
+                <article class="story">
+                    <h3 class="headline">주차장에서 벌어진 양보 사건</h3>
+                    <p class="subheadline">서로 먼저 가라고... 5분간 대치 상황 발생</p>
+                    <div class="story-text">
+                        <p>마트 주차장에서 발생한 훈훈한 양보 사건이 화제다. 좁은 길에서 마주친 두 차량의 운전자들이 서로 먼저 가라고 손짓하며 5분간 대치했다는 것이다. 결국 연세가 더 많아 보이는 분께 먼저 가시라고 했더니 "젊은 사람 먼저"라며 다시 양보하는 미담이 이어졌다.</p>
+                    </div>
+                </article>
+                
+                <article class="story">
+                    <h3 class="headline">아이들의 용돈 인상 요구 거부</h3>
+                    <p class="subheadline">물가 상승률 대비 합리적 근거 부족 판단</p>
+                    <div class="story-text">
+                        <p>우리집 경제위원회(아이들)에서 제출한 용돈 인상안이 가장 회의에서 부결되었다. 현재 월 1만원에서 1만 5천원으로 50% 인상을 요구했으나, 실제 아이들의 지출 내역을 분석한 결과 과자와 장난감 구매가 대부분으로 생필품 비중이 낮다는 이유로 거부되었다.</p>
+                    </div>
+                </article>
+                
+                <article class="story">
+                    <h3 class="headline">20년 된 양말의 마지막 여행</h3>
+                    <p class="subheadline">구멍 5개, 그래도 편한 그 양말과의 이별</p>
+                    <div class="story-text">
+                        <p>대학교 1학년 때부터 함께해온 양말 한 켤레가 드디어 은퇴를 맞았다. 발가락 부분에 5개의 구멍이 뚫렸음에도 불구하고 착용감만큼은 최고였던 이 양말은 아내의 강력한 권고에 따라 어제 밤 쓰레기통으로 향했다. 20년간 수고했다는 작별 인사와 함께.</p>
+                    </div>
+                </article>
+            </main>
+            
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-title">오늘의 기분</div>
+                    <div class="weather-box">
+                        <div class="weather-temp">😊</div>
+                        <p>맑음, 기분 좋음</p>
+                        <p>습도: 보통</p>
+                        <p>피로도: 낮음</p>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="sidebar-title">아재 칼럼</div>
+                    <div class="opinion-box">
+                        "요즘 젊은 사람들은 참 대단하다. 
+                        우리 때보다 훨씬 똑똑하고 열정적이다. 
+                        다만 우리 세대가 가진 건 경험과 
+                        여유로움이다. 이 둘이 만나면 
+                        더 좋은 세상을 만들 수 있을 것이다."
+                        
+                        - 편집장 김사십대
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="sidebar-title">생활정보</div>
+                    <div class="classifieds">
+                        <div class="classified-item">
+                            <strong>★ 꿀팁</strong><br>
+                            라면 끓일 때 계란은 물이 끓고 3분 후에 넣으면 완벽한 반숙
+                        </div>
+                        <div class="classified-item">
+                            <strong>★ 절약팁</strong><br>
+                            대형마트는 저녁 8시 이후 할인 상품이 많다
+                        </div>
+                        <div class="classified-item">
+                            <strong>★ 건강정보</strong><br>
+                            하루 30분 산책만으로도 충분한 운동 효과
+                        </div>
+                        <div class="classified-item">
+                            <strong>★ 가족시간</strong><br>
+                            아이들과 보드게임은 핸드폰보다 재밌다
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="sidebar-title">내일의 계획</div>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>• 아침 7시: 조깅 (날씨 좋으면)</li>
+                        <li>• 오전 9시: 장보기</li>
+                        <li>• 오후 2시: 아이들과 영화</li>
+                        <li>• 저녁 6시: 가족 저녁식사</li>
+                        <li>• 밤 10시: 독서 시간</li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+        
+        <footer class="footer">
+            <p><strong>일상신문</strong> | 발행인: 김일상 | 편집인: 김사십대</p>
+            <p>주소: 우리집 거실 소파 | 전화: 없음 | 이메일: 확인안함@일상.com</p>
+            <p>"평범한 일상도 소중한 뉴스입니다"</p>
+        </footer>
+    </div>
+</body>
+</html>

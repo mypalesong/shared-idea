@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>서예 워크숍 초대장</title>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+KR:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif KR', serif;
+            background: linear-gradient(135deg, #f5f5dc 0%, #e6ddc4 100%);
+            color: #2c1810;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            width: 680px;
+            height: 480px;
+            background: #fffef8;
+            border: 1px solid #d4c5b9;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+
+        .rice-paper-texture {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 15% 25%, rgba(44, 24, 16, 0.02) 8%, transparent 9%),
+                radial-gradient(circle at 85% 75%, rgba(44, 24, 16, 0.015) 12%, transparent 13%),
+                radial-gradient(circle at 45% 60%, rgba(139, 105, 20, 0.01) 15%, transparent 16%),
+                repeating-linear-gradient(45deg, 
+                    transparent 0px,
+                    rgba(44, 24, 16, 0.005) 1px,
+                    transparent 2px,
+                    transparent 8px);
+            animation: paperAge 20s ease-in-out infinite;
+        }
+
+        @keyframes paperAge {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.5; }
+        }
+
+        .ink-splash {
+            position: absolute;
+            border-radius: 50%;
+            animation: inkSpread ease-out;
+        }
+
+        .splash-1 {
+            width: 80px;
+            height: 60px;
+            top: 60px;
+            left: 80px;
+            background: radial-gradient(ellipse,
+                rgba(44, 24, 16, 0.4) 0%,
+                rgba(44, 24, 16, 0.2) 40%,
+                rgba(44, 24, 16, 0.1) 70%,
+                transparent 100%);
+            border-radius: 60% 40% 50% 60%;
+            animation-duration: 8s;
+            animation-delay: 0s;
+        }
+
+        .splash-2 {
+            width: 60px;
+            height: 80px;
+            bottom: 100px;
+            right: 120px;
+            background: radial-gradient(ellipse,
+                rgba(44, 24, 16, 0.3) 0%,
+                rgba(44, 24, 16, 0.15) 50%,
+                transparent 80%);
+            border-radius: 50% 70% 40% 50%;
+            animation-duration: 10s;
+            animation-delay: -3s;
+        }
+
+        .splash-3 {
+            width: 40px;
+            height: 40px;
+            top: 200px;
+            left: 150px;
+            background: radial-gradient(circle,
+                rgba(44, 24, 16, 0.25) 0%,
+                rgba(44, 24, 16, 0.1) 60%,
+                transparent 90%);
+            animation-duration: 12s;
+            animation-delay: -6s;
+        }
+
+        @keyframes inkSpread {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 0.6;
+            }
+            25% { 
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: scale(0.9);
+                opacity: 0.4;
+            }
+            75% { 
+                transform: scale(1.1);
+                opacity: 0.7;
+            }
+        }
+
+        .brush-stroke {
+            position: absolute;
+            background: linear-gradient(45deg,
+                rgba(44, 24, 16, 0.4) 0%,
+                rgba(44, 24, 16, 0.6) 30%,
+                rgba(44, 24, 16, 0.3) 70%,
+                transparent 100%);
+            animation: brushMove 15s ease-in-out infinite;
+        }
+
+        .stroke-1 {
+            top: 120px;
+            left: -100px;
+            width: 300px;
+            height: 8px;
+            transform: rotate(15deg);
+            animation-delay: 0s;
+        }
+
+        .stroke-2 {
+            bottom: 180px;
+            right: -80px;
+            width: 250px;
+            height: 6px;
+            transform: rotate(-20deg);
+            animation-delay: -7s;
+        }
+
+        @keyframes brushMove {
+            0%, 100% { 
+                transform: translateX(0px) rotate(15deg);
+                opacity: 0.4;
+            }
+            50% { 
+                transform: translateX(30px) rotate(15deg);
+                opacity: 0.7;
+            }
+        }
+
+        .calligraphy-text {
+            position: absolute;
+            font-family: 'Ma Shan Zheng', cursive;
+            color: rgba(44, 24, 16, 0.2);
+            animation: textFade 10s ease-in-out infinite;
+        }
+
+        .text-1 {
+            top: 80px;
+            right: 100px;
+            font-size: 3rem;
+            animation-delay: 0s;
+        }
+
+        .text-2 {
+            bottom: 120px;
+            left: 100px;
+            font-size: 2.5rem;
+            animation-delay: -5s;
+        }
+
+        @keyframes textFade {
+            0%, 100% { 
+                opacity: 0.2;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.5;
+                transform: scale(1.05);
+            }
+        }
+
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+            width: 80%;
+        }
+
+        .title {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 4.5rem;
+            color: #2c1810;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            animation: titleBrush 4s ease-out;
+        }
+
+        @keyframes titleBrush {
+            0% { 
+                opacity: 0; 
+                transform: scale(0.5) translateY(-50px);
+                filter: blur(10px);
+            }
+            30% { 
+                opacity: 0.3; 
+                transform: scale(0.8) translateY(-20px);
+                filter: blur(5px);
+            }
+            70% { 
+                opacity: 0.7; 
+                transform: scale(1.1) translateY(5px);
+                filter: blur(1px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1) translateY(0);
+                filter: blur(0px);
+            }
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            color: #8b6914;
+            margin-bottom: 35px;
+            letter-spacing: 3px;
+            animation: subtitleInk 3s ease-out 1s both;
+        }
+
+        @keyframes subtitleInk {
+            0% { 
+                opacity: 0; 
+                transform: translateY(20px);
+                letter-spacing: 8px;
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0);
+                letter-spacing: 3px;
+            }
+        }
+
+        .workshop-scroll {
+            background: rgba(255, 255, 255, 0.9);
+            border: 3px solid rgba(139, 105, 20, 0.3);
+            border-radius: 0;
+            padding: 30px;
+            margin: 20px 0;
+            position: relative;
+            animation: scrollUnroll 3s ease-out 1.5s both;
+        }
+
+        @keyframes scrollUnroll {
+            0% { 
+                opacity: 0; 
+                transform: scaleY(0);
+                transform-origin: top;
+            }
+            100% { 
+                opacity: 1; 
+                transform: scaleY(1);
+            }
+        }
+
+        .workshop-scroll::before,
+        .workshop-scroll::after {
+            content: '';
+            position: absolute;
+            top: -3px;
+            bottom: -3px;
+            width: 10px;
+            background: linear-gradient(0deg,
+                rgba(139, 105, 20, 0.6) 0%,
+                rgba(212, 175, 55, 0.4) 50%,
+                rgba(139, 105, 20, 0.6) 100%);
+        }
+
+        .workshop-scroll::before {
+            left: -3px;
+            border-radius: 10px 0 0 10px;
+        }
+
+        .workshop-scroll::after {
+            right: -3px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .master-title {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 2.5rem;
+            color: #2c1810;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .technique-info {
+            font-size: 1.1rem;
+            color: #2c1810;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .calligraphy-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            color: #2c1810;
+            animation: detailBrush 2s ease-out both;
+        }
+
+        .detail-item:nth-child(1) { animation-delay: 2s; }
+        .detail-item:nth-child(2) { animation-delay: 2.3s; }
+        .detail-item:nth-child(3) { animation-delay: 2.6s; }
+        .detail-item:nth-child(4) { animation-delay: 2.9s; }
+
+        @keyframes detailBrush {
+            0% { 
+                opacity: 0; 
+                transform: translateX(-30px);
+                filter: blur(3px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateX(0);
+                filter: blur(0px);
+            }
+        }
+
+        .detail-icon {
+            color: #8b6914;
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+
+        .ink-well {
+            position: absolute;
+            bottom: 60px;
+            right: 80px;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle,
+                rgba(44, 24, 16, 0.8) 0%,
+                rgba(44, 24, 16, 0.6) 60%,
+                rgba(44, 24, 16, 0.3) 100%);
+            border-radius: 50%;
+            animation: inkRipple 4s ease-in-out infinite;
+        }
+
+        @keyframes inkRipple {
+            0%, 100% { 
+                box-shadow: 0 0 0 0 rgba(44, 24, 16, 0.4);
+            }
+            50% { 
+                box-shadow: 0 0 0 20px rgba(44, 24, 16, 0);
+            }
+        }
+
+        .ink-well::before {
+            content: '🖌️';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+        }
+
+        .seal-stamp {
+            position: absolute;
+            top: 80px;
+            left: 60px;
+            width: 40px;
+            height: 40px;
+            background: #dc143c;
+            border-radius: 10%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: bold;
+            animation: stampPress 6s ease-in-out infinite;
+        }
+
+        @keyframes stampPress {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: scale(1.1) rotate(5deg);
+                opacity: 1;
+            }
+        }
+
+        .vertical-text {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            writing-mode: vertical-rl;
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 1.2rem;
+            color: rgba(44, 24, 16, 0.4);
+            animation: verticalFade 8s ease-in-out infinite;
+        }
+
+        @keyframes verticalFade {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="rice-paper-texture"></div>
+        
+        <div class="ink-splash splash-1"></div>
+        <div class="ink-splash splash-2"></div>
+        <div class="ink-splash splash-3"></div>
+        
+        <div class="brush-stroke stroke-1"></div>
+        <div class="brush-stroke stroke-2"></div>
+        
+        <div class="calligraphy-text text-1">文</div>
+        <div class="calligraphy-text text-2">書</div>
+        
+        <div class="seal-stamp">印</div>
+        <div class="ink-well"></div>
+        
+        <div class="vertical-text">書道의 미학</div>
+        
+        <div class="content">
+            <h1 class="title">書道</h1>
+            <p class="subtitle">전통 서예 워크숍</p>
+            
+            <div class="workshop-scroll">
+                <div class="master-title">붓글씨 입문반</div>
+                <div class="technique-info">
+                    전통 서체의 기본기부터 창작까지<br>
+                    마음을 담아 쓰는 아름다운 한글 서예
+                </div>
+                
+                <div class="calligraphy-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">🖌️</span>
+                        <span>붓과 먹, 한지 제공</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📅</span>
+                        <span>2025년 12월 30일 오후 3시</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📍</span>
+                        <span>전통문화센터 서예실</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📞</span>
+                        <span>calligraphy.art@gmail.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사진동호회 모임 초대장</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif KR', serif;
+            background: linear-gradient(135deg, #2c1810 0%, #1a0f08 100%);
+            color: #f5f2e8;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            width: 650px;
+            height: 450px;
+            background: linear-gradient(145deg, #3d2a1a 0%, #2a1e14 100%);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 20px 40px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .film-strip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background: repeating-linear-gradient(
+                90deg,
+                #1a1a1a 0px,
+                #1a1a1a 20px,
+                #333 20px,
+                #333 25px
+            );
+            border-bottom: 2px solid #444;
+        }
+
+        .film-strip::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background: repeating-linear-gradient(
+                90deg,
+                #1a1a1a 0px,
+                #1a1a1a 20px,
+                #333 20px,
+                #333 25px
+            );
+            border-top: 2px solid #444;
+        }
+
+        .vintage-frame {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 150px;
+            border: 8px solid #8b6914;
+            background: linear-gradient(145deg, #f5f2e8, #e8e0c7);
+            box-shadow: 
+                inset 0 0 20px rgba(0,0,0,0.1),
+                0 10px 20px rgba(0,0,0,0.3);
+            animation: photoFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes photoFloat {
+            0%, 100% { transform: translateX(-50%) translateY(0px) rotate(0deg); }
+            50% { transform: translateX(-50%) translateY(-10px) rotate(1deg); }
+        }
+
+        .vintage-frame::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            right: -15px;
+            bottom: -15px;
+            background: linear-gradient(145deg, #d4af37, #b8941f);
+            z-index: -1;
+            border-radius: 3px;
+        }
+
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ddd 0%, #bbb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #888;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .photo-placeholder::before {
+            content: '📷';
+            animation: cameraPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes cameraPulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        .content {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            width: 90%;
+        }
+
+        .title {
+            font-family: 'Crimson Text', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #d4af37;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            animation: titleGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+            50% { text-shadow: 0 2px 4px rgba(0,0,0,0.3), 0 0 20px rgba(212,175,55,0.4); }
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #c9b884;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .details {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 15px 20px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(212,175,55,0.2);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 0.9rem;
+        }
+
+        .detail-label {
+            color: #d4af37;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            color: #f5f2e8;
+        }
+
+        .corner-ornament {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 3px solid #d4af37;
+            opacity: 0.6;
+        }
+
+        .corner-ornament::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #d4af37;
+        }
+
+        .corner-ornament.top-left {
+            top: 60px;
+            left: 40px;
+            border-right: none;
+            border-bottom: none;
+            animation: ornamentGlow 5s ease-in-out infinite;
+        }
+
+        .corner-ornament.top-left::before {
+            top: -2px;
+            left: -2px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .corner-ornament.bottom-right {
+            bottom: 60px;
+            right: 40px;
+            border-left: none;
+            border-top: none;
+            animation: ornamentGlow 5s ease-in-out infinite 2.5s;
+        }
+
+        .corner-ornament.bottom-right::before {
+            bottom: -2px;
+            right: -2px;
+            border-left: none;
+            border-top: none;
+        }
+
+        @keyframes ornamentGlow {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        .lens-flare {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(212,175,55,0.1), transparent);
+            border-radius: 50%;
+            animation: lensMove 8s ease-in-out infinite;
+        }
+
+        .lens-flare:nth-child(1) {
+            top: 100px;
+            left: 100px;
+            animation-delay: 0s;
+        }
+
+        .lens-flare:nth-child(2) {
+            bottom: 120px;
+            right: 80px;
+            width: 80px;
+            height: 80px;
+            animation-delay: -4s;
+        }
+
+        @keyframes lensMove {
+            0%, 100% { transform: translate(0px, 0px) scale(1); opacity: 0.3; }
+            25% { transform: translate(20px, -10px) scale(1.2); opacity: 0.6; }
+            50% { transform: translate(-10px, 15px) scale(0.8); opacity: 0.4; }
+            75% { transform: translate(15px, -20px) scale(1.1); opacity: 0.7; }
+        }
+
+        .sepia-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, 
+                rgba(139, 105, 20, 0.05) 0%,
+                rgba(212, 175, 55, 0.03) 50%,
+                rgba(139, 105, 20, 0.05) 100%);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="sepia-overlay"></div>
+        <div class="film-strip"></div>
+        
+        <div class="lens-flare"></div>
+        <div class="lens-flare"></div>
+        
+        <div class="corner-ornament top-left"></div>
+        <div class="corner-ornament bottom-right"></div>
+        
+        <div class="vintage-frame">
+            <div class="photo-placeholder"></div>
+        </div>
+        
+        <div class="content">
+            <h1 class="title">Photography Club</h1>
+            <p class="subtitle">사진동호회 정기모임</p>
+            
+            <div class="details">
+                <div class="detail-row">
+                    <span class="detail-label">테마</span>
+                    <span class="detail-value">도시야경 촬영기법</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">일시</span>
+                    <span class="detail-value">2025년 9월 25일 오후 6시</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">장소</span>
+                    <span class="detail-value">한강공원 반포대교</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">준비물</span>
+                    <span class="detail-value">카메라, 삼각대, 여벌 배터리</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">연락처</span>
+                    <span class="detail-value">photo.seoul.club@gmail.com</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

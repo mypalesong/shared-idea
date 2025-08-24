@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaborative JSON Explorer</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+</head>
+<body>
+    <div class="collaborative-app" id="app">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="app-brand">
+                <div class="brand-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>Collaborative JSON Explorer</h1>
+                    <span class="tagline">Real-time team collaboration</span>
+                </div>
+            </div>
+            
+            <!-- Collaboration Status -->
+            <div class="collab-status">
+                <div class="connection-status">
+                    <div class="status-indicator" id="connectionStatus">
+                        <div class="status-dot offline"></div>
+                        <span>Connecting...</span>
+                    </div>
+                </div>
+                
+                <div class="active-users">
+                    <div class="user-avatars" id="userAvatars">
+                        <!-- Dynamic user avatars -->
+                    </div>
+                    <div class="user-count">
+                        <i class="fas fa-users"></i>
+                        <span id="userCount">1</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Session Controls -->
+            <div class="session-controls">
+                <button id="shareBtn" class="btn btn-primary">
+                    <i class="fas fa-share"></i>
+                    Share Session
+                </button>
+                <button id="settingsBtn" class="btn btn-ghost">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <div class="user-menu">
+                    <button class="user-profile" id="userProfile">
+                        <div class="avatar" id="currentUserAvatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span id="currentUserName">Anonymous</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h3>Session Tools</h3>
+                    <button id="collapseSidebar" class="btn btn-ghost btn-sm">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+                
+                <!-- Data Sources -->
+                <div class="sidebar-section">
+                    <h4>Data Sources</h4>
+                    <div class="data-sources">
+                        <button id="uploadBtn" class="source-btn">
+                            <i class="fas fa-upload"></i>
+                            <span>Upload File</span>
+                        </button>
+                        <button id="urlBtn" class="source-btn">
+                            <i class="fas fa-link"></i>
+                            <span>From URL</span>
+                        </button>
+                        <button id="pasteBtn" class="source-btn">
+                            <i class="fas fa-paste"></i>
+                            <span>Paste JSON</span>
+                        </button>
+                        <button id="sampleBtn" class="source-btn">
+                            <i class="fas fa-database"></i>
+                            <span>Sample Data</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Version History -->
+                <div class="sidebar-section">
+                    <h4>Version History</h4>
+                    <div class="version-list" id="versionList">
+                        <div class="empty-state-small">
+                            <i class="fas fa-history"></i>
+                            <span>No versions yet</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Live Comments -->
+                <div class="sidebar-section">
+                    <h4>Live Comments</h4>
+                    <div class="comments-container">
+                        <div class="comments-list" id="commentsList">
+                            <div class="empty-state-small">
+                                <i class="fas fa-comments"></i>
+                                <span>No comments yet</span>
+                            </div>
+                        </div>
+                        <div class="comment-input">
+                            <input type="text" id="commentInput" placeholder="Add a comment..." class="input-field">
+                            <button id="sendComment" class="btn btn-primary btn-sm">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Session Info -->
+                <div class="sidebar-section">
+                    <h4>Session Info</h4>
+                    <div class="session-info">
+                        <div class="info-item">
+                            <label>Session ID:</label>
+                            <span id="sessionId" class="monospace">Loading...</span>
+                            <button id="copySessionId" class="btn-icon">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        <div class="info-item">
+                            <label>Created:</label>
+                            <span id="sessionCreated">Just now</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Data Size:</label>
+                            <span id="dataSize">0 KB</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Content Area -->
+            <main class="content-area">
+                <!-- Toolbar -->
+                <div class="toolbar">
+                    <div class="toolbar-section">
+                        <div class="view-modes">
+                            <button class="view-mode active" data-mode="explorer" title="Explorer View">
+                                <i class="fas fa-sitemap"></i>
+                                <span>Explorer</span>
+                            </button>
+                            <button class="view-mode" data-mode="table" title="Table View">
+                                <i class="fas fa-table"></i>
+                                <span>Table</span>
+                            </button>
+                            <button class="view-mode" data-mode="raw" title="Raw JSON">
+                                <i class="fas fa-code"></i>
+                                <span>Raw</span>
+                            </button>
+                            <button class="view-mode" data-mode="diff" title="Diff View">
+                                <i class="fas fa-code-branch"></i>
+                                <span>Diff</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="toolbar-section">
+                        <div class="search-bar">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" id="searchInput" placeholder="Search JSON paths, keys, values..." class="search-input">
+                            <div class="search-filters">
+                                <button id="searchFilters" class="btn btn-ghost btn-sm">
+                                    <i class="fas fa-filter"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="toolbar-section">
+                        <button id="expandAll" class="btn btn-outline btn-sm">
+                            <i class="fas fa-expand-alt"></i>
+                            Expand All
+                        </button>
+                        <button id="collapseAll" class="btn btn-outline btn-sm">
+                            <i class="fas fa-compress-alt"></i>
+                            Collapse All
+                        </button>
+                        <button id="exportBtn" class="btn btn-primary btn-sm">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="main-content">
+                    <!-- Explorer View -->
+                    <div id="explorerView" class="content-view active">
+                        <div class="explorer-layout">
+                            <!-- JSON Tree -->
+                            <div class="json-panel">
+                                <div class="panel-header">
+                                    <h3>JSON Structure</h3>
+                                    <div class="panel-tools">
+                                        <div class="breadcrumb" id="breadcrumb">
+                                            <span class="crumb active" data-path="">Root</span>
+                                        </div>
+                                        <div class="panel-actions">
+                                            <button id="focusBtn" class="btn btn-ghost btn-xs" title="Focus on selected">
+                                                <i class="fas fa-crosshairs"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="json-tree-container">
+                                    <div id="jsonTree" class="json-tree">
+                                        <div class="empty-state">
+                                            <div class="empty-icon">
+                                                <i class="fas fa-file-code"></i>
+                                            </div>
+                                            <h4>No JSON Data</h4>
+                                            <p>Upload a file or paste JSON to start collaborating</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Property Panel -->
+                            <div class="property-panel">
+                                <div class="panel-header">
+                                    <h3 id="propertyTitle">Properties</h3>
+                                    <div class="panel-actions">
+                                        <button id="addAnnotation" class="btn btn-ghost btn-xs" title="Add annotation">
+                                            <i class="fas fa-sticky-note"></i>
+                                        </button>
+                                        <button id="bookmarkPath" class="btn btn-ghost btn-xs" title="Bookmark path">
+                                            <i class="fas fa-bookmark"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="property-content" id="propertyContent">
+                                    <div class="empty-state-small">
+                                        <i class="fas fa-mouse-pointer"></i>
+                                        <span>Select a node to view properties</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table View -->
+                    <div id="tableView" class="content-view">
+                        <div class="table-container">
+                            <div class="table-header">
+                                <h3>Tabular Data View</h3>
+                                <div class="table-controls">
+                                    <select id="tableDepth" class="select-field">
+                                        <option value="1">Depth 1</option>
+                                        <option value="2">Depth 2</option>
+                                        <option value="3">Depth 3</option>
+                                        <option value="all">All Depths</option>
+                                    </select>
+                                    <button id="refreshTable" class="btn btn-outline btn-sm">
+                                        <i class="fas fa-sync"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="table-content" id="tableContent">
+                                <div class="empty-state">
+                                    <i class="fas fa-table"></i>
+                                    <h4>No Tabular Data</h4>
+                                    <p>JSON structure cannot be displayed as a table</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Raw JSON View -->
+                    <div id="rawView" class="content-view">
+                        <div class="raw-editor">
+                            <div class="editor-header">
+                                <h3>Raw JSON Editor</h3>
+                                <div class="editor-controls">
+                                    <button id="formatJson" class="btn btn-outline btn-sm">
+                                        <i class="fas fa-code"></i>
+                                        Format
+                                    </button>
+                                    <button id="validateJson" class="btn btn-outline btn-sm">
+                                        <i class="fas fa-check-circle"></i>
+                                        Validate
+                                    </button>
+                                    <button id="saveChanges" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-save"></i>
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="editor-content">
+                                <textarea id="rawEditor" class="code-editor" spellcheck="false"></textarea>
+                                <div class="editor-footer">
+                                    <div class="editor-info">
+                                        <span id="cursorPos">Ln 1, Col 1</span>
+                                        <span id="jsonSize">0 bytes</span>
+                                    </div>
+                                    <div class="editor-status">
+                                        <span id="validationStatus" class="status-valid">
+                                            <i class="fas fa-check"></i>
+                                            Valid JSON
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Diff View -->
+                    <div id="diffView" class="content-view">
+                        <div class="diff-container">
+                            <div class="diff-header">
+                                <h3>Version Comparison</h3>
+                                <div class="diff-controls">
+                                    <select id="version1" class="select-field">
+                                        <option value="">Select version 1...</option>
+                                    </select>
+                                    <span class="diff-vs">vs</span>
+                                    <select id="version2" class="select-field">
+                                        <option value="">Select version 2...</option>
+                                    </select>
+                                    <button id="compareDiff" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-code-branch"></i>
+                                        Compare
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="diff-content" id="diffContent">
+                                <div class="empty-state">
+                                    <i class="fas fa-code-branch"></i>
+                                    <h4>No Comparison</h4>
+                                    <p>Select two versions to see differences</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Feed -->
+                <div class="activity-sidebar" id="activitySidebar">
+                    <div class="activity-header">
+                        <h3>Live Activity</h3>
+                        <button id="toggleActivity" class="btn btn-ghost btn-sm">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-feed" id="activityFeed">
+                            <div class="activity-item system">
+                                <div class="activity-avatar">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-text">
+                                        Session started
+                                    </div>
+                                    <div class="activity-time">just now</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-input">
+                            <div class="quick-actions">
+                                <button class="quick-action" data-action="cursor" title="Share cursor position">
+                                    <i class="fas fa-mouse-pointer"></i>
+                                </button>
+                                <button class="quick-action" data-action="selection" title="Share selection">
+                                    <i class="fas fa-i-cursor"></i>
+                                </button>
+                                <button class="quick-action" data-action="annotation" title="Add annotation">
+                                    <i class="fas fa-sticky-note"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Cursors Overlay -->
+        <div id="cursorsOverlay" class="cursors-overlay">
+            <!-- Dynamic user cursors will appear here -->
+        </div>
+
+        <!-- Modals -->
+        <!-- Share Modal -->
+        <div id="shareModal" class="modal-overlay">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3>Share Collaboration Session</h3>
+                    <button class="modal-close" data-target="shareModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="share-options">
+                        <div class="share-option">
+                            <h4>Session Link</h4>
+                            <div class="input-group">
+                                <input type="text" id="sessionLink" readonly class="input-field">
+                                <button id="copyLink" class="btn btn-primary">
+                                    <i class="fas fa-copy"></i>
+                                    Copy
+                                </button>
+                            </div>
+                            <p class="help-text">Share this link with team members to collaborate in real-time</p>
+                        </div>
+                        
+                        <div class="share-option">
+                            <h4>QR Code</h4>
+                            <div class="qr-code" id="qrCode">
+                                <div class="qr-placeholder">
+                                    <i class="fas fa-qrcode"></i>
+                                    <span>QR Code will appear here</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="share-option">
+                            <h4>Permissions</h4>
+                            <div class="permissions">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="allowEdit" checked>
+                                    <span>Allow editing</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="allowComments" checked>
+                                    <span>Allow comments</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="allowExport" checked>
+                                    <span>Allow export</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paste JSON Modal -->
+        <div id="pasteModal" class="modal-overlay">
+            <div class="modal modal-large">
+                <div class="modal-header">
+                    <h3>Paste JSON Data</h3>
+                    <button class="modal-close" data-target="pasteModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="paste-container">
+                        <textarea id="pasteArea" placeholder="Paste your JSON data here..." class="paste-textarea"></textarea>
+                        <div class="paste-actions">
+                            <button id="validatePaste" class="btn btn-outline">
+                                <i class="fas fa-check"></i>
+                                Validate
+                            </button>
+                            <button id="formatPaste" class="btn btn-outline">
+                                <i class="fas fa-code"></i>
+                                Format
+                            </button>
+                            <button id="importPaste" class="btn btn-primary">
+                                <i class="fas fa-upload"></i>
+                                Import
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- URL Import Modal -->
+        <div id="urlModal" class="modal-overlay">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3>Import from URL</h3>
+                    <button class="modal-close" data-target="urlModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="url-import">
+                        <div class="input-group">
+                            <input type="url" id="urlInput" placeholder="https://api.example.com/data.json" class="input-field">
+                            <select id="httpMethod" class="select-field">
+                                <option value="GET">GET</option>
+                                <option value="POST">POST</option>
+                            </select>
+                        </div>
+                        <div class="url-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="corsProxy">
+                                <span>Use CORS proxy</span>
+                            </label>
+                            <button id="addHeaders" class="btn btn-outline btn-sm">
+                                <i class="fas fa-plus"></i>
+                                Add Headers
+                            </button>
+                        </div>
+                        <div class="headers-container" id="headersContainer" style="display: none;">
+                            <!-- Dynamic headers -->
+                        </div>
+                        <div class="url-actions">
+                            <button id="testUrl" class="btn btn-outline">
+                                <i class="fas fa-flask"></i>
+                                Test
+                            </button>
+                            <button id="importUrl" class="btn btn-primary">
+                                <i class="fas fa-download"></i>
+                                Import
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file" id="fileInput" accept=".json" style="display: none;">
+    
+    <!-- Toast notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

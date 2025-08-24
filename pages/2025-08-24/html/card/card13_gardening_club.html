@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>가드닝 클럽 초대장</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Noto+Sans+KR:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #a8e6cf 0%, #7fcdcd 100%);
+            color: #2d5016;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            width: 680px;
+            height: 480px;
+            background: linear-gradient(135deg, #f0fff0 0%, #f5fffa 100%);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+        }
+
+        .botanical-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(144, 238, 144, 0.1) 20%, transparent 21%),
+                radial-gradient(circle at 70% 60%, rgba(46, 139, 87, 0.08) 15%, transparent 16%),
+                radial-gradient(circle at 90% 30%, rgba(34, 139, 34, 0.06) 25%, transparent 26%);
+            animation: botanicalShift 15s ease-in-out infinite;
+        }
+
+        @keyframes botanicalShift {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(10px, -10px) scale(1.02); }
+        }
+
+        .leaf {
+            position: absolute;
+            color: rgba(46, 139, 87, 0.4);
+            font-size: 2rem;
+            animation: leafSway ease-in-out infinite;
+        }
+
+        .leaf-1 { top: 60px; left: 80px; animation-duration: 6s; animation-delay: 0s; }
+        .leaf-2 { top: 120px; right: 100px; animation-duration: 5s; animation-delay: -2s; }
+        .leaf-3 { bottom: 150px; left: 60px; animation-duration: 7s; animation-delay: -4s; }
+        .leaf-4 { bottom: 100px; right: 120px; animation-duration: 4s; animation-delay: -1s; }
+        .leaf-5 { top: 200px; left: 150px; animation-duration: 8s; animation-delay: -3s; }
+
+        @keyframes leafSway {
+            0%, 100% { 
+                transform: rotate(0deg) translateY(0px);
+                opacity: 0.3;
+            }
+            25% { 
+                transform: rotate(15deg) translateY(-10px);
+                opacity: 0.6;
+            }
+            50% { 
+                transform: rotate(-10deg) translateY(-5px);
+                opacity: 0.8;
+            }
+            75% { 
+                transform: rotate(5deg) translateY(-15px);
+                opacity: 0.5;
+            }
+        }
+
+        .flower-pot {
+            position: absolute;
+            bottom: 40px;
+            right: 60px;
+            width: 80px;
+            height: 100px;
+            z-index: 5;
+        }
+
+        .pot {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 40px;
+            background: linear-gradient(135deg, #8b4513, #a0522d);
+            border-radius: 0 0 30px 30px;
+        }
+
+        .plant-stem {
+            position: absolute;
+            bottom: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 40px;
+            background: #228b22;
+            border-radius: 2px;
+        }
+
+        .plant-flower {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            animation: flowerBloom 3s ease-in-out infinite;
+        }
+
+        @keyframes flowerBloom {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.2); }
+        }
+
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+            width: 85%;
+        }
+
+        .title {
+            font-family: 'Kalam', cursive;
+            font-size: 4rem;
+            font-weight: 700;
+            color: #2e8b57;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            animation: titleGrow 3s ease-out;
+        }
+
+        @keyframes titleGrow {
+            0% { 
+                opacity: 0; 
+                transform: scale(0.5) translateY(-30px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: #556b2f;
+            margin-bottom: 35px;
+            letter-spacing: 2px;
+            animation: subtitleFade 2s ease-out 1s both;
+        }
+
+        @keyframes subtitleFade {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .workshop-card {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(46, 139, 87, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            backdrop-filter: blur(5px);
+            animation: cardSlide 2s ease-out 1.5s both;
+        }
+
+        @keyframes cardSlide {
+            0% { 
+                opacity: 0; 
+                transform: translateY(40px) scale(0.95);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .workshop-title {
+            font-family: 'Kalam', cursive;
+            font-size: 2rem;
+            color: #228b22;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .season-info {
+            font-size: 1rem;
+            color: #2d5016;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .garden-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            text-align: left;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+            color: #2d5016;
+            animation: itemGrow 1s ease-out both;
+        }
+
+        .detail-item:nth-child(1) { animation-delay: 2s; }
+        .detail-item:nth-child(2) { animation-delay: 2.2s; }
+        .detail-item:nth-child(3) { animation-delay: 2.4s; }
+        .detail-item:nth-child(4) { animation-delay: 2.6s; }
+
+        @keyframes itemGrow {
+            0% { opacity: 0; transform: translateX(-20px) scale(0.9); }
+            100% { opacity: 1; transform: translateX(0) scale(1); }
+        }
+
+        .detail-icon {
+            color: #228b22;
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .vine-decoration {
+            position: absolute;
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent,
+                rgba(34, 139, 34, 0.4),
+                rgba(46, 139, 87, 0.6),
+                rgba(34, 139, 34, 0.4),
+                transparent);
+            animation: vineGrow 4s ease-out infinite;
+        }
+
+        .vine-top {
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation-delay: 0s;
+        }
+
+        .vine-bottom {
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation-delay: -2s;
+        }
+
+        @keyframes vineGrow {
+            0%, 100% { 
+                width: 150px;
+                opacity: 0.6;
+            }
+            50% { 
+                width: 250px;
+                opacity: 1;
+            }
+        }
+
+        .sunlight {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle,
+                rgba(255, 223, 0, 0.6) 0%,
+                rgba(255, 223, 0, 0.3) 60%,
+                transparent 100%);
+            border-radius: 50%;
+            animation: sunGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes sunGlow {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(255, 223, 0, 0.3);
+            }
+            50% { 
+                transform: scale(1.1);
+                box-shadow: 0 0 40px rgba(255, 223, 0, 0.6);
+            }
+        }
+
+        .sunlight::before {
+            content: '☀️';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="botanical-bg"></div>
+        
+        <div class="sunlight"></div>
+        
+        <div class="vine-decoration vine-top"></div>
+        <div class="vine-decoration vine-bottom"></div>
+        
+        <div class="leaf leaf-1">🍃</div>
+        <div class="leaf leaf-2">🌿</div>
+        <div class="leaf leaf-3">🍃</div>
+        <div class="leaf leaf-4">🌿</div>
+        <div class="leaf leaf-5">🍃</div>
+        
+        <div class="flower-pot">
+            <div class="plant-flower">🌸</div>
+            <div class="plant-stem"></div>
+            <div class="pot"></div>
+        </div>
+        
+        <div class="content">
+            <h1 class="title">Garden Club</h1>
+            <p class="subtitle">도시농업 가드닝 모임</p>
+            
+            <div class="workshop-card">
+                <div class="workshop-title">겨울 정원 준비하기</div>
+                <div class="season-info">
+                    추위에 강한 식물 관리법과 실내 가드닝<br>
+                    초보자도 쉽게 따라할 수 있는 원예 노하우
+                </div>
+                
+                <div class="garden-details">
+                    <div class="detail-item">
+                        <span class="detail-icon">🌱</span>
+                        <span>씨앗과 화분 제공</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📅</span>
+                        <span>2025년 12월 5일 오후 2시</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📍</span>
+                        <span>도시농업센터 온실</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-icon">📞</span>
+                        <span>garden.club.seoul@gmail.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

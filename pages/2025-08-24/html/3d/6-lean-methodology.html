@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>린 방법론 - Lean Methodology</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 50%, #0984e3 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 30px;
+        }
+        
+        .three-container {
+            width: 100%;
+            height: 400px;
+            margin: 30px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .content-section {
+            background: rgba(255,255,255,0.95);
+            padding: 40px;
+            margin: 30px 0;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .content-section h2 {
+            font-size: 2.5rem;
+            color: #00b894;
+            margin-bottom: 25px;
+            border-left: 5px solid #00b894;
+            padding-left: 20px;
+        }
+        
+        .content-section h3 {
+            font-size: 1.8rem;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+        
+        .content-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #4a5568;
+        }
+        
+        .lean-principles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .principle-card {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+        
+        .principle-card:hover {
+            transform: translateY(-8px) rotate(2deg);
+        }
+        
+        .principle-card h4 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+        
+        .principle-number {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+        
+        .waste-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .waste-item {
+            background: linear-gradient(135deg, #fd79a8, #fdcb6e);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .waste-item:hover {
+            transform: translateY(-5px) scale(1.02);
+        }
+        
+        .waste-item h5 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .waste-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .tools-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .tool {
+            background: linear-gradient(135deg, #0984e3, #74b9ff);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            flex: 1;
+            min-width: 200px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .tool:hover {
+            transform: translateY(-10px);
+        }
+        
+        .tool h4 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+        
+        .value-stream {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .stream-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            padding: 20px 0;
+            position: relative;
+        }
+        
+        .stream-step {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            text-align: center;
+            flex: 1;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .stream-step:hover {
+            transform: scale(1.05);
+        }
+        
+        .stream-arrow {
+            font-size: 1.5rem;
+            color: #00b894;
+            margin: 0 10px;
+        }
+        
+        .metrics-dashboard {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .metric-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .benefits-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .before-after {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .before {
+            border-left: 5px solid #ff6b6b;
+        }
+        
+        .after {
+            border-left: 5px solid #00b894;
+        }
+        
+        .before h4 {
+            color: #ff6b6b;
+        }
+        
+        .after h4 {
+            color: #00b894;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 50px;
+            border-radius: 20px;
+        }
+        
+        footer p {
+            color: white;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>린 방법론</h1>
+            <p class="subtitle">낭비를 제거하고 가치를 최대화하는 효율적인 개발 접근법</p>
+        </header>
+        
+        <div class="three-container" id="three-container"></div>
+        
+        <div class="content-section">
+            <h2>린 방법론이란?</h2>
+            <p>린(Lean) 방법론은 토요타 생산 시스템(Toyota Production System)에서 발전된 개념으로, 소프트웨어 개발에 적용된 효율성 중심의 접근법입니다. 린의 핵심은 고객에게 가치를 제공하지 않는 모든 형태의 낭비(Waste)를 식별하고 제거하는 것입니다.</p>
+            
+            <p>2003년 메리 포펜디크(Mary Poppendieck)와 톰 포펜디크(Tom Poppendieck)에 의해 소프트웨어 개발 분야에 체계적으로 도입된 린 방법론은 '더 적은 자원으로 더 많은 가치를 창출'하는 것을 목표로 합니다.</p>
+        </div>
+        
+        <div class="content-section">
+            <h2>린의 7가지 원칙</h2>
+            <div class="lean-principles">
+                <div class="principle-card">
+                    <div class="principle-number">1</div>
+                    <h4>낭비 제거</h4>
+                    <p>가치를 창출하지 않는 모든 활동을 식별하고 제거하여 효율성을 극대화합니다.</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-number">2</div>
+                    <h4>학습 증진</h4>
+                    <p>지속적인 학습과 지식 공유를 통해 팀의 역량을 향상시킵니다.</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-number">3</div>
+                    <h4>늦은 결정</h4>
+                    <p>불확실성을 줄이기 위해 가능한 한 늦게 결정을 내려 더 나은 선택을 합니다.</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-number">4</div>
+                    <h4>빠른 배포</h4>
+                    <p>가능한 한 빠르게 고객에게 가치를 전달하여 피드백을 받습니다.</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-number">5</div>
+                    <h4>팀 권한 부여</h4>
+                    <p>개발팀에게 의사결정 권한을 부여하여 자율성과 책임감을 높입니다.</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-number">6</div>
+                    <h4>품질 내재화</h4>
+                    <p>처음부터 품질을 고려하여 나중에 발생할 수 있는 문제를 예방합니다.</p>
+                </div>
+                <div class="principle-card">
+                    <div class="principle-number">7</div>
+                    <h4>전체 최적화</h4>
+                    <p>부분적 최적화가 아닌 전체 시스템의 최적화를 추구합니다.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>소프트웨어 개발의 8가지 낭비</h2>
+            <div class="waste-types">
+                <div class="waste-item">
+                    <div class="waste-icon">📋</div>
+                    <h5>불필요한 문서</h5>
+                    <p>과도하게 상세하거나 업데이트되지 않는 문서</p>
+                </div>
+                <div class="waste-item">
+                    <div class="waste-icon">⚙️</div>
+                    <h5>불필요한 기능</h5>
+                    <p>사용되지 않거나 요청되지 않은 기능 개발</p>
+                </div>
+                <div class="waste-item">
+                    <div class="waste-icon">📝</div>
+                    <h5>미완성 작업</h5>
+                    <p>완료되지 않은 코드나 테스트되지 않은 기능</p>
+                </div>
+                <div class="waste-item">
+                    <div class="waste-icon">🔄</div>
+                    <h5>재작업</h5>
+                    <p>결함 수정이나 요구사항 변경으로 인한 재작업</p>
+                </div>
+                <div class="waste-item">
+                    <div class="waste-icon">⏳</div>
+                    <h5>대기</h5>
+                    <p>승인, 정보, 자원을 기다리는 시간</p>
+                </div>
+                <div class="waste-item">
+                    <div class="waste-icon">🔀</div>
+                    <h5>업무 전환</h5>
+                    <p>여러 작업 간의 빈번한 컨텍스트 스위칭</p>
+                </div>
+                <div class="waste-item">
+                    <div class="waste-icon">📞</div>
+                    <h5>의사소통 지연</h5>
+                    <p>비효율적인 커뮤니케이션으로 인한 시간 손실</p>
+                </div>
+                <div class="waste-item">
+                    <div class="waste-icon">🎯</div>
+                    <h5>인재 활용 부족</h5>
+                    <p>팀원의 기술과 창의성을 충분히 활용하지 못함</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>가치 흐름 매핑</h2>
+            <p>가치 흐름 매핑(Value Stream Mapping)은 린 방법론의 핵심 도구로, 고객 요구사항부터 제품 배포까지의 전체 흐름을 시각화합니다.</p>
+            
+            <div class="value-stream">
+                <h3>현재 상태 매핑</h3>
+                <div class="stream-flow">
+                    <div class="stream-step">요구사항<br>분석</div>
+                    <div class="stream-arrow">→</div>
+                    <div class="stream-step">설계</div>
+                    <div class="stream-arrow">→</div>
+                    <div class="stream-step">개발</div>
+                    <div class="stream-arrow">→</div>
+                    <div class="stream-step">테스트</div>
+                    <div class="stream-arrow">→</div>
+                    <div class="stream-step">배포</div>
+                </div>
+                
+                <h3>미래 상태 매핑</h3>
+                <div class="stream-flow">
+                    <div class="stream-step">애자일<br>계획</div>
+                    <div class="stream-arrow">→</div>
+                    <div class="stream-step">지속적<br>통합</div>
+                    <div class="stream-arrow">→</div>
+                    <div class="stream-step">자동화<br>테스트</div>
+                    <div class="stream-arrow">→</div>
+                    <div class="stream-step">지속적<br>배포</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>린 도구와 기법</h2>
+            <div class="tools-container">
+                <div class="tool">
+                    <h4>5S</h4>
+                    <p>정리, 정돈, 청소, 청결, 습관화를 통한 작업환경 개선</p>
+                </div>
+                <div class="tool">
+                    <h4>카이젠</h4>
+                    <p>지속적인 개선을 위한 작은 변화의 누적</p>
+                </div>
+                <div class="tool">
+                    <h4>포카요케</h4>
+                    <p>실수를 방지하는 자동화된 검증 시스템</p>
+                </div>
+                <div class="tool">
+                    <h4>저스트 인 타임</h4>
+                    <p>필요한 것을 필요한 때에 필요한 만큼만 생산</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>린 메트릭스</h2>
+            <div class="metrics-dashboard">
+                <h3>주요 성과 지표</h3>
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-value">85%</div>
+                        <p>가치 추가 시간 비율</p>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">3일</div>
+                        <p>평균 리드 타임</p>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">95%</div>
+                        <p>첫 번째 시도 성공률</p>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">15</div>
+                        <p>주간 처리량</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>린 도입 전후 비교</h2>
+            <div class="benefits-comparison">
+                <div class="before-after before">
+                    <h4>도입 전</h4>
+                    <ul>
+                        <li>긴 개발 주기 (3-6개월)</li>
+                        <li>많은 미완성 작업</li>
+                        <li>빈번한 재작업</li>
+                        <li>낮은 고객 만족도</li>
+                        <li>팀 사기 저하</li>
+                    </ul>
+                </div>
+                <div class="before-after after">
+                    <h4>도입 후</h4>
+                    <ul>
+                        <li>짧은 배포 주기 (1-2주)</li>
+                        <li>작업 완료율 향상</li>
+                        <li>품질 결함 감소</li>
+                        <li>높은 고객 만족도</li>
+                        <li>팀 생산성 증대</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <h2>린 방법론 도입 가이드</h2>
+            <h3>1단계: 현재 상태 분석</h3>
+            <p>기존 개발 프로세스를 분석하여 낭비 요소를 식별하고 가치 흐름을 매핑합니다.</p>
+            
+            <h3>2단계: 팀 교육 및 인식 개선</h3>
+            <p>린 원칙과 도구에 대한 교육을 통해 팀원들의 마인드셋을 변화시킵니다.</p>
+            
+            <h3>3단계: 파일럿 프로젝트 실행</h3>
+            <p>작은 규모의 프로젝트에서 린 원칙을 적용하여 효과를 검증합니다.</p>
+            
+            <h3>4단계: 점진적 확산</h3>
+            <p>성공 사례를 바탕으로 다른 프로젝트와 팀으로 점진적으로 확산합니다.</p>
+            
+            <h3>5단계: 지속적 개선</h3>
+            <p>정기적인 회고와 메트릭 분석을 통해 프로세스를 지속적으로 개선합니다.</p>
+        </div>
+        
+        <footer>
+            <p>린 방법론은 단순히 비용 절감이 아닌, 고객 가치 창출과 팀 만족도 향상을 동시에 추구하는 지속 가능한 개발 문화입니다.</p>
+        </footer>
+    </div>
+    
+    <script>
+        let scene, camera, renderer, wasteElements = [], valueStream = [];
+        
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / 400, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            
+            const container = document.getElementById('three-container');
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            renderer.setClearColor(0x00b894);
+            container.appendChild(renderer.domElement);
+            
+            // Create value stream flow
+            const streamGeometry = new THREE.CylinderGeometry(0.1, 0.1, 8, 16);
+            const streamMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0x00cec9,
+                transparent: true,
+                opacity: 0.7
+            });
+            const stream = new THREE.Mesh(streamGeometry, streamMaterial);
+            stream.rotation.z = Math.PI / 2;
+            stream.position.y = 0;
+            scene.add(stream);
+            
+            // Create value-adding activities (green spheres)
+            const valueActivities = ['Plan', 'Code', 'Test', 'Deploy'];
+            const valueColors = [0x00b894, 0x00cec9, 0x74b9ff, 0x0984e3];
+            
+            for (let i = 0; i < 4; i++) {
+                const geometry = new THREE.SphereGeometry(0.4, 16, 16);
+                const material = new THREE.MeshPhongMaterial({ 
+                    color: valueColors[i],
+                    emissive: valueColors[i],
+                    emissiveIntensity: 0.1
+                });
+                const activity = new THREE.Mesh(geometry, material);
+                
+                activity.position.x = -3 + i * 2;
+                activity.position.y = 0.5;
+                activity.position.z = 0;
+                
+                activity.userData = {
+                    originalY: activity.position.y,
+                    name: valueActivities[i],
+                    isValue: true
+                };
+                
+                scene.add(activity);
+                valueStream.push(activity);
+            }
+            
+            // Create waste elements (red cubes)
+            const wasteTypes = ['Waiting', 'Extra Features', 'Defects', 'Over-processing'];
+            const wastePositions = [
+                { x: -2, y: -1.5, z: 1 },
+                { x: 0, y: -1.5, z: -1 },
+                { x: 2, y: -1.5, z: 1 },
+                { x: 1, y: -1.5, z: -2 }
+            ];
+            
+            wastePositions.forEach((pos, index) => {
+                const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+                const material = new THREE.MeshPhongMaterial({ 
+                    color: 0xff6b6b,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const waste = new THREE.Mesh(geometry, material);
+                
+                waste.position.set(pos.x, pos.y, pos.z);
+                waste.userData = {
+                    originalPosition: waste.position.clone(),
+                    name: wasteTypes[index],
+                    shrinking: false
+                };
+                
+                scene.add(waste);
+                wasteElements.push(waste);
+            });
+            
+            // Create lean improvement arrows
+            for (let i = 0; i < 6; i++) {
+                const arrowGeometry = new THREE.ConeGeometry(0.15, 0.6, 8);
+                const arrowMaterial = new THREE.MeshPhongMaterial({ 
+                    color: 0xffffff,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const arrow = new THREE.Mesh(arrowGeometry, arrowMaterial);
+                
+                const angle = (i / 6) * Math.PI * 2;
+                arrow.position.x = Math.cos(angle) * 5;
+                arrow.position.y = 2 + Math.sin(angle * 2) * 0.5;
+                arrow.position.z = Math.sin(angle) * 5;
+                
+                arrow.lookAt(0, 0, 0);
+                arrow.userData = { 
+                    angle: angle,
+                    originalY: arrow.position.y
+                };
+                
+                scene.add(arrow);
+            }
+            
+            // Create kaizen improvement particles
+            for (let i = 0; i < 30; i++) {
+                const particleGeometry = new THREE.SphereGeometry(0.05, 8, 8);
+                const particleMaterial = new THREE.MeshBasicMaterial({ 
+                    color: 0xffffff,
+                    transparent: true,
+                    opacity: 0.6
+                });
+                const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+                
+                particle.position.x = (Math.random() - 0.5) * 12;
+                particle.position.y = (Math.random() - 0.5) * 8;
+                particle.position.z = (Math.random() - 0.5) * 12;
+                
+                particle.userData = {
+                    velocity: new THREE.Vector3(
+                        (Math.random() - 0.5) * 0.02,
+                        (Math.random() - 0.5) * 0.02,
+                        (Math.random() - 0.5) * 0.02
+                    )
+                };
+                
+                scene.add(particle);
+            }
+            
+            // Create 5S organization visualization
+            const fiveSGeometry = new THREE.RingGeometry(2, 2.2, 32);
+            const fiveSMaterial = new THREE.MeshBasicMaterial({ 
+                color: 0x6c5ce7,
+                transparent: true,
+                opacity: 0.4,
+                side: THREE.DoubleSide
+            });
+            const fiveSRing = new THREE.Mesh(fiveSGeometry, fiveSMaterial);
+            fiveSRing.rotation.x = -Math.PI / 2;
+            fiveSRing.position.y = -2;
+            scene.add(fiveSRing);
+            
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(10, 10, 5);
+            scene.add(directionalLight);
+            
+            const pointLight1 = new THREE.PointLight(0x00b894, 0.8, 100);
+            pointLight1.position.set(0, 5, 0);
+            scene.add(pointLight1);
+            
+            const pointLight2 = new THREE.PointLight(0xff6b6b, 0.5, 50);
+            pointLight2.position.set(0, -2, 0);
+            scene.add(pointLight2);
+            
+            camera.position.set(0, 4, 8);
+            camera.lookAt(0, 0, 0);
+            
+            animate();
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const time = Date.now() * 0.001;
+            
+            // Animate value stream activities
+            valueStream.forEach((activity, index) => {
+                activity.position.y = activity.userData.originalY + Math.sin(time * 2 + index * 0.8) * 0.3;
+                activity.rotation.y = time * 1.5;
+                activity.rotation.x = time * 0.8;
+                
+                // Subtle movement along the stream
+                activity.position.x = -3 + index * 2 + Math.sin(time * 0.5 + index) * 0.1;
+            });
+            
+            // Animate waste elements (gradually shrink them - lean improvement)
+            wasteElements.forEach((waste, index) => {
+                if (!waste.userData.shrinking && Math.random() < 0.003) {
+                    waste.userData.shrinking = true;
+                }
+                
+                if (waste.userData.shrinking) {
+                    waste.scale.multiplyScalar(0.995);
+                    waste.material.opacity *= 0.998;
+                    
+                    if (waste.scale.x < 0.1) {
+                        waste.scale.set(1, 1, 1);
+                        waste.material.opacity = 0.8;
+                        waste.userData.shrinking = false;
+                    }
+                }
+                
+                waste.rotation.x += 0.02;
+                waste.rotation.y += 0.015;
+                waste.position.y = waste.userData.originalPosition.y + Math.sin(time * 3 + index) * 0.2;
+            });
+            
+            // Animate improvement arrows pointing inward (continuous improvement)
+            scene.children.forEach(child => {
+                if (child.geometry instanceof THREE.ConeGeometry && child.userData.angle !== undefined) {
+                    const newAngle = child.userData.angle + time * 0.2;
+                    child.position.x = Math.cos(newAngle) * (5 - Math.sin(time) * 0.5);
+                    child.position.z = Math.sin(newAngle) * (5 - Math.sin(time) * 0.5);
+                    child.position.y = child.userData.originalY + Math.sin(time * 1.5 + child.userData.angle) * 0.3;
+                    child.lookAt(0, 0, 0);
+                }
+            });
+            
+            // Animate kaizen particles (continuous small improvements)
+            scene.children.forEach(child => {
+                if (child.geometry instanceof THREE.SphereGeometry && 
+                    child.material.color.getHex() === 0xffffff && 
+                    child.userData.velocity) {
+                    
+                    child.position.add(child.userData.velocity);
+                    
+                    // Reset particles that move too far
+                    if (child.position.length() > 8) {
+                        child.position.normalize().multiplyScalar(0.5);
+                    }
+                    
+                    // Color particles based on distance from center (improvement)
+                    const distance = child.position.length();
+                    const hue = (1 - distance / 8) * 0.3; // Green to yellow
+                    child.material.color.setHSL(hue, 0.8, 0.6);
+                }
+            });
+            
+            // Camera orbiting with lean flow
+            const radius = 8;
+            camera.position.x = Math.sin(time * 0.1) * radius;
+            camera.position.z = Math.cos(time * 0.1) * radius;
+            camera.position.y = 4 + Math.sin(time * 0.05) * 2;
+            camera.lookAt(0, 0, 0);
+            
+            renderer.render(scene, camera);
+        }
+        
+        window.addEventListener('resize', () => {
+            const container = document.getElementById('three-container');
+            camera.aspect = container.offsetWidth / container.offsetHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+        });
+        
+        init3D();
+    </script>
+</body>
+</html>

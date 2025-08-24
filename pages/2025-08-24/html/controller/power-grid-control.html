@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power Grid Control Center</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: radial-gradient(ellipse at center, #0f1419 0%, #1a2332 50%, #0f1419 100%);
+            height: 100vh;
+            overflow: hidden;
+            color: #00ff41;
+            position: relative;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 320px 1fr 320px;
+            grid-template-rows: 90px 1fr 100px;
+            height: 100vh;
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .header-panel {
+            grid-column: 1 / 4;
+            grid-row: 1;
+            background: linear-gradient(135deg, #ff6b00, #ff8500);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            color: white;
+            box-shadow: 0 8px 25px rgba(255, 107, 0, 0.4);
+        }
+
+        .left-panel {
+            grid-column: 1;
+            grid-row: 2;
+            background: linear-gradient(145deg, #1a2332, #0f1419);
+            border: 2px solid #00ff41;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: inset 0 0 20px rgba(0, 255, 65, 0.3);
+        }
+
+        .center-display {
+            grid-column: 2;
+            grid-row: 2;
+            background: linear-gradient(135deg, #0f1419, #1a2332);
+            border: 3px solid #ff6b00;
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        }
+
+        .right-panel {
+            grid-column: 3;
+            grid-row: 2;
+            background: linear-gradient(145deg, #1a2332, #0f1419);
+            border: 2px solid #ff4757;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: inset 0 0 20px rgba(255, 71, 87, 0.3);
+        }
+
+        .footer-panel {
+            grid-column: 1 / 4;
+            grid-row: 3;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            color: white;
+            box-shadow: 0 5px 20px rgba(44, 62, 80, 0.4);
+        }
+
+        .power-station {
+            background: rgba(26, 35, 50, 0.8);
+            border: 2px solid #00ff41;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .power-station:hover {
+            box-shadow: 0 8px 25px rgba(0, 255, 65, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .station-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #00ff41;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .station-output {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff6b00;
+            margin: 8px 0;
+        }
+
+        .station-status {
+            font-size: 12px;
+            color: #74b9ff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-led {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        .status-led.online {
+            background: #00ff41;
+            box-shadow: 0 0 10px #00ff41;
+            animation: pulse-green 2s infinite;
+        }
+
+        .status-led.warning {
+            background: #ff6b00;
+            box-shadow: 0 0 10px #ff6b00;
+            animation: pulse-orange 1.5s infinite;
+        }
+
+        .status-led.offline {
+            background: #ff4757;
+            box-shadow: 0 0 10px #ff4757;
+            animation: pulse-red 1s infinite;
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes pulse-orange {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.2; }
+        }
+
+        .grid-map {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0, 255, 65, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 107, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 60% 20%, rgba(116, 185, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .transmission-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, #00ff41, transparent);
+            height: 3px;
+            border-radius: 2px;
+            animation: powerFlow 2s linear infinite;
+        }
+
+        @keyframes powerFlow {
+            0% { box-shadow: 0 0 5px #00ff41; }
+            50% { box-shadow: 0 0 15px #00ff41, 0 0 25px #00ff41; }
+            100% { box-shadow: 0 0 5px #00ff41; }
+        }
+
+        .power-plant {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #00ff41, #00cc33);
+            border: 2px solid #ffffff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .power-plant:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 20px #00ff41;
+        }
+
+        .power-plant.nuclear {
+            background: radial-gradient(circle, #ff6b00, #cc5500);
+        }
+
+        .power-plant.solar {
+            background: radial-gradient(circle, #ffff00, #cccc00);
+            color: #333;
+        }
+
+        .power-plant.wind {
+            background: radial-gradient(circle, #74b9ff, #0984e3);
+        }
+
+        .power-plant.hydro {
+            background: radial-gradient(circle, #00cec9, #00b894);
+        }
+
+        .substation {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ddd;
+            border: 2px solid #00ff41;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .substation:hover {
+            background: #00ff41;
+            transform: scale(1.5);
+        }
+
+        .load-display {
+            background: rgba(15, 20, 25, 0.9);
+            border: 2px solid #74b9ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .load-title {
+            font-size: 16px;
+            color: #74b9ff;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .load-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ff6b00;
+            margin: 10px 0;
+        }
+
+        .load-unit {
+            font-size: 14px;
+            color: #ddd;
+        }
+
+        .frequency-display {
+            background: rgba(15, 20, 25, 0.9);
+            border: 2px solid #00ff41;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .frequency-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #00ff41;
+            margin: 10px 0;
+        }
+
+        .frequency-bar {
+            width: 100%;
+            height: 8px;
+            background: #1a2332;
+            border-radius: 4px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .frequency-indicator {
+            height: 100%;
+            width: 85%;
+            background: linear-gradient(90deg, #ff4757, #ff6b00, #00ff41);
+            border-radius: 4px;
+            position: relative;
+            animation: frequencyFlicker 3s ease-in-out infinite;
+        }
+
+        @keyframes frequencyFlicker {
+            0%, 100% { width: 85%; }
+            50% { width: 88%; }
+        }
+
+        .alarm-panel {
+            background: rgba(255, 71, 87, 0.1);
+            border: 2px solid #ff4757;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .alarm-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff4757;
+            text-align: center;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .alarm-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .alarm-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 71, 87, 0.2);
+            font-size: 12px;
+            color: #ff4757;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .alarm-list li:last-child {
+            border-bottom: none;
+        }
+
+        .alarm-time {
+            font-size: 10px;
+            color: #999;
+        }
+
+        .control-button {
+            background: linear-gradient(145deg, #1a2332, #0f1419);
+            border: 2px solid #00ff41;
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: bold;
+            color: #00ff41;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0, 255, 65, 0.2);
+        }
+
+        .control-button:hover {
+            background: linear-gradient(145deg, #00ff41, #00cc33);
+            color: #0f1419;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 255, 65, 0.4);
+        }
+
+        .control-button:active {
+            transform: translateY(0);
+        }
+
+        .control-button.warning {
+            border-color: #ff6b00;
+            color: #ff6b00;
+        }
+
+        .control-button.danger {
+            border-color: #ff4757;
+            color: #ff4757;
+        }
+
+        .control-button.active {
+            background: linear-gradient(145deg, #00ff41, #00cc33);
+            color: #0f1419;
+        }
+
+        .generation-mix {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .generation-source {
+            background: rgba(15, 20, 25, 0.8);
+            border: 1px solid #444;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .generation-source:hover {
+            border-color: #00ff41;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+        }
+
+        .source-icon {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .source-name {
+            font-size: 10px;
+            color: #999;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .source-percentage {
+            font-size: 16px;
+            font-weight: bold;
+            color: #00ff41;
+        }
+
+        .voltage-meter {
+            width: 120px;
+            height: 120px;
+            border: 3px solid #74b9ff;
+            border-radius: 50%;
+            position: relative;
+            margin: 15px auto;
+            background: radial-gradient(circle, #0f1419, #1a2332);
+        }
+
+        .voltage-needle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 45px;
+            background: #ff6b00;
+            transform-origin: bottom center;
+            transform: translate(-50%, 0) rotate(45deg);
+            border-radius: 1px;
+            box-shadow: 0 0 8px #ff6b00;
+        }
+
+        .voltage-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            font-weight: bold;
+            color: #74b9ff;
+            text-align: center;
+        }
+
+        .voltage-scale {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .scale-mark {
+            position: absolute;
+            width: 2px;
+            height: 10px;
+            background: #74b9ff;
+            top: 5px;
+            left: 50%;
+            transform-origin: 50% 55px;
+        }
+
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            background: rgba(15, 20, 25, 0.8);
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: #999;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 14px;
+            font-weight: bold;
+            color: #00ff41;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-container">
+        <!-- Header Panel -->
+        <div class="header-panel">
+            <div>
+                <h2>NATIONAL POWER GRID CONTROL CENTER</h2>
+                <div style="font-size: 14px; opacity: 0.9;">KEPCO Central Operations | Sector 7</div>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 18px;">System Frequency</div>
+                <div style="font-size: 28px; font-weight: bold;" id="system-frequency">60.00 Hz</div>
+            </div>
+        </div>
+
+        <!-- Left Panel - Generation Sources -->
+        <div class="left-panel">
+            <div style="text-align: center; color: #00ff41; font-size: 16px; margin-bottom: 20px; font-weight: bold;">GENERATION SOURCES</div>
+            
+            <div class="power-station" onclick="selectStation('nuclear1')">
+                <div class="station-title">Nuclear Plant #1</div>
+                <div class="station-output">1,350 MW</div>
+                <div class="station-status">
+                    <span>Load Factor: 98%</span>
+                    <span class="status-led online"></span>
+                </div>
+            </div>
+
+            <div class="power-station" onclick="selectStation('nuclear2')">
+                <div class="station-title">Nuclear Plant #2</div>
+                <div class="station-output">1,200 MW</div>
+                <div class="station-status">
+                    <span>Load Factor: 95%</span>
+                    <span class="status-led warning"></span>
+                </div>
+            </div>
+
+            <div class="power-station" onclick="selectStation('coal1')">
+                <div class="station-title">Coal Plant #1</div>
+                <div class="station-output">800 MW</div>
+                <div class="station-status">
+                    <span>Load Factor: 85%</span>
+                    <span class="status-led online"></span>
+                </div>
+            </div>
+
+            <div class="power-station" onclick="selectStation('gas1')">
+                <div class="station-title">Gas Plant #1</div>
+                <div class="station-output">450 MW</div>
+                <div class="station-status">
+                    <span>Load Factor: 70%</span>
+                    <span class="status-led online"></span>
+                </div>
+            </div>
+
+            <div class="power-station" onclick="selectStation('hydro1')">
+                <div class="station-title">Hydro Plant #1</div>
+                <div class="station-output">320 MW</div>
+                <div class="station-status">
+                    <span>Load Factor: 60%</span>
+                    <span class="status-led offline"></span>
+                </div>
+            </div>
+
+            <div class="generation-mix">
+                <div class="generation-source">
+                    <div class="source-icon">⚛️</div>
+                    <div class="source-name">Nuclear</div>
+                    <div class="source-percentage">52%</div>
+                </div>
+                <div class="generation-source">
+                    <div class="source-icon">🏭</div>
+                    <div class="source-name">Coal</div>
+                    <div class="source-percentage">25%</div>
+                </div>
+                <div class="generation-source">
+                    <div class="source-icon">🔥</div>
+                    <div class="source-name">Gas</div>
+                    <div class="source-percentage">15%</div>
+                </div>
+                <div class="generation-source">
+                    <div class="source-icon">💧</div>
+                    <div class="source-name">Renewable</div>
+                    <div class="source-percentage">8%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Display - Grid Map -->
+        <div class="center-display">
+            <div class="grid-map">
+                <!-- Power Plants -->
+                <div class="power-plant nuclear" style="top: 80px; left: 100px;" title="Nuclear Plant #1" onclick="plantDetails('nuclear1')">⚛️</div>
+                <div class="power-plant nuclear" style="top: 200px; left: 150px;" title="Nuclear Plant #2" onclick="plantDetails('nuclear2')">⚛️</div>
+                <div class="power-plant" style="top: 120px; left: 300px;" title="Coal Plant #1" onclick="plantDetails('coal1')">🏭</div>
+                <div class="power-plant wind" style="top: 50px; left: 400px;" title="Wind Farm" onclick="plantDetails('wind1')">💨</div>
+                <div class="power-plant solar" style="top: 250px; left: 350px;" title="Solar Farm" onclick="plantDetails('solar1')">☀️</div>
+                <div class="power-plant hydro" style="top: 300px; left: 200px;" title="Hydro Plant" onclick="plantDetails('hydro1')">💧</div>
+
+                <!-- Substations -->
+                <div class="substation" style="top: 150px; left: 250px;" title="Substation A" onclick="substationDetails('A')"></div>
+                <div class="substation" style="top: 180px; left: 320px;" title="Substation B" onclick="substationDetails('B')"></div>
+                <div class="substation" style="top: 220px; left: 280px;" title="Substation C" onclick="substationDetails('C')"></div>
+                <div class="substation" style="top: 120px; left: 380px;" title="Substation D" onclick="substationDetails('D')"></div>
+
+                <!-- Transmission Lines -->
+                <div class="transmission-line" style="top: 160px; left: 120px; width: 140px; transform: rotate(15deg);"></div>
+                <div class="transmission-line" style="top: 140px; left: 260px; width: 130px; transform: rotate(-10deg);"></div>
+                <div class="transmission-line" style="top: 200px; left: 170px; width: 120px; transform: rotate(25deg);"></div>
+                <div class="transmission-line" style="top: 240px; left: 280px; width: 90px; transform: rotate(-30deg);"></div>
+                <div class="transmission-line" style="top: 180px; left: 320px; width: 80px; transform: rotate(45deg);"></div>
+
+                <!-- Grid Information Overlay -->
+                <div style="position: absolute; top: 20px; left: 20px; background: rgba(0, 0, 0, 0.8); padding: 15px; border-radius: 10px; border: 1px solid #00ff41;">
+                    <div style="color: #00ff41; font-size: 14px; margin-bottom: 5px;">GRID STATUS</div>
+                    <div style="color: #ff6b00; font-size: 12px;">Total Generation: <span id="total-generation">4,120 MW</span></div>
+                    <div style="color: #74b9ff; font-size: 12px;">Total Load: <span id="total-load">3,987 MW</span></div>
+                    <div style="color: #ddd; font-size: 12px;">Reserve: <span id="reserve">133 MW</span></div>
+                </div>
+
+                <div style="position: absolute; bottom: 20px; right: 20px; background: rgba(0, 0, 0, 0.8); padding: 15px; border-radius: 10px; border: 1px solid #ff6b00;">
+                    <div style="color: #ff6b00; font-size: 14px; margin-bottom: 5px;">TRANSMISSION</div>
+                    <div style="color: #00ff41; font-size: 12px;">Voltage: 765 kV</div>
+                    <div style="color: #74b9ff; font-size: 12px;">Power Flow: 2,847 MW</div>
+                    <div style="color: #ddd; font-size: 12px;">Losses: 1.8%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - System Status -->
+        <div class="right-panel">
+            <div style="text-align: center; color: #ff4757; font-size: 16px; margin-bottom: 20px; font-weight: bold;">SYSTEM STATUS</div>
+            
+            <div class="load-display">
+                <div class="load-title">Current Load</div>
+                <div class="load-value" id="current-load">3,987</div>
+                <div class="load-unit">MW</div>
+            </div>
+
+            <div class="frequency-display">
+                <div class="load-title" style="color: #00ff41;">Grid Frequency</div>
+                <div class="frequency-value" id="frequency-value">60.00</div>
+                <div class="load-unit">Hz</div>
+                <div class="frequency-bar">
+                    <div class="frequency-indicator" id="frequency-indicator"></div>
+                </div>
+            </div>
+
+            <div class="voltage-meter">
+                <div class="voltage-scale">
+                    <div class="scale-mark" style="transform: rotate(0deg);"></div>
+                    <div class="scale-mark" style="transform: rotate(30deg);"></div>
+                    <div class="scale-mark" style="transform: rotate(60deg);"></div>
+                    <div class="scale-mark" style="transform: rotate(90deg);"></div>
+                    <div class="scale-mark" style="transform: rotate(120deg);"></div>
+                    <div class="scale-mark" style="transform: rotate(150deg);"></div>
+                    <div class="scale-mark" style="transform: rotate(180deg);"></div>
+                </div>
+                <div class="voltage-needle" id="voltage-needle"></div>
+                <div class="voltage-value">
+                    <div id="voltage-display">765</div>
+                    <div style="font-size: 12px;">kV</div>
+                </div>
+            </div>
+
+            <div class="alarm-panel">
+                <div class="alarm-title">🚨 System Alerts</div>
+                <ul class="alarm-list">
+                    <li>
+                        <span>Nuclear #2 Turbine Vibration</span>
+                        <span class="alarm-time">14:23</span>
+                    </li>
+                    <li>
+                        <span>Hydro #1 Offline - Maintenance</span>
+                        <span class="alarm-time">12:45</span>
+                    </li>
+                    <li>
+                        <span>High Load Forecast - Peak Hour</span>
+                        <span class="alarm-time">11:30</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="grid-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Efficiency</div>
+                    <div class="stat-value">98.2%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Stability</div>
+                    <div class="stat-value">Normal</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Reserve</div>
+                    <div class="stat-value">3.3%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Panel -->
+        <div class="footer-panel">
+            <button class="control-button" onclick="systemControl('agc')">Automatic Generation Control</button>
+            <button class="control-button warning" onclick="systemControl('load-shed')">Load Shedding</button>
+            <button class="control-button" onclick="systemControl('dispatch')">Economic Dispatch</button>
+            <button class="control-button danger" onclick="systemControl('emergency')">Emergency Control</button>
+            <button class="control-button" onclick="systemControl('forecast')">Load Forecast</button>
+            <button class="control-button" onclick="systemControl('market')">Market Operations</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let systemData = {
+                frequency: 60.00,
+                voltage: 765,
+                totalGeneration: 4120,
+                totalLoad: 3987,
+                reserve: 133,
+                selectedStation: null
+            };
+
+            // Station Selection
+            window.selectStation = function(stationId) {
+                systemData.selectedStation = stationId;
+                document.querySelectorAll('.power-station').forEach(station => {
+                    station.style.boxShadow = '';
+                    station.style.borderColor = '#00ff41';
+                });
+                
+                const selectedElement = document.querySelector(`[onclick="selectStation('${stationId}')"]`);
+                selectedElement.style.boxShadow = '0 0 20px #00ff41';
+                selectedElement.style.borderColor = '#ff6b00';
+            };
+
+            // Plant Details
+            window.plantDetails = function(plantId) {
+                const plantElement = document.querySelector(`[onclick="plantDetails('${plantId}')"]`);
+                plantElement.style.transform = 'scale(1.3)';
+                
+                setTimeout(() => {
+                    plantElement.style.transform = 'scale(1)';
+                    
+                    switch(plantId) {
+                        case 'nuclear1':
+                            alert('Nuclear Plant #1\\nCapacity: 1,350 MW\\nStatus: Online\\nLoad Factor: 98%\\nFuel: Uranium');
+                            break;
+                        case 'nuclear2':
+                            alert('Nuclear Plant #2\\nCapacity: 1,200 MW\\nStatus: Warning - Turbine Vibration\\nLoad Factor: 95%\\nFuel: Uranium');
+                            break;
+                        case 'coal1':
+                            alert('Coal Plant #1\\nCapacity: 800 MW\\nStatus: Online\\nLoad Factor: 85%\\nFuel: Coal');
+                            break;
+                        case 'wind1':
+                            alert('Wind Farm\\nCapacity: 200 MW\\nStatus: Online\\nLoad Factor: 65%\\nWind Speed: 8.5 m/s');
+                            break;
+                        case 'solar1':
+                            alert('Solar Farm\\nCapacity: 150 MW\\nStatus: Online\\nLoad Factor: 75%\\nIrradiance: 850 W/m²');
+                            break;
+                        case 'hydro1':
+                            alert('Hydro Plant #1\\nCapacity: 320 MW\\nStatus: Offline - Maintenance\\nReservoir Level: 82%');
+                            break;
+                    }
+                }, 300);
+            };
+
+            // Substation Details
+            window.substationDetails = function(substationId) {
+                const substationElement = document.querySelector(`[onclick="substationDetails('${substationId}')"]`);
+                substationElement.style.transform = 'scale(2)';
+                substationElement.style.background = '#00ff41';
+                
+                setTimeout(() => {
+                    substationElement.style.transform = 'scale(1)';
+                    substationElement.style.background = '#ddd';
+                    
+                    alert(`Substation ${substationId}\\nVoltage: 345kV/138kV\\nTransformers: 3 units\\nLoad: ${Math.floor(Math.random() * 200 + 100)} MW\\nStatus: Normal`);
+                }, 500);
+            };
+
+            // System Control
+            window.systemControl = function(control) {
+                const button = document.querySelector(`[onclick="systemControl('${control}')"]`);
+                const originalText = button.textContent;
+                
+                button.classList.add('active');
+                button.textContent = 'EXECUTING...';
+                
+                setTimeout(() => {
+                    button.classList.remove('active');
+                    button.textContent = originalText;
+                    
+                    switch(control) {
+                        case 'agc':
+                            alert('Automatic Generation Control activated.\\nSystem frequency regulation enabled.');
+                            break;
+                        case 'load-shed':
+                            alert('Load Shedding Protocol initiated.\\nNon-critical loads will be disconnected.');
+                            break;
+                        case 'dispatch':
+                            alert('Economic Dispatch optimized.\\nGeneration costs minimized.');
+                            break;
+                        case 'emergency':
+                            alert('Emergency Control activated!\\nSystem entering protective mode.');
+                            break;
+                        case 'forecast':
+                            alert('Load Forecast updated.\\nPeak demand: 4,350 MW at 19:00');
+                            break;
+                        case 'market':
+                            alert('Market Operations synchronized.\\nReal-time pricing updated.');
+                            break;
+                    }
+                }, 2000);
+            };
+
+            // Real-time data simulation
+            setInterval(() => {
+                // Update frequency
+                systemData.frequency += (Math.random() - 0.5) * 0.02;
+                systemData.frequency = Math.max(59.8, Math.min(60.2, systemData.frequency));
+                
+                const frequencyElement = document.getElementById('frequency-value');
+                const systemFrequencyElement = document.getElementById('system-frequency');
+                frequencyElement.textContent = systemData.frequency.toFixed(2);
+                systemFrequencyElement.textContent = systemData.frequency.toFixed(2) + ' Hz';
+                
+                // Update frequency indicator
+                const frequencyPercentage = ((systemData.frequency - 59.8) / 0.4) * 100;
+                document.getElementById('frequency-indicator').style.width = Math.max(75, Math.min(95, frequencyPercentage)) + '%';
+
+                // Update voltage
+                systemData.voltage += (Math.random() - 0.5) * 10;
+                systemData.voltage = Math.max(750, Math.min(780, systemData.voltage));
+                document.getElementById('voltage-display').textContent = Math.round(systemData.voltage);
+                
+                const voltageRotation = ((systemData.voltage - 750) / 30) * 180 - 90;
+                document.getElementById('voltage-needle').style.transform = `translate(-50%, 0) rotate(${voltageRotation}deg)`;
+
+                // Update load
+                systemData.totalLoad += (Math.random() - 0.5) * 50;
+                systemData.totalLoad = Math.max(3800, Math.min(4200, systemData.totalLoad));
+                document.getElementById('current-load').textContent = Math.round(systemData.totalLoad).toLocaleString();
+                document.getElementById('total-load').textContent = Math.round(systemData.totalLoad) + ' MW';
+
+                // Update generation and reserve
+                systemData.totalGeneration = systemData.totalLoad + systemData.reserve + (Math.random() - 0.5) * 20;
+                document.getElementById('total-generation').textContent = Math.round(systemData.totalGeneration) + ' MW';
+                
+                systemData.reserve = systemData.totalGeneration - systemData.totalLoad;
+                document.getElementById('reserve').textContent = Math.round(systemData.reserve) + ' MW';
+            }, 2000);
+
+            // Animate transmission lines
+            setInterval(() => {
+                const lines = document.querySelectorAll('.transmission-line');
+                lines.forEach(line => {
+                    line.style.opacity = '0.5';
+                    setTimeout(() => {
+                        line.style.opacity = '1';
+                    }, 500);
+                });
+            }, 3000);
+
+            // Initial setup
+            document.querySelector('.control-button').click();
+        });
+    </script>
+</body>
+</html>

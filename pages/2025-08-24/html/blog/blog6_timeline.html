@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인생 타임라인 - 40대의 여정</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 80px 20px 60px;
+            color: white;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+            position: relative;
+        }
+        
+        .timeline {
+            position: relative;
+            padding: 40px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, #3498db, #9b59b6, #e74c3c, #f39c12);
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        
+        .timeline-item {
+            display: flex;
+            margin-bottom: 80px;
+            align-items: center;
+            position: relative;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            flex-direction: row;
+        }
+        
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        
+        .timeline-content {
+            flex: 1;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 0 40px;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .timeline-content:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content::after {
+            content: '';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 20px solid transparent;
+            border-left-color: white;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-content::after {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 20px solid transparent;
+            border-right-color: white;
+        }
+        
+        .timeline-marker {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border: 4px solid;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            box-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+        
+        .marker-20s { border-color: #3498db; color: #3498db; }
+        .marker-30s { border-color: #9b59b6; color: #9b59b6; }
+        .marker-40s { border-color: #e74c3c; color: #e74c3c; }
+        .marker-current { border-color: #f39c12; color: #f39c12; animation: pulse 2s infinite; }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 20px rgba(243, 156, 18, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(243, 156, 18, 0.8), 0 0 40px rgba(243, 156, 18, 0.3); }
+            100% { box-shadow: 0 0 20px rgba(243, 156, 18, 0.5); }
+        }
+        
+        .period-title {
+            font-size: 1.8rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .time-range {
+            background: #ecf0f1;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .content-text {
+            margin-bottom: 20px;
+            color: #555;
+        }
+        
+        .highlights {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+            margin: 20px 0;
+        }
+        
+        .highlights h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .highlights ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .highlights li {
+            padding: 5px 0;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .highlights li::before {
+            content: '▶';
+            position: absolute;
+            left: 0;
+            color: #3498db;
+            font-size: 0.8rem;
+        }
+        
+        .mood-indicator {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .mood-emoji {
+            font-size: 2rem;
+        }
+        
+        .mood-text {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .current-status {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 60px;
+            box-shadow: 0 15px 35px rgba(243, 156, 18, 0.3);
+        }
+        
+        .current-status h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+        
+        .current-goals {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .goal-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: left;
+        }
+        
+        .goal-title {
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                flex-direction: column !important;
+                align-items: flex-start;
+            }
+            
+            .timeline-content {
+                margin: 0 0 0 60px;
+                width: calc(100% - 60px);
+            }
+            
+            .timeline-item:nth-child(odd) .timeline-content::after,
+            .timeline-item:nth-child(even) .timeline-content::after {
+                left: -20px;
+                right: auto;
+                border: 20px solid transparent;
+                border-right-color: white;
+                border-left-color: transparent;
+            }
+            
+            .timeline-marker {
+                left: 30px;
+                transform: translateX(-50%);
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>⏰ Life Timeline</h1>
+        <p class="subtitle">40대 아저씨의 인생 여정을 되돌아보며</p>
+    </header>
+    
+    <div class="container">
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-marker marker-20s">🌱</div>
+                <div class="timeline-content">
+                    <h3 class="period-title">20대 - 꿈과 열정의 시절</h3>
+                    <div class="time-range">1995 - 2005</div>
+                    <div class="content-text">
+                        <p>
+                            대학에 들어가고, 첫 직장을 구하고, 세상에 대한 호기심으로 가득했던 시절. 
+                            모든 게 새롭고 가능성으로 넘쳐났다. 밤을 새워 친구들과 이야기하고, 
+                            미래에 대한 큰 꿈을 꾸던 때였다.
+                        </p>
+                    </div>
+                    <div class="highlights">
+                        <h4>주요 사건들</h4>
+                        <ul>
+                            <li>대학 입학 및 졸업 (컴퓨터공학과)</li>
+                            <li>첫 회사 입사</li>
+                            <li>군 복무 완료</li>
+                            <li>첫 연애와 이별의 아픔</li>
+                            <li>해외여행 첫 경험</li>
+                        </ul>
+                    </div>
+                    <div class="mood-indicator">
+                        <span class="mood-emoji">😄</span>
+                        <span class="mood-text">"세상 모든 게 가능해 보였던 시절"</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-marker marker-20s">💼</div>
+                <div class="timeline-content">
+                    <h3 class="period-title">20대 후반 - 사회인으로서의 적응</h3>
+                    <div class="time-range">2005 - 2010</div>
+                    <div class="content-text">
+                        <p>
+                            직장생활에 적응하고, 사회인으로서의 책임감을 느끼기 시작했다. 
+                            야근과 회식이 일상이 되었고, 동시에 현실적인 목표들을 세우기 시작했다. 
+                            이 시기에 지금의 아내를 만났다.
+                        </p>
+                    </div>
+                    <div class="highlights">
+                        <h4>주요 사건들</h4>
+                        <ul>
+                            <li>직장에서의 첫 승진</li>
+                            <li>운명의 사람(현재 아내)과 만남</li>
+                            <li>첫 자동차 구매</li>
+                            <li>전세집 마련</li>
+                            <li>프로젝트 리더 경험</li>
+                        </ul>
+                    </div>
+                    <div class="mood-indicator">
+                        <span class="mood-emoji">😊</span>
+                        <span class="mood-text">"바쁘지만 충실했던 성장의 시간"</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-marker marker-30s">💍</div>
+                <div class="timeline-content">
+                    <h3 class="period-title">30대 초반 - 결혼과 새로운 시작</h3>
+                    <div class="time-range">2010 - 2015</div>
+                    <div class="content-text">
+                        <p>
+                            결혼을 하고 가정을 꾸리기 시작했다. 첫째 아이가 태어나면서 
+                            아버지라는 새로운 역할을 맡게 되었다. 책임감은 더 커졌지만, 
+                            가족이 주는 행복도 그만큼 컸다.
+                        </p>
+                    </div>
+                    <div class="highlights">
+                        <h4>주요 사건들</h4>
+                        <ul>
+                            <li>결혼 (2011년)</li>
+                            <li>신혼집 마련 (전세 → 자가)</li>
+                            <li>첫째 딸 출생</li>
+                            <li>팀장 승진</li>
+                            <li>부모님 건강 악화로 병원 다니기 시작</li>
+                        </ul>
+                    </div>
+                    <div class="mood-indicator">
+                        <span class="mood-emoji">🥰</span>
+                        <span class="mood-text">"사랑하는 사람들과 함께하는 행복"</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-marker marker-30s">👶</div>
+                <div class="timeline-content">
+                    <h3 class="period-title">30대 중반 - 육아와 커리어의 균형</h3>
+                    <div class="time-range">2015 - 2020</div>
+                    <div class="content-text">
+                        <p>
+                            둘째 아이까지 태어나면서 진짜 육아의 현실을 마주했다. 
+                            잠 못 이루는 밤들, 하지만 아이들의 첫걸음, 첫 말에서 오는 감동은 
+                            모든 피로를 잊게 만들었다. 직장에서는 중간관리자 역할에 적응해나갔다.
+                        </p>
+                    </div>
+                    <div class="highlights">
+                        <h4>주요 사건들</h4>
+                        <ul>
+                            <li>둘째 아들 출생</li>
+                            <li>더 큰 집으로 이사</li>
+                            <li>부서장 승진</li>
+                            <li>아이들 어린이집 입학</li>
+                            <li>가족 해외여행 (일본)</li>
+                        </ul>
+                    </div>
+                    <div class="mood-indicator">
+                        <span class="mood-emoji">😅</span>
+                        <span class="mood-text">"바쁘고 힘들지만 보람찬 육아 라이프"</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-marker marker-40s">🎯</div>
+                <div class="timeline-content">
+                    <h3 class="period-title">40대 초반 - 안정과 성찰의 시간</h3>
+                    <div class="time-range">2020 - 2023</div>
+                    <div class="content-text">
+                        <p>
+                            코로나19라는 예상치 못한 상황을 겪으며 많은 것들이 변했다. 
+                            재택근무를 하면서 가족과 더 많은 시간을 보낼 수 있게 되었고, 
+                            삶의 우선순위에 대해 다시 생각하게 되었다.
+                        </p>
+                    </div>
+                    <div class="highlights">
+                        <h4>주요 사건들</h4>
+                        <ul>
+                            <li>코로나19 팬데믹 경험</li>
+                            <li>재택근무 시작</li>
+                            <li>아이들 초등학교 입학</li>
+                            <li>새로운 취미 개발 (사진, 요리)</li>
+                            <li>건강에 대한 관심 증가</li>
+                        </ul>
+                    </div>
+                    <div class="mood-indicator">
+                        <span class="mood-emoji">🤔</span>
+                        <span class="mood-text">"변화에 적응하며 새로운 가치를 발견"</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-marker marker-current">⭐</div>
+                <div class="timeline-content">
+                    <h3 class="period-title">40대 중반 - 현재</h3>
+                    <div class="time-range">2023 - 현재</div>
+                    <div class="content-text">
+                        <p>
+                            지금까지의 경험들이 축적되어 비로소 진짜 어른이 된 기분이다. 
+                            여전히 배울 것도, 도전할 것도 많지만 이제는 조급하지 않다. 
+                            가족과 함께하는 시간을 소중히 여기며, 일과 삶의 균형을 찾아가고 있다.
+                        </p>
+                    </div>
+                    <div class="highlights">
+                        <h4>현재 진행 중</h4>
+                        <ul>
+                            <li>블로그 운영 시작</li>
+                            <li>아이들과의 소통 늘리기</li>
+                            <li>운동 습관 만들기</li>
+                            <li>독서 모임 참여</li>
+                            <li>새로운 기술 학습</li>
+                        </ul>
+                    </div>
+                    <div class="mood-indicator">
+                        <span class="mood-emoji">😌</span>
+                        <span class="mood-text">"여유롭고 의미 있는 삶을 추구하며"</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="current-status">
+            <h2>🚀 앞으로의 목표</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 30px;">
+                40대 후반과 50대를 향해 나아가는 지금, 새로운 꿈들을 그려본다
+            </p>
+            <div class="current-goals">
+                <div class="goal-item">
+                    <div class="goal-title">🏃‍♂️ 건강한 삶</div>
+                    <p>꾸준한 운동과 건강한 식습관으로 활력 있는 50대 준비</p>
+                </div>
+                <div class="goal-item">
+                    <div class="goal-title">👨‍👧‍👦 가족과의 시간</div>
+                    <p>아이들이 성장하는 순간순간을 놓치지 않고 함께 하기</p>
+                </div>
+                <div class="goal-item">
+                    <div class="goal-title">📚 평생학습</div>
+                    <p>새로운 기술과 지식을 배우며 계속 성장하는 사람 되기</p>
+                </div>
+                <div class="goal-item">
+                    <div class="goal-title">🌍 경험의 확장</div>
+                    <p>가족과 함께 더 많은 곳을 여행하고 다양한 경험 쌓기</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

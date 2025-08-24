@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영화 모임 - 시네마 파라다이스</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background: #000;
+            color: white;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        .cinema-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+        }
+        
+        .film-strip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                #222 0px,
+                #222 20px,
+                #000 20px,
+                #000 25px
+            );
+            opacity: 0.3;
+            z-index: 1;
+            animation: filmRoll 20s linear infinite;
+        }
+        
+        .spotlight {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.3) 30%, transparent 70%);
+            transform: translate(-50%, -50%);
+            animation: spotlightMove 15s ease-in-out infinite;
+            z-index: 2;
+        }
+        
+        .curtain {
+            position: absolute;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, #8B0000, #A0522D);
+            z-index: 5;
+            transition: transform 3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .curtain-left {
+            left: 0;
+            transform-origin: left center;
+        }
+        
+        .curtain-right {
+            right: 0;
+            transform-origin: right center;
+        }
+        
+        .curtain.open .curtain-left {
+            transform: translateX(-100%);
+        }
+        
+        .curtain.open .curtain-right {
+            transform: translateX(100%);
+        }
+        
+        .main-stage {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            padding: 20px;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 2s ease-out 3s;
+        }
+        
+        .main-stage.revealed {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .movie-reel {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 40px;
+            animation: reelSpin 8s linear infinite;
+        }
+        
+        .reel-outer {
+            width: 100%;
+            height: 100%;
+            border: 10px solid #silver;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #333, #666, #333);
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+        }
+        
+        .reel-inner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 60%;
+            height: 60%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            background: #222;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+        }
+        
+        .reel-holes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .hole {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #000;
+            border-radius: 50%;
+        }
+        
+        .hole:nth-child(1) { top: 10%; left: 50%; transform: translateX(-50%); }
+        .hole:nth-child(2) { top: 50%; right: 10%; transform: translateY(-50%); }
+        .hole:nth-child(3) { bottom: 10%; left: 50%; transform: translateX(-50%); }
+        .hole:nth-child(4) { top: 50%; left: 10%; transform: translateY(-50%); }
+        .hole:nth-child(5) { top: 25%; right: 25%; }
+        .hole:nth-child(6) { bottom: 25%; right: 25%; }
+        .hole:nth-child(7) { bottom: 25%; left: 25%; }
+        .hole:nth-child(8) { top: 25%; left: 25%; }
+        
+        .title {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FF4500);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: goldShimmer 4s ease-in-out infinite;
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            margin-bottom: 50px;
+            opacity: 0.9;
+            font-style: italic;
+        }
+        
+        .movie-posters {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .poster {
+            width: 120px;
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            border: 3px solid #FFD700;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .poster::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, transparent, rgba(255,215,0,0.5), transparent);
+            transition: top 0.5s ease;
+        }
+        
+        .poster:hover {
+            transform: scale(1.1) rotate(2deg);
+            box-shadow: 0 15px 30px rgba(255,215,0,0.4);
+        }
+        
+        .poster:hover::before {
+            top: 100%;
+        }
+        
+        .poster:nth-child(1) {
+            background-image: url('https://images.unsplash.com/photo-1489599162436-ba8e8c5e4b2a?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80');
+        }
+        
+        .poster:nth-child(2) {
+            background-image: url('https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80');
+        }
+        
+        .poster:nth-child(3) {
+            background-image: url('https://images.unsplash.com/photo-1440404653325-ab127d49abc1?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80');
+        }
+        
+        .poster:nth-child(4) {
+            background-image: url('https://images.unsplash.com/photo-1485846234645-a62644f84728?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80');
+        }
+        
+        .poster:nth-child(5) {
+            background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80');
+        }
+        
+        .event-marquee {
+            background: linear-gradient(90deg, #8B0000, #A0522D, #8B0000);
+            padding: 30px;
+            border-radius: 15px;
+            border: 3px solid #FFD700;
+            margin-bottom: 30px;
+            max-width: 700px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .event-marquee::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,215,0,0.3), transparent);
+            animation: marqueeShine 3s linear infinite;
+        }
+        
+        .event-info {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .showing-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .info-item {
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #FFD700;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .info-value {
+            font-size: 1rem;
+        }
+        
+        .special-feature {
+            background: rgba(255,215,0,0.2);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #FFD700;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+        
+        .ticket-button {
+            background: linear-gradient(135deg, #FF4500, #FFD700);
+            color: #000;
+            padding: 20px 50px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 25px rgba(255,69,0,0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ticket-button::before {
+            content: '🎬';
+            position: absolute;
+            left: -50px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            transition: left 0.3s ease;
+        }
+        
+        .ticket-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(255,69,0,0.6);
+        }
+        
+        .ticket-button:hover::before {
+            left: 20px;
+        }
+        
+        @keyframes filmRoll {
+            0% { background-position-x: 0px; }
+            100% { background-position-x: 100px; }
+        }
+        
+        @keyframes spotlightMove {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            33% { transform: translate(-60%, -40%) scale(1.2); }
+            66% { transform: translate(-40%, -60%) scale(0.8); }
+        }
+        
+        @keyframes reelSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes goldShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes marqueeShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .floating-tickets {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .ticket {
+            position: absolute;
+            width: 60px;
+            height: 30px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border-radius: 5px;
+            opacity: 0.7;
+            animation: ticketFloat 8s linear infinite;
+        }
+        
+        @keyframes ticketFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cinema-container">
+        <div class="film-strip"></div>
+        <div class="spotlight"></div>
+        <div class="floating-tickets" id="ticketsContainer"></div>
+        
+        <div class="curtain curtain-left"></div>
+        <div class="curtain curtain-right"></div>
+        
+        <div class="main-stage" id="mainStage">
+            <div class="movie-reel">
+                <div class="reel-outer">
+                    <div class="reel-inner"></div>
+                    <div class="reel-holes">
+                        <div class="hole"></div>
+                        <div class="hole"></div>
+                        <div class="hole"></div>
+                        <div class="hole"></div>
+                        <div class="hole"></div>
+                        <div class="hole"></div>
+                        <div class="hole"></div>
+                        <div class="hole"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <h1 class="title">Cinema Paradise</h1>
+            <p class="subtitle">명화와 함께하는 감성 시네마</p>
+            
+            <div class="movie-posters">
+                <div class="poster"></div>
+                <div class="poster"></div>
+                <div class="poster"></div>
+                <div class="poster"></div>
+                <div class="poster"></div>
+            </div>
+            
+            <div class="event-marquee">
+                <div class="event-info">
+                    <div class="showing-info">
+                        <div class="info-item">
+                            <div class="info-label">상영 날짜</div>
+                            <div class="info-value">11월 18일 (토)</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">상영 시간</div>
+                            <div class="info-value">오후 7시 30분</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">장소</div>
+                            <div class="info-value">강남 프라이빗 시네마</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">관람료</div>
+                            <div class="info-value">1인당 3만원 (팝콘+음료)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="special-feature">
+                        <div class="feature-title">🎭 특별 이벤트 🎭</div>
+                        <p>영화 감상 후 감독의 숨은 이야기와 촬영 비하인드 공유</p>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="ticket-button" onclick="createTicketRain()">영화 모임 예매하기</button>
+        </div>
+    </div>
+
+    <script>
+        // 커튼 열기 애니메이션
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.curtain-left').style.transform = 'translateX(-100%)';
+                document.querySelector('.curtain-right').style.transform = 'translateX(100%)';
+                
+                setTimeout(() => {
+                    document.getElementById('mainStage').classList.add('revealed');
+                }, 1000);
+            }, 1000);
+        });
+        
+        // 떠다니는 티켓 생성
+        function createFloatingTickets() {
+            const container = document.getElementById('ticketsContainer');
+            
+            setInterval(() => {
+                const ticket = document.createElement('div');
+                ticket.className = 'ticket';
+                ticket.style.left = Math.random() * 100 + '%';
+                ticket.style.animationDelay = Math.random() * 2 + 's';
+                ticket.style.animationDuration = (Math.random() * 3 + 6) + 's';
+                
+                container.appendChild(ticket);
+                
+                setTimeout(() => {
+                    ticket.remove();
+                }, 9000);
+            }, 800);
+        }
+        
+        // 티켓 비 효과
+        function createTicketRain() {
+            const container = document.getElementById('ticketsContainer');
+            
+            for (let i = 0; i < 100; i++) {
+                const ticket = document.createElement('div');
+                ticket.className = 'ticket';
+                ticket.style.left = Math.random() * 100 + '%';
+                ticket.style.animationDelay = Math.random() * 2 + 's';
+                ticket.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                ticket.style.transform = 'scale(' + (Math.random() * 0.5 + 0.5) + ')';
+                
+                container.appendChild(ticket);
+                
+                setTimeout(() => {
+                    ticket.remove();
+                }, 5000);
+            }
+        }
+        
+        createFloatingTickets();
+    </script>
+</body>
+</html>

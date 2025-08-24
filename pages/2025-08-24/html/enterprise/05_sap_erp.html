@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAP S/4HANA Enterprise Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: '72', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f7f7f7;
+            color: #32363a;
+        }
+        
+        .shell-header {
+            background: #354a5f;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+        }
+        
+        .sap-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+        }
+        
+        .sap-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #0070f2, #005ba4);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        .sap-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .shell-nav {
+            background: #ffffff;
+            border-bottom: 1px solid #d9d9d9;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 48px;
+        }
+        
+        .nav-items {
+            display: flex;
+            gap: 24px;
+        }
+        
+        .nav-item {
+            color: #32363a;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 12px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .nav-item:hover {
+            color: #0070f2;
+        }
+        
+        .nav-item.active {
+            color: #0070f2;
+            border-bottom-color: #0070f2;
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .search-field {
+            padding: 6px 12px;
+            border: 1px solid #bfbfbf;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 200px;
+        }
+        
+        .user-menu {
+            width: 32px;
+            height: 32px;
+            background: #354a5f;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .main-content {
+            padding: 24px 16px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .page-header {
+            margin-bottom: 24px;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            color: #32363a;
+            margin-bottom: 8px;
+        }
+        
+        .page-breadcrumb {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .page-breadcrumb a {
+            color: #0070f2;
+            text-decoration: none;
+        }
+        
+        .tiles-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        
+        .tile {
+            background: white;
+            border: 1px solid #d9d9d9;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .tile:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .tile-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .tile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+        
+        .icon-finance {
+            background: linear-gradient(135deg, #0070f2, #005ba4);
+        }
+        
+        .icon-hr {
+            background: linear-gradient(135deg, #bb0000, #8b0000);
+        }
+        
+        .icon-procurement {
+            background: linear-gradient(135deg, #427cac, #2e5984);
+        }
+        
+        .icon-manufacturing {
+            background: linear-gradient(135deg, #5d9741, #4a7633);
+        }
+        
+        .icon-sales {
+            background: linear-gradient(135deg, #e17b47, #d4651f);
+        }
+        
+        .icon-analytics {
+            background: linear-gradient(135deg, #7030a0, #5a2479);
+        }
+        
+        .tile-content {
+            flex: 1;
+        }
+        
+        .tile-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #32363a;
+            margin-bottom: 4px;
+        }
+        
+        .tile-subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .tile-metrics {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+        }
+        
+        .tile-metric {
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            font-weight: 300;
+            color: #0070f2;
+            line-height: 1;
+        }
+        
+        .metric-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+        
+        .tile-notification {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: #bb0000;
+            border-radius: 50%;
+        }
+        
+        .dashboard-section {
+            background: white;
+            border: 1px solid #d9d9d9;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            color: #32363a;
+            font-weight: 600;
+        }
+        
+        .section-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        
+        .btn-primary {
+            background: #0070f2;
+            color: white;
+            border-color: #0070f2;
+        }
+        
+        .btn-primary:hover {
+            background: #005ba4;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #32363a;
+            border-color: #bfbfbf;
+        }
+        
+        .btn-secondary:hover {
+            background: #f7f7f7;
+            border-color: #999;
+        }
+        
+        .chart-container {
+            height: 250px;
+            background: linear-gradient(180deg, #f7f7f7 0%, #ffffff 100%);
+            border-radius: 6px;
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(180deg, #0070f2, #005ba4);
+            border-radius: 4px 4px 0 0;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .chart-bar:hover {
+            opacity: 0.8;
+            transform: scaleY(1.05);
+        }
+        
+        .chart-bar:nth-child(1) { height: 70%; }
+        .chart-bar:nth-child(2) { height: 85%; }
+        .chart-bar:nth-child(3) { height: 55%; }
+        .chart-bar:nth-child(4) { height: 95%; }
+        .chart-bar:nth-child(5) { height: 65%; }
+        .chart-bar:nth-child(6) { height: 80%; }
+        .chart-bar:nth-child(7) { height: 60%; }
+        .chart-bar:nth-child(8) { height: 90%; }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        
+        .data-table th {
+            background: #f7f7f7;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #32363a;
+            border-bottom: 1px solid #d9d9d9;
+        }
+        
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #32363a;
+        }
+        
+        .data-table tr:hover {
+            background: #f7f7f7;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-success {
+            background: #d5e7d3;
+            color: #256f3a;
+        }
+        
+        .status-warning {
+            background: #fcf4a3;
+            color: #91734a;
+        }
+        
+        .status-error {
+            background: #ffcccb;
+            color: #bb0000;
+        }
+        
+        .alert-banner {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .alert-icon {
+            width: 20px;
+            height: 20px;
+            background: #f39c12;
+            border-radius: 50%;
+        }
+        
+        .alert-content {
+            flex: 1;
+        }
+        
+        .alert-title {
+            font-weight: 600;
+            color: #856404;
+            margin-bottom: 4px;
+        }
+        
+        .alert-message {
+            color: #856404;
+            font-size: 14px;
+        }
+        
+        .floating-actions {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .fab {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #0070f2;
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,112,242,0.3);
+            font-size: 24px;
+            transition: all 0.3s;
+        }
+        
+        .fab:hover {
+            background: #005ba4;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <header class="shell-header">
+        <div class="sap-logo">
+            <div class="sap-icon">SAP</div>
+            <span class="sap-title">S/4HANA</span>
+        </div>
+    </header>
+    
+    <nav class="shell-nav">
+        <div class="nav-items">
+            <a href="#" class="nav-item active">대시보드</a>
+            <a href="#" class="nav-item">재무</a>
+            <a href="#" class="nav-item">영업</a>
+            <a href="#" class="nav-item">구매</a>
+            <a href="#" class="nav-item">제조</a>
+            <a href="#" class="nav-item">인사</a>
+            <a href="#" class="nav-item">분석</a>
+        </div>
+        <div class="user-actions">
+            <input type="text" class="search-field" placeholder="Search SAP S/4HANA...">
+            <div class="user-menu"></div>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Executive Dashboard</h1>
+            <div class="page-breadcrumb">
+                <a href="#">홈</a> / <a href="#">대시보드</a> / Executive Overview
+            </div>
+        </div>
+        
+        <div class="alert-banner">
+            <div class="alert-icon"></div>
+            <div class="alert-content">
+                <div class="alert-title">시스템 유지보수 안내</div>
+                <div class="alert-message">오늘 오후 11시부터 새벽 1시까지 시스템 유지보수가 예정되어 있습니다.</div>
+            </div>
+        </div>
+        
+        <div class="tiles-container">
+            <div class="tile">
+                <div class="tile-header">
+                    <div class="tile-icon icon-finance">₩</div>
+                    <div class="tile-content">
+                        <div class="tile-title">재무 관리</div>
+                        <div class="tile-subtitle">Financial Analytics & Reporting</div>
+                    </div>
+                </div>
+                <div class="tile-metrics">
+                    <div class="tile-metric">
+                        <div class="metric-value">2.4B</div>
+                        <div class="metric-label">매출</div>
+                    </div>
+                    <div class="tile-metric">
+                        <div class="metric-value">18%</div>
+                        <div class="metric-label">이익률</div>
+                    </div>
+                </div>
+                <div class="tile-notification"></div>
+            </div>
+            
+            <div class="tile">
+                <div class="tile-header">
+                    <div class="tile-icon icon-sales">📊</div>
+                    <div class="tile-content">
+                        <div class="tile-title">영업 관리</div>
+                        <div class="tile-subtitle">Sales Order Management</div>
+                    </div>
+                </div>
+                <div class="tile-metrics">
+                    <div class="tile-metric">
+                        <div class="metric-value">1,847</div>
+                        <div class="metric-label">주문</div>
+                    </div>
+                    <div class="tile-metric">
+                        <div class="metric-value">94%</div>
+                        <div class="metric-label">완료율</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tile">
+                <div class="tile-header">
+                    <div class="tile-icon icon-procurement">🛒</div>
+                    <div class="tile-content">
+                        <div class="tile-title">구매 관리</div>
+                        <div class="tile-subtitle">Procurement & Vendor Management</div>
+                    </div>
+                </div>
+                <div class="tile-metrics">
+                    <div class="tile-metric">
+                        <div class="metric-value">856</div>
+                        <div class="metric-label">PO</div>
+                    </div>
+                    <div class="tile-metric">
+                        <div class="metric-value">87%</div>
+                        <div class="metric-label">승인률</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tile">
+                <div class="tile-header">
+                    <div class="tile-icon icon-manufacturing">🏭</div>
+                    <div class="tile-content">
+                        <div class="tile-title">생산 관리</div>
+                        <div class="tile-subtitle">Manufacturing Execution</div>
+                    </div>
+                </div>
+                <div class="tile-metrics">
+                    <div class="tile-metric">
+                        <div class="metric-value">12,543</div>
+                        <div class="metric-label">생산량</div>
+                    </div>
+                    <div class="tile-metric">
+                        <div class="metric-value">96%</div>
+                        <div class="metric-label">효율성</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tile">
+                <div class="tile-header">
+                    <div class="tile-icon icon-hr">👥</div>
+                    <div class="tile-content">
+                        <div class="tile-title">인사 관리</div>
+                        <div class="tile-subtitle">Human Capital Management</div>
+                    </div>
+                </div>
+                <div class="tile-metrics">
+                    <div class="tile-metric">
+                        <div class="metric-value">2,847</div>
+                        <div class="metric-label">직원</div>
+                    </div>
+                    <div class="tile-metric">
+                        <div class="metric-value">91%</div>
+                        <div class="metric-label">만족도</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tile">
+                <div class="tile-header">
+                    <div class="tile-icon icon-analytics">📈</div>
+                    <div class="tile-content">
+                        <div class="tile-title">분석</div>
+                        <div class="tile-subtitle">Business Intelligence</div>
+                    </div>
+                </div>
+                <div class="tile-metrics">
+                    <div class="tile-metric">
+                        <div class="metric-value">147</div>
+                        <div class="metric-label">리포트</div>
+                    </div>
+                    <div class="tile-metric">
+                        <div class="metric-value">99%</div>
+                        <div class="metric-label">정확도</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">월별 매출 현황</h2>
+                <div class="section-actions">
+                    <button class="btn btn-secondary">내보내기</button>
+                    <button class="btn btn-primary">상세보기</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <div class="chart-bar"></div>
+                <div class="chart-bar"></div>
+                <div class="chart-bar"></div>
+                <div class="chart-bar"></div>
+                <div class="chart-bar"></div>
+                <div class="chart-bar"></div>
+                <div class="chart-bar"></div>
+                <div class="chart-bar"></div>
+            </div>
+        </div>
+        
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">최근 거래 현황</h2>
+                <div class="section-actions">
+                    <button class="btn btn-secondary">새로고침</button>
+                    <button class="btn btn-primary">전체보기</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>거래번호</th>
+                            <th>고객사</th>
+                            <th>금액</th>
+                            <th>상태</th>
+                            <th>담당자</th>
+                            <th>날짜</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>SO-2024-001847</td>
+                            <td>삼성전자</td>
+                            <td>₩125,000,000</td>
+                            <td><span class="status-indicator status-success">완료</span></td>
+                            <td>김철수</td>
+                            <td>2024-08-24</td>
+                        </tr>
+                        <tr>
+                            <td>SO-2024-001846</td>
+                            <td>LG전자</td>
+                            <td>₩87,500,000</td>
+                            <td><span class="status-indicator status-warning">진행중</span></td>
+                            <td>이영희</td>
+                            <td>2024-08-23</td>
+                        </tr>
+                        <tr>
+                            <td>SO-2024-001845</td>
+                            <td>현대자동차</td>
+                            <td>₩156,000,000</td>
+                            <td><span class="status-indicator status-success">완료</span></td>
+                            <td>박민수</td>
+                            <td>2024-08-23</td>
+                        </tr>
+                        <tr>
+                            <td>SO-2024-001844</td>
+                            <td>SK텔레콤</td>
+                            <td>₩45,000,000</td>
+                            <td><span class="status-indicator status-error">취소</span></td>
+                            <td>최은정</td>
+                            <td>2024-08-22</td>
+                        </tr>
+                        <tr>
+                            <td>SO-2024-001843</td>
+                            <td>네이버</td>
+                            <td>₩78,900,000</td>
+                            <td><span class="status-indicator status-success">완료</span></td>
+                            <td>정현우</td>
+                            <td>2024-08-22</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="floating-actions">
+            <button class="fab">+</button>
+        </div>
+    </main>
+</body>
+</html>
