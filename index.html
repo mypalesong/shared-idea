@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ArchitectX - Enterprise Software Architecture Solutions</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -409,6 +410,62 @@
             transform: translateX(10px);
         }
 
+        /* 3D Architecture Section */
+        .architecture-3d {
+            padding: 6rem 2rem;
+            background: var(--gray-900);
+            color: white;
+            overflow: hidden;
+        }
+
+        .architecture-3d-container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .architecture-3d h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .architecture-3d-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #9CA3AF;
+            margin-bottom: 3rem;
+        }
+
+        #canvas-container {
+            width: 100%;
+            height: 600px;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(30, 64, 175, 0.1));
+        }
+
+        .canvas-overlay {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 10;
+            text-align: center;
+        }
+
+        .canvas-overlay p {
+            margin: 0;
+            color: white;
+            font-size: 0.9rem;
+        }
+
         /* CTA Section */
         .cta {
             padding: 6rem 2rem;
@@ -687,6 +744,19 @@
         </div>
     </section>
 
+    <!-- 3D Interactive Architecture -->
+    <section class="architecture-3d">
+        <div class="architecture-3d-container">
+            <h2>Interactive Microservices Architecture</h2>
+            <p class="architecture-3d-subtitle">Explore our distributed system design in 3D - Drag to rotate, scroll to zoom</p>
+            <div id="canvas-container">
+                <div class="canvas-overlay">
+                    <p>🖱️ Drag to rotate • Scroll to zoom • Hover over nodes</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- CTA Section -->
     <section class="cta">
         <div class="cta-container">
@@ -743,6 +813,206 @@
                 nav.classList.add('scrolled');
             } else {
                 nav.classList.remove('scrolled');
+            }
+        });
+
+        // 3D Architecture Visualization
+        let scene, camera, renderer, controls;
+        let nodes = [];
+        let connections = [];
+        let mouse = { x: 0, y: 0 };
+        let isMouseDown = false;
+        let targetRotation = { x: 0, y: 0 };
+        let currentRotation = { x: 0, y: 0 };
+
+        function init3D() {
+            const container = document.getElementById('canvas-container');
+            if (!container) return;
+
+            // Scene setup
+            scene = new THREE.Scene();
+            scene.fog = new THREE.Fog(0x111827, 10, 50);
+
+            // Camera setup
+            camera = new THREE.PerspectiveCamera(
+                75,
+                container.offsetWidth / container.offsetHeight,
+                0.1,
+                1000
+            );
+            camera.position.z = 20;
+
+            // Renderer setup
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            renderer.setClearColor(0x111827, 0);
+            container.appendChild(renderer.domElement);
+
+            // Create microservices architecture
+            createArchitecture();
+
+            // Mouse controls
+            container.addEventListener('mousedown', onMouseDown);
+            container.addEventListener('mousemove', onMouseMove);
+            container.addEventListener('mouseup', onMouseUp);
+            container.addEventListener('wheel', onWheel);
+
+            // Handle resize
+            window.addEventListener('resize', onWindowResize);
+
+            // Start animation
+            animate();
+        }
+
+        function createArchitecture() {
+            const services = [
+                { name: 'API Gateway', pos: [0, 5, 0], color: 0x2563EB },
+                { name: 'Auth Service', pos: [-6, 0, 2], color: 0x3B82F6 },
+                { name: 'User Service', pos: [-3, 0, -3], color: 0x3B82F6 },
+                { name: 'Order Service', pos: [3, 0, -3], color: 0x3B82F6 },
+                { name: 'Payment Service', pos: [6, 0, 2], color: 0x3B82F6 },
+                { name: 'Notification', pos: [0, 0, 5], color: 0x3B82F6 },
+                { name: 'Database', pos: [-4, -5, 0], color: 0x1E40AF },
+                { name: 'Cache', pos: [0, -5, 0], color: 0x1E40AF },
+                { name: 'Queue', pos: [4, -5, 0], color: 0x1E40AF }
+            ];
+
+            // Create nodes
+            services.forEach((service, index) => {
+                const geometry = new THREE.SphereGeometry(0.8, 32, 32);
+                const material = new THREE.MeshPhongMaterial({
+                    color: service.color,
+                    emissive: service.color,
+                    emissiveIntensity: 0.3,
+                    shininess: 100
+                });
+                const sphere = new THREE.Mesh(geometry, material);
+                sphere.position.set(...service.pos);
+                sphere.userData = { name: service.name, originalColor: service.color };
+                scene.add(sphere);
+                nodes.push(sphere);
+
+                // Add glow effect
+                const glowGeometry = new THREE.SphereGeometry(1, 32, 32);
+                const glowMaterial = new THREE.MeshBasicMaterial({
+                    color: service.color,
+                    transparent: true,
+                    opacity: 0.2
+                });
+                const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+                glow.position.copy(sphere.position);
+                scene.add(glow);
+
+                // Pulsing animation
+                glow.userData.pulsePhase = Math.random() * Math.PI * 2;
+            });
+
+            // Create connections (lines between nodes)
+            const connectionPairs = [
+                [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], // Gateway to services
+                [1, 6], [2, 6], [3, 6], [4, 6], // Services to DB
+                [1, 7], [2, 7], [3, 7], [4, 7], // Services to Cache
+                [3, 8], [4, 8] // Services to Queue
+            ];
+
+            connectionPairs.forEach(([start, end]) => {
+                const points = [];
+                points.push(nodes[start].position);
+                points.push(nodes[end].position);
+                const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                const material = new THREE.LineBasicMaterial({
+                    color: 0x3B82F6,
+                    transparent: true,
+                    opacity: 0.3
+                });
+                const line = new THREE.Line(geometry, material);
+                scene.add(line);
+                connections.push(line);
+            });
+
+            // Add lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+
+            const pointLight1 = new THREE.PointLight(0x2563EB, 1, 100);
+            pointLight1.position.set(10, 10, 10);
+            scene.add(pointLight1);
+
+            const pointLight2 = new THREE.PointLight(0x3B82F6, 0.8, 100);
+            pointLight2.position.set(-10, -10, -10);
+            scene.add(pointLight2);
+        }
+
+        function onMouseDown(event) {
+            isMouseDown = true;
+            mouse.x = event.clientX;
+            mouse.y = event.clientY;
+        }
+
+        function onMouseMove(event) {
+            if (isMouseDown) {
+                const deltaX = event.clientX - mouse.x;
+                const deltaY = event.clientY - mouse.y;
+
+                targetRotation.y += deltaX * 0.01;
+                targetRotation.x += deltaY * 0.01;
+
+                mouse.x = event.clientX;
+                mouse.y = event.clientY;
+            }
+        }
+
+        function onMouseUp() {
+            isMouseDown = false;
+        }
+
+        function onWheel(event) {
+            event.preventDefault();
+            camera.position.z += event.deltaY * 0.01;
+            camera.position.z = Math.max(10, Math.min(30, camera.position.z));
+        }
+
+        function onWindowResize() {
+            const container = document.getElementById('canvas-container');
+            if (!container) return;
+
+            camera.aspect = container.offsetWidth / container.offsetHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Smooth rotation
+            currentRotation.x += (targetRotation.x - currentRotation.x) * 0.1;
+            currentRotation.y += (targetRotation.y - currentRotation.y) * 0.1;
+
+            // Auto-rotate when not interacting
+            if (!isMouseDown) {
+                targetRotation.y += 0.002;
+            }
+
+            // Apply rotation to scene
+            scene.rotation.x = currentRotation.x;
+            scene.rotation.y = currentRotation.y;
+
+            // Animate glow pulsing
+            const time = Date.now() * 0.001;
+            scene.children.forEach(child => {
+                if (child.userData.pulsePhase !== undefined) {
+                    const scale = 1 + Math.sin(time * 2 + child.userData.pulsePhase) * 0.1;
+                    child.scale.set(scale, scale, scale);
+                }
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', () => {
+            if (typeof THREE !== 'undefined') {
+                init3D();
             }
         });
     </script>
