@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers - ArchitectX</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --primary-blue: #2563EB; --dark-blue: #1E40AF; --light-blue: #3B82F6; --blue-50: #EFF6FF; --gray-600: #4B5563; --gray-900: #111827; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--gray-900); }
+        nav { position: fixed; top: 0; width: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #E5E7EB; z-index: 1000; }
+        .nav-container { max-width: 1280px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary-blue); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary-blue), var(--light-blue)); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+        .nav-menu { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .nav-menu a { text-decoration: none; color: var(--gray-600); font-weight: 500; transition: color 0.3s; font-size: 0.95rem; }
+        .nav-menu a:hover { color: var(--primary-blue); }
+        .nav-cta { background: var(--primary-blue); color: white !important; padding: 0.5rem 1.5rem; border-radius: 8px; }
+
+        .page-hero { padding: 140px 2rem 80px; background: linear-gradient(180deg, var(--blue-50) 0%, #FFFFFF 100%); text-align: center; }
+        .page-hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+        .page-hero p { font-size: 1.25rem; color: var(--gray-600); max-width: 700px; margin: 0 auto; }
+
+        .careers-section { padding: 5rem 2rem; max-width: 1280px; margin: 0 auto; }
+        .benefits-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin: 4rem 0; }
+        .benefit-card { background: white; padding: 2rem; border-radius: 16px; border: 1px solid #E5E7EB; text-align: center; }
+        .benefit-icon { font-size: 3rem; margin-bottom: 1rem; }
+        .benefit-card h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+        .benefit-card p { color: var(--gray-600); font-size: 0.95rem; }
+
+        .job-listing { background: white; border-radius: 16px; padding: 2.5rem; margin-bottom: 2rem; border: 2px solid #E5E7EB; transition: all 0.3s; cursor: pointer; }
+        .job-listing:hover { border-color: var(--primary-blue); box-shadow: 0 10px 40px rgba(37, 99, 235, 0.1); }
+        .job-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; }
+        .job-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .job-meta { display: flex; gap: 1.5rem; color: var(--gray-600); font-size: 0.9rem; }
+        .job-desc { color: var(--gray-600); line-height: 1.7; margin-bottom: 1.5rem; }
+        .job-tags { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+        .job-tag { background: var(--blue-50); color: var(--primary-blue); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 500; }
+        .apply-btn { background: var(--primary-blue); color: white; padding: 0.75rem 2rem; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .apply-btn:hover { background: var(--dark-blue); transform: translateY(-2px); }
+
+        footer { background: var(--gray-900); color: white; padding: 4rem 2rem 2rem; }
+        .footer-container { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+        .footer-brand h3 { font-size: 1.5rem; font-weight: 800; color: var(--light-blue); margin-bottom: 1rem; }
+        .footer-brand p { color: #9CA3AF; line-height: 1.8; }
+        .footer-links h4 { font-weight: 600; margin-bottom: 1rem; }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 0.75rem; }
+        .footer-links a { color: #9CA3AF; text-decoration: none; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--light-blue); }
+        .footer-bottom { max-width: 1280px; margin: 0 auto; padding-top: 2rem; border-top: 1px solid #374151; text-align: center; color: #9CA3AF; }
+
+        @media (max-width: 768px) { .nav-menu { display: none; } .benefits-grid, .footer-container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo"><div class="logo-icon">A</div>ArchitectX</a>
+            <ul class="nav-menu">
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="architecture.html">Architecture</a></li>
+                <li><a href="solutions.html">Solutions</a></li>
+                <li><a href="case-studies.html">Case Studies</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="team.html">Team</a></li>
+                <li><a href="careers.html">Careers</a></li>
+                <li><a href="docs.html">Docs</a></li>
+                <li><a href="contact.html" class="nav-cta">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="page-hero">
+        <h1>Join Our Team</h1>
+        <p>Build the future of software architecture with talented engineers and visionaries</p>
+    </section>
+
+    <section class="careers-section">
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 2rem;">Why Work With Us?</h2>
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <div class="benefit-icon">💰</div>
+                <h3>Competitive Salary</h3>
+                <p>Industry-leading compensation packages with equity options and performance bonuses</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">🏖️</div>
+                <h3>Work-Life Balance</h3>
+                <p>Flexible hours, remote work options, and unlimited PTO policy</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">📚</div>
+                <h3>Learning & Growth</h3>
+                <p>Annual learning budget, conference attendance, and certification programs</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">🏥</div>
+                <h3>Health Benefits</h3>
+                <p>Comprehensive medical, dental, vision, and mental health coverage</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">🚀</div>
+                <h3>Cutting-Edge Tech</h3>
+                <p>Work with latest technologies and contribute to open-source projects</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">👥</div>
+                <h3>Great Culture</h3>
+                <p>Collaborative environment with team events and innovation hackathons</p>
+            </div>
+        </div>
+
+        <h2 style="text-align: center; font-size: 2.5rem; margin: 5rem 0 3rem;">Open Positions</h2>
+
+        <div class="job-listing">
+            <div class="job-header">
+                <div>
+                    <div class="job-title">Senior Software Architect</div>
+                    <div class="job-meta">
+                        <span>📍 Remote / San Francisco</span>
+                        <span>💼 Full-time</span>
+                        <span>💰 $180k - $250k</span>
+                    </div>
+                </div>
+                <button class="apply-btn">Apply Now</button>
+            </div>
+            <p class="job-desc">Lead architectural design for enterprise-scale applications. Work with Fortune 500 clients to design microservices, cloud-native systems, and data architectures.</p>
+            <div class="job-tags">
+                <span class="job-tag">Microservices</span>
+                <span class="job-tag">AWS/Azure</span>
+                <span class="job-tag">Kubernetes</span>
+                <span class="job-tag">Java/Python</span>
+            </div>
+        </div>
+
+        <div class="job-listing">
+            <div class="job-header">
+                <div>
+                    <div class="job-title">Cloud Infrastructure Engineer</div>
+                    <div class="job-meta">
+                        <span>📍 Remote / New York</span>
+                        <span>💼 Full-time</span>
+                        <span>💰 $150k - $200k</span>
+                    </div>
+                </div>
+                <button class="apply-btn">Apply Now</button>
+            </div>
+            <p class="job-desc">Design and implement cloud infrastructure using Infrastructure as Code. Build scalable, reliable systems on AWS/GCP/Azure.</p>
+            <div class="job-tags">
+                <span class="job-tag">Terraform</span>
+                <span class="job-tag">Kubernetes</span>
+                <span class="job-tag">CI/CD</span>
+                <span class="job-tag">Docker</span>
+            </div>
+        </div>
+
+        <div class="job-listing">
+            <div class="job-header">
+                <div>
+                    <div class="job-title">Security Architect</div>
+                    <div class="job-meta">
+                        <span>📍 Remote / Austin</span>
+                        <span>💼 Full-time</span>
+                        <span>💰 $170k - $230k</span>
+                    </div>
+                </div>
+                <button class="apply-btn">Apply Now</button>
+            </div>
+            <p class="job-desc">Design security architectures for enterprise applications. Implement zero-trust principles, conduct security audits, and ensure compliance.</p>
+            <div class="job-tags">
+                <span class="job-tag">Zero-Trust</span>
+                <span class="job-tag">SOC2</span>
+                <span class="job-tag">Penetration Testing</span>
+                <span class="job-tag">IAM</span>
+            </div>
+        </div>
+
+        <div class="job-listing">
+            <div class="job-header">
+                <div>
+                    <div class="job-title">Data Engineer</div>
+                    <div class="job-meta">
+                        <span>📍 Remote / Seattle</span>
+                        <span>💼 Full-time</span>
+                        <span>💰 $140k - $190k</span>
+                    </div>
+                </div>
+                <button class="apply-btn">Apply Now</button>
+            </div>
+            <p class="job-desc">Build scalable data pipelines and analytics platforms. Work with big data technologies, real-time streaming, and data warehousing.</p>
+            <div class="job-tags">
+                <span class="job-tag">Apache Kafka</span>
+                <span class="job-tag">Spark</span>
+                <span class="job-tag">Snowflake</span>
+                <span class="job-tag">Python</span>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3>ArchitectX</h3>
+                <p>Enterprise software architecture solutions for modern businesses.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="team.html">Team</a></li>
+                    <li><a href="careers.html">Careers</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="services.html">All Services</a></li>
+                    <li><a href="architecture.html">Architecture</a></li>
+                    <li><a href="solutions.html">Solutions</a></li>
+                    <li><a href="case-studies.html">Case Studies</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="docs.html">Documentation</a></li>
+                    <li><a href="browse.html">Gallery</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ArchitectX. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - ArchitectX</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --primary-blue: #2563EB; --dark-blue: #1E40AF; --light-blue: #3B82F6; --blue-50: #EFF6FF; --gray-600: #4B5563; --gray-900: #111827; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--gray-900); }
+        nav { position: fixed; top: 0; width: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #E5E7EB; z-index: 1000; }
+        .nav-container { max-width: 1280px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary-blue); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary-blue), var(--light-blue)); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+        .nav-menu { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .nav-menu a { text-decoration: none; color: var(--gray-600); font-weight: 500; transition: color 0.3s; font-size: 0.95rem; }
+        .nav-menu a:hover { color: var(--primary-blue); }
+        .nav-cta { background: var(--primary-blue); color: white !important; padding: 0.5rem 1.5rem; border-radius: 8px; }
+
+        .page-hero { padding: 140px 2rem 80px; background: linear-gradient(180deg, var(--blue-50) 0%, #FFFFFF 100%); text-align: center; }
+        .page-hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+        .page-hero p { font-size: 1.25rem; color: var(--gray-600); max-width: 700px; margin: 0 auto; }
+
+        .docs-layout { max-width: 1280px; margin: 0 auto; padding: 3rem 2rem; display: grid; grid-template-columns: 250px 1fr; gap: 4rem; }
+        .sidebar { position: sticky; top: 100px; height: fit-content; }
+        .sidebar h3 { font-size: 1.1rem; margin-bottom: 1rem; color: var(--gray-900); }
+        .sidebar-menu { list-style: none; }
+        .sidebar-menu li { margin-bottom: 0.75rem; }
+        .sidebar-menu a { text-decoration: none; color: var(--gray-600); font-size: 0.95rem; transition: color 0.3s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { color: var(--primary-blue); font-weight: 600; }
+
+        .docs-content { max-width: 800px; }
+        .docs-content h2 { font-size: 2.2rem; margin: 3rem 0 1.5rem; color: var(--gray-900); }
+        .docs-content h2:first-child { margin-top: 0; }
+        .docs-content h3 { font-size: 1.6rem; margin: 2rem 0 1rem; color: var(--primary-blue); }
+        .docs-content p { line-height: 1.8; margin-bottom: 1.5rem; color: var(--gray-600); }
+        .docs-content ul, .docs-content ol { margin-left: 2rem; margin-bottom: 1.5rem; line-height: 1.8; color: var(--gray-600); }
+        .docs-content li { margin-bottom: 0.5rem; }
+
+        .code-block { background: var(--gray-900); color: #10B981; padding: 1.5rem; border-radius: 12px; font-family: 'Courier New', monospace; font-size: 0.9rem; line-height: 1.6; overflow-x: auto; margin: 1.5rem 0; }
+        .code-block .comment { color: #6B7280; }
+        .code-block .keyword { color: #3B82F6; }
+
+        .info-box { background: var(--blue-50); border-left: 4px solid var(--primary-blue); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; }
+        .info-box h4 { margin-bottom: 0.5rem; color: var(--primary-blue); }
+        .info-box p { margin-bottom: 0; }
+
+        footer { background: var(--gray-900); color: white; padding: 4rem 2rem 2rem; }
+        .footer-container { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+        .footer-brand h3 { font-size: 1.5rem; font-weight: 800; color: var(--light-blue); margin-bottom: 1rem; }
+        .footer-brand p { color: #9CA3AF; line-height: 1.8; }
+        .footer-links h4 { font-weight: 600; margin-bottom: 1rem; }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 0.75rem; }
+        .footer-links a { color: #9CA3AF; text-decoration: none; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--light-blue); }
+        .footer-bottom { max-width: 1280px; margin: 0 auto; padding-top: 2rem; border-top: 1px solid #374151; text-align: center; color: #9CA3AF; }
+
+        @media (max-width: 1024px) { .docs-layout { grid-template-columns: 1fr; } .sidebar { position: relative; top: 0; } }
+        @media (max-width: 768px) { .nav-menu { display: none; } .footer-container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo"><div class="logo-icon">A</div>ArchitectX</a>
+            <ul class="nav-menu">
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="architecture.html">Architecture</a></li>
+                <li><a href="solutions.html">Solutions</a></li>
+                <li><a href="case-studies.html">Case Studies</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="team.html">Team</a></li>
+                <li><a href="careers.html">Careers</a></li>
+                <li><a href="docs.html">Docs</a></li>
+                <li><a href="contact.html" class="nav-cta">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="page-hero">
+        <h1>Documentation</h1>
+        <p>Comprehensive guides, best practices, and technical references</p>
+    </section>
+
+    <div class="docs-layout">
+        <aside class="sidebar">
+            <h3>Getting Started</h3>
+            <ul class="sidebar-menu">
+                <li><a href="#introduction" class="active">Introduction</a></li>
+                <li><a href="#quickstart">Quick Start</a></li>
+                <li><a href="#architecture">Architecture Overview</a></li>
+            </ul>
+
+            <h3 style="margin-top: 2rem;">Guides</h3>
+            <ul class="sidebar-menu">
+                <li><a href="#microservices">Microservices</a></li>
+                <li><a href="#cloud">Cloud Deployment</a></li>
+                <li><a href="#security">Security</a></li>
+                <li><a href="#performance">Performance</a></li>
+            </ul>
+
+            <h3 style="margin-top: 2rem;">Reference</h3>
+            <ul class="sidebar-menu">
+                <li><a href="#api">API Reference</a></li>
+                <li><a href="#best-practices">Best Practices</a></li>
+            </ul>
+        </aside>
+
+        <main class="docs-content">
+            <h2 id="introduction">Introduction</h2>
+            <p>Welcome to ArchitectX documentation. This guide will help you understand our architecture patterns, best practices, and implementation strategies for building scalable, secure, and high-performance software systems.</p>
+
+            <div class="info-box">
+                <h4>💡 New to software architecture?</h4>
+                <p>Start with our <a href="#quickstart" style="color: var(--primary-blue);">Quick Start Guide</a> to learn the fundamentals.</p>
+            </div>
+
+            <h2 id="quickstart">Quick Start Guide</h2>
+            <p>Get up and running with modern software architecture in minutes.</p>
+
+            <h3>Prerequisites</h3>
+            <ul>
+                <li>Understanding of distributed systems</li>
+                <li>Familiarity with cloud platforms (AWS, Azure, or GCP)</li>
+                <li>Experience with Docker and containerization</li>
+                <li>Basic knowledge of networking and security</li>
+            </ul>
+
+            <h3>Step 1: Define Your Architecture</h3>
+            <p>Start by identifying your system's requirements and constraints:</p>
+
+            <div class="code-block">
+<span class="comment">// Architecture Decision Record (ADR)</span>
+<span class="keyword">const</span> architecture = {
+  style: <span class="keyword">'microservices'</span>,
+  scalability: <span class="keyword">'horizontal'</span>,
+  dataConsistency: <span class="keyword">'eventual'</span>,
+  communication: <span class="keyword">'async'</span>
+};</div>
+
+            <h3>Step 2: Choose Your Tech Stack</h3>
+            <p>Select technologies that align with your architecture goals:</p>
+            <ul>
+                <li><strong>API Gateway:</strong> Kong, AWS API Gateway, or Nginx</li>
+                <li><strong>Service Mesh:</strong> Istio or Linkerd</li>
+                <li><strong>Message Queue:</strong> Kafka, RabbitMQ, or AWS SQS</li>
+                <li><strong>Database:</strong> PostgreSQL, MongoDB, or DynamoDB</li>
+                <li><strong>Caching:</strong> Redis or Memcached</li>
+            </ul>
+
+            <h2 id="architecture">Architecture Overview</h2>
+            <p>Our recommended architecture follows a layered approach with clear separation of concerns:</p>
+
+            <h3>Core Principles</h3>
+            <ol>
+                <li><strong>Modularity:</strong> Break down systems into independent, loosely coupled modules</li>
+                <li><strong>Scalability:</strong> Design for horizontal scaling from day one</li>
+                <li><strong>Resilience:</strong> Implement fault tolerance and graceful degradation</li>
+                <li><strong>Security:</strong> Apply zero-trust principles throughout the stack</li>
+                <li><strong>Observability:</strong> Built-in monitoring, logging, and tracing</li>
+            </ol>
+
+            <h2 id="microservices">Microservices Architecture</h2>
+            <p>Microservices architecture decomposes applications into small, independent services that communicate through well-defined APIs.</p>
+
+            <h3>When to Use Microservices</h3>
+            <ul>
+                <li>Large, complex applications with multiple teams</li>
+                <li>Need for independent deployment and scaling</li>
+                <li>Polyglot technology requirements</li>
+                <li>High availability and fault isolation requirements</li>
+            </ul>
+
+            <h3>Service Design Patterns</h3>
+            <div class="code-block">
+<span class="comment">// Example: Service decomposition by business capability</span>
+
+<span class="keyword">services</span>:
+  - user-service
+  - order-service
+  - payment-service
+  - inventory-service
+  - notification-service
+
+<span class="comment">// Each service has its own database</span>
+<span class="keyword">databases</span>:
+  user-db: PostgreSQL
+  order-db: MongoDB
+  payment-db: PostgreSQL
+  inventory-db: Redis</div>
+
+            <h2 id="cloud">Cloud Deployment</h2>
+            <p>Deploy your architecture to cloud platforms for maximum scalability and reliability.</p>
+
+            <h3>Kubernetes Deployment</h3>
+            <div class="code-block">
+<span class="keyword">apiVersion</span>: apps/v1
+<span class="keyword">kind</span>: Deployment
+<span class="keyword">metadata</span>:
+  name: user-service
+<span class="keyword">spec</span>:
+  replicas: 3
+  template:
+    spec:
+      containers:
+      - name: user-service
+        image: architectx/user-service:latest
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi</div>
+
+            <h2 id="security">Security Best Practices</h2>
+            <p>Implement comprehensive security measures at every layer of your architecture.</p>
+
+            <h3>Zero-Trust Architecture</h3>
+            <ul>
+                <li>Verify every request, regardless of source</li>
+                <li>Implement least privilege access control</li>
+                <li>Use mutual TLS for service-to-service communication</li>
+                <li>Encrypt data at rest and in transit</li>
+                <li>Regular security audits and penetration testing</li>
+            </ul>
+
+            <h2 id="performance">Performance Optimization</h2>
+            <p>Optimize your architecture for maximum performance and minimal latency.</p>
+
+            <h3>Caching Strategies</h3>
+            <ul>
+                <li><strong>Cache-Aside:</strong> Load data into cache on demand</li>
+                <li><strong>Write-Through:</strong> Write to cache and database simultaneously</li>
+                <li><strong>Write-Behind:</strong> Write to cache first, database asynchronously</li>
+                <li><strong>Refresh-Ahead:</strong> Proactively refresh frequently accessed data</li>
+            </ul>
+
+            <div class="info-box">
+                <h4>📈 Performance Tip</h4>
+                <p>Implement multi-layer caching: CDN → Application Cache → Database Query Cache</p>
+            </div>
+
+            <h2 id="best-practices">Best Practices</h2>
+            <p>Follow these proven practices for building robust, maintainable architectures:</p>
+
+            <ul>
+                <li>Document architectural decisions with ADRs</li>
+                <li>Implement comprehensive monitoring and alerting</li>
+                <li>Use infrastructure as code (Terraform, CloudFormation)</li>
+                <li>Automate testing at all levels</li>
+                <li>Implement circuit breakers for external dependencies</li>
+                <li>Version your APIs and maintain backward compatibility</li>
+                <li>Use feature flags for gradual rollouts</li>
+                <li>Conduct regular architecture reviews</li>
+            </ul>
+        </main>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3>ArchitectX</h3>
+                <p>Enterprise software architecture solutions for modern businesses.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="team.html">Team</a></li>
+                    <li><a href="careers.html">Careers</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="services.html">All Services</a></li>
+                    <li><a href="architecture.html">Architecture</a></li>
+                    <li><a href="solutions.html">Solutions</a></li>
+                    <li><a href="case-studies.html">Case Studies</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="docs.html">Documentation</a></li>
+                    <li><a href="browse.html">Gallery</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ArchitectX. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

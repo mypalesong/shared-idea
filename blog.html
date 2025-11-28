@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - ArchitectX</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --primary-blue: #2563EB; --dark-blue: #1E40AF; --light-blue: #3B82F6; --blue-50: #EFF6FF; --gray-600: #4B5563; --gray-900: #111827; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--gray-900); }
+        nav { position: fixed; top: 0; width: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #E5E7EB; z-index: 1000; }
+        .nav-container { max-width: 1280px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary-blue); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary-blue), var(--light-blue)); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+        .nav-menu { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .nav-menu a { text-decoration: none; color: var(--gray-600); font-weight: 500; transition: color 0.3s; font-size: 0.95rem; }
+        .nav-menu a:hover { color: var(--primary-blue); }
+        .nav-cta { background: var(--primary-blue); color: white !important; padding: 0.5rem 1.5rem; border-radius: 8px; }
+
+        .page-hero { padding: 140px 2rem 80px; background: linear-gradient(180deg, var(--blue-50) 0%, #FFFFFF 100%); text-align: center; }
+        .page-hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+        .page-hero p { font-size: 1.25rem; color: var(--gray-600); max-width: 700px; margin: 0 auto; }
+
+        .blog-section { padding: 5rem 2rem; max-width: 1280px; margin: 0 auto; }
+        .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; }
+        .blog-card { background: white; border-radius: 16px; overflow: hidden; border: 1px solid #E5E7EB; transition: all 0.3s; cursor: pointer; }
+        .blog-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(37, 99, 235, 0.1); border-color: var(--primary-blue); }
+        .blog-image { height: 200px; background: linear-gradient(135deg, var(--primary-blue), var(--light-blue)); display: flex; align-items: center; justify-content: center; font-size: 4rem; }
+        .blog-content { padding: 2rem; }
+        .blog-meta { display: flex; gap: 1rem; font-size: 0.85rem; color: var(--gray-600); margin-bottom: 1rem; }
+        .blog-card h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; }
+        .blog-card p { color: var(--gray-600); line-height: 1.7; }
+        .blog-tag { display: inline-block; background: var(--blue-50); color: var(--primary-blue); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; margin-top: 1rem; }
+
+        footer { background: var(--gray-900); color: white; padding: 4rem 2rem 2rem; }
+        .footer-container { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+        .footer-brand h3 { font-size: 1.5rem; font-weight: 800; color: var(--light-blue); margin-bottom: 1rem; }
+        .footer-brand p { color: #9CA3AF; line-height: 1.8; }
+        .footer-links h4 { font-weight: 600; margin-bottom: 1rem; }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 0.75rem; }
+        .footer-links a { color: #9CA3AF; text-decoration: none; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--light-blue); }
+        .footer-bottom { max-width: 1280px; margin: 0 auto; padding-top: 2rem; border-top: 1px solid #374151; text-align: center; color: #9CA3AF; }
+
+        @media (max-width: 1024px) { .blog-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) { .nav-menu { display: none; } .blog-grid, .footer-container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo"><div class="logo-icon">A</div>ArchitectX</a>
+            <ul class="nav-menu">
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="architecture.html">Architecture</a></li>
+                <li><a href="solutions.html">Solutions</a></li>
+                <li><a href="case-studies.html">Case Studies</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="team.html">Team</a></li>
+                <li><a href="careers.html">Careers</a></li>
+                <li><a href="docs.html">Docs</a></li>
+                <li><a href="contact.html" class="nav-cta">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="page-hero">
+        <h1>Technical Insights & Best Practices</h1>
+        <p>Latest articles on software architecture, cloud computing, and engineering excellence</p>
+    </section>
+
+    <section class="blog-section">
+        <div class="blog-grid">
+            <div class="blog-card">
+                <div class="blog-image">🏗️</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span>Jan 15, 2025</span>
+                        <span>•</span>
+                        <span>5 min read</span>
+                    </div>
+                    <h3>Microservices vs Monoliths: Making the Right Choice</h3>
+                    <p>Explore the pros and cons of microservices and monolithic architectures to make informed decisions for your next project.</p>
+                    <div class="blog-tag">Architecture</div>
+                </div>
+            </div>
+
+            <div class="blog-card">
+                <div class="blog-image">☁️</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span>Jan 12, 2025</span>
+                        <span>•</span>
+                        <span>8 min read</span>
+                    </div>
+                    <h3>Kubernetes Best Practices for Production</h3>
+                    <p>Learn essential Kubernetes patterns and practices to run reliable, scalable workloads in production environments.</p>
+                    <div class="blog-tag">Cloud</div>
+                </div>
+            </div>
+
+            <div class="blog-card">
+                <div class="blog-image">🔒</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span>Jan 10, 2025</span>
+                        <span>•</span>
+                        <span>6 min read</span>
+                    </div>
+                    <h3>Zero-Trust Security Architecture Explained</h3>
+                    <p>Implement zero-trust security principles in your software architecture to protect against modern threats.</p>
+                    <div class="blog-tag">Security</div>
+                </div>
+            </div>
+
+            <div class="blog-card">
+                <div class="blog-image">📊</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span>Jan 8, 2025</span>
+                        <span>•</span>
+                        <span>7 min read</span>
+                    </div>
+                    <h3>Building Real-Time Data Pipelines with Kafka</h3>
+                    <p>Design and implement scalable real-time data processing pipelines using Apache Kafka and stream processing.</p>
+                    <div class="blog-tag">Data</div>
+                </div>
+            </div>
+
+            <div class="blog-card">
+                <div class="blog-image">⚡</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span>Jan 5, 2025</span>
+                        <span>•</span>
+                        <span>10 min read</span>
+                    </div>
+                    <h3>Performance Optimization Techniques</h3>
+                    <p>Master advanced performance optimization strategies including caching, load balancing, and database tuning.</p>
+                    <div class="blog-tag">Performance</div>
+                </div>
+            </div>
+
+            <div class="blog-card">
+                <div class="blog-image">🔄</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span>Jan 3, 2025</span>
+                        <span>•</span>
+                        <span>9 min read</span>
+                    </div>
+                    <h3>GitOps: The Future of DevOps</h3>
+                    <p>Discover how GitOps revolutionizes deployment workflows with declarative infrastructure and version control.</p>
+                    <div class="blog-tag">DevOps</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3>ArchitectX</h3>
+                <p>Enterprise software architecture solutions for modern businesses.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="team.html">Team</a></li>
+                    <li><a href="careers.html">Careers</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="services.html">All Services</a></li>
+                    <li><a href="architecture.html">Architecture</a></li>
+                    <li><a href="solutions.html">Solutions</a></li>
+                    <li><a href="case-studies.html">Case Studies</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="docs.html">Documentation</a></li>
+                    <li><a href="browse.html">Gallery</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ArchitectX. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

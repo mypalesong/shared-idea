@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Architecture - ArchitectX</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --primary-blue: #2563EB; --dark-blue: #1E40AF; --light-blue: #3B82F6; --blue-50: #EFF6FF; --gray-600: #4B5563; --gray-900: #111827; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--gray-900); }
+        nav { position: fixed; top: 0; width: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #E5E7EB; z-index: 1000; }
+        .nav-container { max-width: 1280px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary-blue); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary-blue), var(--light-blue)); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+        .nav-menu { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .nav-menu a { text-decoration: none; color: var(--gray-600); font-weight: 500; transition: color 0.3s; font-size: 0.95rem; }
+        .nav-menu a:hover { color: var(--primary-blue); }
+        .nav-cta { background: var(--primary-blue); color: white !important; padding: 0.5rem 1.5rem; border-radius: 8px; }
+
+        .page-hero { padding: 140px 2rem 80px; background: linear-gradient(180deg, var(--blue-50) 0%, #FFFFFF 100%); text-align: center; }
+        .page-hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+        .page-hero p { font-size: 1.25rem; color: var(--gray-600); max-width: 700px; margin: 0 auto; }
+
+        .arch-section { padding: 5rem 2rem; max-width: 1280px; margin: 0 auto; }
+        .arch-diagram { background: white; padding: 4rem; border-radius: 20px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08); margin: 3rem 0; }
+        .layer { background: var(--blue-50); border: 2px solid var(--primary-blue); border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; text-align: center; font-weight: 600; color: var(--primary-blue); font-size: 1.2rem; transition: all 0.3s; cursor: pointer; }
+        .layer:hover { background: var(--primary-blue); color: white; transform: scale(1.02); }
+        .layer-desc { text-align: center; color: var(--gray-600); margin-top: 0.5rem; font-size: 0.95rem; }
+
+        .patterns-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin: 3rem 0; }
+        .pattern-card { background: white; padding: 2rem; border-radius: 16px; border: 1px solid #E5E7EB; transition: all 0.3s; }
+        .pattern-card:hover { border-color: var(--primary-blue); box-shadow: 0 20px 40px rgba(37, 99, 235, 0.1); transform: translateY(-5px); }
+        .pattern-card h3 { font-size: 1.3rem; margin: 1rem 0; }
+        .pattern-card p { color: var(--gray-600); line-height: 1.7; }
+
+        footer { background: var(--gray-900); color: white; padding: 4rem 2rem 2rem; }
+        .footer-container { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+        .footer-brand h3 { font-size: 1.5rem; font-weight: 800; color: var(--light-blue); margin-bottom: 1rem; }
+        .footer-brand p { color: #9CA3AF; line-height: 1.8; }
+        .footer-links h4 { font-weight: 600; margin-bottom: 1rem; }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 0.75rem; }
+        .footer-links a { color: #9CA3AF; text-decoration: none; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--light-blue); }
+        .footer-bottom { max-width: 1280px; margin: 0 auto; padding-top: 2rem; border-top: 1px solid #374151; text-align: center; color: #9CA3AF; }
+
+        @media (max-width: 768px) { .nav-menu { display: none; } .patterns-grid, .footer-container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo"><div class="logo-icon">A</div>ArchitectX</a>
+            <ul class="nav-menu">
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="architecture.html">Architecture</a></li>
+                <li><a href="solutions.html">Solutions</a></li>
+                <li><a href="case-studies.html">Case Studies</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="team.html">Team</a></li>
+                <li><a href="careers.html">Careers</a></li>
+                <li><a href="docs.html">Docs</a></li>
+                <li><a href="contact.html" class="nav-cta">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="page-hero">
+        <h1>Enterprise Software Architecture</h1>
+        <p>Modern, scalable, and maintainable architecture patterns for complex systems</p>
+    </section>
+
+    <section class="arch-section">
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 3rem;">Layered Architecture Model</h2>
+        <div class="arch-diagram">
+            <div class="layer">🌐 Presentation Layer
+                <div class="layer-desc">User Interface • Web & Mobile • API Endpoints</div>
+            </div>
+            <div class="layer">🔧 Application Layer
+                <div class="layer-desc">Business Logic • Application Services • Workflows</div>
+            </div>
+            <div class="layer">⚙️ Domain Layer
+                <div class="layer-desc">Domain Models • Business Rules • Entities</div>
+            </div>
+            <div class="layer">💾 Data Access Layer
+                <div class="layer-desc">Repositories • ORM • Data Mapping</div>
+            </div>
+            <div class="layer">🗄️ Infrastructure Layer
+                <div class="layer-desc">Databases • External Services • File Systems</div>
+            </div>
+        </div>
+
+        <h2 style="text-align: center; font-size: 2.5rem; margin: 5rem 0 3rem;">Architecture Patterns</h2>
+        <div class="patterns-grid">
+            <div class="pattern-card">
+                <div style="font-size: 2.5rem;">🏗️</div>
+                <h3>Microservices</h3>
+                <p>Decompose applications into small, independent services that communicate via APIs. Enables scalability and independent deployment.</p>
+            </div>
+            <div class="pattern-card">
+                <div style="font-size: 2.5rem;">📡</div>
+                <h3>Event-Driven</h3>
+                <p>Asynchronous communication through events and message queues. Perfect for decoupled, reactive systems.</p>
+            </div>
+            <div class="pattern-card">
+                <div style="font-size: 2.5rem;">🔲</div>
+                <h3>Hexagonal</h3>
+                <p>Isolate core business logic from external concerns. Clean separation between domain and infrastructure.</p>
+            </div>
+            <div class="pattern-card">
+                <div style="font-size: 2.5rem;">⚡</div>
+                <h3>CQRS</h3>
+                <p>Command Query Responsibility Segregation. Separate read and write operations for optimized performance.</p>
+            </div>
+            <div class="pattern-card">
+                <div style="font-size: 2.5rem;">📚</div>
+                <h3>Domain-Driven</h3>
+                <p>Focus on core domain and domain logic. Model complex business rules with bounded contexts.</p>
+            </div>
+            <div class="pattern-card">
+                <div style="font-size: 2.5rem;">🔄</div>
+                <h3>Serverless</h3>
+                <p>Function-as-a-Service architecture. Auto-scaling, pay-per-use, and zero server management.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3>ArchitectX</h3>
+                <p>Enterprise software architecture solutions for modern businesses.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="team.html">Team</a></li>
+                    <li><a href="careers.html">Careers</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="services.html">All Services</a></li>
+                    <li><a href="architecture.html">Architecture</a></li>
+                    <li><a href="solutions.html">Solutions</a></li>
+                    <li><a href="case-studies.html">Case Studies</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="docs.html">Documentation</a></li>
+                    <li><a href="browse.html">Gallery</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ArchitectX. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

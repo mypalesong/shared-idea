@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - ArchitectX</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary-blue: #2563EB;
+            --dark-blue: #1E40AF;
+            --light-blue: #3B82F6;
+            --blue-50: #EFF6FF;
+            --gray-600: #4B5563;
+            --gray-900: #111827;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: var(--gray-900); }
+        nav { position: fixed; top: 0; width: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #E5E7EB; z-index: 1000; }
+        .nav-container { max-width: 1280px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary-blue); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary-blue), var(--light-blue)); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+        .nav-menu { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .nav-menu a { text-decoration: none; color: var(--gray-600); font-weight: 500; transition: color 0.3s; font-size: 0.95rem; }
+        .nav-menu a:hover { color: var(--primary-blue); }
+        .nav-cta { background: var(--primary-blue); color: white !important; padding: 0.5rem 1.5rem; border-radius: 8px; }
+
+        .page-hero { padding: 140px 2rem 80px; background: linear-gradient(180deg, var(--blue-50) 0%, #FFFFFF 100%); text-align: center; }
+        .page-hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+        .page-hero p { font-size: 1.25rem; color: var(--gray-600); max-width: 700px; margin: 0 auto; }
+
+        .services-section { padding: 5rem 2rem; max-width: 1280px; margin: 0 auto; }
+        .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 3rem; }
+        .service-card { background: white; padding: 3rem; border-radius: 20px; border: 2px solid #E5E7EB; transition: all 0.3s; }
+        .service-card:hover { border-color: var(--primary-blue); box-shadow: 0 20px 60px rgba(37, 99, 235, 0.15); transform: translateY(-5px); }
+        .service-icon { font-size: 3.5rem; margin-bottom: 1.5rem; }
+        .service-card h3 { font-size: 1.8rem; font-weight: 700; margin-bottom: 1rem; }
+        .service-card p { color: var(--gray-600); line-height: 1.8; margin-bottom: 1.5rem; }
+        .service-features { list-style: none; padding: 0; }
+        .service-features li { padding: 0.5rem 0; padding-left: 1.5rem; position: relative; color: var(--gray-600); }
+        .service-features li:before { content: '✓'; color: var(--primary-blue); font-weight: bold; position: absolute; left: 0; }
+
+        .cta { padding: 5rem 2rem; background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)); color: white; text-align: center; }
+        .cta h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; }
+        .cta p { font-size: 1.2rem; margin-bottom: 2rem; }
+        .btn { padding: 1rem 2rem; border-radius: 10px; text-decoration: none; font-weight: 600; display: inline-block; background: white; color: var(--primary-blue); transition: all 0.3s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); }
+
+        footer { background: var(--gray-900); color: white; padding: 4rem 2rem 2rem; }
+        .footer-container { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+        .footer-brand h3 { font-size: 1.5rem; font-weight: 800; color: var(--light-blue); margin-bottom: 1rem; }
+        .footer-brand p { color: #9CA3AF; line-height: 1.8; }
+        .footer-links h4 { font-weight: 600; margin-bottom: 1rem; }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 0.75rem; }
+        .footer-links a { color: #9CA3AF; text-decoration: none; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--light-blue); }
+        .footer-bottom { max-width: 1280px; margin: 0 auto; padding-top: 2rem; border-top: 1px solid #374151; text-align: center; color: #9CA3AF; }
+
+        @media (max-width: 768px) { .nav-menu { display: none; } .services-grid, .footer-container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo"><div class="logo-icon">A</div>ArchitectX</a>
+            <ul class="nav-menu">
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="architecture.html">Architecture</a></li>
+                <li><a href="solutions.html">Solutions</a></li>
+                <li><a href="case-studies.html">Case Studies</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="team.html">Team</a></li>
+                <li><a href="careers.html">Careers</a></li>
+                <li><a href="docs.html">Docs</a></li>
+                <li><a href="contact.html" class="nav-cta">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="page-hero">
+        <h1>Comprehensive Architecture Services</h1>
+        <p>End-to-end software architecture solutions tailored to your business needs</p>
+    </section>
+
+    <section class="services-section">
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">🏗️</div>
+                <h3>Microservices Architecture</h3>
+                <p>Design and implement distributed systems with independent, scalable services that communicate seamlessly.</p>
+                <ul class="service-features">
+                    <li>Service decomposition strategy</li>
+                    <li>API gateway implementation</li>
+                    <li>Inter-service communication</li>
+                    <li>Service mesh integration</li>
+                </ul>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">☁️</div>
+                <h3>Cloud-Native Solutions</h3>
+                <p>Leverage cloud platforms to build resilient, scalable applications with modern DevOps practices.</p>
+                <ul class="service-features">
+                    <li>AWS, Azure, GCP architecture</li>
+                    <li>Kubernetes orchestration</li>
+                    <li>Serverless computing</li>
+                    <li>Cloud cost optimization</li>
+                </ul>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🔒</div>
+                <h3>Security Architecture</h3>
+                <p>Implement comprehensive security strategies with zero-trust principles and compliance frameworks.</p>
+                <ul class="service-features">
+                    <li>Identity & access management</li>
+                    <li>End-to-end encryption</li>
+                    <li>Security audits & penetration testing</li>
+                    <li>Compliance (SOC2, GDPR, HIPAA)</li>
+                </ul>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">📊</div>
+                <h3>Data Architecture</h3>
+                <p>Design scalable data pipelines, warehouses, and analytics platforms for data-driven insights.</p>
+                <ul class="service-features">
+                    <li>Data lake & warehouse design</li>
+                    <li>Real-time streaming pipelines</li>
+                    <li>ETL/ELT processes</li>
+                    <li>Big data technologies</li>
+                </ul>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">⚡</div>
+                <h3>Performance Optimization</h3>
+                <p>Achieve millisecond latency with advanced caching, load balancing, and CDN strategies.</p>
+                <ul class="service-features">
+                    <li>Database query optimization</li>
+                    <li>Caching strategies (Redis, Memcached)</li>
+                    <li>Load balancing & auto-scaling</li>
+                    <li>CDN integration</li>
+                </ul>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🔄</div>
+                <h3>DevOps & CI/CD</h3>
+                <p>Automate your deployment pipeline with continuous integration and continuous delivery practices.</p>
+                <ul class="service-features">
+                    <li>GitOps workflows</li>
+                    <li>Infrastructure as Code (Terraform)</li>
+                    <li>Automated testing & deployment</li>
+                    <li>Monitoring & observability</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <h2>Ready to Get Started?</h2>
+        <p>Let's discuss how our services can transform your software architecture</p>
+        <a href="contact.html" class="btn">Schedule Consultation</a>
+    </section>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3>ArchitectX</h3>
+                <p>Enterprise software architecture solutions for modern businesses.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="team.html">Team</a></li>
+                    <li><a href="careers.html">Careers</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="services.html">All Services</a></li>
+                    <li><a href="architecture.html">Architecture</a></li>
+                    <li><a href="solutions.html">Solutions</a></li>
+                    <li><a href="case-studies.html">Case Studies</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="docs.html">Documentation</a></li>
+                    <li><a href="browse.html">Gallery</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ArchitectX. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

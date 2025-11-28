@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shared Idea - Design Portfolio & Automation Lab</title>
+    <title>ArchitectX - Enterprise Software Architecture Solutions</title>
     <style>
         * {
             margin: 0;
@@ -11,395 +11,739 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #fff;
-            overflow-x: hidden;
+        :root {
+            --primary-blue: #2563EB;
+            --dark-blue: #1E40AF;
+            --light-blue: #3B82F6;
+            --blue-50: #EFF6FF;
+            --blue-100: #DBEAFE;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-600: #4B5563;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
         }
 
-        .particles {
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+            color: var(--gray-900);
+            background: #FFFFFF;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
             position: fixed;
             top: 0;
-            left: 0;
             width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 0;
-            pointer-events: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #E5E7EB;
+            z-index: 1000;
+            transition: all 0.3s ease;
         }
 
-        .particle {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            animation: float 20s infinite;
+        nav.scrolled {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) translateX(0); }
-            25% { transform: translateY(-100px) translateX(50px); }
-            50% { transform: translateY(-200px) translateX(-50px); }
-            75% { transform: translateY(-100px) translateX(-100px); }
-        }
-
-        .container {
-            max-width: 1200px;
+        .nav-container {
+            max-width: 1280px;
             margin: 0 auto;
-            padding: 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        header {
-            text-align: center;
-            padding: 60px 20px;
-            animation: fadeInDown 1s ease-out;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        h1 {
-            font-size: 3.5em;
-            font-weight: 800;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
-            letter-spacing: -1px;
-        }
-
-        .subtitle {
-            font-size: 1.3em;
-            opacity: 0.95;
-            font-weight: 300;
-            margin-bottom: 10px;
-        }
-
-        .stats {
+            padding: 1rem 2rem;
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
             justify-content: center;
-            gap: 40px;
-            margin-top: 30px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--gray-600);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .nav-menu a:hover {
+            color: var(--primary-blue);
+        }
+
+        .nav-cta {
+            background: var(--primary-blue);
+            color: white !important;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-cta:hover {
+            background: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 140px 2rem 100px;
+            background: linear-gradient(180deg, var(--blue-50) 0%, #FFFFFF 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--gray-900);
+        }
+
+        .hero-content h1 .highlight {
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: var(--gray-600);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
             flex-wrap: wrap;
         }
 
-        .stat-item {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            padding: 20px 30px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            min-width: 150px;
-        }
-
-        .stat-number {
-            font-size: 2.5em;
-            font-weight: 700;
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 0.9em;
-            opacity: 0.9;
-            margin-top: 5px;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin: 40px 0;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
             transition: all 0.3s ease;
-            cursor: pointer;
+            display: inline-block;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+        }
+
+        .btn-secondary:hover {
+            background: var(--blue-50);
+            transform: translateY(-2px);
+        }
+
+        .hero-visual {
+            position: relative;
+        }
+
+        .hero-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border: 1px solid #E5E7EB;
+        }
+
+        .code-block {
+            background: var(--gray-900);
+            color: #10B981;
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            overflow-x: auto;
+        }
+
+        .code-line {
+            display: block;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .code-line:nth-child(1) { animation-delay: 0.2s; }
+        .code-line:nth-child(2) { animation-delay: 0.4s; }
+        .code-line:nth-child(3) { animation-delay: 0.6s; }
+        .code-line:nth-child(4) { animation-delay: 0.8s; }
+        .code-line:nth-child(5) { animation-delay: 1s; }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Stats Section */
+        .stats {
+            background: var(--gray-900);
+            padding: 4rem 2rem;
+            color: white;
+        }
+
+        .stats-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--light-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item p {
+            color: #9CA3AF;
+            font-size: 1rem;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 2rem;
+            background: white;
+        }
+
+        .features-container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-tag {
+            color: var(--primary-blue);
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.15rem;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            animation: fadeInUp 0.8s ease-out;
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .card::before {
+        .feature-card::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--light-blue));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
         }
 
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.4);
+        .feature-card:hover {
+            border-color: var(--primary-blue);
+            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.1);
+            transform: translateY(-5px);
         }
 
-        .card:hover::before {
-            opacity: 1;
+        .feature-card:hover::before {
+            transform: scaleX(1);
         }
 
-        .card-icon {
-            font-size: 3em;
-            margin-bottom: 15px;
-            display: block;
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--blue-50), var(--blue-100));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
         }
 
-        .card-title {
-            font-size: 1.5em;
+        .feature-card h3 {
+            font-size: 1.4rem;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
         }
 
-        .card-description {
-            opacity: 0.9;
-            line-height: 1.6;
-            margin-bottom: 15px;
+        .feature-card p {
+            color: var(--gray-600);
+            line-height: 1.7;
         }
 
-        .card-count {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 5px 15px;
+        /* Architecture Section */
+        .architecture {
+            padding: 6rem 2rem;
+            background: var(--gray-50);
+        }
+
+        .architecture-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .architecture-visual {
+            background: white;
+            padding: 3rem;
             border-radius: 20px;
-            font-size: 0.85em;
-            margin-top: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
         }
 
-        .browse-btn {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.95);
-            color: #667eea;
-            padding: 15px 40px;
-            border-radius: 50px;
-            text-decoration: none;
+        .layer {
+            background: var(--blue-50);
+            border: 2px solid var(--primary-blue);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
             font-weight: 600;
-            margin-top: 20px;
+            color: var(--primary-blue);
             transition: all 0.3s ease;
+        }
+
+        .layer:hover {
+            background: var(--primary-blue);
+            color: white;
+            transform: translateX(10px);
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+            color: white;
+            text-align: center;
+        }
+
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .btn-white {
+            background: white;
+            color: var(--primary-blue);
+        }
+
+        .btn-white:hover {
+            background: var(--gray-100);
+            transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
-        .browse-btn:hover {
-            background: #fff;
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-        }
-
+        /* Footer */
         footer {
+            background: var(--gray-900);
+            color: white;
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--light-blue);
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            color: #9CA3AF;
+            line-height: 1.8;
+        }
+
+        .footer-links h4 {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: #9CA3AF;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--light-blue);
+        }
+
+        .footer-bottom {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid #374151;
             text-align: center;
-            padding: 40px 20px;
-            opacity: 0.8;
-            margin-top: 60px;
+            color: #9CA3AF;
         }
 
-        .tech-stack {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 20px;
-            justify-content: center;
-        }
-
-        .tech-badge {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5em;
-            }
-
-            .subtitle {
-                font-size: 1.1em;
-            }
-
-            .grid {
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-container,
+            .architecture-container {
                 grid-template-columns: 1fr;
             }
 
-            .stats {
-                gap: 20px;
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
 
-            .stat-item {
-                padding: 15px 20px;
-                min-width: 120px;
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .features-grid,
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-container {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="particles" id="particles"></div>
+    <!-- Navigation -->
+    <nav id="nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">A</div>
+                ArchitectX
+            </a>
+            <ul class="nav-menu">
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="architecture.html">Architecture</a></li>
+                <li><a href="solutions.html">Solutions</a></li>
+                <li><a href="case-studies.html">Case Studies</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="team.html">Team</a></li>
+                <li><a href="careers.html">Careers</a></li>
+                <li><a href="docs.html">Docs</a></li>
+                <li><a href="contact.html" class="nav-cta">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
 
-    <div class="container">
-        <header>
-            <h1>🎨 Shared Idea</h1>
-            <p class="subtitle">Design Portfolio & Automation Laboratory</p>
-            <p style="opacity: 0.9; margin-top: 10px;">웹 디자인 프로토타입, 자동화 도구, 그리고 실험적 프로젝트의 모음</p>
-
-            <div class="stats">
-                <div class="stat-item">
-                    <span class="stat-number">549</span>
-                    <span class="stat-label">Total Files</span>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>
+                    Build <span class="highlight">Scalable</span><br>
+                    Software Architecture
+                </h1>
+                <p>
+                    Enterprise-grade software architecture solutions that scale with your business.
+                    From microservices to cloud-native applications, we design systems that last.
+                </p>
+                <div class="hero-buttons">
+                    <a href="contact.html" class="btn btn-primary">Get Started</a>
+                    <a href="architecture.html" class="btn btn-secondary">View Architecture</a>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-number">439</span>
-                    <span class="stat-label">HTML Pages</span>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-card">
+                    <div class="code-block">
+                        <span class="code-line">// Microservices Architecture</span>
+                        <span class="code-line">class ServiceMesh {</span>
+                        <span class="code-line">  deploy() { ... }</span>
+                        <span class="code-line">  scale() { ... }</span>
+                        <span class="code-line">}</span>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-number">100+</span>
-                    <span class="stat-label">Design Variants</span>
-                </div>
-            </div>
-        </header>
-
-        <div class="grid">
-            <div class="card" onclick="window.location.href='./pages/2025-08-24/rasa-test-ui/test.html'">
-                <span class="card-icon">🤖</span>
-                <h3 class="card-title">Rasa Test UI</h3>
-                <p class="card-description">챗봇 시스템을 위한 고급 테스트 인터페이스. 배치 메시지 테스트, 실시간 통계, 그라운드 트루스 검증 기능을 제공합니다.</p>
-                <span class="card-count">✨ Featured Project</span>
-            </div>
-
-            <div class="card" onclick="window.location.href='./pages/2025-08-24/json-viewer/'">
-                <span class="card-icon">📊</span>
-                <h3 class="card-title">JSON Viewers</h3>
-                <p class="card-description">다양한 스타일의 JSON 시각화 도구 모음. v1-v6 버전과 dark, modern, enterprise 테마 제공.</p>
-                <span class="card-count">12+ Variants</span>
-            </div>
-
-            <div class="card" onclick="window.location.href='./pages/2025-08-23/html/design/'">
-                <span class="card-icon">🎨</span>
-                <h3 class="card-title">Design Gallery</h3>
-                <p class="card-description">Glassmorphism, Neumorphism, Cyberpunk, Brutalist 등 26가지 모던 디자인 패턴 컬렉션.</p>
-                <span class="card-count">26 Designs</span>
-            </div>
-
-            <div class="card" onclick="window.location.href='./pages/2025-08-23/html/ecommerce/'">
-                <span class="card-icon">🛍️</span>
-                <h3 class="card-title">E-commerce Templates</h3>
-                <p class="card-description">패션, 전자제품, 뷰티, 식품 등 다양한 카테고리의 이커머스 템플릿.</p>
-                <span class="card-count">10 Store Types</span>
-            </div>
-
-            <div class="card" onclick="window.location.href='./pages/2025-08-23/html/web-app/'">
-                <span class="card-icon">💼</span>
-                <h3 class="card-title">Web App Mockups</h3>
-                <p class="card-description">Salesforce, Slack, Notion, GitHub, Jira 스타일의 엔터프라이즈 앱 인터페이스 목업.</p>
-                <span class="card-count">24 App Styles</span>
-            </div>
-
-            <div class="card" onclick="window.location.href='./pages/2025-08-23/html/ui-frameworks/'">
-                <span class="card-icon">🧩</span>
-                <h3 class="card-title">UI Frameworks</h3>
-                <p class="card-description">Bootstrap, Tailwind, Ant Design, Semantic UI 등 다양한 프레임워크 예제.</p>
-                <span class="card-count">8+ Frameworks</span>
-            </div>
-
-            <div class="card" onclick="window.location.href='./pages/2025-08-23/n8n/'">
-                <span class="card-icon">⚙️</span>
-                <h3 class="card-title">n8n Automation</h3>
-                <p class="card-description">워크플로우 자동화 예제. 시스템 모니터링, 로그 분석, DB 백업, API 데이터 수집 등.</p>
-                <span class="card-count">8 Scenarios</span>
-            </div>
-
-            <div class="card" onclick="window.location.href='./pages/english-learning/'">
-                <span class="card-icon">📚</span>
-                <h3 class="card-title">English Learning</h3>
-                <p class="card-description">인터랙티브 영어 학습 애플리케이션. 카카오톡 스타일 대화 인터페이스.</p>
-                <span class="card-count">Educational</span>
-            </div>
-
-            <div class="card" onclick="window.location.href='./browse.html'">
-                <span class="card-icon">📁</span>
-                <h3 class="card-title">Browse All Files</h3>
-                <p class="card-description">전체 파일 브라우저. 검색, 정렬 기능으로 모든 HTML 파일을 탐색하세요.</p>
-                <span class="card-count">439 HTML Files</span>
             </div>
         </div>
+    </section>
 
-        <div style="text-align: center; margin: 60px 0 40px;">
-            <h2 style="font-size: 2em; margin-bottom: 30px;">🛠️ Tech Stack</h2>
-            <div class="tech-stack">
-                <span class="tech-badge">JavaScript ES6</span>
-                <span class="tech-badge">Python 3</span>
-                <span class="tech-badge">FastAPI</span>
-                <span class="tech-badge">Bootstrap 5</span>
-                <span class="tech-badge">Tailwind CSS</span>
-                <span class="tech-badge">HTML5 / CSS3</span>
-                <span class="tech-badge">n8n</span>
-                <span class="tech-badge">Jupyter</span>
-                <span class="tech-badge">Docker</span>
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-container">
+            <div class="stat-item">
+                <h3>500+</h3>
+                <p>Projects Delivered</p>
+            </div>
+            <div class="stat-item">
+                <h3>99.9%</h3>
+                <p>Uptime SLA</p>
+            </div>
+            <div class="stat-item">
+                <h3>50+</h3>
+                <p>Enterprise Clients</p>
+            </div>
+            <div class="stat-item">
+                <h3>24/7</h3>
+                <p>Support Available</p>
             </div>
         </div>
+    </section>
 
-        <footer>
-            <p>Made with ❤️ by mypalesong</p>
-            <p style="margin-top: 10px; font-size: 0.9em;">
-                <a href="https://github.com/mypalesong/shared-idea"
-                   style="color: rgba(255,255,255,0.9); text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.5);">
-                    View on GitHub
-                </a>
-            </p>
-        </footer>
-    </div>
+    <!-- Features Section -->
+    <section class="features">
+        <div class="features-container">
+            <div class="section-header">
+                <div class="section-tag">Our Expertise</div>
+                <h2>Comprehensive Architecture Solutions</h2>
+                <p>We provide end-to-end software architecture services tailored to your business needs</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🏗️</div>
+                    <h3>Microservices Design</h3>
+                    <p>Build distributed systems with loosely coupled services that scale independently and deploy faster.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">☁️</div>
+                    <h3>Cloud-Native Solutions</h3>
+                    <p>Leverage cloud platforms with containerization, orchestration, and serverless architectures.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Security First</h3>
+                    <p>Implement zero-trust architecture with end-to-end encryption and compliance frameworks.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Data Architecture</h3>
+                    <p>Design scalable data pipelines, warehouses, and real-time analytics platforms.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Performance Optimization</h3>
+                    <p>Achieve millisecond latency with caching strategies, load balancing, and CDN integration.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>CI/CD Pipeline</h3>
+                    <p>Automate deployment with continuous integration and delivery for rapid releases.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section class="architecture">
+        <div class="architecture-container">
+            <div class="architecture-content">
+                <div class="section-tag">Layered Architecture</div>
+                <h2>Modern Software Stack</h2>
+                <p style="color: var(--gray-600); font-size: 1.1rem; margin-bottom: 2rem;">
+                    Our architecture follows industry best practices with clear separation of concerns,
+                    enabling maintainability and scalability at every layer.
+                </p>
+                <a href="architecture.html" class="btn btn-primary">Explore Architecture</a>
+            </div>
+            <div class="architecture-visual">
+                <div class="layer">🌐 Presentation Layer</div>
+                <div class="layer">🔧 Application Layer</div>
+                <div class="layer">⚙️ Business Logic Layer</div>
+                <div class="layer">💾 Data Access Layer</div>
+                <div class="layer">🗄️ Database Layer</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="cta-container">
+            <h2>Ready to Transform Your Architecture?</h2>
+            <p>Let's discuss how we can help you build scalable, reliable, and secure software systems.</p>
+            <a href="contact.html" class="btn btn-white">Schedule a Consultation</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3>ArchitectX</h3>
+                <p>Enterprise software architecture solutions for modern businesses. Building scalable, secure, and high-performance systems.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="team.html">Team</a></li>
+                    <li><a href="careers.html">Careers</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="services.html">All Services</a></li>
+                    <li><a href="architecture.html">Architecture</a></li>
+                    <li><a href="solutions.html">Solutions</a></li>
+                    <li><a href="case-studies.html">Case Studies</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="docs.html">Documentation</a></li>
+                    <li><a href="browse.html">Gallery</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ArchitectX. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script>
-        // Create floating particles
-        const particlesContainer = document.getElementById('particles');
-        const particleCount = 50;
-
-        for (let i = 0; i < particleCount; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-
-            const size = Math.random() * 6 + 2;
-            particle.style.width = size + 'px';
-            particle.style.height = size + 'px';
-
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.top = Math.random() * 100 + '%';
-
-            particle.style.animationDelay = Math.random() * 20 + 's';
-            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
-
-            particlesContainer.appendChild(particle);
-        }
-
-        // Smooth scroll animation
-        document.querySelectorAll('.card').forEach((card, index) => {
-            card.style.animationDelay = (index * 0.1) + 's';
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
         });
     </script>
 </body>
