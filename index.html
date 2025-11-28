@@ -1,172 +1,406 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HTML Index</title>
-  <style>
-    :root { --maxw: 70ch; }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; }
-    body {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial, sans-serif;
-      line-height: 1.5;
-      color: #111;
-      background: #fafafa;
-      display: flex;
-      min-height: 100%;
-    }
-    main {
-      margin: 0 auto;
-      width: min(70%, 1200px);
-      padding: 24px;
-      flex: 1 1 auto;
-    }
-    h1 { margin: 0 0 16px; }
-    .toolbar {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
-      align-items: center;
-      margin: 16px 0 12px;
-    }
-    input[type="search"]{
-      padding: 10px 12px;
-      width: 100%;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      font-size: 14px;
-    }
-    button {
-      padding: 10px 14px;
-      border: 1px solid #ddd;
-      background: white;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    .table-wrap { overflow: auto; }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      background: white;
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 4px 16px rgba(0,0,0,.06);
-    }
-    thead th {
-      text-align: left;
-      font-weight: 600;
-      background: #f3f6fb;
-      padding: 12px;
-      border-bottom: 1px solid #e6eaf2;
-      white-space: nowrap;
-      cursor: pointer;
-    }
-    tbody td {
-      padding: 10px 12px;
-      border-bottom: 1px solid #f0f0f0;
-      vertical-align: top;
-      word-break: break-all;
-    }
-    tbody tr:hover { background: #fcfdff; }
-    .muted { color: #666; font-size: 12px; }
-    .right { text-align: right; }
-    footer {
-      color: #777; font-size: 12px; padding: 24px 0 8px; text-align: center;
-    }
-    @media (max-width: 720px){
-      main { width: 94%; padding: 16px; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shared Idea - Design Portfolio & Automation Lab</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-100px) translateX(50px); }
+            50% { transform: translateY(-200px) translateX(-50px); }
+            75% { transform: translateY(-100px) translateX(-100px); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 3.5em;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 150px;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .card-description {
+            opacity: 0.9;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .card-count {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+
+        .browse-btn {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.95);
+            color: #667eea;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .browse-btn:hover {
+            background: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            opacity: 0.8;
+            margin-top: 60px;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .tech-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+            }
+
+            .subtitle {
+                font-size: 1.1em;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                gap: 20px;
+            }
+
+            .stat-item {
+                padding: 15px 20px;
+                min-width: 120px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <main>
-    <h1>HTML Files</h1>
-    <div class="toolbar">
-      <input id="q" type="search" placeholder="Search by filename or path…" />
-      <div>
-        <button id="sortName">Sort by name</button>
-        <button id="sortPath">Sort by path</button>
-      </div>
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <header>
+            <h1>🎨 Shared Idea</h1>
+            <p class="subtitle">Design Portfolio & Automation Laboratory</p>
+            <p style="opacity: 0.9; margin-top: 10px;">웹 디자인 프로토타입, 자동화 도구, 그리고 실험적 프로젝트의 모음</p>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-number">549</span>
+                    <span class="stat-label">Total Files</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">439</span>
+                    <span class="stat-label">HTML Pages</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">100+</span>
+                    <span class="stat-label">Design Variants</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid">
+            <div class="card" onclick="window.location.href='./pages/2025-08-24/rasa-test-ui/test.html'">
+                <span class="card-icon">🤖</span>
+                <h3 class="card-title">Rasa Test UI</h3>
+                <p class="card-description">챗봇 시스템을 위한 고급 테스트 인터페이스. 배치 메시지 테스트, 실시간 통계, 그라운드 트루스 검증 기능을 제공합니다.</p>
+                <span class="card-count">✨ Featured Project</span>
+            </div>
+
+            <div class="card" onclick="window.location.href='./pages/2025-08-24/json-viewer/'">
+                <span class="card-icon">📊</span>
+                <h3 class="card-title">JSON Viewers</h3>
+                <p class="card-description">다양한 스타일의 JSON 시각화 도구 모음. v1-v6 버전과 dark, modern, enterprise 테마 제공.</p>
+                <span class="card-count">12+ Variants</span>
+            </div>
+
+            <div class="card" onclick="window.location.href='./pages/2025-08-23/html/design/'">
+                <span class="card-icon">🎨</span>
+                <h3 class="card-title">Design Gallery</h3>
+                <p class="card-description">Glassmorphism, Neumorphism, Cyberpunk, Brutalist 등 26가지 모던 디자인 패턴 컬렉션.</p>
+                <span class="card-count">26 Designs</span>
+            </div>
+
+            <div class="card" onclick="window.location.href='./pages/2025-08-23/html/ecommerce/'">
+                <span class="card-icon">🛍️</span>
+                <h3 class="card-title">E-commerce Templates</h3>
+                <p class="card-description">패션, 전자제품, 뷰티, 식품 등 다양한 카테고리의 이커머스 템플릿.</p>
+                <span class="card-count">10 Store Types</span>
+            </div>
+
+            <div class="card" onclick="window.location.href='./pages/2025-08-23/html/web-app/'">
+                <span class="card-icon">💼</span>
+                <h3 class="card-title">Web App Mockups</h3>
+                <p class="card-description">Salesforce, Slack, Notion, GitHub, Jira 스타일의 엔터프라이즈 앱 인터페이스 목업.</p>
+                <span class="card-count">24 App Styles</span>
+            </div>
+
+            <div class="card" onclick="window.location.href='./pages/2025-08-23/html/ui-frameworks/'">
+                <span class="card-icon">🧩</span>
+                <h3 class="card-title">UI Frameworks</h3>
+                <p class="card-description">Bootstrap, Tailwind, Ant Design, Semantic UI 등 다양한 프레임워크 예제.</p>
+                <span class="card-count">8+ Frameworks</span>
+            </div>
+
+            <div class="card" onclick="window.location.href='./pages/2025-08-23/n8n/'">
+                <span class="card-icon">⚙️</span>
+                <h3 class="card-title">n8n Automation</h3>
+                <p class="card-description">워크플로우 자동화 예제. 시스템 모니터링, 로그 분석, DB 백업, API 데이터 수집 등.</p>
+                <span class="card-count">8 Scenarios</span>
+            </div>
+
+            <div class="card" onclick="window.location.href='./pages/english-learning/'">
+                <span class="card-icon">📚</span>
+                <h3 class="card-title">English Learning</h3>
+                <p class="card-description">인터랙티브 영어 학습 애플리케이션. 카카오톡 스타일 대화 인터페이스.</p>
+                <span class="card-count">Educational</span>
+            </div>
+
+            <div class="card" onclick="window.location.href='./browse.html'">
+                <span class="card-icon">📁</span>
+                <h3 class="card-title">Browse All Files</h3>
+                <p class="card-description">전체 파일 브라우저. 검색, 정렬 기능으로 모든 HTML 파일을 탐색하세요.</p>
+                <span class="card-count">439 HTML Files</span>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 60px 0 40px;">
+            <h2 style="font-size: 2em; margin-bottom: 30px;">🛠️ Tech Stack</h2>
+            <div class="tech-stack">
+                <span class="tech-badge">JavaScript ES6</span>
+                <span class="tech-badge">Python 3</span>
+                <span class="tech-badge">FastAPI</span>
+                <span class="tech-badge">Bootstrap 5</span>
+                <span class="tech-badge">Tailwind CSS</span>
+                <span class="tech-badge">HTML5 / CSS3</span>
+                <span class="tech-badge">n8n</span>
+                <span class="tech-badge">Jupyter</span>
+                <span class="tech-badge">Docker</span>
+            </div>
+        </div>
+
+        <footer>
+            <p>Made with ❤️ by mypalesong</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                <a href="https://github.com/mypalesong/shared-idea"
+                   style="color: rgba(255,255,255,0.9); text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.5);">
+                    View on GitHub
+                </a>
+            </p>
+        </footer>
     </div>
 
-    <div class="table-wrap">
-      <table id="tbl">
-        <thead>
-          <tr>
-            <th style="width:64px">#</th>
-            <th>Filename</th>
-            <th>Path</th>
-            <th class="right">Open</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
+    <script>
+        // Create floating particles
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 50;
 
-    <footer id="meta" class="muted"></footer>
-  </main>
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
 
-  <script>
-    // 기본 정렬 상태
-    let sortKey = "name"; // or "path"
-    let files = [];
+            const size = Math.random() * 6 + 2;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
 
-    async function load() {
-      const res = await fetch("./files.json", { cache: "no-store" });
-      const data = await res.json();
-      files = (data.files || []).map(p => {
-        const parts = p.split("/");
-        const filename = parts.pop();
-        const dir = parts.join("/");
-        return { path: p, name: filename, dir };
-      });
-      render();
-    }
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
 
-    function render() {
-      const q = document.getElementById("q").value.trim().toLowerCase();
-      let list = files.filter(x =>
-        !q ||
-        x.name.toLowerCase().includes(q) ||
-        x.path.toLowerCase().includes(q)
-      );
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
 
-      list.sort((a, b) => {
-        if (sortKey === "name") return a.name.localeCompare(b.name);
-        return a.dir.localeCompare(b.dir) || a.name.localeCompare(b.name);
-      });
+            particlesContainer.appendChild(particle);
+        }
 
-      const tbody = document.querySelector("#tbl tbody");
-      tbody.innerHTML = "";
-      list.forEach((x, i) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${i + 1}</td>
-          <td>${escapeHtml(x.name)}</td>
-          <td class="muted">${escapeHtml(x.dir || "(root)")}</td>
-          <td class="right"><a href="./${encodeURI(x.path)}" target="_blank" rel="noopener">Open</a></td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      document.getElementById("meta").textContent =
-        `${list.length} files shown • base path: ${location.pathname}`;
-    }
-
-    function escapeHtml(s) {
-      return s.replace(/[&<>"']/g, m => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-      }[m]));
-    }
-
-    // 이벤트
-    document.getElementById("q").addEventListener("input", render);
-    document.getElementById("sortName").addEventListener("click", () => { sortKey = "name"; render(); });
-    document.getElementById("sortPath").addEventListener("click", () => { sortKey = "path"; render(); });
-
-    // 시작
-    load();
-  </script>
+        // Smooth scroll animation
+        document.querySelectorAll('.card').forEach((card, index) => {
+            card.style.animationDelay = (index * 0.1) + 's';
+        });
+    </script>
 </body>
 </html>

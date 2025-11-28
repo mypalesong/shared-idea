@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HTML Index</title>
+  <style>
+    :root { --maxw: 70ch; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial, sans-serif;
+      line-height: 1.5;
+      color: #111;
+      background: #fafafa;
+      display: flex;
+      min-height: 100%;
+    }
+    main {
+      margin: 0 auto;
+      width: min(70%, 1200px);
+      padding: 24px;
+      flex: 1 1 auto;
+    }
+    h1 { margin: 0 0 16px; }
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      margin: 16px 0 12px;
+    }
+    input[type="search"]{
+      padding: 10px 12px;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+    button {
+      padding: 10px 14px;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .table-wrap { overflow: auto; }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      background: white;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,.06);
+    }
+    thead th {
+      text-align: left;
+      font-weight: 600;
+      background: #f3f6fb;
+      padding: 12px;
+      border-bottom: 1px solid #e6eaf2;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    tbody td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #f0f0f0;
+      vertical-align: top;
+      word-break: break-all;
+    }
+    tbody tr:hover { background: #fcfdff; }
+    .muted { color: #666; font-size: 12px; }
+    .right { text-align: right; }
+    footer {
+      color: #777; font-size: 12px; padding: 24px 0 8px; text-align: center;
+    }
+    @media (max-width: 720px){
+      main { width: 94%; padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>HTML Files</h1>
+    <div class="toolbar">
+      <input id="q" type="search" placeholder="Search by filename or path…" />
+      <div>
+        <button id="sortName">Sort by name</button>
+        <button id="sortPath">Sort by path</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table id="tbl">
+        <thead>
+          <tr>
+            <th style="width:64px">#</th>
+            <th>Filename</th>
+            <th>Path</th>
+            <th class="right">Open</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <footer id="meta" class="muted"></footer>
+  </main>
+
+  <script>
+    // 기본 정렬 상태
+    let sortKey = "name"; // or "path"
+    let files = [];
+
+    async function load() {
+      const res = await fetch("./files.json", { cache: "no-store" });
+      const data = await res.json();
+      files = (data.files || []).map(p => {
+        const parts = p.split("/");
+        const filename = parts.pop();
+        const dir = parts.join("/");
+        return { path: p, name: filename, dir };
+      });
+      render();
+    }
+
+    function render() {
+      const q = document.getElementById("q").value.trim().toLowerCase();
+      let list = files.filter(x =>
+        !q ||
+        x.name.toLowerCase().includes(q) ||
+        x.path.toLowerCase().includes(q)
+      );
+
+      list.sort((a, b) => {
+        if (sortKey === "name") return a.name.localeCompare(b.name);
+        return a.dir.localeCompare(b.dir) || a.name.localeCompare(b.name);
+      });
+
+      const tbody = document.querySelector("#tbl tbody");
+      tbody.innerHTML = "";
+      list.forEach((x, i) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${i + 1}</td>
+          <td>${escapeHtml(x.name)}</td>
+          <td class="muted">${escapeHtml(x.dir || "(root)")}</td>
+          <td class="right"><a href="./${encodeURI(x.path)}" target="_blank" rel="noopener">Open</a></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById("meta").textContent =
+        `${list.length} files shown • base path: ${location.pathname}`;
+    }
+
+    function escapeHtml(s) {
+      return s.replace(/[&<>"']/g, m => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[m]));
+    }
+
+    // 이벤트
+    document.getElementById("q").addEventListener("input", render);
+    document.getElementById("sortName").addEventListener("click", () => { sortKey = "name"; render(); });
+    document.getElementById("sortPath").addEventListener("click", () => { sortKey = "path"; render(); });
+
+    // 시작
+    load();
+  </script>
+</body>
+</html>
